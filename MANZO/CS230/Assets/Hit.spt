@@ -1,0 +1,5 @@
+Assets/Hit.png
+FrameSize 32 32
+HotSpot 16 16
+NumFrames 4
+Anim Assets/Hit.anm
