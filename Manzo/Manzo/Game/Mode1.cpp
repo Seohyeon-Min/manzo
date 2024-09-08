@@ -13,6 +13,7 @@ Created:    March 8, 2023
 #include "Mode1.h"
 #include "../Engine/Timer.h"
 #include "../Engine/ShowCollision.h"
+#include "BeatSystem.h"
 
 Mode1::Mode1()
 {}
@@ -26,6 +27,7 @@ void Mode1::Load() {
 #endif
     AddGSComponent(new CS230::GameObjectManager());
     AddGSComponent(new Background());
+    AddGSComponent(new Beat());
     AddGSComponent(new CS230::Camera({ { 0.15 * Engine::GetWindow().GetSize().x, 0 }, { 0.35 * Engine::GetWindow().GetSize().x, 0 } }));
 
     GetGSComponent<CS230::Camera>()->SetPosition({ 0, 0 });
@@ -35,6 +37,7 @@ void Mode1::Load() {
 void Mode1::Update(double dt) {
     UpdateGSComponents(dt);
     GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
+    GetGSComponent<Beat>()->Update(dt);
     //GetGSComponent<CS230::ParticleManager<Particles::Smoke>>()->Update(dt);
 }
 

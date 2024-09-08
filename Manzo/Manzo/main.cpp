@@ -17,7 +17,7 @@ Created:    March 8, 2023
 int main() {
     try {
         Engine& engine = Engine::Instance();
-        engine.Start("Assignment 12 - seohyeon.min@digipen.edu");
+        engine.Start("Manzo");
         engine.AddFont("Assets/Font_Simple.png");
         engine.AddFont("Assets/Font_Outlined.png");
 
