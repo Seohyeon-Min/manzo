@@ -10,10 +10,10 @@ public:
     bool GetBeat() { return beat; }
     bool GetIsOnBeat() { return is_on_beat; }
 private:
-    static constexpr int BPM = 100;
+    static constexpr double BPM = 70;
     double duration = 0;
     double time_taken = 0;
     bool beat = false;
     bool is_on_beat = false;
-    static constexpr double beat_offset = 0.08;
+    static constexpr double beat_offset = 0.3;
 };

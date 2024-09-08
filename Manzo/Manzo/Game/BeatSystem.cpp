@@ -2,7 +2,7 @@
 #include <iostream>
 Beat::Beat()
 {
-	duration = BPM / 60;
+	duration = 60.0 / BPM;
 }
 
 void Beat::Update(double dt)
@@ -12,12 +12,16 @@ void Beat::Update(double dt)
 	if (beat) {
 		beat = false;
 	}
-	if (duration <= time_taken) { // right beat
+
+	// right beat
+	if (duration <= time_taken) { 
 		std::cout << "beat" << std::endl;
 		beat = true;
 		time_taken = 0;
 	}
-	if (beat_offset >= time_taken || duration - beat_offset <= time_taken && !is_on_beat) { // judge_offset
+
+	// judge offset
+	if ((beat_offset >= time_taken || duration - beat_offset <= time_taken) && !is_on_beat) { 
 		is_on_beat = true;
 	}
 	else {
