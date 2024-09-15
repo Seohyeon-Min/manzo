@@ -14,8 +14,8 @@ const float shadowPointradius = 5.0f;
 
 Math::vec2 findCollinearPoint(Math::vec2 a, Math::vec2 b, bool fromA = true) {
     Math::vec2 c;
-    float dx = b.x - a.x;
-    float dy = b.y - a.y;
+    float dx = (float)(b.x - a.x);
+    float dy = (float)(b.y - a.y);
 
     c = { b.x + dx * GetScreenWidth(),b.y + dy * GetScreenHeight() };
 
@@ -55,7 +55,7 @@ void CS230::Light::Update(Math::vec2 lightPosition, Math::vec2 shadowpoint, Math
 
 void CS230::Light::AddLightPosition(Math::vec2 position) {
     LightPosition = position;
-    DrawCircle(position.x, position.y, 150, { 255,255,255,100 });
+    DrawCircle((int)position.x, (int)position.y, 150, { 255,255,255,100 });
 }
 
 void CS230::Light::Draw(float light_size)

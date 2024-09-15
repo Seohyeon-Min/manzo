@@ -15,6 +15,8 @@ Created:    March 8, 2023
 #include "../Engine/ShowCollision.h"
 #include "BeatSystem.h"
 #include "Ship.h"
+#include "../Engine/AudioManager.h"
+#include <iostream>
 
 Mode1::Mode1()
 {}
@@ -30,6 +32,7 @@ void Mode1::Load() {
     AddGSComponent(new CS230::GameObjectManager());
     AddGSComponent(new Background());
     AddGSComponent(new Beat());
+    AddGSComponent(new AudioManager());
 
     // camera
     AddGSComponent(new CS230::Camera({ { 0.15 * Engine::GetWindow().GetSize().x, 0 }, { 0.35 * Engine::GetWindow().GetSize().x, 0 } }));
@@ -37,6 +40,13 @@ void Mode1::Load() {
 
     // ship
     GetGSComponent<CS230::GameObjectManager>()->Add(new Ship({500,300}));
+
+    // audio
+    Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("Assets/Audio/basic_beat_100_4.wav", "sample");
+    if (sample) {
+        GetGSComponent<AudioManager>()->PlayMusic(sample, -1);
+    }
+
 
 }
 

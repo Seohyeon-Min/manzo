@@ -34,7 +34,7 @@ void Ship::SetDest()
 	}
 
 	if (set_dest) {
-		if (!beat->GetIsOnBeat()); {
+		if (!beat->GetIsOnBeat()) {
 			ready_to_move = true;
 		}
 	}

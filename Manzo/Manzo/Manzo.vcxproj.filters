@@ -85,6 +85,9 @@
     <ClCompile Include="Game\Ship.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\AudioManager.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h">
@@ -185,6 +188,9 @@
     </ClInclude>
     <ClInclude Include="Game\Ship.h">
       <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AudioManager.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
