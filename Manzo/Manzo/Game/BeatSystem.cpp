@@ -12,14 +12,11 @@ void Beat::Update(double dt)
 	
 	audio->GetCurrentMusicTime();
 	time_taken += dt;
-	
-	std::cout << is_on_beat << std::endl;
 
 	if (beat) {
 		beat = false;
 	}
 	if (duration <= time_taken ) { // right beat
-		std::cout << "beat" << std::endl;
 		beat = true;
 		time_taken = 0 ;
 	}

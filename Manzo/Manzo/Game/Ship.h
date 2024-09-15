@@ -21,19 +21,21 @@ public:
     std::string TypeName() override { return "Pelican"; }
     void Update(double dt) override;
     void Draw(Math::TransformationMatrix camera_matrix) override;
-    void Move();
+    void Move(double dt);
     void SetDest();
     bool CanCollideWith(GameObjectTypes) override;
     void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
     const Math::vec2& GetPosition() const { return GameObject::GetPosition(); }
 
 private:
-    static constexpr double jump_velocity = 700; //650
-    double velocity = 300; //650
+    static constexpr double initialSpeed = 1000.f;
+    static constexpr float deceleration = 50.0f;
+    float currentSpeed = initialSpeed;
     bool moving;
     bool set_dest;
     bool ready_to_move;
     bool move;
     Math::vec2 destination;
+    Math::vec2 initialPosition;
     Beat* beat;
 };
