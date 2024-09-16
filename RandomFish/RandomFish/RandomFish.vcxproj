@@ -154,6 +154,7 @@
     <ClCompile Include="Engine\Vec2.cpp" />
     <ClCompile Include="Engine\Window.cpp" />
     <ClCompile Include="Game\Fish.cpp" />
+    <ClCompile Include="Game\Reef.cpp" />
     <ClCompile Include="Game\Sea.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -187,6 +188,7 @@
     <ClInclude Include="Engine\Window.h" />
     <ClInclude Include="Game\Fish.h" />
     <ClInclude Include="Game\GameObjectTypes.h" />
+    <ClInclude Include="Game\Reef.h" />
     <ClInclude Include="Game\Sea.h" />
     <ClInclude Include="Game\States.h" />
   </ItemGroup>

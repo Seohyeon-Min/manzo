@@ -12,19 +12,8 @@ Updated:    June 3, 2024
 #pragma once
 
 enum class GameObjectTypes {
-    Cat,
-    Robot,
-    Asteroid,
-    Crates,
-    Meteor,
-    Ship,
-    Floor,
-    Portal,
-    Laser,
     Particle,
-    Fruit,
-    Bomb,
-    Mouse,
     Fish,
+    Reef,
     Count
 };
