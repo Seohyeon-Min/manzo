@@ -36,12 +36,29 @@ Math::TransformationMatrix CS230::Camera::GetMatrix() {
 
 
 void CS230::Camera::Update(const Math::vec2& player_position) {
+
+    float lerpFactor = 0.1f; // (0.0 ~ 1.0)
+
+    Math::vec2 target_position = position;
+
     if (player_position.x > player_zone.Right() + position.x) {
-        position.x = player_position.x - player_zone.Right();
+        target_position.x = player_position.x - player_zone.Right();
     }
     if (player_position.x - position.x < player_zone.Left()) {
-        position.x = player_position.x - player_zone.Left();
+        target_position.x = player_position.x - player_zone.Left();
     }
+
+    position.x += (target_position.x - position.x) * lerpFactor;
+
+    if (player_position.y > player_zone.Top() + position.y) {
+        target_position.y = player_position.y - player_zone.Top();
+    }
+    if (player_position.y - position.y < player_zone.Bottom()) {
+        target_position.y = player_position.y - player_zone.Bottom();
+    }
+
+    position.y += (target_position.y - position.y) * lerpFactor;
+
 
     if (position.x < limit.Left()) {
         position.x = limit.Left();
