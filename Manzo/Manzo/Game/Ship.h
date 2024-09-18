@@ -12,7 +12,8 @@ Created:    June 13, 2024
 #include "..\Engine\GameObject.h"
 #include "GameObjectTypes.h"
 #include "..\Engine\Timer.h"
-#include "BeatSystem.h"
+
+class Beat;
 
 class Ship : public CS230::GameObject {
 public:

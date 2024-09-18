@@ -64,7 +64,7 @@ namespace CS230 {
         }
 
 
-    protected:
+ //   protected:
         void UpdatePosition(Math::vec2 delta);
         void SetVelocity(Math::vec2 new_velocity);
         void UpdateVelocity(Math::vec2 delta);

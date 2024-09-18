@@ -13,9 +13,13 @@ Created:    March 8, 2023
 #include "../Engine/Sprite.h"
 #include "..\Engine\GameObjectManager.h"
 #include "../Engine/Fonts.h"
-#include "Background.h"
+#include "../Engine/Timer.h"
 
-class Cat;
+class Fish;
+class Reef;
+class Ship;
+
+constexpr double fish_timer = 2.0;
 
 class Mode1 : public CS230::GameState {
 public:
@@ -29,5 +33,11 @@ public:
         return "Mode1";
     }
 private:
-
+    double counter = 0.0;
+    double swimming_range = 15.0;
+    CS230::Timer* timer;
+    std::vector<Fish*> fishList;
+    Fish* fish;
+    Reef* reef;
+    Ship* ship_ptr;
 };

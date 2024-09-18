@@ -34,7 +34,9 @@
     <ClCompile Include="Engine\Window.cpp" />
     <ClCompile Include="Game\Background.cpp" />
     <ClCompile Include="Game\BeatSystem.cpp" />
+    <ClCompile Include="Game\Fish.cpp" />
     <ClCompile Include="Game\Mode1.cpp" />
+    <ClCompile Include="Game\Reef.cpp" />
     <ClCompile Include="Game\Ship.cpp" />
     <ClCompile Include="Game\Splash.cpp" />
     <ClCompile Include="main.cpp" />
@@ -68,9 +70,11 @@
     <ClInclude Include="Engine\Window.h" />
     <ClInclude Include="Game\Background.h" />
     <ClInclude Include="Game\BeatSystem.h" />
+    <ClInclude Include="Game\Fish.h" />
     <ClInclude Include="Game\GameObjectTypes.h" />
     <ClInclude Include="Game\Gravity.h" />
     <ClInclude Include="Game\Mode1.h" />
+    <ClInclude Include="Game\Reef.h" />
     <ClInclude Include="Game\Ship.h" />
     <ClInclude Include="Game\Splash.h" />
     <ClInclude Include="Game\States.h" />

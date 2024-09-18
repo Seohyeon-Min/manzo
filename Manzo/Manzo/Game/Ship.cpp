@@ -1,4 +1,6 @@
 #include "Ship.h"
+#include "BeatSystem.h"
+
 #include <iostream>
 
 Ship::Ship(Math::vec2 start_position) :

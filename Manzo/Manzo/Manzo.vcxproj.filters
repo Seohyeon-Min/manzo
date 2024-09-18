@@ -88,6 +88,12 @@
     <ClCompile Include="Engine\AudioManager.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Fish.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Reef.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h">
@@ -191,6 +197,12 @@
     </ClInclude>
     <ClInclude Include="Engine\AudioManager.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Reef.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Fish.h">
+      <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

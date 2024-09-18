@@ -60,17 +60,17 @@ void CS230::Camera::Update(const Math::vec2& player_position) {
     position.y += (target_position.y - position.y) * lerpFactor;
 
 
-    if (position.x < limit.Left()) {
-        position.x = limit.Left();
-    }
-    if (position.x > limit.Right()) {
-        position.x = limit.Right();
-    }
-    if (position.y < limit.Bottom()) {
-        position.y = limit.Bottom();
-    }
-    if (position.y > limit.Top()) {
-        position.y = limit.Top();
-    }
+    //if (position.x < limit.Left()) {
+    //    position.x = limit.Left();
+    //}
+    //if (position.x > limit.Right()) {
+    //    position.x = limit.Right();
+    //}
+    //if (position.y < limit.Bottom()) {
+    //    position.y = limit.Bottom();
+    //}
+    //if (position.y > limit.Top()) {
+    //    position.y = limit.Top();
+    //}
 }
 
