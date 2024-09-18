@@ -40,6 +40,7 @@ void Ship::SetDest()
 
 	if (ready_to_move && beat->GetBeat()) { // move when its on next beat
 		initialPosition = GetPosition();
+		
 		move = true;
 		set_dest = false;
 		ready_to_move = false;
@@ -48,32 +49,32 @@ void Ship::SetDest()
 
 void Ship::Move(double dt)
 {
-	Math::vec2 currentPosition = GetPosition();
-	float distanceMoved = (float)sqrt(pow(currentPosition.x - initialPosition.x, 2) + pow(currentPosition.y - initialPosition.y, 2));
-	std::cout << currentSpeed << std::endl;
-	if (distanceMoved >= 150.0f) {
-		SetVelocity({ 0, 0 });
-		currentSpeed = initialSpeed;
-		move = false;
-	}
-	else {
-		Math::vec2 direction = { (destination.x - GetPosition().x), (destination.y - GetPosition().y) };
 
-		float magnitude = (float)sqrt(direction.x * direction.x + direction.y * direction.y);
-		if (magnitude != 0) {
-			direction.x /= magnitude;
-			direction.y /= magnitude;
-		}
+    float distanceMoved = (float)sqrt(pow(GetPosition().x - initialPosition.x, 2) + pow(GetPosition().y - initialPosition.y, 2));
 
+    Math::vec2 direction = { (destination.x - initialPosition.x), (destination.y - initialPosition.y) };
+    float magnitude = (float)sqrt(direction.x * direction.x + direction.y * direction.y);
 
-		if (currentSpeed > 0) {
-			currentSpeed -= (float)(deceleration); 
-			if (currentSpeed < 0) currentSpeed = 0;
-		}
-		SetVelocity({ direction.x * currentSpeed, direction.y * currentSpeed });
-	}
+    if (magnitude != 0) {
+        direction.x /= magnitude;
+        direction.y /= magnitude;
+    }
 
-	
+    float totalDistanceToMove = 150.0f;
+
+    if (distanceMoved >= totalDistanceToMove) { // stop
+        SetVelocity({ 0, 0 });
+        currentSpeed = initialSpeed;
+        move = false;
+    }
+    else {
+        if (currentSpeed > 0) {
+            currentSpeed -= (float)(deceleration);
+            if (currentSpeed < 0) currentSpeed = 0;
+        }
+
+        SetVelocity({ direction.x * currentSpeed, direction.y * currentSpeed }); //move if left
+    }
 }
 
 bool Ship::CanCollideWith(GameObjectTypes)

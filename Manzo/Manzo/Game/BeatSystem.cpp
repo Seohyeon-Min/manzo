@@ -9,7 +9,7 @@ Beat::Beat()
 
 void Beat::Update(double dt)
 {
-	
+	std::cout << is_on_beat << std::endl;
 	audio->GetCurrentMusicTime();
 	time_taken += dt;
 
