@@ -30,7 +30,7 @@ namespace CS230 {
         void Load(const std::filesystem::path& sprite_file);
 
     private:
-        std::vector<Math::irect> platforms;
+        std::vector<Math::irect> rocks;
         Math::irect rect;
         Math::ivec2 point;
     };

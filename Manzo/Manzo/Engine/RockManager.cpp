@@ -39,10 +39,10 @@ void CS230::RockManager::Load(const std::filesystem::path& sprite_file) {
             in_file >> point.y;
             rect.point_2 = point;
 
-            platforms.push_back(rect);
+            rocks.push_back(rect);
             Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(new Rock(rect));
         }
-        //later...
+        // later... random rock appears
         else if (text == "random") {
 
         }
