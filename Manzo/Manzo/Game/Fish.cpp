@@ -19,6 +19,25 @@ Fish::Fish(Fish* parent) : CS230::GameObject({ 0, 0 }) {
     SetScale(Math::vec2{ -default_scales[size], default_scales[size] });
 }
 
+bool Fish::CanCollideWith(GameObjectTypes other_object)
+{
+    switch (other_object) {
+    case GameObjectTypes::Ship:
+        return true;
+        break;
+    }
+    return false;
+}
+
+void Fish::ResolveCollision(GameObject* other_object)
+{
+    switch (other_object->Type()) {
+    case GameObjectTypes::Ship:
+        Destroy();
+        break;
+    }
+}
+
 void Fish::Update(double dt) {
     GameObject::Update(dt);
 

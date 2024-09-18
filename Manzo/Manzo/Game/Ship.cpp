@@ -1,5 +1,6 @@
 #include "Ship.h"
 #include "BeatSystem.h"
+#include "../Engine/Camera.h"
 
 #include <iostream>
 
@@ -50,11 +51,12 @@ void Ship::SetDest()
 }
 
 void Ship::Move(double dt)
-{
+{ // there is a bug that if destination is too short, ship doesn't move any more
 
     float distanceMoved = (float)sqrt(pow(GetPosition().x - initialPosition.x, 2) + pow(GetPosition().y - initialPosition.y, 2));
 
-    Math::vec2 direction = { (destination.x - initialPosition.x), (destination.y - initialPosition.y) };
+    Math::vec2 direction = { destination.x - (GetPosition().x - (double)Engine::GetGameStateManager().GetGSComponent<CS230::Camera>()->GetPosition().x),
+							 destination.y - (GetPosition().y - (double)Engine::GetGameStateManager().GetGSComponent<CS230::Camera>()->GetPosition().y)};
     float magnitude = (float)sqrt(direction.x * direction.x + direction.y * direction.y);
 
     if (magnitude != 0) {
@@ -79,8 +81,14 @@ void Ship::Move(double dt)
     }
 }
 
-bool Ship::CanCollideWith(GameObjectTypes)
+bool Ship::CanCollideWith(GameObjectTypes other_object)
 {
+	switch (other_object) {
+	case GameObjectTypes::Fish:
+		return true;
+		break;
+	}
+
 	return false;
 }
 

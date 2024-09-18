@@ -10,6 +10,8 @@ public:
 	static constexpr double default_velocity = 10.0;
 	GameObjectTypes Type() override { return GameObjectTypes::Fish; }
 	std::string TypeName() override { return "Fish"; }
+	bool CanCollideWith(GameObjectTypes) override;
+	void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
 
 	static constexpr double default_scales[] = { 1.0, 1.5, 2.0 };
 	Math::vec2 start_position;
