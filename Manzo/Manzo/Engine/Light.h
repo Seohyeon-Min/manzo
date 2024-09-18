@@ -4,7 +4,7 @@
 #include "math.h"
 
 namespace CS230 {
-	class Light {
+	class Light :public Component {
 	public:
 		static void AddShadowPoint(Math::vec2 position);
 		static void AddshadowObject();

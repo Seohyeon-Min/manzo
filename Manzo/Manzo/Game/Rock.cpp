@@ -1,29 +1,19 @@
+/*
+Copyright (C) 2023 DigiPen Institute of Technology
+Reproduction or distribution of this file or its contents without
+prior written consent is prohibited
+File Name:  Rock.cpp
+Project:    Manzo
+Author:     Won Kim
+Created:    Sept 13, 2024
+*/
+
+
 #include "Rock.h"
 #include <iostream>
 
-Rock::Rock(Math::vec2 start_position) :
-	GameObject(start_position)
+Rock::Rock(Math::irect boundary): GameObject(static_cast<Math::vec2>(boundary.point_1))
 {
-	AddGOComponent(new CS230::Sprite("Assets/ship.spt", this));
-	SetVelocity({ 0,0 });
-}
 
-void Rock::Update(double dt)
-{
-	GameObject::Update(dt);
-}
-
-
-void Rock::Draw(Math::TransformationMatrix camera_matrix)
-{
-	GameObject::Draw(camera_matrix);
-}
-
-bool Rock::CanCollideWith(GameObjectTypes)
-{
-	return false;
-}
-
-void Rock::ResolveCollision(GameObject* other_object)
-{
+	AddGOComponent(new CS230::RectCollision({ Math::ivec2{ 0, 0 }, boundary.Size() }, this));
 }
