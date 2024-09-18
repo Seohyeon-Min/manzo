@@ -15,6 +15,7 @@ Created:    March 8, 2023
 #include "../Engine/ShowCollision.h"
 #include "BeatSystem.h"
 #include "Ship.h"
+#include "Rock.h"
 #include "../Engine/AudioManager.h"
 #include <iostream>
 
@@ -40,6 +41,9 @@ void Mode1::Load() {
 
     // ship
     GetGSComponent<CS230::GameObjectManager>()->Add(new Ship({500,300}));
+
+    // rock
+    GetGSComponent<CS230::GameObjectManager>()->Add(new Rock({ 200,200 }));
 
     // audio
     Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("Assets/Audio/basic_beat_100_4.wav", "sample");
