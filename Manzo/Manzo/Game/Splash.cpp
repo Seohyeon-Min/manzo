@@ -19,7 +19,7 @@ Splash::Splash() {
 
 void Splash::Load() {
     counter = 0;
-    texture = Engine::GetTextureManager().Load("Assets/DigiPen.png");
+    texture = Engine::GetTextureManager().Load("assets/images/DigiPen.png");
 }
 
 

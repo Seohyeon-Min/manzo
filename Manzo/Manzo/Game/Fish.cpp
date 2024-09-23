@@ -3,7 +3,7 @@
 #include "../Engine/Collision.h"
 
 Fish::Fish(Fish* parent) : CS230::GameObject({ 0, 0 }) {
-    AddGOComponent(new CS230::Sprite("Assets/Fish.spt", this));
+    AddGOComponent(new CS230::Sprite("assets/images/Fish.spt", this));
     if (parent == nullptr) {
         SetVelocity(Math::vec2{
             ((double)(rand() % 5) + 1) * default_velocity * 2,

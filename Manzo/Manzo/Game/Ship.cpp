@@ -7,7 +7,7 @@
 Ship::Ship(Math::vec2 start_position) :
 	GameObject(start_position), moving(false), set_dest(false), ready_to_move(false), move(false)
 {
-	AddGOComponent(new CS230::Sprite("Assets/ship.spt", this));
+	AddGOComponent(new CS230::Sprite("assets/images/ship.spt", this));
 	beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
 	SetVelocity({ 0,0 });
 }

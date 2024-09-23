@@ -2,7 +2,7 @@
 
 Reef::Reef(Math::vec2 position) : CS230::GameObject(position)
 {
-	AddGOComponent(new CS230::Sprite("Assets/Reef.spt", this));
+	AddGOComponent(new CS230::Sprite("assets/images/Reef.spt", this));
 
 }
 

@@ -40,7 +40,7 @@ void Mode1::Load() {
     AddGSComponent(new Background());
     AddGSComponent(new Beat());
     AddGSComponent(new AudioManager());
-    GetGSComponent<Background>()->Add("Assets/temp_back.png", 0.25);
+    GetGSComponent<Background>()->Add("assets/images/temp_back.png", 0.25);
 
     // ship
     ship_ptr = new Ship({ 1280 / 2, 720 / 2 });
@@ -53,7 +53,7 @@ void Mode1::Load() {
     //GetGSComponent<CS230::Camera>()->SetLimit({ { 0, 0}, {  1680 , 5000} });
 
     // audio
-    Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("Assets/Audio/basic_beat_100_4.wav", "sample");
+    Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("assets/audios/basic_beat_100_4.wav", "sample");
     if (sample) {
         GetGSComponent<AudioManager>()->PlayMusic(sample, -1);
     }

@@ -18,8 +18,8 @@ int main() {
     try {
         Engine& engine = Engine::Instance();
         engine.Start("Manzo");
-        engine.AddFont("Assets/Font_Simple.png");
-        engine.AddFont("Assets/Font_Outlined.png");
+        engine.AddFont("assets/images/Font_Simple.png");
+        engine.AddFont("assets/images/Font_Outlined.png");
 
         Splash splash;
         engine.GetGameStateManager().AddGameState(splash);
