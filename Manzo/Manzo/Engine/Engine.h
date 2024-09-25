@@ -16,6 +16,7 @@ Created:    March 8, 2023
 #include "Input.h"
 #include "TextureManager.h"
 #include "Font.h"
+#include "GLApp.h"
 #include <chrono>
 #include <time.h>
 
@@ -74,4 +75,5 @@ private:
     CS230::GameStateManager gamestatemanager;
     CS230::Input input;
     CS230::TextureManager texturemanager;
+    GLApp* app;
 };

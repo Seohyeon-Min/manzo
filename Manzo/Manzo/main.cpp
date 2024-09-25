@@ -13,20 +13,28 @@ Created:    March 8, 2023
 #include "Engine/Engine.h"
 #include "Game/Splash.h"
 #include "Game/Mode1.h"
+#include "GLApp.h"
 
 int main() {
     try {
+        GLApp OpenGLApplication("Manzo");
+
+
+
+        return 0;
+
+        ////////////////////////////////////////////////////////
+
+
         Engine& engine = Engine::Instance();
         engine.Start("Manzo");
-        engine.AddFont("assets/images/Font_Simple.png");
-        engine.AddFont("assets/images/Font_Outlined.png");
 
         Splash splash;
         engine.GetGameStateManager().AddGameState(splash);
         Mode1 mode1;
         engine.GetGameStateManager().AddGameState(mode1);
 
-        while (engine.HasGameEnded() == false) {
+        while (engine.HasGameEnded() == false && !OpenGLApplication.IsDone()) {
             engine.Update();
         }
 

@@ -10,6 +10,8 @@ Created:    March 8, 2023
 
 #include "Engine.h"
 
+
+
 Engine::Engine() :
 #ifdef _DEBUG
     logger(last_tick, CS230::Logger::Severity::Debug, true)
@@ -28,7 +30,7 @@ void Engine::Start(std::string window_title) {
     std::srand(seed);
     logger.LogEvent("Random seed :" + std::to_string(seed));
     logger.LogEvent("Engine Started");
-    window.Start(window_title);
+    app = new GLApp (window_title.c_str());;
     //Start other services
     last_test = last_tick;
 }
@@ -51,6 +53,11 @@ void Engine::Update() {
         gamestatemanager.Update(dt);
         input.Update();
         window.Update();
+        if (!app->IsDone())
+        {
+            app->Update();
+        }
+
     }
     if (frame_count >= FPSTargetFrames) {
         double actual_time = std::chrono::duration<double>(now - last_test).count();
