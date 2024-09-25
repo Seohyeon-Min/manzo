@@ -15,13 +15,14 @@ Created:    March 8, 2023
 #include "Game/Mode1.h"
 #include "GLApp.h"
 
+
+util::owner<IProgram*> create_program(int viewport_width, int viewport_height)
+{
+    return new Tutorial_3(viewport_width, viewport_height);
+}
+
 int main() {
     try {
-        GLApp OpenGLApplication("Manzo");
-
-
-
-        return 0;
 
         ////////////////////////////////////////////////////////
 
@@ -34,7 +35,7 @@ int main() {
         Mode1 mode1;
         engine.GetGameStateManager().AddGameState(mode1);
 
-        while (engine.HasGameEnded() == false && !OpenGLApplication.IsDone()) {
+        while (engine.HasGameEnded() == false) {
             engine.Update();
         }
 

@@ -30,6 +30,7 @@ void Engine::Start(std::string window_title) {
     std::srand(seed);
     logger.LogEvent("Random seed :" + std::to_string(seed));
     logger.LogEvent("Engine Started");
+    //window.Start(window_title);
     app = new GLApp (window_title.c_str());;
     //Start other services
     last_test = last_tick;
@@ -44,7 +45,7 @@ void Engine::Update() {
     std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
     double dt = std::chrono::duration<double>(now - last_tick).count();
 
-    if (dt > (1 / TargetFPS))
+    if (dt > (1 / TargetFPS) && !app->IsDone())
     {
         frame_count++;
         logger.LogVerbose("Engine Update");
@@ -52,11 +53,8 @@ void Engine::Update() {
 
         gamestatemanager.Update(dt);
         input.Update();
-        window.Update();
-        if (!app->IsDone())
-        {
-            app->Update();
-        }
+        //window.Update();
+        app->Update();
 
     }
     if (frame_count >= FPSTargetFrames) {
@@ -68,7 +66,7 @@ void Engine::Update() {
 }
 
 bool Engine::HasGameEnded() {
-    if (gamestatemanager.HasGameEnded() || window.IsClosed()) {
+    if (gamestatemanager.HasGameEnded() || app->IsDone()) {
         return true;
     }
     return false;

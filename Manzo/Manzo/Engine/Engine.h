@@ -71,7 +71,7 @@ private:
 
     std::vector<CS230::Font> fonts;
     CS230::Logger logger;
-    CS230::Window window;
+    //CS230::Window window;
     CS230::GameStateManager gamestatemanager;
     CS230::Input input;
     CS230::TextureManager texturemanager;
