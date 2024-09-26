@@ -59,6 +59,9 @@ public:
     bool HasGameEnded();
     void HandleEvent(SDL_Window& sdl_window, const SDL_Event& event);
 
+    static constexpr int window_width = 1280;
+    static constexpr int window_height = 720;
+
 private:
     Engine();
 
@@ -70,8 +73,6 @@ private:
     static constexpr double TargetFPS = 30.0;
     static constexpr int FPSDuration = 5;
     static constexpr int FPSTargetFrames = static_cast<int>(FPSDuration * TargetFPS);
-    static constexpr int window_width = 1280;
-    static constexpr int window_height = 720;
 
     std::vector<CS230::Font> fonts;
     CS230::Logger logger;

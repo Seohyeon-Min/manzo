@@ -8,12 +8,12 @@ Author:     Jonathan Holmes
 Created:    March 8, 2023
 */
 
+#define SDL_MAIN_HANDLED 
 #include <iostream>
 
 #include "Engine/Engine.h"
 #include "Game/Splash.h"
 #include "Game/Mode1.h"
-#include "GLApp.h"
 
 util::owner<IProgram*> create_program(int viewport_width, int viewport_height)
 {
@@ -21,7 +21,7 @@ util::owner<IProgram*> create_program(int viewport_width, int viewport_height)
     return &engine;
 }
 
-int main() {
+int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {
     try {
         Engine& engine = Engine::Instance();
         engine.Start("Manzo");

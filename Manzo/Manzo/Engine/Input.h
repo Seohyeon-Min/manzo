@@ -11,6 +11,7 @@ Created:    March 8, 2023
 
 #pragma once
 #include <vector>
+#include <SDL2/SDL.h>
 
 namespace CS230 {
     class Input {
@@ -30,12 +31,13 @@ namespace CS230 {
         bool KeyJustReleased(Keys key);
 
     private:
-        std::vector<bool> keys_down;
-        std::vector<bool> previous_keys_down;
+        SDL_Event event;
+        const Uint8* current_key_state = SDL_GetKeyboardState(nullptr);
+        Uint8 previous_keys_down[SDL_NUM_SCANCODES] = { 0 };
+        bool quit = false;
     };
 
 
 }
 
 constexpr CS230::Input::Keys& operator++(CS230::Input::Keys& key) noexcept;
-constexpr int cs230_to_rl(CS230::Input::Keys cs230_key) noexcept;
