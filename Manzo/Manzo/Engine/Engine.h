@@ -18,6 +18,8 @@ Created:    March 8, 2023
 //#include "Font.h"
 #include "IProgram.h"
 #include "GLApp.h"
+#include "Render.h"
+
 #include <chrono>
 #include <time.h>
 
@@ -48,11 +50,15 @@ public:
         return Instance().texturemanager;
     }
 
+    static Render& GetRender() {
+        return Instance().render;
+    }
+
     //static CS230::Font& GetFont(int index) {
     //    return Instance().fonts[index];
     //}
 
-    void AddFont(const std::filesystem::path& file_name);
+    //void AddFont(const std::filesystem::path& file_name);
     void Start(std::string window_title);
     void Stop();
     void Update();
@@ -80,5 +86,6 @@ private:
     CS230::GameStateManager gamestatemanager;
     CS230::Input input;
     CS230::TextureManager texturemanager;
+    Render render;
     GLApp* app;
 };

@@ -1,32 +1,39 @@
-/*
-Copyright (C) 2023 DigiPen Institute of Technology
-Reproduction or distribution of this file or its contents without
-prior written consent is prohibited
-File Name:  TextureManager.h
-Project:    CS230 Engine
-Author:     Jonathan Holmes
-Created:    March 8, 2023
-*/
 
 #pragma once
+#include "GLTexture.h"
+#include "GLVertexArray.h"
+
 #include <filesystem>
 #include <map>
 
+static const GLShader basic_shader = GLShader(
+    "Basic Shader", { 
+    {GLShader::VERTEX, "assets/shaders/tutorial-5.vert"}, 
+    {GLShader::FRAGMENT, "assets/shaders/tutorial-5.frag"} });
+
 namespace CS230 {
-    class Texture;
 
     class TextureManager {
     public:
-        Texture* Load(const std::filesystem::path& file_name);
+        TextureManager() { shaders.push_back(&basic_shader); }
+        GLTexture* Load(const std::filesystem::path& file_name, const GLShader* shader = &basic_shader);
         void Unload();
-
-        void StartRenderTextureMode(int width, int height);
-        Texture* EndRenderTextureMode();
+        GLVertexArray* CreatModel(const float width, const float height);
+        //void StartRenderTextureMode(int width, int height);
+        //GLTexture* EndRenderTextureMode();
 
     private:
-        std::map<std::filesystem::path, Texture*> textures;
-        std::vector<Texture*> rendered_textures;
+        float ConvertToNDCWidth(int width, int screen_width) {
+            return (2.0f * width) / screen_width - 1.0f; // -1.0f ~ 1.0f 범위로 변환
+        }
+
+        float ConvertToNDCHeight(int height, int screen_height) {
+            return (2.0f * height) / screen_height - 1.0f; // -1.0f ~ 1.0f 범위로 변환
+        }
+        std::map<std::filesystem::path, GLTexture*> textures;
+        std::vector<const GLShader*> shaders;
     };
 }
+
 
 

@@ -4,7 +4,6 @@
 
 GLTexture::GLTexture(const std::filesystem::path& image_filepath, bool flip)
 {
-	shader = GLShader("Basic Shader", { {GLShader::VERTEX, "assets/shaders/tutorial-5.vert"}, {GLShader::FRAGMENT, "assets/shaders/tutorial-5.frag"} });
 	if (const bool loaded = LoadFromFileImage(image_filepath, flip)) {
 		throw std::runtime_error{ "Failed to load the duck.png" };
 	}
@@ -91,43 +90,6 @@ bool GLTexture::LoadFromMemory(int image_width, int image_height, const RGBA* co
 	// return if successful
 	return true;
 }
-
-//void GLTexture::Draw()
-//{
-//	// TODO
-//	glCheck(glClear(GL_COLOR_BUFFER_BIT));
-//	shader.Use();
-//
-//	UseForSlot(0);
-//	shader.SendUniform("uTex2d", 0);
-//
-//	shader.Use(false);
-//}
-//
-//void GLTexture::Draw(mat3 display_matrix, ivec2 texel_position, ivec2 frame_size, unsigned int color)
-//{
-//	// TODO
-//	glCheck(glClear(GL_COLOR_BUFFER_BIT));
-//	// 셰이더 활성화
-//	shader.Use();
-//
-//	// 텍스처 슬롯 설정
-//	UseForSlot(0);
-//	shader.SendUniform("uTex2d", 0);
-//
-//	// 텍스처 좌표 계산 (정규화)
-//	vec2 texel_start = vec2(texel_position.x / float(width), texel_position.y / float(height));
-//	vec2 texel_end = vec2((texel_position.x + frame_size.x) / float(width), (texel_position.y + frame_size.y) / float(height));
-//
-//	// 셰이더에 텍스처 좌표 전달
-//	SendUniform("uTexelStart", texel_start);
-//	SendUniform("uTexelEnd", texel_end);
-//
-//	// 프레임 크기에 맞는 화면 공간 변환 매트릭스 전달
-//	shader.SendUniform("uTransform", display_matrix);
-//
-//	shader.Use(false);
-//}
 
 //////////////////////////////////////////////////////////////////////////////////////////////look one more
 void GLTexture::UseForSlot([[maybe_unused]]unsigned int texture_unit) const noexcept

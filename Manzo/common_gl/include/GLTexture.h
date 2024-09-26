@@ -5,8 +5,10 @@
  */
 #include <array>
 #include <filesystem>
+
 #include "vec2.h"
 #include "mat3.h"
+
 #include "GL/glew.h"
 #include "GLHandle.h"
 #include "GLShader.h"
@@ -21,19 +23,14 @@ public:
     ~GLTexture() noexcept;
     GLTexture(const GLTexture& other) = delete;
     GLTexture(GLTexture&& other) noexcept;
+
+    void SetShader(const GLShader* set_shader) { shader = set_shader; }
+    const GLShader* GetShader() { return shader; }
+    ivec2 GetSize() const { return { width, height }; }
+
     GLTexture& operator=(const GLTexture& other) = delete;
     GLTexture& operator                          =(GLTexture&& other) noexcept;
-   
-    void Draw();
-    void Draw(
-        mat3 display_matrix,
-        ivec2 texel_position,
-        ivec2 frame_size,
-        unsigned int color = 0xFFFFFFFF
-    );
-    ivec2 GetSize() const {
-        return { width, height };
-    }
+
 
     [[nodiscard]] bool LoadFromFileImage(const std::filesystem::path& image_filepath, bool flip_vertical = true) noexcept;
 
@@ -99,5 +96,5 @@ private:
     Filtering               filtering      = Filtering::NearestPixel;
     std::array<Wrapping, 2> wrapping       = {Wrapping::Repeat, Wrapping::Repeat};
 
-    GLShader      shader;
+    const GLShader*      shader;
 };
