@@ -80,6 +80,7 @@
     <ClCompile Include="source\glCheck.cpp" />
     <ClCompile Include="source\GLIndexBuffer.cpp" />
     <ClCompile Include="source\GLShader.cpp" />
+    <ClCompile Include="source\GLTexture.cpp" />
     <ClCompile Include="source\GLVertexArray.cpp" />
     <ClCompile Include="source\GLVertexBuffer.cpp" />
     <ClCompile Include="source\ImGuiHelper.cpp" />
@@ -96,6 +97,7 @@
     <ClInclude Include="include\GLHandle.h" />
     <ClInclude Include="include\GLIndexBuffer.h" />
     <ClInclude Include="include\GLShader.h" />
+    <ClInclude Include="include\GLTexture.h" />
     <ClInclude Include="include\GLVertexArray.h" />
     <ClInclude Include="include\GLVertexBuffer.h" />
     <ClInclude Include="include\ImGuiHelper.h" />
