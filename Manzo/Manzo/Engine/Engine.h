@@ -16,11 +16,12 @@ Created:    March 8, 2023
 #include "Input.h"
 #include "TextureManager.h"
 #include "Font.h"
+#include "IProgram.h"
 #include "GLApp.h"
 #include <chrono>
 #include <time.h>
 
-class Engine {
+class Engine : public IProgram{
 public:
     static Engine& Instance() {
         static Engine instance;
@@ -56,6 +57,7 @@ public:
     void Stop();
     void Update();
     bool HasGameEnded();
+    void HandleEvent(SDL_Window& sdl_window, const SDL_Event& event);
 
 private:
     Engine();
@@ -68,10 +70,12 @@ private:
     static constexpr double TargetFPS = 30.0;
     static constexpr int FPSDuration = 5;
     static constexpr int FPSTargetFrames = static_cast<int>(FPSDuration * TargetFPS);
+    static constexpr int window_width = 1280;
+    static constexpr int window_height = 720;
 
     std::vector<CS230::Font> fonts;
     CS230::Logger logger;
-    //CS230::Window window;
+    CS230::Window window;
     CS230::GameStateManager gamestatemanager;
     CS230::Input input;
     CS230::TextureManager texturemanager;

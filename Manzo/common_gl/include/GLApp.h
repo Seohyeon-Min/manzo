@@ -15,7 +15,7 @@ class IProgram;
 class [[nodiscard]] GLApp
 {
 public:
-    GLApp(const char* title = "OpenGL App", int desired_width = 800, int desired_height = 600);
+    GLApp(const char* title = "OpenGL App", int desired_width = 1280, int desired_height = 720);
     ~GLApp();
 
     GLApp(const GLApp&) = delete;

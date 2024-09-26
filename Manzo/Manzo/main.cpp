@@ -15,23 +15,19 @@ Created:    March 8, 2023
 #include "Game/Mode1.h"
 #include "GLApp.h"
 
-
 util::owner<IProgram*> create_program(int viewport_width, int viewport_height)
 {
-    return new Tutorial_3(viewport_width, viewport_height);
+    Engine& engine = Engine::Instance();
+    return &engine;
 }
 
 int main() {
     try {
-
-        ////////////////////////////////////////////////////////
-
-
         Engine& engine = Engine::Instance();
         engine.Start("Manzo");
 
-        Splash splash;
-        engine.GetGameStateManager().AddGameState(splash);
+        //Splash splash;
+        //engine.GetGameStateManager().AddGameState(splash);
         Mode1 mode1;
         engine.GetGameStateManager().AddGameState(mode1);
 

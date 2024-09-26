@@ -9,7 +9,7 @@ Created:    March 8, 2023
 */
 
 #include "Engine.h"
-
+#include <SDL2/SDL.h>
 
 
 Engine::Engine() :
@@ -63,6 +63,14 @@ void Engine::Update() {
         frame_count = 0;
         last_test = now;
     }
+}
+
+void Engine::HandleEvent(SDL_Window& sdl_window, const SDL_Event& event)
+{
+    //switch (event.type)
+    //{
+
+    //}
 }
 
 bool Engine::HasGameEnded() {

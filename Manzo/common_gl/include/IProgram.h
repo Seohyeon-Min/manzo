@@ -17,8 +17,8 @@ public:
     IProgram& operator=(IProgram&&) noexcept      = default;
 
     virtual void Update()                                                    = 0;
-    virtual void Draw()                                                      = 0;
-    virtual void ImGuiDraw()                                                 = 0;
+    //virtual void Draw()                                                      = 0;
+    //virtual void ImGuiDraw()                                                 = 0;
     virtual void HandleEvent(SDL_Window& sdl_window, const SDL_Event& event) = 0;
 };
 

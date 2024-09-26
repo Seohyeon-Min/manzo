@@ -121,10 +121,10 @@ void GLApp::Update()
         }
     }
     ptr_program->Update();
-    ptr_program->Draw();
+    //ptr_program->Draw();
 
     ImGuiHelper::Begin();
-    ptr_program->ImGuiDraw();
+    //ptr_program->ImGuiDraw();
     ImGuiHelper::End(ptr_window, gl_context);
 
     SDL_GL_SwapWindow(ptr_window);
