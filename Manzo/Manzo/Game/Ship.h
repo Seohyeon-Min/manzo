@@ -27,6 +27,11 @@ public:
     bool CanCollideWith(GameObjectTypes) override;
     void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
     const Math::vec2& GetPosition() const { return GameObject::GetPosition(); }
+    void FuelUpdate(double dt);
+    void SetMaxFuel(double input);
+    void HitWithReef();
+    bool IsTouchingReef();
+    bool IsFuelZero();
 
 private:
     static constexpr double initialSpeed = 1000.f;
@@ -36,6 +41,14 @@ private:
     bool set_dest;
     bool ready_to_move;
     bool move;
+    bool isCollidingWithReef;
+    bool FuelFlag = false;
+    double fuel;
+    double Maxfuel = 500;
+    double baseDecfuel = 2;
+    double MoveDecfuel = 10;
+    double HitDecFuel = 50;
+    double fuelcounter = 0;
     Math::vec2 destination;
     Math::vec2 initialPosition;
     Beat* beat;

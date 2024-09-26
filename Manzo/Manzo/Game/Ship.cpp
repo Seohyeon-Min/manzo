@@ -9,6 +9,8 @@ Ship::Ship(Math::vec2 start_position) :
 {
 	AddGOComponent(new CS230::Sprite("assets/images/ship.spt", this));
 	beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
+	fuel = Maxfuel;
+	FuelFlag = false;
 	SetVelocity({ 0,0 });
 }
 
@@ -17,6 +19,11 @@ void Ship::Update(double dt)
 	GameObject::Update(dt);
 	SetDest();
 	Move(dt);
+	FuelUpdate(dt);
+	if (isCollidingWithReef && !IsTouchingReef())
+	{
+		isCollidingWithReef = false;
+	}
 }
 
 
@@ -87,11 +94,80 @@ bool Ship::CanCollideWith(GameObjectTypes other_object)
 	case GameObjectTypes::Fish:
 		return true;
 		break;
-	}
 
+	case GameObjectTypes::Reef:
+		return true;
+		break;
+	}
 	return false;
 }
 
 void Ship::ResolveCollision(GameObject* other_object)
 {
+	switch (other_object->Type()) {
+	case GameObjectTypes::Reef:
+		IsTouchingReef();
+		if (!isCollidingWithReef) {
+			HitWithReef();
+			isCollidingWithReef = true;
+		}
+		break;
+	}
+}
+
+void Ship::FuelUpdate(double dt)
+{
+	if (fuel <= 0)
+	{
+		FuelFlag = true;
+	}
+	if (FuelFlag == false)
+	{
+		fuelcounter += dt;
+
+		if (fuelcounter >= 1) // Decreased fuel per second
+		{
+			fuel -= baseDecfuel;
+			fuelcounter = 0;
+		}
+		if (move == true)
+		{
+			bool Reduce = true;
+			if (Reduce == true)
+			{
+				fuel -= MoveDecfuel;
+				Reduce = false;
+			}
+		}
+		std::cout << "Fuel: " << fuel << std::endl;
+	}
+	if (FuelFlag == true)
+	{
+		IsFuelZero();
+	}
+}
+
+void Ship::SetMaxFuel(double input)
+{
+	Maxfuel = input;
+}
+
+void Ship::HitWithReef()
+{
+	fuel -= HitDecFuel;
+	std::cout << "Collision with Reef!" << std::endl;
+}
+
+bool Ship::IsTouchingReef() 
+{
+	if (isCollidingWithReef == true)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool Ship::IsFuelZero()
+{
+	return FuelFlag;
 }
