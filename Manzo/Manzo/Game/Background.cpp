@@ -24,11 +24,11 @@ void Background::Unload()
 void Background::Draw(const CS230::Camera& camera)
 {
 	for (ParallaxLayer& background : backgrounds) {
-		background.texture->Draw(Math::TranslationMatrix (( - const_cast<Math::vec2&>(camera.GetPosition()))*background.speed) );
+		background.texture->Draw(mat3 (( - const_cast<vec2&>(camera.GetPosition()))* (float)background.speed) );
 	}
 }
 
-Math::ivec2 Background::GetSize()
+ivec2 Background::GetSize()
 {
 	return backgrounds[backgrounds.size()-1].texture->GetSize();;
 }

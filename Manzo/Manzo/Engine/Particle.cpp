@@ -16,7 +16,7 @@ CS230::Particle::Particle(const std::filesystem::path& sprite_file):
 	AddGOComponent(new CS230::Sprite(sprite_file, this));
 }
 
-void CS230::Particle::Start(Math::vec2 position, Math::vec2 velocity, double max_life)
+void CS230::Particle::Start(vec2 position, vec2 velocity, double max_life)
 {
 	SetPosition(position);
 	SetVelocity(velocity);
@@ -31,7 +31,7 @@ void CS230::Particle::Update(double dt)
 		GameObject::Update(dt);
 }
 
-void CS230::Particle::Draw(Math::TransformationMatrix camera_matrix)
+void CS230::Particle::Draw(mat3 camera_matrix)
 {
 	if(Alive())
 		GameObject::Draw(camera_matrix);

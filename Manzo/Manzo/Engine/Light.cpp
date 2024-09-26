@@ -5,15 +5,15 @@
 #include "Light.h"
 
 
-Math::vec2 LightPosition;
-std::vector<Math::vec2> ShadowPoint;
-std::vector<std::vector<Math::vec2>> ShadowObject;
+vec2 LightPosition;
+std::vector<vec2> ShadowPoint;
+std::vector<std::vector<vec2>> ShadowObject;
 const Color shadowcolor = BLUE;
 std::vector<Vector2> CollisionPoint;
 const float shadowPointradius = 5.0f;
 
-Math::vec2 findCollinearPoint(Math::vec2 a, Math::vec2 b, bool fromA = true) {
-    Math::vec2 c;
+vec2 findCollinearPoint(vec2 a, vec2 b, bool fromA = true) {
+    vec2 c;
     float dx = (float)(b.x - a.x);
     float dy = (float)(b.y - a.y);
 
@@ -24,7 +24,7 @@ Math::vec2 findCollinearPoint(Math::vec2 a, Math::vec2 b, bool fromA = true) {
 
 
 
-void CS230::Light::AddShadowPoint(Math::vec2 position)
+void CS230::Light::AddShadowPoint(vec2 position)
 {
     ShadowPoint.push_back(position);
 }
@@ -37,7 +37,7 @@ void CS230::Light::AddshadowObject()
     }
 }
 
-void CS230::Light::Update(Math::vec2 lightPosition, Math::vec2 shadowpoint, Math::vec2 Collinearpoint, Math::vec2 nextCollinearpoint)
+void CS230::Light::Update(vec2 lightPosition, vec2 shadowpoint, vec2 Collinearpoint, vec2 nextCollinearpoint)
 {
     if (lightPosition.x > shadowpoint.x || lightPosition.y > shadowpoint.y) {
         DrawTriangle({ (float)shadowpoint.x,(float)shadowpoint.y }, { (float)Collinearpoint.x,(float)Collinearpoint.y }, { (float)nextCollinearpoint.x,(float)nextCollinearpoint.y }, shadowcolor);
@@ -53,7 +53,7 @@ void CS230::Light::Update(Math::vec2 lightPosition, Math::vec2 shadowpoint, Math
     }
 }
 
-void CS230::Light::AddLightPosition(Math::vec2 position) {
+void CS230::Light::AddLightPosition(vec2 position) {
     LightPosition = position;
     DrawCircle((int)position.x, (int)position.y, 150, { 255,255,255,100 });
 }
@@ -62,7 +62,7 @@ void CS230::Light::Draw(float light_size)
 {
     if (ShadowObject.size() != 0) {
         for (int i = 0; i < ShadowObject.size(); ++i) {
-            std::vector<Math::vec2>& shape = ShadowObject[i];
+            std::vector<vec2>& shape = ShadowObject[i];
             for (int j = 0; j < shape.size(); ++j) {
                 if (CheckCollisionCircles({ (float)LightPosition.x,(float)LightPosition.y }, light_size, { (float)shape[j].x,(float)shape[j].y }, shadowPointradius)) {
 
@@ -71,7 +71,7 @@ void CS230::Light::Draw(float light_size)
                     //shadowline
                     //DrawLineV(LightPosition, findCollinearPoint(LightPosition, shape[j]), WHITE);
                     if (j != 0) {
-                        Math::vec2 nextPoint = (j + 1 < shape.size()) ? shape[j + 1] : shape.front();
+                        vec2 nextPoint = (j + 1 < shape.size()) ? shape[j + 1] : shape.front();
                         Update(LightPosition, shape[j], findCollinearPoint(LightPosition, shape[j]), findCollinearPoint(LightPosition, shape[j - 1]));
                         Update(LightPosition, shape[j], findCollinearPoint(LightPosition, shape[j]), findCollinearPoint(LightPosition, nextPoint));
 
@@ -80,7 +80,7 @@ void CS230::Light::Draw(float light_size)
 
                     }
                     else if (j == 0) {
-                        Math::vec2 nextPoint = (j + 1 < shape.size()) ? shape[j + 1] : shape.front();
+                        vec2 nextPoint = (j + 1 < shape.size()) ? shape[j + 1] : shape.front();
                         Update(LightPosition, shape[j], findCollinearPoint(LightPosition, nextPoint), findCollinearPoint(LightPosition, shape[j]));
                         Update(LightPosition, shape[j], findCollinearPoint(LightPosition, shape.back()), findCollinearPoint(LightPosition, shape.front()));
 

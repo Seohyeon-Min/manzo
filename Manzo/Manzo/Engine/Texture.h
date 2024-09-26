@@ -9,27 +9,27 @@ Created:    March 8, 2023
 */
 
 #pragma once
-#include "Matrix.h"
+#include "mat3.h"
 #include "Vec2.h"
 #include <filesystem>
 #include <raylib.h>
 
 namespace CS230 {
-    class Font;
+    //class Font;
 
     class Texture {
     public:
         friend class TextureManager;
-        friend class Font;
+        //friend class Font;
 
-        void Draw(Math::TransformationMatrix display_matrix, unsigned int color = 0xFFFFFFFF);
+        void Draw(mat3 display_matrix, unsigned int color = 0xFFFFFFFF);
         void Draw(
-            Math::TransformationMatrix display_matrix,
-            Math::ivec2 texel_position,
-            Math::ivec2 frame_size,
+            mat3 display_matrix,
+            ivec2 texel_position,
+            ivec2 frame_size,
             unsigned int color = 0xFFFFFFFF
         );
-        Math::ivec2 GetSize() const;
+        ivec2 GetSize() const;
         ~Texture();
 
         Texture(const Texture&) = delete;

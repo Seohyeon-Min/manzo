@@ -42,9 +42,6 @@
     <ClCompile Include="Engine\logger.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Matrix.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Particle.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -61,9 +58,6 @@
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Timer.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Vec2.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Window.cpp">
@@ -141,9 +135,6 @@
     <ClInclude Include="Engine\logger.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Matrix.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Particle.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -163,9 +154,6 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Timer.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Vec2.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Window.h">

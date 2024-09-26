@@ -39,7 +39,7 @@ void CS230::GameObjectManager::UpdateAll(double dt)
 	}
 }
 
-void CS230::GameObjectManager::DrawAll(Math::TransformationMatrix camera_matrix)
+void CS230::GameObjectManager::DrawAll(mat3 camera_matrix)
 {
 	for (auto object : objects) {
 		object->Draw(camera_matrix);

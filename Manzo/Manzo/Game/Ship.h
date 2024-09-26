@@ -17,16 +17,16 @@ class Beat;
 
 class Ship : public CS230::GameObject {
 public:
-    Ship(Math::vec2 start_position);
+    Ship(vec2 start_position);
     GameObjectTypes Type() override { return GameObjectTypes::Ship; }
     std::string TypeName() override { return "Pelican"; }
     void Update(double dt) override;
-    void Draw(Math::TransformationMatrix camera_matrix) override;
+    void Draw(mat3 camera_matrix) override;
     void Move(double dt);
     void SetDest();
     bool CanCollideWith(GameObjectTypes) override;
     void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
-    const Math::vec2& GetPosition() const { return GameObject::GetPosition(); }
+    const vec2& GetPosition() const { return GameObject::GetPosition(); }
 
 private:
     static constexpr double initialSpeed = 1000.f;
@@ -36,7 +36,7 @@ private:
     bool set_dest;
     bool ready_to_move;
     bool move;
-    Math::vec2 destination;
-    Math::vec2 initialPosition;
+    vec2 destination;
+    vec2 initialPosition;
     Beat* beat;
 };

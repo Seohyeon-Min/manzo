@@ -24,9 +24,9 @@ namespace CS230 {
     class Particle : public GameObject {
     public:
         Particle(const std::filesystem::path& sprite_file);
-        void Start(Math::vec2 position, Math::vec2 velocity, double max_life);
+        void Start(vec2 position, vec2 velocity, double max_life);
         void Update(double dt) override;
-        void Draw(Math::TransformationMatrix camera_matrix) override;
+        void Draw(mat3 camera_matrix) override;
         bool Alive() {
             return  life > 0;
         }
@@ -41,7 +41,7 @@ namespace CS230 {
     public:
         ParticleManager();
         ~ParticleManager();
-        void Emit(int count, Math::vec2 emitter_position, Math::vec2 emitter_velocity, Math::vec2 direction, double spread);
+        void Emit(int count, vec2 emitter_position, vec2 emitter_velocity, vec2 direction, double spread);
     private:
         std::vector<T*> particles;
         int index;
@@ -65,8 +65,9 @@ namespace CS230 {
     }
 
     template<typename T>
-    inline void ParticleManager<T>::Emit(int count, Math::vec2 emitter_position, Math::vec2 emitter_velocity, Math::vec2 direction, double spread)
+    inline void ParticleManager<T>::Emit(int count, vec2 emitter_position, vec2 emitter_velocity, vec2 direction, double spread)
     {
+        mat3 m;
         for (int i = 0; i < count; i++) {
             if(particles[index]->Alive())
                 Engine::GetLogger().LogEvent("Particle overwritten");
@@ -74,8 +75,8 @@ namespace CS230 {
 
             if (spread != 0) 
                 angle_variation = ((rand() % static_cast<int>(spread * 1024)) / 1024.0f) - spread / 2;
-            Math::vec2 random_magnitude = direction * (((rand() % 1024) / 2048.0f) + 0.5f);
-            Math::vec2 particle_velocity = Math::RotationMatrix(angle_variation) * random_magnitude + emitter_velocity;
+            vec2 random_magnitude = direction * (((rand() % 1024) / 2048.0f) + 0.5f);
+            vec2 particle_velocity = m.build_rotation(angle_variation) * random_magnitude + emitter_velocity;
             particles[index]->Start(emitter_position, particle_velocity, T::MaxLife);
 
             index++;

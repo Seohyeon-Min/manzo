@@ -11,7 +11,7 @@ Created:    March 8, 2023
 #pragma once
 #include <list>
 #include "GameObject.h"
-#include "Matrix.h"
+#include "mat3.h"
 
 namespace Math { class TransformationMatrix; }
 
@@ -22,7 +22,7 @@ namespace CS230 {
         void Unload();
 
         void UpdateAll(double dt);
-        void DrawAll(Math::TransformationMatrix camera_matrix);
+        void DrawAll(mat3 camera_matrix);
         void CollisionTest();
     private:
         std::list<GameObject*> objects;

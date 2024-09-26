@@ -15,7 +15,7 @@ Created:    March 8, 2023
 #include "GameStateManager.h"
 #include "Input.h"
 #include "TextureManager.h"
-#include "Font.h"
+//#include "Font.h"
 #include "IProgram.h"
 #include "GLApp.h"
 #include <chrono>
@@ -48,9 +48,9 @@ public:
         return Instance().texturemanager;
     }
 
-    static CS230::Font& GetFont(int index) {
-        return Instance().fonts[index];
-    }
+    //static CS230::Font& GetFont(int index) {
+    //    return Instance().fonts[index];
+    //}
 
     void AddFont(const std::filesystem::path& file_name);
     void Start(std::string window_title);
@@ -74,7 +74,7 @@ private:
     static constexpr int FPSDuration = 5;
     static constexpr int FPSTargetFrames = static_cast<int>(FPSDuration * TargetFPS);
 
-    std::vector<CS230::Font> fonts;
+    //std::vector<CS230::Font> fonts;
     CS230::Logger logger;
     CS230::Window window;
     CS230::GameStateManager gamestatemanager;

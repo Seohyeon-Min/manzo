@@ -5,11 +5,11 @@
 class Reef : public CS230::GameObject
 {
 public:
-	Reef(Math::vec2 position);
+	Reef(vec2 position);
 	GameObjectTypes Type() override { return GameObjectTypes::Reef; }
 	std::string TypeName() override { return "Reef"; }
 
 private:
 	void Update(double dt);
-	void Draw(Math::TransformationMatrix camera_matrix);
+	void Draw(mat3 camera_matrix);
 };

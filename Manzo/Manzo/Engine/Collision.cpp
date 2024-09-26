@@ -18,20 +18,20 @@ CS230::RectCollision::RectCollision(Math::irect boundary, GameObject* object) :
 
 Math::rect CS230::RectCollision::WorldBoundary() {
     return {
-        object->GetMatrix() * static_cast<Math::vec2>(boundary.point_1),
-        object->GetMatrix() * static_cast<Math::vec2>(boundary.point_2)
+        object->GetMatrix() * vec2(boundary.point_1),
+        object->GetMatrix() * vec2(boundary.point_2)    
     };
 }
 
-void CS230::RectCollision::Draw(Math::TransformationMatrix display_matrix) {
-    const double render_height = rlGetFramebufferHeight();
+void CS230::RectCollision::Draw(mat3 display_matrix) {
+    const float render_height = (float)rlGetFramebufferHeight();
 
     Math::rect world_boundary = WorldBoundary();
 
-    Math::vec2 bottom_left = display_matrix * Math::vec2{ world_boundary.Left(), world_boundary.Bottom() };
-    Math::vec2 bottom_right = display_matrix * Math::vec2{ world_boundary.Right(), world_boundary.Bottom() };
-    Math::vec2 top_left = display_matrix * Math::vec2{ world_boundary.Left(), world_boundary.Top() };
-    Math::vec2 top_right = display_matrix * Math::vec2{ world_boundary.Right(), world_boundary.Top() };
+    vec2 bottom_left = display_matrix * vec2{ world_boundary.Left(), world_boundary.Bottom() };
+    vec2 bottom_right = display_matrix * vec2{ world_boundary.Right(), world_boundary.Bottom() };
+    vec2 top_left = display_matrix * vec2{ world_boundary.Left(), world_boundary.Top() };
+    vec2 top_right = display_matrix * vec2{ world_boundary.Right(), world_boundary.Top() };
 
     bottom_left.y = bottom_left.y * -1 + render_height;
     bottom_right.y = bottom_right.y * -1 + render_height;
@@ -70,7 +70,7 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
     return false;
 }
 
-bool CS230::RectCollision::IsCollidingWith(Math::vec2 point)
+bool CS230::RectCollision::IsCollidingWith(vec2 point)
 {
     Math::rect rectangle_1 = WorldBoundary();
 
@@ -90,7 +90,7 @@ CS230::CircleCollision::CircleCollision(double radius, GameObject* object):
 
 double CS230::CircleCollision::GetRadius()
 {
-    Math::TransformationMatrix matrix = object->GetMatrix();
+    mat3 matrix = object->GetMatrix();
 
     double scaleX = std::sqrt(matrix[0][0] * matrix[0][0] + matrix[0][1] * matrix[0][1]);
     double scaleY = std::sqrt(matrix[1][0] * matrix[1][0] + matrix[1][1] * matrix[1][1]);
@@ -100,17 +100,17 @@ double CS230::CircleCollision::GetRadius()
     return radius * avgScale;
 }
 
-void CS230::CircleCollision::Draw(Math::TransformationMatrix display_matrix) {
-    const double render_height = rlGetFramebufferHeight();
-    Math::vec2 transformed_position = display_matrix * object->GetPosition();
+void CS230::CircleCollision::Draw(mat3 display_matrix) {
+    const float render_height = (float)rlGetFramebufferHeight();
+    vec2 transformed_position = display_matrix * object->GetPosition();
     transformed_position.y = transformed_position.y * -1 + render_height;
     const int num_segments = 36;
-    Math::vec2 previous_vertex;
+    vec2 previous_vertex;
     for (int i = 0; i <= num_segments + 1; i++) {
         double theta = 2.0 * PI * static_cast<double>(i) / static_cast<double>(num_segments);
-        Math::vec2 vertex = {
-            transformed_position.x + GetRadius() * std::cos(theta),
-            transformed_position.y + GetRadius() * std::sin(theta)
+        vec2 vertex = {
+            (float)(transformed_position.x + GetRadius() * std::cos(theta)),
+            (float)(transformed_position.y + GetRadius() * std::sin(theta))
         };
         if (i > 0) {
             DrawLine(int(vertex.x), int(vertex.y), int(previous_vertex.x), int(previous_vertex.y), WHITE);
@@ -145,7 +145,7 @@ bool CS230::CircleCollision::IsCollidingWith(GameObject* other_object)
 }
 
 
-bool CS230::CircleCollision::IsCollidingWith(Math::vec2 point)
+bool CS230::CircleCollision::IsCollidingWith(vec2 point)
 {
     double dx = object->GetPosition().x - point.x;
     double dy = object->GetPosition().y - point.y;

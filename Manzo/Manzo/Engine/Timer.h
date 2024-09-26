@@ -11,7 +11,7 @@ Updated:    May 12, 2023
 
 #include "Component.h"
 #include "Engine.h"
-#include "Fonts.h"
+//#include "Fonts.h"
 
 #pragma once
 namespace CS230 {

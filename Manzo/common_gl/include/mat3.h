@@ -30,6 +30,7 @@ public:
 
 public:
     constexpr mat3() noexcept; // initializes to identity matrix
+    constexpr mat3(vec2);
     constexpr mat3(vec3 first_column, vec3 second_column, vec3 third_column) noexcept;
     constexpr mat3(float column0_row0, float column0_row1, float column0_row2, float column1_row0, float column1_row1, float column1_row2, float column2_row0, float column2_row1,
         float column2_row2) noexcept;
@@ -42,6 +43,18 @@ public:
     static mat3           build_rotation(float angle_in_radians) noexcept;
     static constexpr mat3 build_translation(float translate_x, float translate_y) noexcept;
     static constexpr mat3 build_translation(const vec2& translation) noexcept;
+
+    float* operator[](size_t index) noexcept
+    {
+        assert(index < 3); // 유효한 인덱스 확인
+        return elements[index];
+    }
+
+    const float* operator[](size_t index) const noexcept
+    {
+        assert(index < 3); // 유효한 인덱스 확인
+        return elements[index];
+    }
 };
 
 static_assert(sizeof(mat3) == sizeof(float) * 3 * 3, "mat3 should be 3x3 floats");
@@ -59,6 +72,11 @@ constexpr mat3::mat3() noexcept : mat3(vec3{ 1, 0, 0 }, vec3{ 0, 1, 0 }, vec3{ 0
 {
 }
 
+inline constexpr mat3::mat3(vec2 pos) : mat3(vec3{ 1, 0, 0 }, vec3{ 0, 1, 0 }, vec3{ pos.x, pos.y, 1 })
+{
+
+}
+
 constexpr mat3::mat3(vec3 first_column, vec3 second_column, vec3 third_column) noexcept : column0(first_column), column1(second_column), column2(third_column)
 {
 }
@@ -68,6 +86,7 @@ constexpr mat3::mat3(float column0_row0, float column0_row1, float column0_row2,
     : column0{ column0_row0, column0_row1, column0_row2 }, column1{ column1_row0, column1_row1, column1_row2 }, column2{ column2_row0, column2_row1, column2_row2 }
 {
 }
+
 
 constexpr mat3 operator*(const mat3& m1, const mat3& m2) noexcept
 {

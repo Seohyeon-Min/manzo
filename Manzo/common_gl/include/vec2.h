@@ -45,6 +45,8 @@ constexpr vec2 operator+(const vec2& v1, const vec2& v2) noexcept;
 
 constexpr vec2 operator-(const vec2& v1, const vec2& v2) noexcept;
 
+constexpr vec2 operator-(const vec2& v) noexcept;
+
 constexpr float dot(vec2 a, vec2 b) noexcept;
 
 constexpr vec2 perpendicular_to(vec2 a) noexcept;
@@ -113,6 +115,11 @@ constexpr vec2 operator-(const vec2& v1, const vec2& v2) noexcept
     return vec2{ v1.x - v2.x, v1.y - v2.y };
 }
 
+constexpr vec2 operator-(const vec2& v) noexcept
+{
+    return vec2{ -v.x,-v.y };
+}
+
 constexpr float dot(vec2 a, vec2 b) noexcept
 {
     return a.x * b.x + a.y * b.y;
@@ -156,6 +163,11 @@ struct [[nodiscard]] ivec2
     constexpr ivec2() noexcept;
     constexpr explicit ivec2(int repeated_int) noexcept;
     constexpr ivec2(int ix, int iy) noexcept;
+    explicit operator vec2() const
+    {
+        return vec2(static_cast<float>(x), static_cast<float>(y));
+    }
+
 };
 
 constexpr ivec2& operator+=(ivec2& v, const ivec2& adding_vector) noexcept;
@@ -171,6 +183,8 @@ constexpr ivec2& operator/=(ivec2& v, int divisor) noexcept;
 constexpr ivec2 operator+(const ivec2& v1, const ivec2& v2) noexcept;
 
 constexpr ivec2 operator-(const ivec2& v1, const ivec2& v2) noexcept;
+
+constexpr ivec2 operator-(const ivec2& v) noexcept;
 
 constexpr int dot(ivec2 a, ivec2 b) noexcept;
 
@@ -234,6 +248,11 @@ constexpr ivec2 operator+(const ivec2& v1, const ivec2& v2) noexcept
 constexpr ivec2 operator-(const ivec2& v1, const ivec2& v2) noexcept
 {
     return ivec2{ v1.x - v2.x, v1.y - v2.y };
+}
+
+constexpr ivec2 operator-(const ivec2& v) noexcept
+{
+    return ivec2{ -v.x, -v.y };
 }
 
 constexpr int dot(ivec2 a, ivec2 b) noexcept

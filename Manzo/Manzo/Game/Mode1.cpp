@@ -48,7 +48,7 @@ void Mode1::Load() {
 
     //// camera
     //AddGSComponent(new CS230::Camera({ {1280 / 2 , 720 / 2 }, {1280 / 2, 720 / 2 } }));
-    //Math::vec2 playerPosition = ship_ptr->GetPosition();
+    //vec2 playerPosition = ship_ptr->GetPosition();
     //GetGSComponent<CS230::Camera>()->SetPosition({ playerPosition.x - 1280 / 2, playerPosition.y - 720 / 2 });
     ////GetGSComponent<CS230::Camera>()->SetLimit({ { 0, 0}, {  1680 , 5000} });
 
@@ -88,10 +88,10 @@ void Mode1::Update(double dt) {
 
     //for (Fish* fish : fishList)
     //{
-    //    Math::vec2 fishPos = fish->GetPosition();
-    //    Math::vec2 reefPos = reef->GetPosition();
+    //    vec2 fishPos = fish->GetPosition();
+    //    vec2 reefPos = reef->GetPosition();
 
-    //    Math::vec2 distanceVec = fishPos - reefPos;
+    //    vec2 distanceVec = fishPos - reefPos;
     //    double distance = sqrt(pow(distanceVec.x, 2) + pow(distanceVec.y, 2));
 
     //    const double repellingForce = 50.0;
@@ -100,12 +100,12 @@ void Mode1::Update(double dt) {
     //    static double timeCounter = 0.0;
 
     //    if (distance < minDistance) {
-    //        Math::vec2 awayFromReef = distanceVec.Normalize();
+    //        vec2 awayFromReef = distanceVec.Normalize();
 
     //        double pushAmount = (minDistance - distance) * pushAmountFactor;
     //        fish->UpdatePosition(awayFromReef * pushAmount);
 
-    //        Math::vec2 steeringVec = awayFromReef;
+    //        vec2 steeringVec = awayFromReef;
 
     //        double strength = (minDistance - distance) / minDistance;
     //        steeringVec *= (repellingForce * strength * dt);

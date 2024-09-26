@@ -5,18 +5,18 @@
 Fish::Fish(Fish* parent) : CS230::GameObject({ 0, 0 }) {
     AddGOComponent(new CS230::Sprite("assets/images/Fish.spt", this));
     if (parent == nullptr) {
-        SetVelocity(Math::vec2{
-            ((double)(rand() % 5) + 1) * default_velocity * 2,
-            ((double)(rand() % 5) + 0.1)* default_velocity
+        SetVelocity(vec2{
+            ((float)(rand() % 5) + 1) * (float)default_velocity * 2,
+            ((float)(rand() % 5) + 0.1f)* (float)default_velocity
             });
 
-        Math::ivec2 windowSize = Engine::GetWindow().GetSize();
-        start_position = { -23 ,((double)rand() / RAND_MAX) * windowSize.y};
+        ivec2 windowSize = Engine::GetWindow().GetSize();
+        start_position = { -23 ,((float)rand() / RAND_MAX) * (float)windowSize.y};
         SetPosition(start_position);
 
         size = rand() % 3;
     }
-    SetScale(Math::vec2{ -default_scales[size], default_scales[size] });
+    SetScale(vec2{ (float) - default_scales[size],(float)default_scales[size]});
 }
 
 bool Fish::CanCollideWith(GameObjectTypes other_object)
@@ -55,7 +55,7 @@ void Fish::Update(double dt) {
     }
 }
 
-void Fish::Draw(Math::TransformationMatrix camera_matrix) {
+void Fish::Draw(mat3 camera_matrix) {
     CS230::GameObject::Draw(camera_matrix);
 }
 

@@ -15,12 +15,12 @@ CS230::Camera::Camera(Math::rect player_zone) : player_zone(player_zone), positi
 
 }
 
-void CS230::Camera::SetPosition(Math::vec2 new_position)
+void CS230::Camera::SetPosition(vec2 new_position)
 {
     position = new_position;
 }
 
-const Math::vec2& CS230::Camera::GetPosition() const
+const vec2& CS230::Camera::GetPosition() const
 {
     return position;
 }
@@ -30,16 +30,16 @@ void CS230::Camera::SetLimit(Math::irect new_limit)
     limit = new_limit;
 }
 
-Math::TransformationMatrix CS230::Camera::GetMatrix() {
-    return Math::TranslationMatrix(-position);
+mat3 CS230::Camera::GetMatrix() {
+    return mat3(-position);
 }
 
 
-void CS230::Camera::Update(const Math::vec2& player_position) {
+void CS230::Camera::Update(const vec2& player_position) {
 
     float lerpFactor = 0.1f; // (0.0 ~ 1.0)
 
-    Math::vec2 target_position = position;
+    vec2 target_position = position;
 
     if (player_position.x > player_zone.Right() + position.x) {
         target_position.x = player_position.x - player_zone.Right();

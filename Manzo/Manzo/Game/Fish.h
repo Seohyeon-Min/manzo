@@ -14,7 +14,7 @@ public:
 	void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
 
 	static constexpr double default_scales[] = { 1.0, 1.5, 2.0 };
-	Math::vec2 start_position;
+	vec2 start_position;
 
 	void SetAvoidanceTimer(double time) { avoidanceTimer = time; }
 	double GetAvoidanceTimer() const { return avoidanceTimer; }
@@ -24,7 +24,7 @@ public:
 
 private:
 	void Update(double dt);
-	void Draw(Math::TransformationMatrix camera_matrix);
+	void Draw(mat3 camera_matrix);
 	//void ResolveCollision(GameObject* other_object) override;
 	//bool CanCollideWith(GameObjectTypes obj) override;
 

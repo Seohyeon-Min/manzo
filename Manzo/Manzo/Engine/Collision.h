@@ -26,9 +26,9 @@ namespace CS230 {
             Circle
         };
         virtual CollisionShape Shape() = 0;
-        virtual void Draw(Math::TransformationMatrix display_matrix) = 0;
+        virtual void Draw(mat3 display_matrix) = 0;
         virtual bool IsCollidingWith(GameObject* other_object) = 0;
-        virtual bool IsCollidingWith(Math::vec2 point) = 0;
+        virtual bool IsCollidingWith(vec2 point) = 0;
 
     };
 
@@ -38,9 +38,9 @@ namespace CS230 {
         CollisionShape Shape() override {
             return CollisionShape::Rect;
         }
-        void Draw(Math::TransformationMatrix display_matrix);
+        void Draw(mat3 display_matrix);
         bool IsCollidingWith(GameObject* other_object) override;
-        bool IsCollidingWith(Math::vec2 point) override;
+        bool IsCollidingWith(vec2 point) override;
         Math::rect WorldBoundary();
     private:
         GameObject* object;
@@ -53,9 +53,9 @@ namespace CS230 {
         CollisionShape Shape() override {
             return CollisionShape::Circle;
         }
-        void Draw(Math::TransformationMatrix display_matrix);
+        void Draw(mat3 display_matrix);
         bool IsCollidingWith(GameObject* other_object) override;
-        bool IsCollidingWith(Math::vec2 point) override;
+        bool IsCollidingWith(vec2 point) override;
         double GetRadius();
     private:
         GameObject* object;

@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-Ship::Ship(Math::vec2 start_position) :
+Ship::Ship(vec2 start_position) :
 	GameObject(start_position), moving(false), set_dest(false), ready_to_move(false), move(false)
 {
 	AddGOComponent(new CS230::Sprite("assets/images/ship.spt", this));
@@ -20,7 +20,7 @@ void Ship::Update(double dt)
 }
 
 
-void Ship::Draw(Math::TransformationMatrix camera_matrix)
+void Ship::Draw(mat3 camera_matrix)
 {
 	GameObject::Draw(camera_matrix);
 }
@@ -29,7 +29,7 @@ void Ship::SetDest()
 {
 	if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON) && !set_dest && beat->GetIsOnBeat() && !move) {
 		std::cout << "yes\n";
-		destination = { (double)GetMouseX(), (double)GetMouseY() };
+		destination = { (float)GetMouseX(), (float)GetMouseY() };
 		destination.y *= -1;
 		destination.y += Engine::GetWindow().GetSize().y;
 		set_dest = true;
@@ -55,8 +55,8 @@ void Ship::Move(double dt)
 
     float distanceMoved = (float)sqrt(pow(GetPosition().x - initialPosition.x, 2) + pow(GetPosition().y - initialPosition.y, 2));
 
-    Math::vec2 direction = { destination.x - (GetPosition().x - (double)Engine::GetGameStateManager().GetGSComponent<CS230::Camera>()->GetPosition().x),
-							 destination.y - (GetPosition().y - (double)Engine::GetGameStateManager().GetGSComponent<CS230::Camera>()->GetPosition().y)};
+    vec2 direction = { destination.x - (GetPosition().x - (float)Engine::GetGameStateManager().GetGSComponent<CS230::Camera>()->GetPosition().x),
+							 destination.y - (GetPosition().y - (float)Engine::GetGameStateManager().GetGSComponent<CS230::Camera>()->GetPosition().y)};
     float magnitude = (float)sqrt(direction.x * direction.x + direction.y * direction.y);
 
     if (magnitude != 0) {

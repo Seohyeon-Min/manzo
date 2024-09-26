@@ -23,14 +23,12 @@
     <ClCompile Include="Engine\Input.cpp" />
     <ClCompile Include="Engine\Light.cpp" />
     <ClCompile Include="Engine\logger.cpp" />
-    <ClCompile Include="Engine\Matrix.cpp" />
     <ClCompile Include="Engine\Particle.cpp" />
     <ClCompile Include="Engine\ShowCollision.cpp" />
     <ClCompile Include="Engine\Sprite.cpp" />
     <ClCompile Include="Engine\Texture.cpp" />
     <ClCompile Include="Engine\TextureManager.cpp" />
     <ClCompile Include="Engine\Timer.cpp" />
-    <ClCompile Include="Engine\Vec2.cpp" />
     <ClCompile Include="Engine\Window.cpp" />
     <ClCompile Include="Game\Background.cpp" />
     <ClCompile Include="Game\BeatSystem.cpp" />
@@ -58,7 +56,6 @@
     <ClInclude Include="Engine\Input.h" />
     <ClInclude Include="Engine\Light.h" />
     <ClInclude Include="Engine\logger.h" />
-    <ClInclude Include="Engine\Matrix.h" />
     <ClInclude Include="Engine\Particle.h" />
     <ClInclude Include="Engine\Rect.h" />
     <ClInclude Include="Engine\ShowCollision.h" />
@@ -66,7 +63,6 @@
     <ClInclude Include="Engine\Texture.h" />
     <ClInclude Include="Engine\TextureManager.h" />
     <ClInclude Include="Engine\Timer.h" />
-    <ClInclude Include="Engine\Vec2.h" />
     <ClInclude Include="Engine\Window.h" />
     <ClInclude Include="Game\Background.h" />
     <ClInclude Include="Game\BeatSystem.h" />
@@ -147,6 +143,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

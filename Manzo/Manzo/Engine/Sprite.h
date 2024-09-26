@@ -30,22 +30,22 @@ namespace CS230 {
         Sprite& operator=(Sprite&& temporary) noexcept;
         void Update(double dt) override;
         void Load(const std::filesystem::path& sprite_file, GameObject* given_object);
-        void Draw(Math::TransformationMatrix display_matrix);
-        Math::ivec2 GetHotSpot(int index);
-        Math::ivec2 GetFrameSize() { return frame_size; };
+        void Draw(mat3 display_matrix);
+        ivec2 GetHotSpot(int index);
+        ivec2 GetFrameSize() { return frame_size; };
         const int CurrentAnimation() { return current_animation; }
         void PlayAnimation(int animation);
         bool AnimationEnded();
         void Reset();
     private:
-        Math::ivec2 GetFrameTexel(int index) const;
+        ivec2 GetFrameTexel(int index) const;
 
         Texture* texture;
-        std::vector<Math::ivec2> hotspots;
+        std::vector<ivec2> hotspots;
 
         int current_animation;
-        Math::ivec2 frame_size;
-        std::vector<Math::ivec2> frame_texels;
+        ivec2 frame_size;
+        std::vector<ivec2> frame_texels;
         std::vector<Animation*> animations;
     };
 }

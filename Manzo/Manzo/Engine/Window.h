@@ -20,13 +20,13 @@ namespace CS230 {
         void Start(std::string title);
         void Update();
         bool IsClosed() const;
-        Math::ivec2 GetSize() const;
+        ivec2 GetSize() const;
         void Clear(unsigned int color);
 
     private:
         static constexpr unsigned int default_background = UINT_MAX;
         static constexpr int default_width = 1280;
         static constexpr int default_height = 720;
-        Math::ivec2 size{ default_width, default_height };
+        ivec2 size{ default_width, default_height };
     };
 }

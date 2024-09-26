@@ -42,16 +42,16 @@ CS230::Texture& CS230::Texture::operator=(Texture&& temporary) noexcept {
     return *this;
 }
 
-void CS230::Texture::Draw(Math::TransformationMatrix display_matrix, unsigned int color) {
+void CS230::Texture::Draw(mat3 display_matrix, unsigned int color) {
     Draw(display_matrix, { 0, 0 }, { texture.width, texture.height }, color);
 }
 
-void CS230::Texture::Draw(Math::TransformationMatrix display_matrix, Math::ivec2 texel_position, Math::ivec2 frame_size, unsigned int color) {
-    const double render_height = rlGetFramebufferHeight();
-    Math::vec2 bottom_left = display_matrix * Math::vec2{ 0, 0 };
-    Math::vec2 bottom_right = display_matrix * Math::vec2{ double(frame_size.x), 0 };
-    Math::vec2 top_left = display_matrix * Math::vec2{ 0, double(frame_size.y) };
-    Math::vec2 top_right = display_matrix * Math::vec2{ double(frame_size.x), double(frame_size.y) };
+void CS230::Texture::Draw(mat3 display_matrix, ivec2 texel_position, ivec2 frame_size, unsigned int color) {
+    const float render_height = (float)rlGetFramebufferHeight();
+    vec2 bottom_left = display_matrix * vec2{ 0, 0 };
+    vec2 bottom_right = display_matrix * vec2{ (float)(frame_size.x), 0 };
+    vec2 top_left = display_matrix * vec2{ 0, (float)(frame_size.y) };
+    vec2 top_right = display_matrix * vec2{ (float)(frame_size.x), (float)(frame_size.y) };
 
     bottom_left.y = bottom_left.y * -1 + render_height;
     bottom_right.y = bottom_right.y * -1 + render_height;
@@ -89,6 +89,6 @@ void CS230::Texture::Draw(Math::TransformationMatrix display_matrix, Math::ivec2
     rlSetTexture(0);
 }
 
-Math::ivec2 CS230::Texture::GetSize() const {
+ivec2 CS230::Texture::GetSize() const {
     return { texture.width, texture.height };
 }

@@ -25,25 +25,25 @@ enum class GameObjectTypes;
 namespace CS230 {
     class GameObject : public Component {
     public:
-        GameObject(Math::vec2 position);
-        GameObject(Math::vec2 position, double rotation, Math::vec2 scale);
+        GameObject(vec2 position);
+        GameObject(vec2 position, double rotation, vec2 scale);
         virtual ~GameObject() {}
 
         virtual GameObjectTypes Type() = 0;
         virtual std::string TypeName() = 0;
         bool IsCollidingWith(GameObject* other_object);
-        bool IsCollidingWith(Math::vec2 point);
+        bool IsCollidingWith(vec2 point);
         virtual bool CanCollideWith(GameObjectTypes other_object_type);
         virtual void ResolveCollision([[maybe_unused]]GameObject* other_object) { };
         virtual void Update(double dt);
-        virtual void Draw(Math::TransformationMatrix camera_matrix);
+        virtual void Draw(mat3 camera_matrix);
         virtual void Destroy() { destroy = true; }
         virtual bool Destroyed() { return destroy; }
 
-        const Math::TransformationMatrix& GetMatrix();
-        const Math::vec2& GetPosition() const;
-        const Math::vec2& GetVelocity() const;
-        const Math::vec2& GetScale() const;
+        const mat3& GetMatrix();
+        const vec2& GetPosition() const;
+        const vec2& GetVelocity() const;
+        const vec2& GetScale() const;
         double GetRotation() const;
 
         class State {
@@ -56,7 +56,7 @@ namespace CS230 {
         State* current_state;
         void change_state(State* new_state);
 
-        void SetPosition(Math::vec2 new_position);
+        void SetPosition(vec2 new_position);
 
         template<typename T>
         T* GetGOComponent() {
@@ -65,11 +65,11 @@ namespace CS230 {
 
 
  //   protected:
-        void UpdatePosition(Math::vec2 delta);
-        void SetVelocity(Math::vec2 new_velocity);
-        void UpdateVelocity(Math::vec2 delta);
-        void SetScale(Math::vec2 new_scale);
-        void UpdateScale(Math::vec2 delta);
+        void UpdatePosition(vec2 delta);
+        void SetVelocity(vec2 new_velocity);
+        void UpdateVelocity(vec2 delta);
+        void SetScale(vec2 new_scale);
+        void UpdateScale(vec2 delta);
         void SetRotation(double new_rotation);
         void UpdateRotation(double delta);
 
@@ -89,14 +89,14 @@ namespace CS230 {
 
     private:
         ComponentManager componentmanager;
-        Math::TransformationMatrix object_matrix;
+        mat3 object_matrix;
 
         double rotation;
         bool matrix_outdated = true;
         bool destroy;
-        Math::vec2 scale;
-        Math::vec2 position;
-        Math::vec2 velocity;
+        vec2 scale;
+        vec2 position;
+        vec2 velocity;
 
         class State_None : public State {
         public:

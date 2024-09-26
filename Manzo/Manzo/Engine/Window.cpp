@@ -40,7 +40,7 @@ bool CS230::Window::IsClosed() const {
     return WindowShouldClose();
 }
 
-Math::ivec2 CS230::Window::GetSize() const {
+ivec2 CS230::Window::GetSize() const {
     return size;
 }
 

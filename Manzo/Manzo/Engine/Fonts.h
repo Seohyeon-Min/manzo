@@ -9,7 +9,7 @@ Created:    March 8, 2023
 */
 
 #pragma once
-enum Fonts {
-    Simple,
-    Outlined
-};
+//enum Fonts {
+//    Simple,
+//    Outlined
+//};

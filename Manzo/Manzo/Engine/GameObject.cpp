@@ -11,10 +11,10 @@ Updated:    04/30/2024
 
 #include "GameObject.h"
 
-CS230::GameObject::GameObject(Math::vec2 position) :
+CS230::GameObject::GameObject(vec2 position) :
     GameObject(position, 0, { 1, 1 }) {}
 
-CS230::GameObject::GameObject(Math::vec2 position, double rotation, Math::vec2 scale) :
+CS230::GameObject::GameObject(vec2 position, double rotation, vec2 scale) :
     velocity({ 0,0 }),
     position(position),
     scale(scale),
@@ -28,7 +28,7 @@ CS230::GameObject::GameObject(Math::vec2 position, double rotation, Math::vec2 s
 void CS230::GameObject::Update(double dt) {
     current_state->Update(this, dt);
     if (velocity.x != 0 || velocity.y != 0) {
-        UpdatePosition(velocity * dt);
+        UpdatePosition(velocity * (float)dt);
     }
     UpdateGOComponents(dt);
     current_state->CheckExit(this);
@@ -40,7 +40,7 @@ void CS230::GameObject::change_state(State* new_state) {
 }
 
 
-void CS230::GameObject::Draw(Math::TransformationMatrix camera_matrix) {
+void CS230::GameObject::Draw(mat3 camera_matrix) {
     Sprite* sprite = GetGOComponent<Sprite>();
     if (sprite != nullptr) {
         sprite->Draw(camera_matrix * GetMatrix());
@@ -58,7 +58,7 @@ bool CS230::GameObject::IsCollidingWith(GameObject* other_object) {
     return collider != nullptr && collider->IsCollidingWith(other_object);
 }
 
-bool CS230::GameObject::IsCollidingWith(Math::vec2 point) {
+bool CS230::GameObject::IsCollidingWith(vec2 point) {
     Collision* collider = GetGOComponent<Collision>();
     return collider != nullptr && collider->IsCollidingWith(point);
 }
@@ -67,25 +67,26 @@ bool CS230::GameObject::CanCollideWith([[maybe_unused]] GameObjectTypes other_ob
     return false;
 }
 
-const Math::TransformationMatrix& CS230::GameObject::GetMatrix() {
+const mat3& CS230::GameObject::GetMatrix() {
+    mat3 m;
     if (matrix_outdated) {
-        object_matrix = Math::TranslationMatrix(position) * Math::RotationMatrix(rotation) * Math::ScaleMatrix(scale);
+        object_matrix = m.build_translation(position) * m.build_rotation((float)rotation) * m.build_scale(scale);
         matrix_outdated = false;
     }
     return object_matrix;
 }
 
-const Math::vec2& CS230::GameObject::GetPosition() const
+const vec2& CS230::GameObject::GetPosition() const
 {
     return position;
 }
 
-const Math::vec2& CS230::GameObject::GetVelocity() const
+const vec2& CS230::GameObject::GetVelocity() const
 {
     return velocity;
 }
 
-const Math::vec2& CS230::GameObject::GetScale() const
+const vec2& CS230::GameObject::GetScale() const
 {
     return scale;
 }
@@ -95,35 +96,35 @@ double CS230::GameObject::GetRotation() const
     return rotation;
 }
 
-void CS230::GameObject::SetPosition(Math::vec2 new_position) {
+void CS230::GameObject::SetPosition(vec2 new_position) {
     matrix_outdated = true;
     position = new_position;
 }
 
-void CS230::GameObject::UpdatePosition(Math::vec2 delta) {
+void CS230::GameObject::UpdatePosition(vec2 delta) {
     matrix_outdated = true;
     position += delta;
 }
 
-void CS230::GameObject::SetVelocity(Math::vec2 new_velocity)
+void CS230::GameObject::SetVelocity(vec2 new_velocity)
 {
     matrix_outdated = true;
     velocity = new_velocity;
 }
 
-void CS230::GameObject::UpdateVelocity(Math::vec2 delta)
+void CS230::GameObject::UpdateVelocity(vec2 delta)
 {
     matrix_outdated = true;
     velocity += delta;
 }
 
-void CS230::GameObject::SetScale(Math::vec2 new_scale)
+void CS230::GameObject::SetScale(vec2 new_scale)
 {
     matrix_outdated = true;
     scale = new_scale;
 }
 
-void CS230::GameObject::UpdateScale(Math::vec2 delta)
+void CS230::GameObject::UpdateScale(vec2 delta)
 {
     matrix_outdated = true;
     scale += delta;

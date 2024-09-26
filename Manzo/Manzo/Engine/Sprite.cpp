@@ -131,13 +131,13 @@ void CS230::Sprite::Update(double dt)
 
 }
 
-Math::ivec2 CS230::Sprite::GetHotSpot(int index)
+ivec2 CS230::Sprite::GetHotSpot(int index)
 {
 	if (index < 0 || index >= hotspots.size()) {
 		//Engine::GetLogger().LogError("Error: wrong hotspot index.");
-		return Math::ivec2({0,0});
+		return ivec2({0,0});
 	}
-	return Math::ivec2(hotspots[index]);
+	return ivec2(hotspots[index]);
 }
 
 void CS230::Sprite::PlayAnimation(int animation)
@@ -165,14 +165,14 @@ void CS230::Sprite::Reset()
     animations[current_animation]->Reset();
 }
 
-Math::ivec2 CS230::Sprite::GetFrameTexel(int index) const
+ivec2 CS230::Sprite::GetFrameTexel(int index) const
 {
 	if (index < 0 || index >= frame_texels.size()) {
-		return Math::ivec2({ 0,0 });
+		return ivec2({ 0,0 });
 	}
-	return Math::ivec2(frame_texels[index]);
+	return ivec2(frame_texels[index]);
 }
 
-void CS230::Sprite::Draw(Math::TransformationMatrix display_matrix) {
-     texture->Draw(display_matrix * Math::TranslationMatrix(-GetHotSpot(0)), GetFrameTexel(animations[current_animation]->CurrentFrame()), GetFrameSize());
+void CS230::Sprite::Draw(mat3 display_matrix) {
+     //texture->Draw(display_matrix * mat3(-GetHotSpot(0)), GetFrameTexel(animations[current_animation]->CurrentFrame()), GetFrameSize());
 }
