@@ -47,7 +47,8 @@ void CS230::GameObject::Draw() {
         Engine::GetRender().AddDrawCall(
             { Engine::GetTextureManager().GetModel(sprite->GetFilePath()), // 모델
             sprite->GetTexture(),                                         // 텍스처
-            GetMatrix() }                                                  // 변환 행렬
+            GetMatrix()                                                   // 변환 행렬
+            }
         );
     }
     //if (Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>() != nullptr && Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>()->Enabled()) {
@@ -73,9 +74,10 @@ bool CS230::GameObject::CanCollideWith([[maybe_unused]] GameObjectTypes other_ob
 }
 
 const mat3& CS230::GameObject::GetMatrix() {
-    mat3 m;
     if (matrix_outdated) {
-        object_matrix = m.build_translation(position) * m.build_rotation((float)rotation) * m.build_scale(scale);
+        object_matrix = mat3::build_translation(position) *
+            mat3::build_rotation((float)rotation) *
+            mat3::build_scale(scale);
         matrix_outdated = false;
     }
     return object_matrix;

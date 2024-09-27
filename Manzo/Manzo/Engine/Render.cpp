@@ -13,23 +13,10 @@
 
 const float WORLD_SIZE_MAX = (float)std::max(Engine::window_width, Engine::window_height);
 
-// Load a texture and associate it with a model
-void CS230::Render::LoadTextureAndModel(const std::filesystem::path& texturePath, GLVertexArray* _model) {
-    auto texture = std::make_unique<GLTexture>();
-    if (!texture->LoadFromFileImage(texturePath)) {
-        throw std::runtime_error("Failed to load texture from file: " + texturePath.string());
-    }
-    basic_shader = GLShader(
-        "Basic Shader", {
-        {GLShader::VERTEX, "assets/shaders/tutorial-5.vert"},
-        {GLShader::FRAGMENT, "assets/shaders/tutorial-5.frag"}
-        });
-    auto model = std::make_unique<GLVertexArray>();
-}
-
 // Add a draw call to the corresponding vector based on the phase
 // for each frame
 void CS230::Render::AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase) {
+
     if (phase == DrawLayer::DrawFirst) {
         draw_first_calls.push_back(drawCall);
     }
@@ -75,7 +62,6 @@ namespace
 // Internal render method
 void CS230::Render::Draw(const DrawCall& draw_call) {
     //const GLShader* shader = draw_call.texture->GetShader();
-
     basic_shader.Use();
 
     if (draw_call.texture) {

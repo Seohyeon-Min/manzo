@@ -23,10 +23,9 @@ GLTexture* CS230::TextureManager::Load(const std::filesystem::path& file_name)
         //new_texture->SetShader(shader);
 
         const float NDCwidth = ConvertToNDCWidth(new_texture->GetWidth(), Engine::window_width);
-        const float NDCheight = ConvertToNDCWidth(new_texture->GetHeight(), Engine::window_height);
+        const float NDCheight = ConvertToNDCHeight(new_texture->GetHeight(), Engine::window_height);
         GLVertexArray* model = CreatModel(NDCwidth, NDCheight);
 
-        Engine::GetRender().LoadTextureAndModel(file_name, model);
 
         textures.insert(std::make_pair(file_name, new_texture));
         texture_models[file_name] = model;

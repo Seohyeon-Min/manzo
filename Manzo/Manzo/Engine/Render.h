@@ -21,6 +21,7 @@ namespace CS230 {
         GLVertexArray* model;
         GLTexture* texture;
         mat3 transform;
+        //GLShader shader;
     };
 
     class Render {
@@ -28,7 +29,6 @@ namespace CS230 {
 
         Render() = default;
 
-        void LoadTextureAndModel(const std::filesystem::path& texturePath, GLVertexArray* model);
         void AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase = DrawLayer::Draw);
         void RenderAll();
 
