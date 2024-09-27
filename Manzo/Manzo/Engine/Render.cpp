@@ -2,32 +2,38 @@
 #include <unordered_map>
 #include <filesystem>
 #include <memory>
+#include <span>
 
 #include "Render.h"
 #include "GLTexture.h"
 #include "GLShader.h"
 #include "GLVertexArray.h"
+#include "Engine.h"
+#include "GameObject.h"
 
+const float WORLD_SIZE_MAX = (float)std::max(Engine::window_width, Engine::window_height);
 
 // Load a texture and associate it with a model
-void Render::LoadTextureAndModel(const std::filesystem::path& texturePath, GLVertexArray* _model) {
+void CS230::Render::LoadTextureAndModel(const std::filesystem::path& texturePath, GLVertexArray* _model) {
     auto texture = std::make_unique<GLTexture>();
-    texture->LoadFromFileImage(texturePath);
-
+    if (!texture->LoadFromFileImage(texturePath)) {
+        throw std::runtime_error("Failed to load texture from file: " + texturePath.string());
+    }
+    basic_shader = GLShader(
+        "Basic Shader", {
+        {GLShader::VERTEX, "assets/shaders/tutorial-5.vert"},
+        {GLShader::FRAGMENT, "assets/shaders/tutorial-5.frag"}
+        });
     auto model = std::make_unique<GLVertexArray>();
-
-    // Store the texture and model in the map
-    textureModelMap[texturePath] = _model;
-    textures.push_back(std::move(texture));
-    models.push_back(std::move(model));
 }
 
 // Add a draw call to the corresponding vector based on the phase
-void Render::AddDrawCall(const DrawCall& drawCall, const std::string& phase) {
-    if (phase == "draw first") {
+// for each frame
+void CS230::Render::AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase) {
+    if (phase == DrawLayer::DrawFirst) {
         draw_first_calls.push_back(drawCall);
     }
-    else if (phase == "draw late") {
+    else if (phase == DrawLayer::DrawLast) {
         draw_late_calls.push_back(drawCall);
     }
     else {
@@ -36,7 +42,7 @@ void Render::AddDrawCall(const DrawCall& drawCall, const std::string& phase) {
 }
 
 // Render all draw calls
-void Render::RenderAll() {
+void CS230::Render::RenderAll() {
     // First, render draw_first_calls
     for (const auto& draw_call : draw_first_calls) {
         Draw(draw_call);
@@ -58,28 +64,40 @@ void Render::RenderAll() {
     draw_late_calls.clear();
 }
 
+namespace
+{
+    std::span<const float, 3 * 3> to_span(const mat3& m)
+    {
+        return std::span<const float, 3 * 3>(&m.elements[0][0], 9);
+    }
+}
 
 // Internal render method
-void Render::Draw(const DrawCall& draw_call) {
-    const GLShader* shader = draw_call.texture->GetShader();
+void CS230::Render::Draw(const DrawCall& draw_call) {
+    //const GLShader* shader = draw_call.texture->GetShader();
+
+    basic_shader.Use();
 
     if (draw_call.texture) {
-        draw_call.texture->UseForSlot(0); // Bind the texture to the shader
-        shader->SendUniform("uTex2d", 0);
+        draw_call.texture->UseForSlot(0);
+        basic_shader.SendUniform("uTex2d", 0);
+    }
+    else {
+        throw std::runtime_error("그리기 호출에 텍스처가 제공되지 않았습니다!");
     }
 
     if (draw_call.model) {
-        mat3 model_to_world;
-        //model_to_world *= model_to_world.build_translation(object.position);
-        //model_to_world *= model_to_world.build_rotation(object.rotation);
-        //model_to_world *= model_to_world.build_scale(object.scale);
+        mat3 model_to_world = draw_call.transform;
 
-        //mat3 WORLD_TO_NDC;
-        //WORLD_TO_NDC *= WORLD_TO_NDC.build_scale(1 / WORLD_SIZE_MAX);
+        mat3 WORLD_TO_NDC;
+        WORLD_TO_NDC *= WORLD_TO_NDC.build_scale(1 / WORLD_SIZE_MAX);
 
-        //const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
-        //shader->SendUniform("uModelToNDC", to_span(model_to_ndc));
-        draw_call.model->Use(); // Bind the model for rendering
+        const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
+        basic_shader.SendUniform("uModelToNDC", to_span(model_to_ndc));
+        draw_call.model->Use();
         GLDrawIndexed(*draw_call.model);
+    }
+    else {
+        throw std::runtime_error("그리기 호출에 모델이 제공되지 않았습니다!");
     }
 }

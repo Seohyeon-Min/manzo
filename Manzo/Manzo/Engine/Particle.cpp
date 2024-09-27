@@ -31,8 +31,8 @@ void CS230::Particle::Update(double dt)
 		GameObject::Update(dt);
 }
 
-void CS230::Particle::Draw(mat3 camera_matrix)
+void CS230::Particle::Draw()
 {
 	if(Alive())
-		GameObject::Draw(camera_matrix);
+		GameObject::Draw();
 }

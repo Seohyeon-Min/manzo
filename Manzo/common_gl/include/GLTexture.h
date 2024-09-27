@@ -19,13 +19,13 @@ class [[nodiscard]] GLTexture
 {
 public:
     GLTexture() = default;
-    GLTexture(const std::filesystem::path& image_filepath, bool flip = true);
+    GLTexture(const std::filesystem::path& image_filepath, bool flip = false);
     ~GLTexture() noexcept;
     GLTexture(const GLTexture& other) = delete;
     GLTexture(GLTexture&& other) noexcept;
 
-    void SetShader(const GLShader* set_shader) { shader = set_shader; }
-    const GLShader* GetShader() { return shader; }
+    //void SetShader(const GLShader* set_shader) { shader = set_shader; }
+    //const GLShader* GetShader() { return shader; }
     ivec2 GetSize() const { return { width, height }; }
 
     GLTexture& operator=(const GLTexture& other) = delete;
@@ -95,6 +95,4 @@ private:
     int                     height         = 0;
     Filtering               filtering      = Filtering::NearestPixel;
     std::array<Wrapping, 2> wrapping       = {Wrapping::Repeat, Wrapping::Repeat};
-
-    const GLShader*      shader;
 };

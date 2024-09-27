@@ -3,8 +3,8 @@
  * CS200
  * Fall 2022
  */
-
 #pragma once
+#include <cmath>
 
 struct [[nodiscard]] vec2
 {
@@ -28,6 +28,17 @@ struct [[nodiscard]] vec2
     constexpr vec2() noexcept;
     constexpr explicit vec2(float repeated_float) noexcept;
     constexpr vec2(float fx, float fy) noexcept;
+    float Length() const {
+        return std::sqrt(x * x + y * y);
+    }
+
+    vec2 Normalize() const {
+        float length = Length();
+        if (length == 0) {
+            return {0,0};
+        }
+        return vec2(x / length, y / length);
+    }
     //vec2(const ivec2& iv) : x(static_cast<float>(iv.x)), y(static_cast<float>(iv.y)) {}
 };
 

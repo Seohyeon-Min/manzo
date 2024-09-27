@@ -4,8 +4,12 @@
 
 GLTexture::GLTexture(const std::filesystem::path& image_filepath, bool flip)
 {
-	if (const bool loaded = LoadFromFileImage(image_filepath, flip)) {
-		throw std::runtime_error{ "Failed to load the duck.png" };
+	if (!std::filesystem::exists(image_filepath)) {
+		throw std::runtime_error{ "Image file does not exist: " + image_filepath.string() };
+	}
+	const bool loaded = LoadFromFileImage(image_filepath, flip);
+	if (!loaded) {
+		throw std::runtime_error{ "Failed to load the image " + image_filepath.string() };
 	}
 }
 

@@ -20,9 +20,9 @@ void Ship::Update(double dt)
 }
 
 
-void Ship::Draw(mat3 camera_matrix)
+void Ship::Draw()
 {
-	GameObject::Draw(camera_matrix);
+	GameObject::Draw();
 }
 
 void Ship::SetDest()

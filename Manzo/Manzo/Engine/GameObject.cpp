@@ -40,17 +40,22 @@ void CS230::GameObject::change_state(State* new_state) {
 }
 
 
-void CS230::GameObject::Draw(mat3 camera_matrix) {
+void CS230::GameObject::Draw() {
     Sprite* sprite = GetGOComponent<Sprite>();
     if (sprite != nullptr) {
-        sprite->Draw(camera_matrix * GetMatrix());
+
+        Engine::GetRender().AddDrawCall(
+            { Engine::GetTextureManager().GetModel(sprite->GetFilePath()), // 모델
+            sprite->GetTexture(),                                         // 텍스처
+            GetMatrix() }                                                  // 변환 행렬
+        );
     }
-    if (Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>() != nullptr && Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>()->Enabled()) {
-        Collision* collision = GetGOComponent<Collision>();
-        if (collision != nullptr) {
-            collision->Draw(camera_matrix);
-        }
-    }
+    //if (Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>() != nullptr && Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>()->Enabled()) {
+    //    Collision* collision = GetGOComponent<Collision>();
+    //    if (collision != nullptr) {
+    //        collision->Draw(camera_matrix);
+    //    }
+    //}
 }
 
 bool CS230::GameObject::IsCollidingWith(GameObject* other_object) {

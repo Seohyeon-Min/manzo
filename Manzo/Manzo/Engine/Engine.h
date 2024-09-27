@@ -50,7 +50,7 @@ public:
         return Instance().texturemanager;
     }
 
-    static Render& GetRender() {
+    static CS230::Render& GetRender() {
         return Instance().render;
     }
 
@@ -86,6 +86,6 @@ private:
     CS230::GameStateManager gamestatemanager;
     CS230::Input input;
     CS230::TextureManager texturemanager;
-    Render render;
+    CS230::Render render;
     GLApp* app;
 };

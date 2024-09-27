@@ -38,11 +38,11 @@ void CS230::Input::Update() {
             break;
         case SDL_KEYDOWN:
             std::cout << "Key pressed: " << SDL_GetKeyName(event.key.keysym.sym) << std::endl;
-            SetKeyDown(static_cast<Keys>(event.key.keysym.scancode), true); // 키 상태 업데이트
+            SetKeyDown(static_cast<Keys>(event.key.keysym.scancode), true); 
             break;
         case SDL_KEYUP:
             std::cout << "Key released: " << SDL_GetKeyName(event.key.keysym.sym) << std::endl;
-            SetKeyDown(static_cast<Keys>(event.key.keysym.scancode), false); // 키 상태 업데이트
+            SetKeyDown(static_cast<Keys>(event.key.keysym.scancode), false);
             break;
         default:
             break;

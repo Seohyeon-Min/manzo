@@ -21,7 +21,7 @@ public:
     GameObjectTypes Type() override { return GameObjectTypes::Ship; }
     std::string TypeName() override { return "Pelican"; }
     void Update(double dt) override;
-    void Draw(mat3 camera_matrix) override;
+    void Draw() override;
     void Move(double dt);
     void SetDest();
     bool CanCollideWith(GameObjectTypes) override;

@@ -11,6 +11,6 @@ void Reef::Update(double dt)
 	GameObject::Update(dt);
 }
 
-void Reef::Draw(mat3 camera_matrix) {
-	CS230::GameObject::Draw(camera_matrix);
+void Reef::Draw() {
+	CS230::GameObject::Draw();
 }

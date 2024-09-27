@@ -9,7 +9,7 @@ Created:    March 8, 2023
 */
 
 #pragma once
-#include "../Engine/Texture.h"
+#include "GLTexture.h"
 #include "../Engine/Camera.h"
 #include "../Engine/Engine.h"
 #include "../Engine/Component.h"
@@ -22,7 +22,7 @@ public:
     ivec2 GetSize();
 private:
     struct ParallaxLayer {
-        CS230::Texture* texture;
+        GLTexture* texture;
         double speed = 1;
     };
 

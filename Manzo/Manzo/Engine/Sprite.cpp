@@ -57,7 +57,8 @@ void CS230::Sprite::Load(const std::filesystem::path& sprite_file, GameObject* o
     std::string text;
     std::string anim_file_path;
     in_file >> text;
-    texture = Engine::GetTextureManager().Load(text);
+    sprite_file_path = text;
+    texture = Engine::GetTextureManager().Load(text); // add shader by parameter?
     frame_size = texture->GetSize();
 
     in_file >> text;
@@ -173,6 +174,7 @@ ivec2 CS230::Sprite::GetFrameTexel(int index) const
 	return ivec2(frame_texels[index]);
 }
 
-void CS230::Sprite::Draw(mat3 display_matrix) {
-     //texture->Draw(display_matrix * mat3(-GetHotSpot(0)), GetFrameTexel(animations[current_animation]->CurrentFrame()), GetFrameSize());
-}
+//void CS230::Sprite::Draw() {
+//    //texture->Draw(display_matrix * mat3(-GetHotSpot(0)), GetFrameTexel(animations[current_animation]->CurrentFrame()), GetFrameSize());
+//
+//}

@@ -5,24 +5,25 @@
 
 #include <filesystem>
 #include <map>
-
-static const GLShader basic_shader = GLShader(
-    "Basic Shader", { 
-    {GLShader::VERTEX, "assets/shaders/tutorial-5.vert"}, 
-    {GLShader::FRAGMENT, "assets/shaders/tutorial-5.frag"} });
+//
+//static const GLShader basic_shader = GLShader(
+//    "Basic Shader", { 
+//    {GLShader::VERTEX, "assets/shaders/tutorial-5.vert"}, 
+//    {GLShader::FRAGMENT, "assets/shaders/tutorial-5.frag"} });
 
 namespace CS230 {
 
     class TextureManager {
     public:
-        TextureManager() { shaders.push_back(&basic_shader); }
-        GLTexture* Load(const std::filesystem::path& file_name, const GLShader* shader = &basic_shader);
+        //TextureManager() { shaders.push_back(&basic_shader); }
+        GLTexture* Load(const std::filesystem::path& file_name);
         void Unload();
-        GLVertexArray* CreatModel(const float width, const float height);
+        GLVertexArray* GetModel(const std::filesystem::path& file_name);
         //void StartRenderTextureMode(int width, int height);
         //GLTexture* EndRenderTextureMode();
 
     private:
+        GLVertexArray* CreatModel(const float width, const float height);
         float ConvertToNDCWidth(int width, int screen_width) {
             return (2.0f * width) / screen_width - 1.0f; // -1.0f ~ 1.0f 범위로 변환
         }
@@ -31,6 +32,7 @@ namespace CS230 {
             return (2.0f * height) / screen_height - 1.0f; // -1.0f ~ 1.0f 범위로 변환
         }
         std::map<std::filesystem::path, GLTexture*> textures;
+        std::map<std::filesystem::path, GLVertexArray*> texture_models;
         std::vector<const GLShader*> shaders;
     };
 }

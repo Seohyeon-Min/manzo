@@ -24,7 +24,7 @@ void Background::Unload()
 void Background::Draw(const CS230::Camera& camera)
 {
 	for (ParallaxLayer& background : backgrounds) {
-		background.texture->Draw(mat3 (( - const_cast<vec2&>(camera.GetPosition()))* (float)background.speed) );
+		//background.texture->Draw(mat3 (( - const_cast<vec2&>(camera.GetPosition()))* (float)background.speed) );
 	}
 }
 

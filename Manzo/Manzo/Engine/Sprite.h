@@ -30,9 +30,11 @@ namespace CS230 {
         Sprite& operator=(Sprite&& temporary) noexcept;
         void Update(double dt) override;
         void Load(const std::filesystem::path& sprite_file, GameObject* given_object);
-        void Draw(mat3 display_matrix);
+        //void Draw();
         ivec2 GetHotSpot(int index);
         ivec2 GetFrameSize() { return frame_size; };
+        GLTexture* GetTexture() { return texture; }
+        const std::filesystem::path& GetFilePath() const { return sprite_file_path; }
         const int CurrentAnimation() { return current_animation; }
         void PlayAnimation(int animation);
         bool AnimationEnded();
@@ -40,11 +42,12 @@ namespace CS230 {
     private:
         ivec2 GetFrameTexel(int index) const;
 
-        Texture* texture;
+        GLTexture* texture;
         std::vector<ivec2> hotspots;
 
         int current_animation;
         ivec2 frame_size;
+        std::filesystem::path sprite_file_path;
         std::vector<ivec2> frame_texels;
         std::vector<Animation*> animations;
     };

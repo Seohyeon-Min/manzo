@@ -11,7 +11,7 @@
 #include  <stb_image.h>
 #include <array>
 
-GLTexture* CS230::TextureManager::Load(const std::filesystem::path& file_name, const GLShader* shader)
+GLTexture* CS230::TextureManager::Load(const std::filesystem::path& file_name)
 {
     auto texture_iterator = textures.find(file_name);
     if (texture_iterator != textures.end()) {
@@ -20,7 +20,7 @@ GLTexture* CS230::TextureManager::Load(const std::filesystem::path& file_name, c
     else {
         GLTexture* new_texture = new GLTexture(std::filesystem::path(file_name));
 
-        new_texture->SetShader(shader);
+        //new_texture->SetShader(shader);
 
         const float NDCwidth = ConvertToNDCWidth(new_texture->GetWidth(), Engine::window_width);
         const float NDCheight = ConvertToNDCWidth(new_texture->GetHeight(), Engine::window_height);
@@ -29,6 +29,7 @@ GLTexture* CS230::TextureManager::Load(const std::filesystem::path& file_name, c
         Engine::GetRender().LoadTextureAndModel(file_name, model);
 
         textures.insert(std::make_pair(file_name, new_texture));
+        texture_models[file_name] = model;
         Engine::GetLogger().LogEvent("Loading Texture: " + file_name.string());
         return textures[file_name];
     }
@@ -45,7 +46,8 @@ void CS230::TextureManager::Unload()
 
 GLVertexArray* CS230::TextureManager::CreatModel(const float width, const float height)
 {
-    GLVertexArray* model;
+    GLVertexArray* model = new GLVertexArray();
+
     const  float half_width = width / 2;
     const  float half_height = height / 2;
     const std::array positions = { vec2{-half_height, -half_width}, vec2{half_height, -half_width}, vec2{half_height, half_width}, vec2{-half_height, half_width} };
@@ -96,4 +98,12 @@ GLVertexArray* CS230::TextureManager::CreatModel(const float width, const float 
     model->SetIndexBuffer(std::move(index_buffer));
 
     return model;
+}
+
+GLVertexArray* CS230::TextureManager::GetModel(const std::filesystem::path& file_name) {
+    auto texture_iterator = textures.find(file_name);
+    if (texture_iterator != textures.end()) {
+        return texture_models[file_name]; // ¸ðµ¨ ¸Ê¿¡¼­ ¸ðµ¨À» Ã£¾Æ ¹ÝÈ¯
+    }
+    return nullptr;
 }

@@ -1,37 +1,47 @@
 #pragma once
+
+#include "GLVertexArray.h"
+#include "GLTexture.h"
+#include "mat3.h"
+
 #include <vector>
 #include <unordered_map>
 #include <filesystem>
 #include <memory>
 
-#include "GLTexture.h"
-
 // A structure to represent a draw call
-struct DrawCall {
-    GLVertexArray* model;
-    GLTexture* texture;
-    mat3 transform; // You can adjust this based on your transformation representation
+enum class DrawLayer {
+    DrawFirst,
+    Draw,
+    DrawLast
 };
 
-class Render {
-public:
-    Render() = default;
+namespace CS230 {
+    struct DrawCall {
+        GLVertexArray* model;
+        GLTexture* texture;
+        mat3 transform;
+    };
 
-    void LoadTextureAndModel(const std::filesystem::path& texturePath, GLVertexArray* model);
-    void AddDrawCall(const DrawCall& drawCall, const std::string& phase);
-    void RenderAll();
+    class Render {
+    public:
 
-private:
-    // Internal render method
-    void Draw(const DrawCall& draw_call);
+        Render() = default;
 
-    // Maps to store textures and models
-    std::unordered_map<std::filesystem::path, GLVertexArray*> textureModelMap;
-    std::vector<std::unique_ptr<GLTexture>> textures;
-    std::vector<std::unique_ptr<GLVertexArray>> models;
+        void LoadTextureAndModel(const std::filesystem::path& texturePath, GLVertexArray* model);
+        void AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase = DrawLayer::Draw);
+        void RenderAll();
 
-    // Vectors for draw calls
-    std::vector<DrawCall> draw_first_calls;
-    std::vector<DrawCall> draw_calls;
-    std::vector<DrawCall> draw_late_calls;
-};
+    private:
+        // Internal render method
+
+
+        void Draw(const DrawCall& draw_call);
+
+        // Vectors for draw calls
+        std::vector<DrawCall> draw_first_calls;
+        std::vector<DrawCall> draw_calls;
+        std::vector<DrawCall> draw_late_calls;
+        GLShader basic_shader;
+    };
+}

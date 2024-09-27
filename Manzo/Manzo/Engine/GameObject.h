@@ -36,7 +36,7 @@ namespace CS230 {
         virtual bool CanCollideWith(GameObjectTypes other_object_type);
         virtual void ResolveCollision([[maybe_unused]]GameObject* other_object) { };
         virtual void Update(double dt);
-        virtual void Draw(mat3 camera_matrix);
+        virtual void Draw();
         virtual void Destroy() { destroy = true; }
         virtual bool Destroyed() { return destroy; }
 
@@ -45,6 +45,7 @@ namespace CS230 {
         const vec2& GetVelocity() const;
         const vec2& GetScale() const;
         double GetRotation() const;
+        //void SetModel(GLVertexArray* model) { draw_call.model = model; }
 
         class State {
         public:
@@ -108,9 +109,5 @@ namespace CS230 {
         State_None state_none;
         friend class Sprite;
     };
-
-
-
-
 }
 

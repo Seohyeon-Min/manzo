@@ -55,8 +55,8 @@ void Fish::Update(double dt) {
     }
 }
 
-void Fish::Draw(mat3 camera_matrix) {
-    CS230::GameObject::Draw(camera_matrix);
+void Fish::Draw() {
+    CS230::GameObject::Draw();
 }
 
 /*

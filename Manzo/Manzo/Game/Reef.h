@@ -11,5 +11,5 @@ public:
 
 private:
 	void Update(double dt);
-	void Draw(mat3 camera_matrix);
+	void Draw();
 };

@@ -24,7 +24,7 @@ public:
 
 private:
 	void Update(double dt);
-	void Draw(mat3 camera_matrix);
+	void Draw();
 	//void ResolveCollision(GameObject* other_object) override;
 	//bool CanCollideWith(GameObjectTypes obj) override;
 

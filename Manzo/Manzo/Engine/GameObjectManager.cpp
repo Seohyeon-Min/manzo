@@ -39,11 +39,12 @@ void CS230::GameObjectManager::UpdateAll(double dt)
 	}
 }
 
-void CS230::GameObjectManager::DrawAll(mat3 camera_matrix)
+void CS230::GameObjectManager::DrawAll()
 {
 	for (auto object : objects) {
-		object->Draw(camera_matrix);
+		object->Draw();
 	}
+	Engine::GetRender().RenderAll();
 }
 
 void CS230::GameObjectManager::CollisionTest() {
