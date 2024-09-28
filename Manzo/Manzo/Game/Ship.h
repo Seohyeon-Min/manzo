@@ -19,7 +19,7 @@ class Ship : public CS230::GameObject {
 public:
     Ship(vec2 start_position);
     GameObjectTypes Type() override { return GameObjectTypes::Ship; }
-    std::string TypeName() override { return "Pelican"; }
+    std::string TypeName() override { return "Ship:Dal"; }
     void Update(double dt) override;
     void Draw() override;
     void Move(double dt);

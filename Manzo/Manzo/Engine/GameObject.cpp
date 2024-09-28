@@ -11,6 +11,7 @@ Updated:    04/30/2024
 
 #include "GameObject.h"
 
+
 CS230::GameObject::GameObject(vec2 position) :
     GameObject(position, 0, { 1, 1 }) {}
 
@@ -43,11 +44,14 @@ void CS230::GameObject::change_state(State* new_state) {
 void CS230::GameObject::Draw() {
     Sprite* sprite = GetGOComponent<Sprite>();
     if (sprite != nullptr) {
-
+        if (shader == nullptr) {
+            shader = Engine::GetShaderManager().GetDefaultShader();
+        }
         Engine::GetRender().AddDrawCall(
             { Engine::GetTextureManager().GetModel(sprite->GetFilePath()), // 모델
             sprite->GetTexture(),                                         // 텍스처
-            GetMatrix()                                                   // 변환 행렬
+            GetMatrix(),                                                   // 변환 행렬
+            shader
             }
         );
     }

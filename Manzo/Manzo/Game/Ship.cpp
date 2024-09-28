@@ -1,7 +1,7 @@
 #include "Ship.h"
 #include "BeatSystem.h"
 #include "../Engine/Camera.h"
-
+#include "../Engine/Input.h"
 #include <iostream>
 
 Ship::Ship(vec2 start_position) :
@@ -17,6 +17,8 @@ void Ship::Update(double dt)
 	GameObject::Update(dt);
 	SetDest();
 	Move(dt);
+	//UpdatePosition({-5,0});
+	//std::cout << GetPosition().x << std::endl;
 }
 
 
@@ -27,7 +29,8 @@ void Ship::Draw()
 
 void Ship::SetDest()
 {
-	if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON) && !set_dest && beat->GetIsOnBeat() && !move) {
+	
+	if (IsKeyDown(MOUSE_LEFT_BUTTON) && !set_dest && beat->GetIsOnBeat() && !move) {
 		std::cout << "yes\n";
 		destination = { (float)GetMouseX(), (float)GetMouseY() };
 		destination.y *= -1;

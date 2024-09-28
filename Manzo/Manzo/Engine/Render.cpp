@@ -30,17 +30,14 @@ void CS230::Render::AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase
 
 // Render all draw calls
 void CS230::Render::RenderAll() {
-    // First, render draw_first_calls
     for (const auto& draw_call : draw_first_calls) {
         Draw(draw_call);
     }
 
-    // Then, render draw_calls
     for (const auto& draw_call : draw_calls) {
         Draw(draw_call);
     }
 
-    // Finally, render draw_late_calls
     for (const auto& draw_call : draw_late_calls) {
         Draw(draw_call);
     }
@@ -61,12 +58,12 @@ namespace
 
 // Internal render method
 void CS230::Render::Draw(const DrawCall& draw_call) {
-    //const GLShader* shader = draw_call.texture->GetShader();
-    basic_shader.Use();
+    const GLShader* shader = draw_call.shader;
+    shader->Use();
 
     if (draw_call.texture) {
         draw_call.texture->UseForSlot(0);
-        basic_shader.SendUniform("uTex2d", 0);
+        shader->SendUniform("uTex2d", 0);
     }
     else {
         throw std::runtime_error("그리기 호출에 텍스처가 제공되지 않았습니다!");
@@ -79,11 +76,13 @@ void CS230::Render::Draw(const DrawCall& draw_call) {
         WORLD_TO_NDC *= WORLD_TO_NDC.build_scale(1 / WORLD_SIZE_MAX);
 
         const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
-        basic_shader.SendUniform("uModelToNDC", to_span(model_to_ndc));
+        shader->SendUniform("uModelToNDC", to_span(model_to_ndc));
         draw_call.model->Use();
         GLDrawIndexed(*draw_call.model);
     }
     else {
         throw std::runtime_error("그리기 호출에 모델이 제공되지 않았습니다!");
     }
+    shader->Use(false);
+    draw_call.model->Use(false);
 }

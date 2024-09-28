@@ -21,7 +21,7 @@ namespace CS230 {
         GLVertexArray* model;
         GLTexture* texture;
         mat3 transform;
-        //GLShader shader;
+        const GLShader* shader;
     };
 
     class Render {
@@ -42,6 +42,5 @@ namespace CS230 {
         std::vector<DrawCall> draw_first_calls;
         std::vector<DrawCall> draw_calls;
         std::vector<DrawCall> draw_late_calls;
-        GLShader basic_shader;
     };
 }

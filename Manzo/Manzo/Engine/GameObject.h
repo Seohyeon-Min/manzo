@@ -18,6 +18,7 @@ Created:    March 8, 2023
 #include "Collision.h"
 #include "ShowCollision.h"
 #include "engine.h"
+#include "GLShader.h"
 
 namespace Math { class TransformationMatrix; }
 enum class GameObjectTypes;
@@ -98,6 +99,7 @@ namespace CS230 {
         vec2 scale;
         vec2 position;
         vec2 velocity;
+        GLShader* shader = nullptr;
 
         class State_None : public State {
         public:

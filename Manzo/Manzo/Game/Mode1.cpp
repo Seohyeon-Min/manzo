@@ -77,13 +77,13 @@ void Mode1::Update(double dt) {
     GetGSComponent<CS230::Camera>()->Update(ship_ptr->GetPosition());
     timer->Update(dt);
 
-    if (timer->Remaining() == 0)
-    {
-        Fish* newFish = new Fish();
-        fishList.push_back(newFish);
-        GetGSComponent<CS230::GameObjectManager>()->Add(newFish);
-        timer->Reset();
-    }
+    //if (timer->Remaining() == 0)
+    //{
+    //    Fish* newFish = new Fish();
+    //    fishList.push_back(newFish);
+    //    GetGSComponent<CS230::GameObjectManager>()->Add(newFish);
+    //    timer->Reset();
+    //}
 
     //for (Fish* fish : fishList)
     //{

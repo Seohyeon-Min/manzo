@@ -25,6 +25,7 @@
     <ClCompile Include="Engine\logger.cpp" />
     <ClCompile Include="Engine\Particle.cpp" />
     <ClCompile Include="Engine\Render.cpp" />
+    <ClCompile Include="Engine\ShaderManager.cpp" />
     <ClCompile Include="Engine\ShowCollision.cpp" />
     <ClCompile Include="Engine\Sprite.cpp" />
     <ClCompile Include="Engine\Texture.cpp" />
@@ -60,6 +61,7 @@
     <ClInclude Include="Engine\Particle.h" />
     <ClInclude Include="Engine\Rect.h" />
     <ClInclude Include="Engine\Render.h" />
+    <ClInclude Include="Engine\ShaderManager.h" />
     <ClInclude Include="Engine\ShowCollision.h" />
     <ClInclude Include="Engine\Sprite.h" />
     <ClInclude Include="Engine\Texture.h" />
