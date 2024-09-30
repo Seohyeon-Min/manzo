@@ -1,0 +1,4 @@
+Assets/Fish3.png
+HotSpot 25 25
+RectCollision -25 -25 25 25
+Anim Assets/None.anm
