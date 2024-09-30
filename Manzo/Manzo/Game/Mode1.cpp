@@ -43,7 +43,7 @@ void Mode1::Load() {
     //GetGSComponent<Background>()->Add("assets/images/temp_back.png", 0.25);
 
     //// ship
-    ship_ptr = new Ship({ 1280 / 2, 720 / 2 });
+    ship_ptr = new Ship({ 0, 0 });
     GetGSComponent<CS230::GameObjectManager>()->Add(ship_ptr);
 
     //// camera
@@ -57,75 +57,16 @@ void Mode1::Load() {
     if (sample) {
         GetGSComponent<AudioManager>()->PlayMusic(sample, -1);
     }
-
-    // fish
-    //fish = new Fish();
-    //reef = new Reef({ 100,550 });
-    //GetGSComponent<CS230::GameObjectManager>()->Add(fish);
-    //GetGSComponent<CS230::GameObjectManager>()->Add(reef);
-    //GetGSComponent<CS230::GameObjectManager>()->Add(new Reef({ 100,550 }));
-    //GetGSComponent<CS230::GameObjectManager>()->Add(new Reef({ 240,220 }));
-    //GetGSComponent<CS230::GameObjectManager>()->Add(new Reef({ 600,370 }));
-
-    //fishList.clear();
-
 }
 
 void Mode1::Update(double dt) {
     UpdateGSComponents(dt);
     GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
     GetGSComponent<CS230::Camera>()->Update(ship_ptr->GetPosition());
-    timer->Update(dt);
 
-    //if (timer->Remaining() == 0)
-    //{
-    //    Fish* newFish = new Fish();
-    //    fishList.push_back(newFish);
-    //    GetGSComponent<CS230::GameObjectManager>()->Add(newFish);
-    //    timer->Reset();
-    //}
-
-    //for (Fish* fish : fishList)
-    //{
-    //    vec2 fishPos = fish->GetPosition();
-    //    vec2 reefPos = reef->GetPosition();
-
-    //    vec2 distanceVec = fishPos - reefPos;
-    //    float distance = (float)sqrt(pow(distanceVec.x, 2) + pow(distanceVec.y, 2));
-
-    //    const float repellingForce = 50.0;
-    //    const float pushAmountFactor = 0.5;
-    //    const float minDistance = 100.0;
-    //    static double timeCounter = 0.0;
-
-    //    if (distance < minDistance) {
-    //        vec2 awayFromReef = distanceVec.Normalize();
-
-    //        float pushAmount = (minDistance - distance) * pushAmountFactor;
-    //        fish->UpdatePosition(awayFromReef * pushAmount);
-
-    //        vec2 steeringVec = awayFromReef;
-
-    //        float strength = (minDistance - distance) / minDistance;
-    //        steeringVec *= (repellingForce * strength * (float)dt);
-
-    //        fish->UpdateVelocity(steeringVec);
-    //    }
-    //    if (distance > minDistance)
-    //    {
-    //        timeCounter += dt;
-    //        float verticalMovement = (float)(timeCounter * 10.0f) * 5.0f;
-    //        fishPos.y += verticalMovement;
-    //    }
-
-    //    fishPos.x += fish->GetVelocity().x * (float)dt;
-    //    fishPos.y += fish->GetVelocity().y * (float)dt;
-    //}
 }
 
 void Mode1::Draw() {
-    //Engine::GetWindow().Clear(0x000000FF);
-    //GetGSComponent<Background>()->Draw(*GetGSComponent<CS230::Camera>());
     GetGSComponent<CS230::GameObjectManager>()->DrawAll();
 }
 
@@ -133,11 +74,4 @@ void Mode1::Unload() {
 
 	GetGSComponent<CS230::GameObjectManager>()->Unload();
 	ClearGSComponents();
-
-	//for (Fish* fish : fishList)
-	//{
-	//	delete fish;
-	//}
-
-	//fishList.clear();
 }

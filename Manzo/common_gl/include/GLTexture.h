@@ -19,7 +19,7 @@ class [[nodiscard]] GLTexture
 {
 public:
     GLTexture() = default;
-    GLTexture(const std::filesystem::path& image_filepath, bool flip = false);
+    GLTexture(const std::filesystem::path& image_filepath, bool flip = true);
     ~GLTexture() noexcept;
     GLTexture(const GLTexture& other) = delete;
     GLTexture(GLTexture&& other) noexcept;

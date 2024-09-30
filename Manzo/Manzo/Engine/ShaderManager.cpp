@@ -2,8 +2,10 @@
 
 
 ShaderManager::ShaderManager() {
-
-
+    default_shader = GLShader("Default Shader", {
+    {GLShader::VERTEX, "assets/shaders/default2.vert"},
+    {GLShader::FRAGMENT, "assets/shaders/default.frag"}
+            });
 }
 
 // 셰이더 로드 또는 이미 존재하면 반환
@@ -33,10 +35,7 @@ GLShader* ShaderManager::GetShader(const std::string& shader_name) {
 
 GLShader* ShaderManager::GetDefaultShader()
 {
-    default_shader = GLShader("Default Shader", {
-    {GLShader::VERTEX, "assets/shaders/default2.vert"},
-    {GLShader::FRAGMENT, "assets/shaders/default.frag"}
-        });
+
     return &default_shader;
 }
 

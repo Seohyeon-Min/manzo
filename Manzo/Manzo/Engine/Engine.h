@@ -93,5 +93,5 @@ private:
     CS230::TextureManager texturemanager;
     CS230::Render render;
     ShaderManager shadermanager;
-    GLApp* app;
+
 };

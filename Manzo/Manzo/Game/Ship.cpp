@@ -16,9 +16,9 @@ void Ship::Update(double dt)
 {
 	GameObject::Update(dt);
 	SetDest();
-	Move(dt);
-	//UpdatePosition({-5,0});
-	//std::cout << GetPosition().x << std::endl;
+	if (move) {
+		Move(dt);
+	}
 }
 
 
@@ -29,28 +29,27 @@ void Ship::Draw()
 
 void Ship::SetDest()
 {
-	
-	if (IsKeyDown(MOUSE_LEFT_BUTTON) && !set_dest && beat->GetIsOnBeat() && !move) {
-		std::cout << "yes\n";
-		destination = { (float)GetMouseX(), (float)GetMouseY() };
-		destination.y *= -1;
-		destination.y += Engine::GetWindow().GetSize().y;
-		set_dest = true;
-	}
+    if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT) && !set_dest && beat->GetIsOnBeat() && !move) {
+        // Get mouse position relative to the center of the screen
+        destination.x = Engine::GetInput().GetMousePosition().x;
+        destination.y = Engine::GetInput().GetMousePosition().y;
 
-	if (set_dest) {	// if clicked the destination
-		if (!beat->GetIsOnBeat()) { // wait for next beat
-			ready_to_move = true;
-		}
-	}
+        set_dest = true;
+    }
 
-	if (ready_to_move && beat->GetBeat()) { // move when its on next beat
-		initialPosition = GetPosition();
-		
-		move = true;
-		set_dest = false;
-		ready_to_move = false;
-	}
+    if (set_dest) { // if clicked the destination
+        if (!beat->GetIsOnBeat()) { // wait for next beat
+            ready_to_move = true;
+        }
+    }
+
+    if (ready_to_move && beat->GetBeat()) { // move when its on next beat
+        initialPosition = GetPosition();
+
+        move = true;
+        set_dest = false;
+        ready_to_move = false;
+    }
 }
 
 void Ship::Move(double dt)
@@ -58,8 +57,11 @@ void Ship::Move(double dt)
 
     float distanceMoved = (float)sqrt(pow(GetPosition().x - initialPosition.x, 2) + pow(GetPosition().y - initialPosition.y, 2));
 
-    vec2 direction = { destination.x - (GetPosition().x - (float)Engine::GetGameStateManager().GetGSComponent<CS230::Camera>()->GetPosition().x),
-							 destination.y - (GetPosition().y - (float)Engine::GetGameStateManager().GetGSComponent<CS230::Camera>()->GetPosition().y)};
+
+	vec2 direction = { destination.x - (GetPosition().x),
+						 destination.y - (GetPosition().y) };
+    //vec2 direction = { destination.x - (GetPosition().x - (float)Engine::GetGameStateManager().GetGSComponent<CS230::Camera>()->GetPosition().x),
+				//			 destination.y - (GetPosition().y - (float)Engine::GetGameStateManager().GetGSComponent<CS230::Camera>()->GetPosition().y)};
     float magnitude = (float)sqrt(direction.x * direction.x + direction.y * direction.y);
 
     if (magnitude != 0) {

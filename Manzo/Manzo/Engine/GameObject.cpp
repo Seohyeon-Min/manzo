@@ -48,9 +48,9 @@ void CS230::GameObject::Draw() {
             shader = Engine::GetShaderManager().GetDefaultShader();
         }
         Engine::GetRender().AddDrawCall(
-            { Engine::GetTextureManager().GetModel(sprite->GetFilePath()), // 모델
-            sprite->GetTexture(),                                         // 텍스처
-            GetMatrix(),                                                   // 변환 행렬
+            {
+            sprite->GetTexture(),
+            GetMatrix(),
             shader
             }
         );
@@ -79,9 +79,11 @@ bool CS230::GameObject::CanCollideWith([[maybe_unused]] GameObjectTypes other_ob
 
 const mat3& CS230::GameObject::GetMatrix() {
     if (matrix_outdated) {
+        Sprite* sprite = GetGOComponent<Sprite>();
+        const vec2 texture_size = (vec2)sprite->GetTexture()->GetSize();
         object_matrix = mat3::build_translation(position) *
             mat3::build_rotation((float)rotation) *
-            mat3::build_scale(scale);
+            mat3::build_scale(texture_size.x * scale.x, texture_size.y * scale.y);
         matrix_outdated = false;
     }
     return object_matrix;

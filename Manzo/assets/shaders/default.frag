@@ -7,5 +7,9 @@ layout(location = 0) out vec4 fFragClr;
 uniform sampler2D uTex2d;
 
 void main() {
-    fFragClr = texture(uTex2d, vTextureCoordinates);
+    vec4 tex_color = texture(uTex2d, vTextureCoordinates);
+    if(tex_color.a <= 0)
+        discard;
+    fFragClr = tex_color;
 }
+//blend mode

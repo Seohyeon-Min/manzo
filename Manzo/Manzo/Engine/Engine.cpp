@@ -18,20 +18,12 @@ Engine::Engine() :
 #else
     logger(CS230::Logger::Severity::Event, false)
 #endif
-{ }
-
-//void Engine::AddFont(const std::filesystem::path& file_name)
-//{
-//    fonts.push_back(file_name);
-//}
-
-void Engine::Start(std::string window_title) {
+{
     unsigned int seed = static_cast<unsigned int>(std::time(NULL));
     std::srand(seed);
     logger.LogEvent("Random seed :" + std::to_string(seed));
     logger.LogEvent("Engine Started");
     //window.Start(window_title);
-    app = new GLApp (window_title.c_str());;
     //Start other services
     last_test = last_tick;
 }
@@ -45,7 +37,7 @@ void Engine::Update() {
     std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
     double dt = std::chrono::duration<double>(now - last_tick).count();
 
-    if (dt > (1 / TargetFPS) && !app->IsDone())
+    if (dt > (1 / TargetFPS))
     {
         frame_count++;
         logger.LogVerbose("Engine Update");
@@ -53,10 +45,8 @@ void Engine::Update() {
 
         gamestatemanager.Update(dt);
         input.Update();
-        //window.Update();
-        app->Update();
-
     }
+   
     if (frame_count >= FPSTargetFrames) {
         double actual_time = std::chrono::duration<double>(now - last_test).count();
         logger.LogDebug("FPS: " + std::to_string(frame_count / actual_time));
@@ -64,6 +54,8 @@ void Engine::Update() {
         last_test = now;
     }
 }
+
+
 
 void Engine::HandleEvent(SDL_Window& sdl_window, const SDL_Event& event)
 {
@@ -74,7 +66,7 @@ void Engine::HandleEvent(SDL_Window& sdl_window, const SDL_Event& event)
 }
 
 bool Engine::HasGameEnded() {
-    if (gamestatemanager.HasGameEnded() || app->IsDone()) {
+    if (gamestatemanager.HasGameEnded()) {
         return true;
     }
     return false;

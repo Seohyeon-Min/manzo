@@ -17,29 +17,27 @@ Created:    March 8, 2023
 
 util::owner<IProgram*> create_program(int viewport_width, int viewport_height)
 {
-    Engine& engine = Engine::Instance();
-    return &engine;
+    glCheck(glViewport(0, 0, viewport_width, viewport_height));
+    return &Engine::Instance();
 }
 
-int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {
+int main() {
     try {
+        GLApp OpenGLAPPlication("Manzo");
         Engine& engine = Engine::Instance();
-        engine.Start("Manzo");
 
-        //Splash splash;
-        //engine.GetGameStateManager().AddGameState(splash);
         Mode1 mode1;
         engine.GetGameStateManager().AddGameState(mode1);
 
-        while (engine.HasGameEnded() == false) {
-            engine.Update();
+        while (!OpenGLAPPlication.IsDone() && !engine.HasGameEnded()) {
+            engine.Update(); // Update the engine here
+            OpenGLAPPlication.Update();
         }
 
         engine.Stop();
-
         return 0;
     }
-    catch (std::exception& e) {
+    catch (const std::exception& e) {
         std::cerr << e.what() << "\n";
         return -1;
     }

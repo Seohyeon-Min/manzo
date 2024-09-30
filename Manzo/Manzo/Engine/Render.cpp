@@ -1,15 +1,18 @@
+#include "Render.h"
+#include "GLTexture.h"
+#include "GLShader.h"
+#include "Engine.h"
+#include "GameObject.h"
+#include "color3.h"
+
 #include <vector>
 #include <unordered_map>
 #include <filesystem>
 #include <memory>
 #include <span>
+#include <array>
+#include <iostream>
 
-#include "Render.h"
-#include "GLTexture.h"
-#include "GLShader.h"
-#include "GLVertexArray.h"
-#include "Engine.h"
-#include "GameObject.h"
 
 const float WORLD_SIZE_MAX = (float)std::max(Engine::window_width, Engine::window_height);
 
@@ -30,6 +33,8 @@ void CS230::Render::AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase
 
 // Render all draw calls
 void CS230::Render::RenderAll() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     for (const auto& draw_call : draw_first_calls) {
         Draw(draw_call);
     }
@@ -69,20 +74,67 @@ void CS230::Render::Draw(const DrawCall& draw_call) {
         throw std::runtime_error("그리기 호출에 텍스처가 제공되지 않았습니다!");
     }
 
-    if (draw_call.model) {
-        mat3 model_to_world = draw_call.transform;
+    vec2 texture_size = (vec2)draw_call.texture->GetSize();
+    mat3 model_to_world = draw_call.transform;
 
-        mat3 WORLD_TO_NDC;
-        WORLD_TO_NDC *= WORLD_TO_NDC.build_scale(1 / WORLD_SIZE_MAX);
+    mat3 WORLD_TO_NDC = mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height) ;
 
-        const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
-        shader->SendUniform("uModelToNDC", to_span(model_to_ndc));
-        draw_call.model->Use();
-        GLDrawIndexed(*draw_call.model);
-    }
-    else {
-        throw std::runtime_error("그리기 호출에 모델이 제공되지 않았습니다!");
-    }
+    const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
+    shader->SendUniform("uModelToNDC", to_span(model_to_ndc));
+    model.Use();
+    GLDrawIndexed(model);
+
     shader->Use(false);
-    draw_call.model->Use(false);
+    model.Use(false);
+}
+
+void CS230::Render::CreatModel()
+{
+    float w = 0.5f, h = 0.5f;
+    const std::array positions = { vec2{-w, -h}, vec2{w, -h}, vec2{w, h}, vec2{-w, h} };
+    constexpr std::array colors = { color3{1, 1, 1}, color3{1, 0, 0}, color3{0, 1, 0}, color3{0, 0, 1} };
+    constexpr std::array<unsigned, 4> indices = { 0, 3, 1, 2 };
+    constexpr std::array texture_coordinates = { vec2{0, 0}, vec2{1, 0}, vec2{1, 1}, vec2{0, 1} };
+
+    constexpr auto positions_byte_size = static_cast<long long>(sizeof(vec2) * positions.size());
+    constexpr auto colors_byte_size = static_cast<long long>(sizeof(color3) * colors.size());
+    constexpr auto texture_coordinates_byte_size = static_cast<long long>(sizeof(vec2) * texture_coordinates.size());
+    constexpr auto buffer_size = positions_byte_size + colors_byte_size + texture_coordinates_byte_size;
+
+    GLVertexBuffer buffer(buffer_size);
+    buffer.SetData(std::span(positions));
+    buffer.SetData(std::span(colors), positions_byte_size);
+    buffer.SetData(std::span(texture_coordinates), positions_byte_size + colors_byte_size);
+
+    // Position attribute
+    GLAttributeLayout position;
+    position.component_type = GLAttributeLayout::Float;
+    position.component_dimension = GLAttributeLayout::_2;
+    position.normalized = false;
+    position.vertex_layout_location = 0; // Layout location for position
+    position.stride = sizeof(vec2); // Stride for position
+    position.offset = 0; // Offset for position
+
+    // Color attribute
+    GLAttributeLayout color;
+    color.component_type = GLAttributeLayout::Float;
+    color.component_dimension = GLAttributeLayout::_3;
+    color.normalized = false;
+    color.vertex_layout_location = 1; // Layout location for color
+    color.stride = sizeof(color3); // Stride for color
+    color.offset = positions_byte_size; // Offset for color
+
+    // Texture coordinate attribute
+    GLAttributeLayout texture_coord;
+    texture_coord.component_type = GLAttributeLayout::Float;
+    texture_coord.component_dimension = GLAttributeLayout::_2;
+    texture_coord.normalized = false;
+    texture_coord.vertex_layout_location = 2; // Layout location for texture coordinates
+    texture_coord.stride = sizeof(vec2); // Stride for texture coordinates
+    texture_coord.offset = positions_byte_size + colors_byte_size; // Offset for texture coordinates
+
+    model.AddVertexBuffer(std::move(buffer), { position, color, texture_coord });
+    model.SetPrimitivePattern(GLPrimitive::TriangleStrip);
+    GLIndexBuffer index_buffer(indices);
+    model.SetIndexBuffer(std::move(index_buffer));
 }
