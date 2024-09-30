@@ -40,4 +40,5 @@ private:
     Fish* fish;
     Reef* reef;
     Ship* ship_ptr;
+    int money = 0;
 };

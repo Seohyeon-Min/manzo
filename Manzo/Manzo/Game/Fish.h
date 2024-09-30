@@ -14,7 +14,7 @@ public:
 	void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
 
 	static constexpr double default_scales[] = { 1.0, 1.5, 2.0 };
-	vec2 start_position;
+	Math::vec2 start_position;
 
 	void SetAvoidanceTimer(double time) { avoidanceTimer = time; }
 	double GetAvoidanceTimer() const { return avoidanceTimer; }
@@ -22,11 +22,16 @@ public:
 		if (avoidanceTimer > 0) avoidanceTimer -= deltaTime;
 	}
 
+	int type;
+	enum FishType
+	{
+		Fish1, Fish2, Fish3
+	};
+	bool collided = false;
+
 private:
 	void Update(double dt);
-	void Draw();
-	//void ResolveCollision(GameObject* other_object) override;
-	//bool CanCollideWith(GameObjectTypes obj) override;
+	void Draw(Math::TransformationMatrix camera_matrix);
 
 	int size;
 	double swimming_range = 15.0;
