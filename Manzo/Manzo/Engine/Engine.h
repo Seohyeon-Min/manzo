@@ -11,7 +11,6 @@ Created:    March 8, 2023
 #pragma once
 
 #include "Logger.h"
-#include "Window.h"
 #include "GameStateManager.h"
 #include "Input.h"
 #include "TextureManager.h"
@@ -33,10 +32,6 @@ public:
 
     static CS230::Logger& GetLogger() {
         return Instance().logger;
-    }
-
-    static CS230::Window& GetWindow() {
-        return Instance().window;
     }
 
     static CS230::GameStateManager& GetGameStateManager() {
@@ -87,7 +82,6 @@ private:
 
     //std::vector<CS230::Font> fonts;
     CS230::Logger logger;
-    CS230::Window window;
     CS230::GameStateManager gamestatemanager;
     CS230::Input input;
     CS230::TextureManager texturemanager;

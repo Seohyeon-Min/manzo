@@ -21,9 +21,6 @@
     <ClCompile Include="Engine\Engine.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Font.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\GameObject.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -34,9 +31,6 @@
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Input.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Light.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Engine\logger.cpp">
@@ -51,16 +45,10 @@
     <ClCompile Include="Engine\Sprite.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Texture.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\TextureManager.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Timer.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Window.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Game\Background.cpp">
@@ -114,12 +102,6 @@
     <ClInclude Include="Engine\Engine.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Font.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Fonts.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\GameObject.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -133,9 +115,6 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Input.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Light.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Engine\logger.h">
@@ -153,16 +132,10 @@
     <ClInclude Include="Engine\Sprite.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Texture.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\TextureManager.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Timer.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Window.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Game\Background.h">

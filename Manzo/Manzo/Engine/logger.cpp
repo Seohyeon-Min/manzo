@@ -13,7 +13,7 @@ Updated:    March 10, 2023
 #include "Logger.h"
 
 CS230::Logger::Logger(Logger::Severity severity, bool use_console) : min_level(severity), out_stream("Trace.log") {
-    SetTraceLogLevel(LOG_NONE);
+    SetTraceLogLevel(LOGNONE);
     if (use_console == true) {
         out_stream.set_rdbuf(std::cout.rdbuf());
     }

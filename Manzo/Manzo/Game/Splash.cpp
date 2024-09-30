@@ -37,7 +37,7 @@ void Splash::Unload() {
 
 
 void Splash::Draw() {
-    Engine::GetWindow().Clear(UINT_MAX);
+    //Engine::GetWindow().Clear(UINT_MAX);
     //auto texture = TextureManager::GetInstance().GetTexture("texture_path");
 
     //texture->Draw(mat3({ (Engine::GetWindow().GetSize() - texture->GetSize()) / 2.0f }));

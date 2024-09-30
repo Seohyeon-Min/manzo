@@ -12,7 +12,7 @@ Created:    March 8, 2023
 #include "..\Game\GameObjectTypes.h"
 #include "Sprite.h"
 #include "ComponentManager.h"
-#include "Texture.h"
+
 #include "vec2.h"
 #include "engine.h"
 #include "GameObjectManager.h"

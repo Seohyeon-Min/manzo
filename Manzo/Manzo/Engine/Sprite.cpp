@@ -101,16 +101,6 @@ void CS230::Sprite::Load(const std::filesystem::path& sprite_file, GameObject* o
                 object->AddGOComponent(new RectCollision(boundary, object));
             }
         }
-        else if (text == "CircleCollision") {
-            double radius;
-            in_file >> radius;
-            if (object == nullptr) {
-                Engine::GetLogger().LogError("Cannot add collision to a null object");
-            }
-            else {
-                object->AddGOComponent(new CircleCollision(radius, object));
-            }
-        }
         else {
             Engine::GetLogger().LogError("Unknown command: " + text);
         }

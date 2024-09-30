@@ -12,9 +12,14 @@ Created:    March 8, 2023
 #pragma once
 #include <string>
 #include <fstream>
-#include <raylib.h>
 #include <chrono>
-
+enum LoggerLogLevel {  
+    LOGNONE,
+    LOGERROR,
+    LOGWARNING,
+    LOGINFO,
+    LOGDEBUG
+};
 namespace CS230 {
     class Logger {
     public:
@@ -39,6 +44,9 @@ namespace CS230 {
         void LogVerbose(std::string text) {
             log(Severity::Verbose, text);
         }
+        void SetTraceLogLevel(LoggerLogLevel level) {
+            currentLogLevel = level;
+        }
     private:
         const std::string word[4]{ "Verbose","Debug","Event","Error" };
         Severity min_level;
@@ -46,5 +54,6 @@ namespace CS230 {
         std::chrono::system_clock::time_point start_time;
         double seconds_since_start();
         void log(Severity severity, std::string message);
+        LoggerLogLevel currentLogLevel = LOGINFO;
     };
 }

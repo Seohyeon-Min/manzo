@@ -55,12 +55,12 @@ void CS230::GameObject::Draw() {
             }
         );
     }
-    //if (Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>() != nullptr && Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>()->Enabled()) {
-    //    Collision* collision = GetGOComponent<Collision>();
-    //    if (collision != nullptr) {
-    //        collision->Draw(camera_matrix);
-    //    }
-    //}
+    if (Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>() != nullptr && Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>()->Enabled()) {
+        Collision* collision = GetGOComponent<Collision>();
+        if (collision != nullptr) {
+            collision->Draw();
+        }
+    }
 }
 
 bool CS230::GameObject::IsCollidingWith(GameObject* other_object) {

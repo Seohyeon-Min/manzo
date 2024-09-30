@@ -12,7 +12,7 @@ Created:    March 8, 2023
 #include "Sprite.h"
 #include "ComponentManager.h"
 #include <string>
-#include "Texture.h"
+
 #include "vec2.h"
 #include "Component.h"
 #include "Collision.h"
