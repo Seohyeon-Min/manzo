@@ -14,26 +14,20 @@ public:
 	void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
 
 	static constexpr double default_scales[] = { 1.0, 1.5, 2.0 };
-	Math::vec2 start_position;
+	Math::vec2 start_position = { 0,0 };
 
-	void SetAvoidanceTimer(double time) { avoidanceTimer = time; }
-	double GetAvoidanceTimer() const { return avoidanceTimer; }
-	void UpdateAvoidanceTimer(double deltaTime) {
-		if (avoidanceTimer > 0) avoidanceTimer -= deltaTime;
-	}
-
-	int type;
 	enum FishType
 	{
 		Fish1, Fish2, Fish3
 	};
+	int type = FishType::Fish1;
+
 	bool collided = false;
 
 private:
 	void Update(double dt);
 	void Draw(Math::TransformationMatrix camera_matrix);
 
-	int size;
+	int size = 0;
 	double swimming_range = 15.0;
-	double avoidanceTimer = 0.0;
 };

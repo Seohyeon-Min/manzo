@@ -1,34 +1,34 @@
 #include "Fish.h"
-#include "../Engine/GameObjectManager.h"
-#include "../Engine/Collision.h"
+#include <random>
 
-#include <iostream>
+std::mt19937 dre;
 
 Fish::Fish(Fish* parent) : CS230::GameObject({ 0, 0 }) {
+
+    std::uniform_int_distribution<int> random_value(0, 99);
+    std::uniform_int_distribution<int> size(0, 2);
+
     if (parent == nullptr) {
         SetVelocity(Math::vec2{
             ((double)(rand() % 5) + 1) * default_velocity * 2,
-            ((double)(rand() % 5) + 0.1)* default_velocity
+            ((double)(rand() % 5) + 0.1) * default_velocity
             });
 
         Math::ivec2 windowSize = Engine::GetWindow().GetSize();
-        start_position = { -23 ,((double)rand() / RAND_MAX) * windowSize.y};
+        start_position = { -23 ,((double)rand() / RAND_MAX) * windowSize.y }; //outside of window
         SetPosition(start_position);
 
-        size = rand() % 3;
-        int random_value = rand() % 100;
-
-        if (random_value < 10) 
+        if (random_value(dre) < 20)  //20%
         {
-            type = FishType::Fish3;  //10%
+            type = FishType::Fish3;
         }
-        else if (random_value < 55) 
+        else if (random_value(dre) < 60)  //40%
         {
-            type = FishType::Fish1;  //45%
+            type = FishType::Fish1;
         }
-        else 
+        else  //40%
         {
-            type = FishType::Fish2;  //45%
+            type = FishType::Fish2;
         }
 
     }
@@ -40,7 +40,7 @@ Fish::Fish(Fish* parent) : CS230::GameObject({ 0, 0 }) {
         SetRotation(parent->GetRotation());
     }
 
-    SetScale(Math::vec2{ -default_scales[size], default_scales[size] });
+    SetScale(Math::vec2{ -default_scales[size(dre)], default_scales[size(dre)] });
 
 
     if (this->type == FishType::Fish2)
@@ -62,6 +62,7 @@ Fish::Fish(Fish* parent) : CS230::GameObject({ 0, 0 }) {
         AddGOComponent(new CS230::Sprite("Assets/Fish3.spt", this));
         break;
     }
+
 }
 
 bool Fish::CanCollideWith(GameObjectTypes other_object)
@@ -86,8 +87,8 @@ void Fish::ResolveCollision(GameObject* other_object)
 void Fish::Update(double dt) {
     GameObject::Update(dt);
 
-    if (GetPosition().x - GetGOComponent<CS230::Sprite>()->GetFrameSize().x/2 > Engine::GetWindow().GetSize().x ||
-        GetPosition().y + GetGOComponent<CS230::Sprite>()->GetFrameSize().y/2 < 0 || 
+    if (GetPosition().x - GetGOComponent<CS230::Sprite>()->GetFrameSize().x / 2 > Engine::GetWindow().GetSize().x ||
+        GetPosition().y + GetGOComponent<CS230::Sprite>()->GetFrameSize().y / 2 < 0 ||
         GetPosition().y - GetGOComponent<CS230::Sprite>()->GetFrameSize().y / 2 > Engine::GetWindow().GetSize().y)
     {
         Destroy();
