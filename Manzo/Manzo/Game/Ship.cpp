@@ -5,7 +5,7 @@
 #include <iostream>
 
 Ship::Ship(vec2 start_position) :
-	GameObject(start_position), moving(false), set_dest(false), ready_to_move(false), move(false)
+	GameObject(start_position), moving(false), set_dest(false), ready_to_move(false), move(false), floating(true), startPosition(start_position)
 {
 	AddGOComponent(new CS230::Sprite("assets/images/ship.spt", this));
 	beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
@@ -15,8 +15,10 @@ Ship::Ship(vec2 start_position) :
 void Ship::Update(double dt)
 {
 	GameObject::Update(dt);
+    Floating(dt);
 	SetDest();
 	if (move) {
+        floating = false;
 		Move(dt);
 	}
 }
@@ -99,4 +101,20 @@ bool Ship::CanCollideWith(GameObjectTypes other_object)
 
 void Ship::ResolveCollision(GameObject* other_object)
 {
+}
+
+void Ship::Floating(double dt) {
+    // ship is floating up and down...
+    // we can change this into animation later.
+
+    if (floating == true) {
+        SetVelocity({ 0,-10 });
+        if (startPosition.y + 30 <= GetPosition().y) {
+            SetVelocity({ 0,-10 });
+        }
+        else if (startPosition.y - 30 >= GetPosition().y) {
+            SetVelocity({0, 10});
+        }
+    }
+    
 }

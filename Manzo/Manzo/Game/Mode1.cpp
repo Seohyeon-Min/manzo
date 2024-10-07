@@ -37,10 +37,10 @@ void Mode1::Load() {
 #endif
     // compenent
     AddGSComponent(new CS230::GameObjectManager());
-    //AddGSComponent(new Background());
+    AddGSComponent(new Background());
     AddGSComponent(new Beat());
     AddGSComponent(new AudioManager());
-    //GetGSComponent<Background>()->Add("assets/images/temp_back.png", 0.25);
+    GetGSComponent<Background>()->Add("assets/images/player_home_background.png", 0.25);
 
     //// ship
     ship_ptr = new Ship({ 0, 0 });
@@ -67,6 +67,7 @@ void Mode1::Update(double dt) {
 }
 
 void Mode1::Draw() {
+    //GetGSComponent<Background>()->Draw(*GetGSComponent<CS230::Camera>());
     GetGSComponent<CS230::GameObjectManager>()->DrawAll();
 }
 

@@ -23,6 +23,7 @@ public:
     void Update(double dt) override;
     void Draw() override;
     void Move(double dt);
+    void Floating(double dt);   // ship is floating on the surface
     void SetDest();
     bool CanCollideWith(GameObjectTypes) override;
     void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
@@ -36,7 +37,10 @@ private:
     bool set_dest;
     bool ready_to_move;
     bool move;
+    bool floating;  // ship is on the sea's surface
     vec2 destination;
     vec2 initialPosition;
     Beat* beat;
+
+    vec2 startPosition; //delete later... only for testing floating state.
 };
