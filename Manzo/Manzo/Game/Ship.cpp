@@ -15,10 +15,12 @@ Ship::Ship(vec2 start_position) :
 void Ship::Update(double dt)
 {
 	GameObject::Update(dt);
+    SetScale({ 10,10 });
 	SetDest();
 	if (move) {
 		Move(dt);
 	}
+    UpdatePosition({ -2,0 });
 }
 
 

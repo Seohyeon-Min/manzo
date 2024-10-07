@@ -50,7 +50,7 @@ void CS230::GameObject::Draw() {
         Engine::GetRender().AddDrawCall(
             {
             sprite->GetTexture(),
-            GetMatrix(),
+            &GetMatrix(),
             shader
             }
         );

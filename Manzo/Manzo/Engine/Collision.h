@@ -10,6 +10,8 @@ Created:    March 8, 2023
 
 #include "Rect.h"
 #include "Component.h"
+#include "color3.h"
+#include "GLVertexArray.h"
 
 #pragma once
 namespace Math {
@@ -29,7 +31,6 @@ namespace CS230 {
         virtual void Draw() = 0;
         virtual bool IsCollidingWith(GameObject* other_object) = 0;
         virtual bool IsCollidingWith(vec2 point) = 0;
-
     };
 
     class RectCollision : public Collision {
@@ -41,9 +42,13 @@ namespace CS230 {
         void Draw();
         bool IsCollidingWith(GameObject* other_object) override;
         bool IsCollidingWith(vec2 point) override;
+        void CreatModel();
+        void DrawLine(vec2&, vec2&, color3&);
         Math::rect WorldBoundary();
+
     private:
         GameObject* object;
         Math::irect boundary;
+        GLVertexArray model;
     };
 }
