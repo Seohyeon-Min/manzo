@@ -21,6 +21,7 @@
     <ClCompile Include="Engine\GameStateManager.cpp" />
     <ClCompile Include="Engine\Input.cpp" />
     <ClCompile Include="Engine\logger.cpp" />
+    <ClCompile Include="Engine\MapManager.cpp" />
     <ClCompile Include="Engine\Particle.cpp" />
     <ClCompile Include="Engine\Render.cpp" />
     <ClCompile Include="Engine\ShaderManager.cpp" />
@@ -51,6 +52,7 @@
     <ClInclude Include="Engine\GameStateManager.h" />
     <ClInclude Include="Engine\Input.h" />
     <ClInclude Include="Engine\logger.h" />
+    <ClInclude Include="Engine\MapManager.h" />
     <ClInclude Include="Engine\Particle.h" />
     <ClInclude Include="Engine\Rect.h" />
     <ClInclude Include="Engine\Render.h" />
@@ -123,6 +125,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\Users\USER\source\repos\fin test\fin test\Eigen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,6 +142,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalIncludeDirectories>C:\Users\USER\source\repos\fin test\fin test\Eigen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

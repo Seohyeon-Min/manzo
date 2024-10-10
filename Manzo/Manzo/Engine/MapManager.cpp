@@ -75,7 +75,7 @@ void CS230::Map::parseSVG(const std::string& filename) {
 
                 Polygon poly;
                 poly.vertices = positions;
-                poly.vertexCount = positions.size();
+                poly.vertexCount = int(positions.size());
 
                 objects.push_back(poly);
             }

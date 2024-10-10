@@ -82,6 +82,9 @@
     <ClCompile Include="Engine\ShaderManager.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\MapManager.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h">
@@ -175,6 +178,9 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Engine\ShaderManager.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\MapManager.h">
       <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
