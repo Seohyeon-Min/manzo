@@ -11,6 +11,7 @@ Created:    March 8, 2023
 #include "Collision.h"
 #include "GameObject.h"
 #include "color3.h"
+#include "ShaderManager.h"
 
 #include <array>
 #define GREEN color3(0,255,0)
@@ -19,7 +20,7 @@ CS230::RectCollision::RectCollision(Math::irect boundary, GameObject* object) :
     boundary(boundary),
     object(object)
 {
-    CreatModel();
+    Engine::GetShaderManager().LoadShader("default_collision", "assets/shaders/default_collision.vert", "assets/shaders/default_collision.frag");
 }
 
 Math::rect CS230::RectCollision::WorldBoundary() {
@@ -43,11 +44,10 @@ void CS230::RectCollision::Draw() {
     //bottom_right.y = bottom_right.y * -1 + render_height;
     //top_left.y = top_left.y * -1 + render_height;
     //top_right.y = top_right.y * -1 + render_height;
-
-    DrawLine(top_left ,top_right, GREEN);
-    DrawLine(bottom_right, top_right, GREEN);
-    DrawLine(bottom_right, bottom_left, GREEN);
-    DrawLine(top_left, bottom_left, GREEN);
+    Engine::GetRender().AddDrawCall(top_left, top_right, GREEN);
+    Engine::GetRender().AddDrawCall(bottom_right, top_right, GREEN);
+    Engine::GetRender().AddDrawCall(bottom_right, bottom_left, GREEN);
+    Engine::GetRender().AddDrawCall(top_left, bottom_left, GREEN);
 }
 
 bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
@@ -89,39 +89,57 @@ bool CS230::RectCollision::IsCollidingWith(vec2 point)
     return false;
 }
 
-void CS230::RectCollision::CreatModel()
-{
-    float w = 0.5f, h = 0.5f;
-    const std::array positions = { vec2{-w, -h}, vec2{w, -h} };
 
-    constexpr auto positions_byte_size = static_cast<long long>(sizeof(vec2) * positions.size());
-    constexpr auto buffer_size = positions_byte_size;
-
-    GLVertexBuffer buffer(buffer_size);
-    buffer.SetData(std::span(positions));
-
-    // Position attribute
-    GLAttributeLayout position;
-    position.component_type = GLAttributeLayout::Float;
-    position.component_dimension = GLAttributeLayout::_2;
-    position.normalized = false;
-    position.vertex_layout_location = 0; // Layout location for position
-    position.stride = sizeof(vec2); // Stride for position
-    position.offset = 0; // Offset for position
-
-    model.AddVertexBuffer(std::move(buffer), { position });
-    model.SetPrimitivePattern(GLPrimitive::Lines);
-}
-
-void CS230::RectCollision::DrawLine(vec2& start, vec2& end, color3& color)
-{
-    glCheck(glLineWidth(5.0f));
-    std::array<vec2, 2> positions = { start, end };
-    // 선을 그리기 위한 버퍼를 설정합니다.
-    GLVertexBuffer buffer(sizeof(positions));
-    buffer.SetData(std::span(positions));
-
-    // OpenGL 상태 설정
-    glUseProgram(shaderProgram); // 사용할 셰이더 프로그램을 설정합니다.
-    glUniform3f(colorLocation, color.r, color.g, color.b); // 색상 설정
-}
+//void CS230::RectCollision::CreatModel()
+//{
+//    float w = 0.5f, h = 0.5f;
+//    const std::array positions = { vec2{-w, -h}, vec2{w, -h} };
+//
+//    constexpr auto positions_byte_size = static_cast<long long>(sizeof(vec2) * positions.size());
+//    constexpr auto buffer_size = positions_byte_size;
+//
+//    GLVertexBuffer buffer(buffer_size);
+//    buffer.SetData(std::span(positions));
+//
+//    // Position attribute
+//    GLAttributeLayout position;
+//    position.component_type = GLAttributeLayout::Float;
+//    position.component_dimension = GLAttributeLayout::_2;
+//    position.normalized = false;
+//    position.vertex_layout_location = 0; // Layout location for position
+//    position.stride = sizeof(vec2); // Stride for position
+//    position.offset = 0; // Offset for position
+//
+//    model.AddVertexBuffer(std::move(buffer), { position });
+//    model.SetPrimitivePattern(GLPrimitive::Lines);
+//}
+//
+//void CS230::RectCollision::DrawLine(vec2 start, vec2 end, color3 color)
+//{
+//    glCheck(glLineWidth(5.0f));
+//
+//    mat3 model_to_ndc;
+//
+//    // 선의 길이와 방향 계산
+//    vec2 direction = end - start;
+//    float length = direction.Length();
+//    direction = direction.Normalize();
+//
+//    // 선의 회전 각도 계산
+//    float angle = std::atan2(direction.y, direction.x);
+//
+//    // 변환 매트릭스 생성
+//    model_to_ndc = mat3::build_translation(start) * mat3::build_rotation(angle) * mat3::build_scale(vec2{ length, length });
+//
+//    // OpenGL 상태 설정
+//    shader->Use(); // 사용할 셰이더 프로그램을 설정합니다.
+//    shader->SendUniform("uModelToNDC", to_span(model_to_ndc));
+//    shader->SendUniform("uFillColor", to_span(color)); // 색상 uniform을 설정합니다.
+//
+//    // 선의 버퍼 사용
+//    model.Use();
+//    GLDrawVertices(model);
+//
+//    shader->Use(false);
+//    model.Use(false);
+//}

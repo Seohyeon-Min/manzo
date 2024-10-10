@@ -12,6 +12,7 @@ Created:    March 8, 2023
 #include "Component.h"
 #include "color3.h"
 #include "GLVertexArray.h"
+#include "GLShader.h"
 
 #pragma once
 namespace Math {
@@ -42,8 +43,8 @@ namespace CS230 {
         void Draw();
         bool IsCollidingWith(GameObject* other_object) override;
         bool IsCollidingWith(vec2 point) override;
-        void CreatModel();
-        void DrawLine(vec2&, vec2&, color3&);
+        //void CreatModel();
+        //void DrawLine(vec2, vec2, color3);
         Math::rect WorldBoundary();
 
     private:
