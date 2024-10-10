@@ -109,12 +109,6 @@ void Ship::Floating(double dt) {
 
     if (floating == true) {
         SetVelocity({ 0,-10 });
-        if (startPosition.y + 30 <= GetPosition().y) {
-            SetVelocity({ 0,-10 });
-        }
-        else if (startPosition.y - 30 >= GetPosition().y) {
-            SetVelocity({0, 10});
-        }
     }
     
 }
