@@ -47,7 +47,6 @@ void CS230::Render::RenderAll() {
         Draw(draw_call);
     }
 
-    //std::cout << draw_calls.size() << std::endl;
     // Clear the draw call vectors if needed for the next frame
     draw_first_calls.clear();
     draw_calls.clear();
@@ -76,11 +75,11 @@ void CS230::Render::Draw(const DrawCall& draw_call) {
     }
 
     vec2 texture_size = (vec2)draw_call.texture->GetSize();
-    const mat3* model_to_world = draw_call.transform;
+    mat3 model_to_world = draw_call.transform;
 
     mat3 WORLD_TO_NDC = mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height) ;
 
-    const mat3 model_to_ndc = WORLD_TO_NDC * *model_to_world;
+    const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
     shader->SendUniform("uModelToNDC", to_span(model_to_ndc));
     model.Use();
     GLDrawIndexed(model);
