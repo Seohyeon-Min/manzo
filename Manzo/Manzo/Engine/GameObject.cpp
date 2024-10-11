@@ -77,7 +77,6 @@ bool CS230::GameObject::CanCollideWith([[maybe_unused]] GameObjectTypes other_ob
 	return false;
 }
 
-#include <iostream>
 const mat3& CS230::GameObject::GetMatrix() {
 	Sprite* sprite = GetGOComponent<Sprite>();
 	const vec2 texture_size = (vec2)sprite->GetTexture()->GetSize();
@@ -87,19 +86,6 @@ const mat3& CS230::GameObject::GetMatrix() {
 
 	if (matrix_outdated) {
 		object_matrix = translation_matrix * rotation_matrix * scale_matrix;
-
-		std::cout << "object matrix : " << std::endl;
-		for (int i = 0; i < 3; i++)
-		{
-			for (int j = 0; j < 3; j++)
-			{
-				std::cout << object_matrix[i][j] << ',';
-			}
-		}
-		std::cout << std::endl;;
-
-		std::cout << position.x << ' ' << std::endl;
-
 		matrix_outdated = false;
 	}
 	return object_matrix;
@@ -127,7 +113,7 @@ double CS230::GameObject::GetRotation() const
 
 void CS230::GameObject::SetPosition(vec2 new_position) {
 	position = new_position;
-	matrix_outdated = true;
+	//matrix_outdated = true;
 }
 
 void CS230::GameObject::UpdatePosition(vec2 delta) {

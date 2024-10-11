@@ -88,7 +88,7 @@ void CS230::Render::Draw(const DrawCall& draw_call) {
     shader->Use(false);
 }
 
-void CS230::Render::CreatModel()
+void CS230::Render::CreateModel()
 {
     float w = 0.5f, h = 0.5f;
     const std::array positions = { vec2{-w, -h}, vec2{w, -h}, vec2{w, h}, vec2{-w, h} };

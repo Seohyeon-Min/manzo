@@ -24,7 +24,7 @@ void Ship::Update(double dt)
 
 void Ship::Draw()
 {
-    GameObject::Draw();
+    CS230::GameObject::Draw();
 }
 
 void Ship::SetDest()

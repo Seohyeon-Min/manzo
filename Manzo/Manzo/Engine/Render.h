@@ -25,11 +25,11 @@ namespace CS230 {
 
     class Render {
     public:
-        Render() { CreatModel(); };
+        Render() { CreateModel(); };
 
         void AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase = DrawLayer::Draw);
         void RenderAll();
-        void CreatModel();
+        void CreateModel();
 
     private:
         // Internal render method

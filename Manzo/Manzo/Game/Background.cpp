@@ -23,9 +23,22 @@ void Background::Unload()
 
 void Background::Draw(const CS230::Camera& camera)
 {
-	for (ParallaxLayer& background : backgrounds) {
-		//background.texture->Draw(mat3 (( - const_cast<vec2&>(camera.GetPosition()))* (float)background.speed) );
-	}
+    for (ParallaxLayer& background : backgrounds) {
+        vec2 parallax_position = -camera.GetPosition() * (float)background.speed;
+
+        // Build the translation matrix with parallax effect
+        mat3 parallax_matrix = mat3::build_translation(parallax_position);
+
+        CS230::DrawCall draw_call = {
+            background.texture,                       // Texture to draw
+            parallax_matrix,                          // Transformation matrix
+            Engine::GetShaderManager().GetDefaultShader() // Shader to use
+        };
+
+        // Add the draw call to the renderer
+        Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawFirst);
+    }// Somewhere in your main game loop or rendering function
+
 }
 
 ivec2 Background::GetSize()
