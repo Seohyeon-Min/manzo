@@ -1,13 +1,3 @@
-/*
-Copyright (C) 2023 DigiPen Institute of Technology
-Reproduction or distribution of this file or its contents without
-prior written consent is prohibited
-File Name:  main.cpp
-Project:    CS230 Engine
-Author:     Jonathan Holmes
-Created:    March 8, 2023
-*/
-
 #define SDL_MAIN_HANDLED 
 #include <iostream>
 
@@ -28,6 +18,8 @@ int main() {
 
         Mode1 mode1;
         engine.GetGameStateManager().AddGameState(mode1);
+
+        SDL_GL_SetSwapInterval(1);
 
         while (!OpenGLAPPlication.IsDone() && !engine.HasGameEnded()) {
             engine.Update(); // Update the engine here

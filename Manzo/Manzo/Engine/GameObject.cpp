@@ -13,144 +13,160 @@ Updated:    04/30/2024
 
 
 CS230::GameObject::GameObject(vec2 position) :
-    GameObject(position, 0, { 1, 1 }) {}
+	GameObject(position, 0, { 1, 1 }) {}
 
 CS230::GameObject::GameObject(vec2 position, double rotation, vec2 scale) :
-    velocity({ 0,0 }),
-    position(position),
-    scale(scale),
-    rotation(rotation),
-    current_state(&state_none),
-    destroy(false)
+	velocity({ 0,0 }),
+	position(position),
+	scale(scale),
+	rotation(rotation),
+	current_state(&state_none),
+	destroy(false)
 {
-    current_state->Enter(this);
+	current_state->Enter(this);
 }
 
 void CS230::GameObject::Update(double dt) {
-    current_state->Update(this, dt);
-    if (velocity.x != 0 || velocity.y != 0) {
-        UpdatePosition(velocity * (float)dt);
-    }
-    UpdateGOComponents(dt);
-    current_state->CheckExit(this);
+	current_state->Update(this, dt);
+	if (velocity.x != 0 || velocity.y != 0) {
+		UpdatePosition(velocity * (float)dt);
+	}
+	UpdateGOComponents(dt);
+	current_state->CheckExit(this);
 }
 
 void CS230::GameObject::change_state(State* new_state) {
-    current_state = new_state;
-    current_state->Enter(this);
+	current_state = new_state;
+	current_state->Enter(this);
 }
 
 
 void CS230::GameObject::Draw() {
-    Sprite* sprite = GetGOComponent<Sprite>();
-    if (sprite != nullptr) {
-        if (shader == nullptr) {
-            shader = Engine::GetShaderManager().GetDefaultShader();
-        }
-        Engine::GetRender().AddDrawCall(
-            {
-            sprite->GetTexture(),
-            GetMatrix(),
-            shader
-            }
-        );
-    }
-    if (Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>() != nullptr && Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>()->Enabled()) {
-        Collision* collision = GetGOComponent<Collision>();
-        if (collision != nullptr) {
-            collision->Draw();
-        }
-    }
+	Sprite* sprite = GetGOComponent<Sprite>();
+	if (sprite != nullptr) {
+		if (shader == nullptr) {
+			shader = Engine::GetShaderManager().GetDefaultShader();
+		}
+		Engine::GetRender().AddDrawCall(
+			{
+			sprite->GetTexture(),
+			GetMatrix(),
+			shader
+			}
+		);
+	}
+	if (Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>() != nullptr && Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>()->Enabled()) {
+		Collision* collision = GetGOComponent<Collision>();
+		if (collision != nullptr) {
+			collision->Draw();
+		}
+	}
 }
 
 bool CS230::GameObject::IsCollidingWith(GameObject* other_object) {
-    Collision* collider = GetGOComponent<Collision>();
-    return collider != nullptr && collider->IsCollidingWith(other_object);
+	Collision* collider = GetGOComponent<Collision>();
+	return collider != nullptr && collider->IsCollidingWith(other_object);
 }
 
 bool CS230::GameObject::IsCollidingWith(vec2 point) {
-    Collision* collider = GetGOComponent<Collision>();
-    return collider != nullptr && collider->IsCollidingWith(point);
+	Collision* collider = GetGOComponent<Collision>();
+	return collider != nullptr && collider->IsCollidingWith(point);
 }
 
 bool CS230::GameObject::CanCollideWith([[maybe_unused]] GameObjectTypes other_object_type) {
-    return false;
+	return false;
 }
 
+#include <iostream>
 const mat3& CS230::GameObject::GetMatrix() {
-    if (matrix_outdated) {
-        Sprite* sprite = GetGOComponent<Sprite>();
-        const vec2 texture_size = (vec2)sprite->GetTexture()->GetSize();
-        object_matrix = mat3::build_translation(position) *
-            mat3::build_rotation((float)rotation) *
-            mat3::build_scale(texture_size.x * scale.x, texture_size.y * scale.y);
-        matrix_outdated = false;
-    }
-    return object_matrix;
+	Sprite* sprite = GetGOComponent<Sprite>();
+	const vec2 texture_size = (vec2)sprite->GetTexture()->GetSize();
+	mat3 translation_matrix = mat3::build_translation(position);
+	mat3 rotation_matrix = mat3::build_rotation((float)rotation);
+	mat3 scale_matrix = mat3::build_scale(texture_size.x * scale.x, texture_size.y * scale.y);
+
+	if (matrix_outdated) {
+		object_matrix = translation_matrix * rotation_matrix * scale_matrix;
+
+		std::cout << "object matrix : " << std::endl;
+		for (int i = 0; i < 3; i++)
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				std::cout << object_matrix[i][j] << ',';
+			}
+		}
+		std::cout << std::endl;;
+
+		std::cout << position.x << ' ' << std::endl;
+
+		matrix_outdated = false;
+	}
+	return object_matrix;
 }
 
 const vec2& CS230::GameObject::GetPosition() const
 {
-    return position;
+	return position;
 }
 
 const vec2& CS230::GameObject::GetVelocity() const
 {
-    return velocity;
+	return velocity;
 }
 
 const vec2& CS230::GameObject::GetScale() const
 {
-    return scale;
+	return scale;
 }
 
 double CS230::GameObject::GetRotation() const
 {
-    return rotation;
+	return rotation;
 }
 
 void CS230::GameObject::SetPosition(vec2 new_position) {
-    matrix_outdated = true;
-    position = new_position;
+	position = new_position;
+	matrix_outdated = true;
 }
 
 void CS230::GameObject::UpdatePosition(vec2 delta) {
-    matrix_outdated = true;
-    position += delta;
+	position += delta;
+	matrix_outdated = true;
 }
 
 void CS230::GameObject::SetVelocity(vec2 new_velocity)
 {
-    matrix_outdated = true;
-    velocity = new_velocity;
+	velocity = new_velocity;
+	//matrix_outdated = true;
 }
 
 void CS230::GameObject::UpdateVelocity(vec2 delta)
 {
-    matrix_outdated = true;
-    velocity += delta;
+	velocity += delta;
+	matrix_outdated = true;
 }
 
 void CS230::GameObject::SetScale(vec2 new_scale)
 {
-    matrix_outdated = true;
-    scale = new_scale;
+	scale = new_scale;
+	//matrix_outdated = true;
 }
 
 void CS230::GameObject::UpdateScale(vec2 delta)
 {
-    matrix_outdated = true;
-    scale += delta;
+	scale += delta;
+	matrix_outdated = true;
 }
 
 void CS230::GameObject::SetRotation(double new_rotation)
 {
-    matrix_outdated = true;
-    rotation = new_rotation;
+	rotation = new_rotation;
+	matrix_outdated = true;
 }
 
 void CS230::GameObject::UpdateRotation(double delta)
 {
-    matrix_outdated = true;
-    rotation += delta;
+	rotation += delta;
+	matrix_outdated = true;
 }

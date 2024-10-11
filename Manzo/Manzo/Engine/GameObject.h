@@ -35,7 +35,7 @@ namespace CS230 {
         bool IsCollidingWith(GameObject* other_object);
         bool IsCollidingWith(vec2 point);
         virtual bool CanCollideWith(GameObjectTypes other_object_type);
-        virtual void ResolveCollision([[maybe_unused]]GameObject* other_object) { };
+        virtual void ResolveCollision([[maybe_unused]] GameObject* other_object) { };
         virtual void Update(double dt);
         virtual void Draw();
         virtual void Destroy() { destroy = true; }
@@ -66,7 +66,7 @@ namespace CS230 {
         }
 
 
- //   protected:
+        //   protected:
         void UpdatePosition(vec2 delta);
         void SetVelocity(vec2 new_velocity);
         void UpdateVelocity(vec2 delta);

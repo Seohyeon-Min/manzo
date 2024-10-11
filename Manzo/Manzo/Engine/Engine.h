@@ -23,7 +23,7 @@ Created:    March 8, 2023
 #include <chrono>
 #include <time.h>
 
-class Engine : public IProgram{
+class Engine : public IProgram {
 public:
     static Engine& Instance() {
         static Engine instance;
@@ -76,7 +76,7 @@ private:
 
     int frame_count = 0;
 
-    static constexpr double TargetFPS = 30.0;
+    static constexpr double TargetFPS = 240.0;
     static constexpr int FPSDuration = 5;
     static constexpr int FPSTargetFrames = static_cast<int>(FPSDuration * TargetFPS);
 
