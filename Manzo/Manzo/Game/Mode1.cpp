@@ -12,6 +12,7 @@ Created:    March 8, 2023
 #include "../Engine/Timer.h"
 #include "../Engine/ShowCollision.h"
 #include "../Engine/AudioManager.h"
+#include "../Engine/MapManager.h"
 
 #include "States.h"
 #include "Mode1.h"
@@ -40,6 +41,8 @@ void Mode1::Load() {
     //AddGSComponent(new Background());
     AddGSComponent(new Beat());
     AddGSComponent(new AudioManager());
+    AddGSComponent(new CS230::Map());
+
     //GetGSComponent<Background>()->Add("assets/images/temp_back.png", 0.25);
 
     //// ship
@@ -57,6 +60,7 @@ void Mode1::Load() {
     if (sample) {
         GetGSComponent<AudioManager>()->PlayMusic(sample, -1);
     }
+    GetGSComponent<CS230::Map>()->ParseSVG("C:/Users/USER/Desktop/MANZO/Manzo/assets/maps/test.svg");
 }
 
 void Mode1::Update(double dt) {

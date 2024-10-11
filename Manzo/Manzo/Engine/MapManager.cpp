@@ -15,7 +15,7 @@ using Eigen::Vector2f;
 
 
 
-void CS230::Map::parseSVG(const std::string& filename) {
+void CS230::Map::ParseSVG(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         std::cerr << "Error opening SVG file." << std::endl;
@@ -68,6 +68,7 @@ void CS230::Map::parseSVG(const std::string& filename) {
                     }
                     Vector2f vec;
                     vec << x, y;
+                    //std::cout << "x : " << x << "       " << "y : " << y << std::endl;
                     positions.push_back(vec);
                     count++;
                 }
@@ -83,6 +84,8 @@ void CS230::Map::parseSVG(const std::string& filename) {
             currentTag.clear();
         }
     }
+
+    
 
     file.close();
 }
