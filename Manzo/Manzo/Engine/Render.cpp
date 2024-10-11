@@ -62,6 +62,7 @@ void CS230::Render::RenderAll() {
     draw_first_calls.clear();
     draw_calls.clear();
     draw_late_calls.clear();
+    draw_collision_calls.clear();
 }
 
 namespace
@@ -90,11 +91,11 @@ void CS230::Render::Draw(const DrawCall& draw_call) {
     }
 
     vec2 texture_size = (vec2)draw_call.texture->GetSize();
-    const mat3* model_to_world = draw_call.transform;
+    mat3 model_to_world = *draw_call.transform * mat3::build_scale(texture_size);
 
     mat3 WORLD_TO_NDC = mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height) ;
 
-    const mat3 model_to_ndc = WORLD_TO_NDC * *model_to_world;
+    const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
     shader->SendUniform("uModelToNDC", to_span(model_to_ndc));
     model.Use();
     GLDrawIndexed(model);
@@ -108,31 +109,24 @@ void CS230::Render::DrawLine(CollisionDrawCall drawcall)
     vec2 start = drawcall.start;
     vec2 end = drawcall.end;
     color3 color = drawcall.color;
-
-    glCheck(glLineWidth(5.0f));
     GLShader* shader = Engine::GetShaderManager().GetShader("default_collision");
 
-    // 선의 길이와 방향 계산
     vec2 direction = end - start;
     float length = direction.Length();
     direction = direction.Normalize();
 
-
-    // 선의 회전 각도 계산
     float angle = std::atan2(direction.y, direction.x);
 
-    // 변환 매트릭스 생성
-    //model_to_ndc = mat3::build_translation(start) * mat3::build_rotation(angle) * mat3::build_scale(vec2{ length, length });
+    mat3 model_to_world = mat3::build_translation(start) * mat3::build_rotation(angle)* mat3::build_scale(length);
     
     mat3 WORLD_TO_NDC = mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height);
-    const mat3 model_to_ndc = WORLD_TO_NDC * *model_to_world;
+    const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
 
-    // OpenGL 상태 설정
-    shader->Use(); // 사용할 셰이더 프로그램을 설정합니다.
+    shader->Use();
     shader->SendUniform("uModelToNDC", to_span(model_to_ndc));
-    shader->SendUniform("uFillColor", to_span(color)); // 색상 uniform을 설정합니다.
+    shader->SendUniform("uFillColor", to_span(color));
 
-    // 선의 버퍼 사용
+    glCheck(glLineWidth(1.0f));
     line_model.Use();
     GLDrawVertices(line_model);
 
@@ -194,8 +188,7 @@ void CS230::Render::CreatModel()
 
 void CS230::Render::CreatLineModel()
 {
-    float w = 0.5f, h = 0.5f;
-    const std::array positions = { vec2{-w, -h}, vec2{w, -h} };
+    const std::array positions = { vec2{0, 0}, vec2{1, 0} };
 
     constexpr auto positions_byte_size = static_cast<long long>(sizeof(vec2) * positions.size());
     constexpr auto buffer_size = positions_byte_size;
@@ -212,6 +205,7 @@ void CS230::Render::CreatLineModel()
     position.stride = sizeof(vec2); // Stride for position
     position.offset = 0; // Offset for position
 
+    line_model.SetVertexCount(2);
     line_model.AddVertexBuffer(std::move(buffer), { position });
     line_model.SetPrimitivePattern(GLPrimitive::Lines);
 }

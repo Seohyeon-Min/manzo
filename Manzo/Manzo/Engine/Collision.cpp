@@ -13,6 +13,8 @@ Created:    March 8, 2023
 #include "color3.h"
 #include "ShaderManager.h"
 
+#include <iostream>
+
 #include <array>
 #define GREEN color3(0,255,0)
 
@@ -24,9 +26,10 @@ CS230::RectCollision::RectCollision(Math::irect boundary, GameObject* object) :
 }
 
 Math::rect CS230::RectCollision::WorldBoundary() {
+    std::cout << object->GetMatrix().column2.x << std::endl;
     return {
-        object->GetMatrix() * vec2(boundary.point_1),
-        object->GetMatrix() * vec2(boundary.point_2)    
+        {(object->GetMatrix() * mat3::build_translation((vec2)boundary.point_1)).column2.x,(object->GetMatrix() * mat3::build_translation((vec2)boundary.point_1)).column2.y},
+        {(object->GetMatrix() * mat3::build_translation((vec2)boundary.point_2)).column2.x,(object->GetMatrix() * mat3::build_translation((vec2)boundary.point_2)).column2.y},
     };
 }
 
@@ -44,6 +47,7 @@ void CS230::RectCollision::Draw() {
     //bottom_right.y = bottom_right.y * -1 + render_height;
     //top_left.y = top_left.y * -1 + render_height;
     //top_right.y = top_right.y * -1 + render_height;
+
     Engine::GetRender().AddDrawCall(top_left, top_right, GREEN);
     Engine::GetRender().AddDrawCall(bottom_right, top_right, GREEN);
     Engine::GetRender().AddDrawCall(bottom_right, bottom_left, GREEN);

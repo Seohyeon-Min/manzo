@@ -37,7 +37,7 @@ void Mode1::Load() {
 #endif
     // compenent
     AddGSComponent(new CS230::GameObjectManager());
-    glCheck(glClearColor(0.392f, 0.584f, 0.929f, 1));
+
     //AddGSComponent(new Background());
     AddGSComponent(new Beat());
     AddGSComponent(new AudioManager());
