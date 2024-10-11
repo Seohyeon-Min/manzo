@@ -3,7 +3,7 @@
 #include "GLShader.h"
 #include "Engine.h"
 #include "GameObject.h"
-#include "color3.h"
+
 
 #include <vector>
 #include <unordered_map>
@@ -31,6 +31,10 @@ void CS230::Render::AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase
     }
 }
 
+void CS230::Render::AddDrawCall(vec2 start, vec2 end , color3 color) {
+    draw_collision_calls.push_back({ start , end, color });
+}
+
 // Render all draw calls
 void CS230::Render::RenderAll() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -47,10 +51,18 @@ void CS230::Render::RenderAll() {
         Draw(draw_call);
     }
 
+    if (Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>() != nullptr && Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>()->Enabled()) {
+        for (const auto& draw_call : draw_collision_calls) {
+            DrawLine(draw_call);
+        }
+    }
+
+    //std::cout << draw_calls.size() << std::endl;
     // Clear the draw call vectors if needed for the next frame
     draw_first_calls.clear();
     draw_calls.clear();
     draw_late_calls.clear();
+    draw_collision_calls.clear();
 }
 
 namespace
@@ -58,6 +70,10 @@ namespace
     std::span<const float, 3 * 3> to_span(const mat3& m)
     {
         return std::span<const float, 3 * 3>(&m.elements[0][0], 9);
+    }
+    std::span<const float, 3> to_span(const color3& c)
+    {
+        return std::span<const float, 3>(&c.elements[0], 3);
     }
 }
 
@@ -71,11 +87,11 @@ void CS230::Render::Draw(const DrawCall& draw_call) {
         shader->SendUniform("uTex2d", 0);
     }
     else {
-        throw std::runtime_error("±×¸®±â È£Ãâ¿¡ ÅØ½ºÃ³°¡ Á¦°øµÇÁö ¾Ê¾Ò½À´Ï´Ù!");
+        throw std::runtime_error("ï¿½×¸ï¿½ï¿½ï¿½ È£ï¿½â¿¡ ï¿½Ø½ï¿½Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò½ï¿½ï¿½Ï´ï¿½!");
     }
 
     vec2 texture_size = (vec2)draw_call.texture->GetSize();
-    mat3 model_to_world = draw_call.transform;
+    mat3 model_to_world = *draw_call.transform * mat3::build_scale(texture_size);
 
     mat3 WORLD_TO_NDC = mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height);
 
@@ -87,6 +103,37 @@ void CS230::Render::Draw(const DrawCall& draw_call) {
     model.Use(false);
     shader->Use(false);
 }
+
+void CS230::Render::DrawLine(CollisionDrawCall drawcall)
+{
+    vec2 start = drawcall.start;
+    vec2 end = drawcall.end;
+    color3 color = drawcall.color;
+    GLShader* shader = Engine::GetShaderManager().GetShader("default_collision");
+
+    vec2 direction = end - start;
+    float length = direction.Length();
+    direction = direction.Normalize();
+
+    float angle = std::atan2(direction.y, direction.x);
+
+    mat3 model_to_world = mat3::build_translation(start) * mat3::build_rotation(angle)* mat3::build_scale(length);
+    
+    mat3 WORLD_TO_NDC = mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height);
+    const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
+
+    shader->Use();
+    shader->SendUniform("uModelToNDC", to_span(model_to_ndc));
+    shader->SendUniform("uFillColor", to_span(color));
+
+    glCheck(glLineWidth(1.0f));
+    line_model.Use();
+    GLDrawVertices(line_model);
+
+    shader->Use(false);
+    line_model.Use(false);
+}
+
 
 void CS230::Render::CreatModel()
 {
@@ -137,4 +184,28 @@ void CS230::Render::CreatModel()
     model.SetPrimitivePattern(GLPrimitive::TriangleStrip);
     GLIndexBuffer index_buffer(indices);
     model.SetIndexBuffer(std::move(index_buffer));
+}
+
+void CS230::Render::CreatLineModel()
+{
+    const std::array positions = { vec2{0, 0}, vec2{1, 0} };
+
+    constexpr auto positions_byte_size = static_cast<long long>(sizeof(vec2) * positions.size());
+    constexpr auto buffer_size = positions_byte_size;
+
+    GLVertexBuffer buffer(buffer_size);
+    buffer.SetData(std::span(positions));
+
+    // Position attribute
+    GLAttributeLayout position;
+    position.component_type = GLAttributeLayout::Float;
+    position.component_dimension = GLAttributeLayout::_2;
+    position.normalized = false;
+    position.vertex_layout_location = 0; // Layout location for position
+    position.stride = sizeof(vec2); // Stride for position
+    position.offset = 0; // Offset for position
+
+    line_model.SetVertexCount(2);
+    line_model.AddVertexBuffer(std::move(buffer), { position });
+    line_model.SetPrimitivePattern(GLPrimitive::Lines);
 }
