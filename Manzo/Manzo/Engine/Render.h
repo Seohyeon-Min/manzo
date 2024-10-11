@@ -20,7 +20,7 @@ enum class DrawLayer {
 namespace CS230 {
     struct DrawCall {
         GLTexture* texture;
-        mat3 transform;
+        const mat3* transform;
         const GLShader* shader;
     };
 

@@ -87,7 +87,7 @@ void CS230::Render::Draw(const DrawCall& draw_call) {
         shader->SendUniform("uTex2d", 0);
     }
     else {
-        throw std::runtime_error("�׸��� ȣ�⿡ �ؽ�ó�� �������� �ʾҽ��ϴ�!");
+        throw std::runtime_error("no texture!");
     }
 
     vec2 texture_size = (vec2)draw_call.texture->GetSize();
