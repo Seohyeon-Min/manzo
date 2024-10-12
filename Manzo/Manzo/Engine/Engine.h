@@ -64,12 +64,24 @@ public:
     void Update();
     bool HasGameEnded();
     void HandleEvent(SDL_Window& sdl_window, const SDL_Event& event);
+    void ImGuiDraw() override;
 
     static constexpr int window_width = 1280;
     static constexpr int window_height = 720;
 
 private:
     Engine();
+    void compute_mouse_coordinates();
+
+    struct
+    {
+        int   mouseX = 0;
+        int   mouseY = 0;
+        float mouseCamSpaceX = 0;
+        float mouseCamSpaceY = 0;
+        float mouseWorldSpaceX = 0;
+        float mouseWorldSpaceY = 0;
+    } environment;
 
     std::chrono::system_clock::time_point last_tick = std::chrono::system_clock::now();
     std::chrono::system_clock::time_point last_test;
@@ -79,6 +91,8 @@ private:
     static constexpr double TargetFPS = 240.0;
     static constexpr int FPSDuration = 5;
     static constexpr int FPSTargetFrames = static_cast<int>(FPSDuration * TargetFPS);
+    double dt;
+    double FPS;
 
     //std::vector<CS230::Font> fonts;
     CS230::Logger logger;
