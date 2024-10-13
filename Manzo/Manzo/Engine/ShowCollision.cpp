@@ -9,11 +9,11 @@ Created:    March 8, 2023
 */
 
 #include "ShowCollision.h"
-
+#include <iostream>
 CS230::ShowCollision::ShowCollision() : enabled(true) {}
-
+//Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT)
 void CS230::ShowCollision::Update([[maybe_unused]] double dt) {
-    if (Engine::GetInput().KeyJustReleased(CS230::Input::Keys::Tab) == true) {
+    if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::TAB)) {
         enabled = !enabled;
     }
 }

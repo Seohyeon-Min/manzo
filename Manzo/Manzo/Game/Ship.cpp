@@ -71,15 +71,12 @@ void Ship::Move(double dt)
 
     double totalDistanceToMove = 50.0;
 
-    std::cout << "Dist: " << distanceMoved << std::endl;
-
     if (distanceMoved >= totalDistanceToMove) { // stop
         SetVelocity({ 0, 0 });
         currentSpeed = initialSpeed;
         move = false;
     }
     else {
-        std::cout << "currentSpeed: " << currentSpeed << std::endl;
         SetVelocity({ direction.x * currentSpeed, direction.y * currentSpeed }); //move if left
         if (currentSpeed > 0) {
             currentSpeed -= (float)(deceleration);

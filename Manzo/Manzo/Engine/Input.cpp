@@ -17,50 +17,43 @@ void CS230::Input::SetKeyDown(Keys key, bool value) {
     previous_keys_down[static_cast<int>(key)] = value;
 }
 
-void CS230::Input::Update() {
+void CS230::Input::Update(const SDL_Event& event) {
+    //if (KeyJustPressed(Keys::TAB)) {
+    //    std::cout << "Tab key was just pressed!" << std::endl;
+    //}
     memcpy(previous_mouse_state.data(), current_mouse_state.data(), current_mouse_state.size() * sizeof(bool));
-
-    while (SDL_PollEvent(&event)) {
-        switch (event.type) {
-        case SDL_QUIT:
-            quit = true;
-            break;
-        case SDL_KEYDOWN:
-            SetKeyDown(static_cast<Keys>(event.key.keysym.scancode), true);
-            break;
-        case SDL_KEYUP:
-            SetKeyDown(static_cast<Keys>(event.key.keysym.scancode), false);
-            break;
-        case SDL_MOUSEBUTTONDOWN:
-            SetMouseButtonDown(event.button.button, true);
-            break;
-        case SDL_MOUSEBUTTONUP:
-            SetMouseButtonDown(event.button.button, false);
-            break;
-        case SDL_MOUSEMOTION:
-            mouse_position.x = (float)event.motion.x - (Engine::window_width / 2);
-            mouse_position.y = (Engine::window_height / 2) - (float)event.motion.y; // Invert y for center origin
-            break;
-        default:
-            break;
-        }
-    }
-
-    current_key_state = SDL_GetKeyboardState(nullptr);
-
-    // 마우스 상태 업데이트
-    Uint32 mouse_state = SDL_GetMouseState(nullptr, nullptr);
-    current_mouse_state[0] = mouse_state & SDL_BUTTON(SDL_BUTTON_LEFT);     // Left
-    current_mouse_state[1] = mouse_state & SDL_BUTTON(SDL_BUTTON_MIDDLE);   // Middle
-    current_mouse_state[2] = mouse_state & SDL_BUTTON(SDL_BUTTON_RIGHT);    // Right
-    current_mouse_state[3] = mouse_state & SDL_BUTTON(SDL_BUTTON_X1);       // X1
-    current_mouse_state[4] = mouse_state & SDL_BUTTON(SDL_BUTTON_X2);       // X2
-    // current_mouse_state[5]는 사용되지 않음
-
-    // 키 상태 저장
     for (int i = 0; i < SDL_NUM_SCANCODES; ++i) {
         previous_keys_down[i] = current_key_state[i];
     }
+
+    switch (event.type) {
+    case SDL_KEYDOWN:
+        SetKeyDown(static_cast<Keys>(event.key.keysym.scancode), true);
+        break;
+    case SDL_KEYUP:
+        SetKeyDown(static_cast<Keys>(event.key.keysym.scancode), false);
+        break;
+    case SDL_MOUSEBUTTONDOWN:
+        SetMouseButtonDown(event.button.button, true);
+        break;
+    case SDL_MOUSEBUTTONUP:
+        SetMouseButtonDown(event.button.button, false);
+        break;
+    case SDL_MOUSEMOTION:
+        mouse_position.x = static_cast<float>(event.motion.x) - (Engine::window_width / 2);
+        mouse_position.y = (Engine::window_height / 2) - static_cast<float>(event.motion.y);
+        break;
+    default:
+        break;
+    }
+
+    current_key_state = SDL_GetKeyboardState(nullptr);
+    Uint32 mouse_state = SDL_GetMouseState(nullptr, nullptr);
+    current_mouse_state[0] = mouse_state & SDL_BUTTON(SDL_BUTTON_LEFT);
+    current_mouse_state[1] = mouse_state & SDL_BUTTON(SDL_BUTTON_MIDDLE);
+    current_mouse_state[2] = mouse_state & SDL_BUTTON(SDL_BUTTON_RIGHT);
+    current_mouse_state[3] = mouse_state & SDL_BUTTON(SDL_BUTTON_X1);
+    current_mouse_state[4] = mouse_state & SDL_BUTTON(SDL_BUTTON_X2);
 }
 
 bool CS230::Input::KeyDown(Keys key) {
@@ -68,6 +61,8 @@ bool CS230::Input::KeyDown(Keys key) {
 }
 
 bool CS230::Input::KeyJustPressed(Keys key) {
+    if (current_key_state[static_cast<int>(key)] && !previous_keys_down[static_cast<int>(key)])
+        std::cout << "asdf" << std::endl;
     return current_key_state[static_cast<int>(key)] && !previous_keys_down[static_cast<int>(key)];
 }
 

@@ -119,12 +119,13 @@ void GLApp::Update()
         {
             is_done = true;
         }
+         
     }
     ptr_program->Update();
     ImGuiHelper::Begin();
 
     //ptr_program->Draw();
-    //ptr_program->ImGuiDraw();
+    ptr_program->ImGuiDraw();
     ImGuiHelper::End(ptr_window, gl_context);
 
     SDL_GL_SwapWindow(ptr_window);

@@ -18,6 +18,6 @@ public:
 
 private:
     // ¼ÎÀÌ´õ ÀúÀåÀ» À§ÇÑ ¸Ê
-    std::unordered_map<std::string, std::unique_ptr<GLShader>> shaders;
-    GLShader default_shader;
+    std::unordered_map<std::string, std::shared_ptr<GLShader>> shaders;
+    std::shared_ptr<GLShader> default_shader;
 };

@@ -10,6 +10,9 @@ Created:    March 8, 2023
 
 #include "Rect.h"
 #include "Component.h"
+#include "color3.h"
+#include "GLVertexArray.h"
+#include "GLShader.h"
 
 #pragma once
 namespace Math {
