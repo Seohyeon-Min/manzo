@@ -22,7 +22,6 @@ int main() {
         SDL_GL_SetSwapInterval(1);
 
         while (!OpenGLAPPlication.IsDone() && !engine.HasGameEnded()) {
-            //engine.Update(); // Update the engine here
             OpenGLAPPlication.Update();
         }
 

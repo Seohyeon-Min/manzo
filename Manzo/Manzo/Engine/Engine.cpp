@@ -9,6 +9,9 @@ Created:    March 8, 2023
 */
 
 #include "Engine.h"
+#include "ShowCollision.h"
+#include "../Game/BeatSystem.h"
+
 #include <SDL2/SDL.h>
 #include <iostream>
 #include <imgui.h>
@@ -47,7 +50,6 @@ void Engine::Update() {
         last_tick = now;
 
         gamestatemanager.Update(dt);
-        input.Update();
     }
 
     if (frame_count >= FPSTargetFrames) {
@@ -61,6 +63,7 @@ void Engine::Update() {
 
 void Engine::HandleEvent(SDL_Window& sdl_window, const SDL_Event& event)
 {
+    GetInput().Update(event);
     switch (event.type)
     {
     case SDL_QUIT << '\n':
@@ -76,57 +79,6 @@ void Engine::HandleEvent(SDL_Window& sdl_window, const SDL_Event& event)
             environment.mouseY = static_cast<int>(GetInput().GetMousePosition().y);
         }
         break;
-    case SDL_WINDOWEVENT:
-    {
-        switch (event.window.event)
-        {
-        case SDL_WINDOWEVENT_SHOWN:
-            std::clog << "Window " << event.window.windowID << " shown" << '\n';
-            break;
-        case SDL_WINDOWEVENT_HIDDEN:
-            std::clog << "Window " << event.window.windowID << " hidden" << '\n';
-            break;
-        case SDL_WINDOWEVENT_EXPOSED:
-            std::clog << "Window " << event.window.windowID << " exposed" << '\n';
-            break;
-        case SDL_WINDOWEVENT_MOVED:
-            std::clog << "Window " << event.window.windowID << " moved to " << event.window.data1 << ',' << event.window.data2 << '\n';
-            break;
-        case SDL_WINDOWEVENT_MINIMIZED:
-            std::clog << "Window " << event.window.windowID << " minimized" << '\n';
-            break;
-        case SDL_WINDOWEVENT_MAXIMIZED:
-            std::clog << "Window " << event.window.windowID << " maximized" << '\n';
-            break;
-        case SDL_WINDOWEVENT_RESTORED:
-            std::clog << "Window " << event.window.windowID << " restored" << '\n';
-            break;
-        case SDL_WINDOWEVENT_ENTER:
-            std::clog << "Mouse entered window " << event.window.windowID << '\n';
-            break;
-        case SDL_WINDOWEVENT_LEAVE:
-            std::clog << "Mouse left window " << event.window.windowID << '\n';
-            break;
-        case SDL_WINDOWEVENT_FOCUS_GAINED:
-            std::clog << "Window " << event.window.windowID << " gained keyboard focus" << '\n';
-            break;
-        case SDL_WINDOWEVENT_FOCUS_LOST:
-            std::clog << "Window " << event.window.windowID << " lost keyboard focus" << '\n';
-            break;
-        case SDL_WINDOWEVENT_CLOSE:
-            std::clog << "Window " << event.window.windowID << " closed" << '\n';
-            break;
-        case SDL_WINDOWEVENT_TAKE_FOCUS:
-            std::clog << "Window " << event.window.windowID << " is offered a focus" << '\n';
-            break;
-        case SDL_WINDOWEVENT_HIT_TEST:
-            std::clog << "Window " << event.window.windowID << " has a special hit test" << '\n';
-            break;
-        default:
-            std::clog << "Window " << event.window.windowID << " got unknown event " << event.window.event << '\n';
-            break;
-        }
-    }
     }
 
 }
@@ -170,13 +122,17 @@ void Engine::ImGuiDraw()
         //{
         //    caminfo.camera_view.SetZoom(zoom / 100.0f);
         //}
+        if (!GetGameStateManager().IsNull()) {
+            ImGui::LabelText("Is on beat?", "%s", GetGameStateManager().GetGSComponent<Beat>()->GetIsOnBeat() ? "true" : "false");
+            ImGui::LabelText("Collision", "%s", GetGameStateManager().GetGSComponent<CS230::ShowCollision>()->Enabled() ? "true" : "false");
+        }
     }
     ImGui::End();
 }
 
 bool Engine::HasGameEnded() {
     if (gamestatemanager.HasGameEnded()) {
-        return true;
+
     }
     return false;
 }

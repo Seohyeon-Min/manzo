@@ -26,7 +26,6 @@ CS230::RectCollision::RectCollision(Math::irect boundary, GameObject* object) :
 }
 
 Math::rect CS230::RectCollision::WorldBoundary() {
-    std::cout << object->GetMatrix().column2.x << std::endl;
     return {
         {(object->GetMatrix() * mat3::build_translation((vec2)boundary.point_1)).column2.x,(object->GetMatrix() * mat3::build_translation((vec2)boundary.point_1)).column2.y},
         {(object->GetMatrix() * mat3::build_translation((vec2)boundary.point_2)).column2.x,(object->GetMatrix() * mat3::build_translation((vec2)boundary.point_2)).column2.y},

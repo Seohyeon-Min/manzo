@@ -19,5 +19,5 @@ public:
 private:
     // ¼ÎÀÌ´õ ÀúÀåÀ» À§ÇÑ ¸Ê
     std::unordered_map<std::string, std::shared_ptr<GLShader>> shaders;
-    GLShader default_shader;
+    std::shared_ptr<GLShader> default_shader;
 };

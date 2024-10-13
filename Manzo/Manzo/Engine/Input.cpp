@@ -17,34 +17,34 @@ void CS230::Input::SetKeyDown(Keys key, bool value) {
     previous_keys_down[static_cast<int>(key)] = value;
 }
 
-void CS230::Input::Update() {
+void CS230::Input::Update(const SDL_Event& event) {
     memcpy(previous_mouse_state.data(), current_mouse_state.data(), current_mouse_state.size() * sizeof(bool));
-
-    //while (SDL_PollEvent(&event)) {
-    //    switch (event.type) {
-    //    case SDL_QUIT:
-    //        quit = true;
-    //        break;
-    //    case SDL_KEYDOWN:
-    //        SetKeyDown(static_cast<Keys>(event.key.keysym.scancode), true);
-    //        break;
-    //    case SDL_KEYUP:
-    //        SetKeyDown(static_cast<Keys>(event.key.keysym.scancode), false);
-    //        break;
-    //    case SDL_MOUSEBUTTONDOWN:
-    //        SetMouseButtonDown(event.button.button, true);
-    //        break;
-    //    case SDL_MOUSEBUTTONUP:
-    //        SetMouseButtonDown(event.button.button, false);
-    //        break;
-    //    case SDL_MOUSEMOTION:
-    //        mouse_position.x = (float)event.motion.x - (Engine::window_width / 2);
-    //        mouse_position.y = (Engine::window_height / 2) - (float)event.motion.y; // Invert y for center origin
-    //        break;
-    //    default:
-    //        break;
-    //    }
-    //}
+    if (KeyJustPressed(Keys::TAB)) {
+        std::cout << "Tab key was just pressed!" << std::endl;
+    }
+    switch (event.type) {
+    case SDL_QUIT:
+        quit = true;
+        break;
+    case SDL_KEYDOWN:
+        SetKeyDown(static_cast<Keys>(event.key.keysym.scancode), true);
+        break;
+    case SDL_KEYUP:
+        SetKeyDown(static_cast<Keys>(event.key.keysym.scancode), false);
+        break;
+    case SDL_MOUSEBUTTONDOWN:
+        SetMouseButtonDown(event.button.button, true);
+        break;
+    case SDL_MOUSEBUTTONUP:
+        SetMouseButtonDown(event.button.button, false);
+        break;
+    case SDL_MOUSEMOTION:
+        mouse_position.x = (float)event.motion.x - (Engine::window_width / 2);
+        mouse_position.y = (Engine::window_height / 2) - (float)event.motion.y; // Invert y for center origin
+        break;
+    default:
+        break;
+    }
 
     current_key_state = SDL_GetKeyboardState(nullptr);
 

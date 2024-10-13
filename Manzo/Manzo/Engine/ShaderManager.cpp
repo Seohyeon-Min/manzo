@@ -1,11 +1,10 @@
 #include "ShaderManager.h"
 
-
 ShaderManager::ShaderManager() {
-    default_shader = GLShader("Default Shader", {
-    {GLShader::VERTEX, "assets/shaders/default2.vert"},
-    {GLShader::FRAGMENT, "assets/shaders/default.frag"}
-            });
+    default_shader = std::make_shared<GLShader>("Default Shader", std::initializer_list<std::pair<GLShader::Type, std::filesystem::path>>{
+        {GLShader::VERTEX, "assets/shaders/default2.vert"},
+        { GLShader::FRAGMENT, "assets/shaders/default.frag" }
+    });
 }
 
 // 셰이더 로드 또는 이미 존재하면 반환
@@ -36,7 +35,7 @@ GLShader* ShaderManager::GetShader(const std::string& shader_name) {
 GLShader* ShaderManager::GetDefaultShader()
 {
 
-    return &default_shader;
+    return default_shader.get();
 }
 
 // 모든 셰이더 제거

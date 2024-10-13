@@ -119,6 +119,7 @@ void GLApp::Update()
         {
             is_done = true;
         }
+         
     }
     ptr_program->Update();
     ImGuiHelper::Begin();

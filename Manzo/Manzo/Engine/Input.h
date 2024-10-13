@@ -57,6 +57,7 @@ namespace CS230 {
             Shift = SDL_SCANCODE_LSHIFT,
             Ctrl = SDL_SCANCODE_LCTRL,
             Alt = SDL_SCANCODE_LALT,
+            TAB = SDL_SCANCODE_TAB,
             Backspace = SDL_SCANCODE_BACKSPACE,
             Delete = SDL_SCANCODE_DELETE,
             Home = SDL_SCANCODE_HOME,
@@ -90,7 +91,7 @@ namespace CS230 {
         };
 
         Input();
-        void Update();
+        void Update(const SDL_Event& event);
         void SetKeyDown(Keys key, bool value);
         bool KeyDown(Keys key);
         bool KeyJustPressed(Keys key);
