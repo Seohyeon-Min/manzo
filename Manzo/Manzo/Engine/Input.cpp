@@ -17,10 +17,11 @@ void CS230::Input::SetKeyDown(Keys key, bool value) {
     previous_keys_down[static_cast<int>(key)] = value;
 }
 
-void CS230::Input::Update(const SDL_Event& event) {
+void CS230::Input::Update() {
     //if (KeyJustPressed(Keys::TAB)) {
     //    std::cout << "Tab key was just pressed!" << std::endl;
     //}
+
     memcpy(previous_mouse_state.data(), current_mouse_state.data(), current_mouse_state.size() * sizeof(bool));
     for (int i = 0; i < SDL_NUM_SCANCODES; ++i) {
         previous_keys_down[i] = current_key_state[i];

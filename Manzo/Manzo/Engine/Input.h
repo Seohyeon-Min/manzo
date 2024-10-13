@@ -91,7 +91,7 @@ namespace CS230 {
         };
 
         Input();
-        void Update(const SDL_Event& event);
+        void Update();
         void SetKeyDown(Keys key, bool value);
         bool KeyDown(Keys key);
         bool KeyJustPressed(Keys key);
