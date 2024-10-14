@@ -13,5 +13,6 @@ Updated:    03/14/2024
 
 enum class States {
     Splash,
-    Mode1
+    Mode1,
+    Mode2
 };

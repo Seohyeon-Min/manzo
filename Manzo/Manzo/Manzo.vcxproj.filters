@@ -82,6 +82,9 @@
     <ClCompile Include="Engine\ShaderManager.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Mode2.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h">
@@ -176,6 +179,9 @@
     </ClInclude>
     <ClInclude Include="Engine\ShaderManager.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Mode2.h">
+      <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

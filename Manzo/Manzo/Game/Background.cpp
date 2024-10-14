@@ -30,5 +30,5 @@ void Background::Draw(const CS230::Camera& camera)
 
 ivec2 Background::GetSize()
 {
-	return backgrounds[backgrounds.size()-1].texture->GetSize();;
+	return backgrounds[backgrounds.size()-1].texture->GetSize();
 }

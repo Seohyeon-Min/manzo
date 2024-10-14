@@ -4,6 +4,7 @@
 #include "Engine/Engine.h"
 #include "Game/Splash.h"
 #include "Game/Mode1.h"
+#include "Game/Mode2.h"
 
 util::owner<IProgram*> create_program(int viewport_width, int viewport_height)
 {
@@ -16,8 +17,14 @@ int main() {
         GLApp OpenGLAPPlication("Manzo");
         Engine& engine = Engine::Instance();
 
+        Splash splash;
+        engine.GetGameStateManager().AddGameState(splash);
+
         Mode1 mode1;
         engine.GetGameStateManager().AddGameState(mode1);
+
+        Mode2 mode2;
+        engine.GetGameStateManager().AddGameState(mode2);
 
         SDL_GL_SetSwapInterval(1);
 
