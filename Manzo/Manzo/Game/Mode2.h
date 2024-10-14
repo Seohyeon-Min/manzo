@@ -12,6 +12,7 @@ Created:    Sept 12, 2024
 #include "../Engine/GameState.h"
 #include "../Engine/Sprite.h"
 #include "..\Engine\GameObjectManager.h"
+#include "../Engine/Timer.h"
 
 
 class Ship;
@@ -29,6 +30,7 @@ public:
     }
 private:
     double counter = 0.0;
+    CS230::Timer* timer;
     double swimming_range = 15.0;
     Ship* ship_ptr;
 };
