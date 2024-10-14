@@ -4,7 +4,6 @@
 #include "Engine.h"
 #include "Component.h"
 #include <vector>
-#include <Eigen/Dense>
 
 
 
