@@ -12,8 +12,9 @@ Created:    March 8, 2023
 #include "GameObject.h"
 #include "color3.h"
 #include "ShaderManager.h"
-
+#include "MapManager.h"
 #include <iostream>
+#include "vec2.h"
 
 #include <array>
 #define GREEN color3(0,255,0)
@@ -91,4 +92,79 @@ bool CS230::RectCollision::IsCollidingWith(vec2 point)
         return true;
     }
     return false;
+}
+
+
+//This four funtion is need for SATCollision
+vec2 GetPerpendicular(const vec2& v) {
+    return { -v.y, v.x };
+}
+float Vector2DotProduct(const vec2& v1, const vec2& v2) {
+    return v1.x * v2.x + v1.y * v2.y;
+}
+vec2 NormalizeVector2(const vec2& v) {
+    float length = sqrt(v.x * v.x + v.y * v.y);
+    return { v.x / length, v.y / length };
+}
+void ProjectPolygon(const Polygon& polygon, const vec2& axis, float& min, float& max) {
+    float project_result = Vector2DotProduct(polygon.vertices[0], axis);
+    min = project_result;
+    max = project_result;
+
+    for (int i = 1; i < polygon.vertexCount; i++) {
+        project_result = Vector2DotProduct(polygon.vertices[i], axis);
+        if (project_result < min) min = project_result;
+        if (project_result > max) max = project_result;
+    }
+}
+
+bool CS230::MAP_SATCollision::MapCollision(const Polygon& poly1, const Polygon& poly2)
+{
+    for (int i = 0; i < poly1.vertexCount; i++) {
+        vec2 edge = { poly1.vertices[(i + 1) % poly1.vertexCount].x - poly1.vertices[i].x,
+                         poly1.vertices[(i + 1) % poly1.vertexCount].y - poly1.vertices[i].y };
+        vec2 axis = NormalizeVector2(GetPerpendicular(edge));  
+
+        float minA, maxA;
+        ProjectPolygon(poly1, axis, minA, maxA);    
+
+        float minB, maxB;
+        ProjectPolygon(poly2, axis, minB, maxB);    
+
+        if (maxA < minB || maxB < minA) {   
+            return false;
+        }
+    }
+
+    for (int i = 0; i < poly2.vertexCount; i++) {
+        vec2 edge = { poly2.vertices[(i + 1) % poly2.vertexCount].x - poly2.vertices[i].x,
+                         poly2.vertices[(i + 1) % poly2.vertexCount].y - poly2.vertices[i].y };
+        vec2 axis = NormalizeVector2(GetPerpendicular(edge));
+
+        float minA, maxA;
+        ProjectPolygon(poly1, axis, minA, maxA);
+
+        float minB, maxB;
+        ProjectPolygon(poly2, axis, minB, maxB);
+
+        if (maxA < minB || maxB < minA) {
+            return false;
+        }
+    }
+
+    return true;    
+}
+
+void CS230::MAP_SATCollision::Draw() {
+    for (const auto& poly : objects) {
+        for (int j = 1; j < poly.vertexCount; ++j) {
+            Engine::GetRender().AddDrawCall(vec2{ poly.vertices[j - 1].x, poly.vertices[j - 1].y }, 
+                                            vec2{ poly.vertices[j].x, poly.vertices[j].y }, 
+                                            GREEN);
+        }
+        Engine::GetRender().AddDrawCall(vec2{ poly.vertices.back().x, poly.vertices.back().y }, 
+                                        vec2{ poly.vertices.front().x, poly.vertices.front().y }, 
+                                        GREEN);
+    }
+
 }

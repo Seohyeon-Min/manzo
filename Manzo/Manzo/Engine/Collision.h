@@ -13,6 +13,8 @@ Created:    March 8, 2023
 #include "color3.h"
 #include "GLVertexArray.h"
 #include "GLShader.h"
+#include "MapManager.h"
+#include "vec2.h"
 
 #pragma once
 namespace Math {
@@ -48,5 +50,14 @@ namespace CS230 {
     private:
         GameObject* object;
         Math::irect boundary;
+    };
+
+    class MAP_SATCollision : public Collision {
+    public:
+        bool MapCollision(const Polygon& poly1, const Polygon& poly2);
+        void Draw();
+
+    private:
+
     };
 }

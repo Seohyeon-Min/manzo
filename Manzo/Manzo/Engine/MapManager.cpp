@@ -90,3 +90,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
 
     file.close();
 }
+
+std::vector<Polygon> CS230::Map::GetMapObject() {
+    return objects;
+}
