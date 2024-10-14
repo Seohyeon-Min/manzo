@@ -155,17 +155,22 @@ bool CS230::MAP_SATCollision::MapCollision(const Polygon& poly1, const Polygon& 
     return true;    
 }
 
+CS230::MAP_SATCollision::MAP_SATCollision(Polygon boundary, GameObject* object) : 
+    boundary(boundary),
+    object(object)
+{
+}
+
 void CS230::MAP_SATCollision::Draw() {
-    const std::vector<Polygon>& objects = CS230::Map::getObject();
-    for (const auto& poly : objects) {
-        for (int j = 1; j < poly.vertexCount; ++j) {
-            Engine::GetRender().AddDrawCall(vec2{ poly.vertices[j - 1].x, poly.vertices[j - 1].y }, 
-                                            vec2{ poly.vertices[j].x, poly.vertices[j].y }, 
-                                            GREEN);
-        }
-        Engine::GetRender().AddDrawCall(vec2{ poly.vertices.back().x, poly.vertices.back().y }, 
-                                        vec2{ poly.vertices.front().x, poly.vertices.front().y }, 
+
+    for (int j = 1; j < boundary.vertexCount; ++j) {
+        Engine::GetRender().AddDrawCall(vec2{ boundary.vertices[j - 1].x, boundary.vertices[j - 1].y },
+                                        vec2{ boundary.vertices[j].x, boundary.vertices[j].y },
                                         GREEN);
     }
+    Engine::GetRender().AddDrawCall(vec2{ boundary.vertices.back().x, boundary.vertices.back().y },
+                                    vec2{ boundary.vertices.front().x, boundary.vertices.front().y },
+                                    GREEN);
+
 
 }

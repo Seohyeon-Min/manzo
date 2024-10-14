@@ -54,10 +54,16 @@ namespace CS230 {
 
     class MAP_SATCollision : public Collision {
     public:
-        bool MapCollision(const Polygon& poly1, const Polygon& poly2);
-        void Draw();
-
+        MAP_SATCollision(Polygon boundary, GameObject* object);
+        bool MapCollision(const Polygon& poly1, const Polygon& poly2, GameObject* object);
+        void Draw() override;
+        CollisionShape Shape() override {
+            return CollisionShape::Rect; // chanbge name
+        }
+        bool IsCollidingWith(GameObject* other_object) override;
+        bool IsCollidingWith(vec2 point) override;
     private:
-
+        GameObject* object;
+        Polygon boundary;
     };
 }

@@ -75,11 +75,13 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 }
 
 
+                //new object rock
                 Polygon poly;
+                CS230::GameObject* rock = new Rock(poly);
                 poly.vertices = positions;
                 poly.vertexCount = int(positions.size());
-
                 objects.push_back(poly);
+                rock-> AddGOComponent(new MAP_SATCollision(poly, rock));
             }
 
             currentTag.clear();
@@ -89,9 +91,14 @@ void CS230::Map::ParseSVG(const std::string& filename) {
     
 
     file.close();
+
+    AddDrawCall();
 }
 
-const std::vector<Polygon>& CS230::Map::getObject() {
-    return objects;
-}
 
+void CS230::Map::AddDrawCall()
+{
+    for (auto& object: objects) {
+        object.Draw();
+    }
+}
