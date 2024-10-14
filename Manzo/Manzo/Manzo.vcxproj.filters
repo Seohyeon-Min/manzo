@@ -183,5 +183,6 @@
     <ClInclude Include="Engine\MapManager.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Polygon.h" />
   </ItemGroup>
 </Project>

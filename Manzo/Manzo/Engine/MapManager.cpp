@@ -1,4 +1,5 @@
 #include "MapManager.h"
+#include "GameObjectManager.h"
 #include "vec2.h"
 #include <cmath>
 #include <vector>
@@ -77,7 +78,8 @@ void CS230::Map::ParseSVG(const std::string& filename) {
 
                 //new object rock
                 Polygon poly;
-                CS230::GameObject* rock = new Rock(poly);
+                Rock* rock = new Rock(poly);
+                Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rock);
                 poly.vertices = positions;
                 poly.vertexCount = int(positions.size());
                 objects.push_back(poly);
@@ -91,7 +93,6 @@ void CS230::Map::ParseSVG(const std::string& filename) {
     
 
     file.close();
-
     AddDrawCall();
 }
 
@@ -101,4 +102,18 @@ void CS230::Map::AddDrawCall()
     for (auto& object: objects) {
         object.Draw();
     }
+}
+
+Rock::Rock(Polygon):GameObject({0,0})
+{
+}
+
+void Rock::Update(double dt)
+{
+    GameObject::Update(dt);
+}
+
+void Rock::Draw()
+{
+    GameObject::Draw();
 }

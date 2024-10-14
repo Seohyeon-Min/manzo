@@ -42,11 +42,11 @@ Polygon CS230::MAP_SATCollision::WorldBoundary_poly() {
     Polygon boundary_poly;
     vec2 transformedPoint;
     for (int i = 0; i < boundary.vertexCount; ++i) {
-        transformedPoint.x = (object->GetMatrix() * mat3::build_translation(boundary.vertices[j])).column2.x;
+        transformedPoint.x = (object->GetMatrix() * mat3::build_translation(boundary.vertices[i])).column2.x;
         boundary_poly.vertices.push_back(transformedPoint);
     }
 
-    boundary_poly.vertexCount = boundary_poly.vertices.size();
+    boundary_poly.vertexCount = (int)boundary_poly.vertices.size();
 
     return boundary_poly;
 }

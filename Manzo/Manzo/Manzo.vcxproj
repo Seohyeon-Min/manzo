@@ -54,6 +54,7 @@
     <ClInclude Include="Engine\logger.h" />
     <ClInclude Include="Engine\MapManager.h" />
     <ClInclude Include="Engine\Particle.h" />
+    <ClInclude Include="Engine\Polygon.h" />
     <ClInclude Include="Engine\Rect.h" />
     <ClInclude Include="Engine\Render.h" />
     <ClInclude Include="Engine\ShaderManager.h" />

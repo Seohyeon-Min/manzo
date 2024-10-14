@@ -13,10 +13,11 @@ Created:    March 8, 2023
 #include "color3.h"
 #include "GLVertexArray.h"
 #include "GLShader.h"
-#include "MapManager.h"
 #include "vec2.h"
+#include "Polygon.h"
 
 #pragma once
+
 namespace Math {
     class TransformationMatrix;
 }

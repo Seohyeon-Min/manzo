@@ -1,17 +1,12 @@
 #pragma once
 
 #include "vec2.h"
-#include "Engine.h"
 #include "Component.h"
-#include <vector>
 #include "GameObject.h"
 #include "..\Game\GameObjectTypes.h"
+#include "Polygon.h"
 
-struct [[nodiscard]] Polygon
-	{
-	std::vector<vec2> vertices;
-	int vertexCount;
-};
+#include <vector>
 
 class Rock : public CS230::GameObject
 {
