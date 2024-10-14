@@ -60,7 +60,7 @@ void Mode1::Load() {
     if (sample) {
         GetGSComponent<AudioManager>()->PlayMusic(sample, -1);
     }
-    GetGSComponent<CS230::Map>()->ParseSVG("C:/Users/USER/Desktop/MANZO/Manzo/assets/maps/test.svg");
+    GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/test.svg");
 }
 
 void Mode1::Update(double dt) {
