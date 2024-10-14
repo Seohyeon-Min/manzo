@@ -1,5 +1,5 @@
 #include "MapManager.h"
-#include <Eigen/Dense>
+#include "vec2.h"
 #include <cmath>
 #include <vector>
 #include <iostream>
@@ -11,7 +11,7 @@
 
 
 
-using Eigen::Vector2f;
+
 
 
 
@@ -41,7 +41,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 float last_x = 0;
                 float last_y = 0;
 
-                std::vector<Vector2f> positions;
+                std::vector<vec2> positions;
 
                 while (std::getline(stream, data, ',')) {
                     if (data == "m" || data == "z") {
@@ -66,9 +66,10 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                             last_y = y;
                         }
                     }
-                    Vector2f vec;
-                    vec << x, y;
-                    //std::cout << "x : " << x << "       " << "y : " << y << std::endl;
+                    vec2 vec;
+                    vec.x = x;
+                    vec.y = y;
+                    std::cout << "x : " << x << "       " << "y : " << y << std::endl;
                     positions.push_back(vec);
                     count++;
                 }

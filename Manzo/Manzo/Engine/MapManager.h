@@ -7,7 +7,6 @@
 #include <Eigen/Dense>
 
 
-using Eigen::Vector2f;
 
 namespace CS230 {
 	class Map : public CS230::Component{
@@ -16,7 +15,7 @@ namespace CS230 {
 
 	private:
 		typedef struct {
-			std::vector<Vector2f> vertices;
+			std::vector<vec2> vertices;
 			int vertexCount;
 		} Polygon;
 
