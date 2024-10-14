@@ -77,7 +77,7 @@ void Mode2::Draw() {
 }
 
 void Mode2::Unload() {
-
+    ship_ptr = nullptr;
     GetGSComponent<CS230::GameObjectManager>()->Unload();
     ClearGSComponents();
 }

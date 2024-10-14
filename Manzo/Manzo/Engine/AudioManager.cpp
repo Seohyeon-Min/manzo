@@ -36,7 +36,7 @@ void AudioManager::CleanUp() {
     }
     Mix_CloseAudio();
     Mix_Quit();
-    SDL_Quit();
+    //SDL_Quit();
 }
 
 Mix_Chunk* AudioManager::LoadSound(const std::string& filePath, const std::string& name) {
