@@ -10,38 +10,22 @@ Updated:    March 29, 2023
 */
 
 #include "Background.h"
-
-void Background::Add(const std::filesystem::path& texture_path, double speed)
+#include <iostream>
+Background::Background(vec2 start_position, const CS230::Camera& camera)
+    : CS230::GameObject(start_position), camera(camera)  // 카메라 참조로 저장
 {
-	backgrounds.push_back(ParallaxLayer({ Engine::GetTextureManager().Load(texture_path), speed }));
+    AddGOComponent(new CS230::Sprite("assets/images/temp_back.spt", this));
 }
 
-void Background::Unload()
+void Background::Update(double dt)
 {
-	backgrounds.clear();
+    SetPosition(-camera.GetPosition());
+    GameObject::Update(dt);  
+
+    std::cout << "Background position: (" << GetPosition().x << ", " << GetPosition().y << ")" << std::endl;
 }
 
-void Background::Draw(const CS230::Camera& camera)
+void Background::Draw()
 {
-    for (ParallaxLayer& background : backgrounds) {
-        vec2 parallax_position = -camera.GetPosition() * (float)background.speed;
-
-        //// Build the translation matrix with parallax effect
-        //mat3 parallax_matrix = mat3::build_translation(parallax_position);
-
-        //CS230::DrawCall draw_call = {
-        //    background.texture,                       // Texture to draw
-        //    parallax_matrix,                          // Transformation matrix
-        //    Engine::GetShaderManager().GetDefaultShader() // Shader to use
-        //};
-
-        //// Add the draw call to the renderer
-        //Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawFirst);
-    }// Somewhere in your main game loop or rendering function
-
-}
-
-ivec2 Background::GetSize()
-{
-	return backgrounds[backgrounds.size()-1].texture->GetSize();;
+    CS230::GameObject::Draw();
 }

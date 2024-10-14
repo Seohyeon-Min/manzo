@@ -16,6 +16,7 @@ Created:    March 8, 2023
 #include "../Engine/Timer.h"
 #include "FishEcosystem.h"
 #include "../Engine/Camera.h"
+#include "Background.h"
 
 class Reef;
 class Ship;
@@ -37,6 +38,7 @@ private:
     FishGenerator* fishGenerator;
     Fish* fish;
     CS230::Camera* camera;
+    Background* background;
 
     int money = 0;
 };
