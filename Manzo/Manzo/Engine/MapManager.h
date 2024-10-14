@@ -11,15 +11,14 @@ struct [[nodiscard]] Polygon
 	int vertexCount;
 };
 
-extern std::vector<Polygon> objects;
 
 namespace CS230 {
 	class Map : public CS230::Component{
 	public:
+		std::vector<Polygon> objects;
+
 		void ParseSVG(const std::string& filename);
-		std::vector<Polygon> GetMapObject();
-
-
+		static std::vector<Polygon>& getObject();
 	private:
 		
 		

@@ -156,6 +156,7 @@ bool CS230::MAP_SATCollision::MapCollision(const Polygon& poly1, const Polygon& 
 }
 
 void CS230::MAP_SATCollision::Draw() {
+    const std::vector<Polygon>& objects = CS230::Map::getObject();
     for (const auto& poly : objects) {
         for (int j = 1; j < poly.vertexCount; ++j) {
             Engine::GetRender().AddDrawCall(vec2{ poly.vertices[j - 1].x, poly.vertices[j - 1].y }, 
