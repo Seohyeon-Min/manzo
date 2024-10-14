@@ -12,7 +12,10 @@ Created:    March 8, 2023
 #include "../Engine/Timer.h"
 #include "../Engine/ShowCollision.h"
 #include "../Engine/AudioManager.h"
+#include "../Engine/Particle.h"
 
+#include "Particles.h"
+#include "Mouse.h"
 #include "States.h"
 #include "Mode1.h"
 #include "BeatSystem.h"
@@ -64,6 +67,12 @@ void Mode1::Load() {
     //// reef
     reef = new Reef({ -400,200 });
     GetGSComponent<CS230::GameObjectManager>()->Add(reef);
+
+    // Mouse and Particle
+    AddGSComponent(new CS230::ParticleManager<Particles::MouseFollow>());
+    AddGSComponent(new Mouse());
+    //Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::Mouse>>()->Emit(2, mouse_position, { 0, 0 }, { 0, 100 }, M_PI / 2);
+
 }
 
 void Mode1::Update(double dt) {

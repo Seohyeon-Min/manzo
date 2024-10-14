@@ -1,6 +1,8 @@
 #include "Input.h"
 #include "Engine.h"
+#include "../Game/Particles.h"
 
+#include "Particle.h"
 
 #include <iostream>
 
@@ -18,35 +20,12 @@ void CS230::Input::SetKeyDown(Keys key, bool value) {
 }
 
 void CS230::Input::Update() {
-    //if (KeyJustPressed(Keys::TAB)) {
-    //    std::cout << "Tab key was just pressed!" << std::endl;
-    //}
 
     memcpy(previous_mouse_state.data(), current_mouse_state.data(), current_mouse_state.size() * sizeof(bool));
     for (int i = 0; i < SDL_NUM_SCANCODES; ++i) {
         previous_keys_down[i] = current_key_state[i];
     }
-
-    //switch (event.type) {
-    //case SDL_KEYDOWN:
-    //    SetKeyDown(static_cast<Keys>(event.key.keysym.scancode), true);
-    //    break;
-    //case SDL_KEYUP:
-    //    SetKeyDown(static_cast<Keys>(event.key.keysym.scancode), false);
-    //    break;
-    //case SDL_MOUSEBUTTONDOWN:
-    //    SetMouseButtonDown(event.button.button, true);
-    //    break;
-    //case SDL_MOUSEBUTTONUP:
-    //    SetMouseButtonDown(event.button.button, false);
-    //    break;
-    //case SDL_MOUSEMOTION:
-    //    mouse_position.x = static_cast<float>(event.motion.x) - (Engine::window_width / 2);
-    //    mouse_position.y = (Engine::window_height / 2) - static_cast<float>(event.motion.y);
-    //    break;
-    //default:
-    //    break;
-    //}
+    previous_mouse_position = mouse_position;
 
     int x, y;
 
@@ -61,6 +40,10 @@ void CS230::Input::Update() {
     current_mouse_state[2] = mouse_state & SDL_BUTTON(SDL_BUTTON_RIGHT);
     current_mouse_state[3] = mouse_state & SDL_BUTTON(SDL_BUTTON_X1);
     current_mouse_state[4] = mouse_state & SDL_BUTTON(SDL_BUTTON_X2);
+
+    if (IsMouseMoving()) {
+        Engine::GetLogger().LogEvent("Mouse moved significantly");
+    }
 }
 
 bool CS230::Input::KeyDown(Keys key) {
@@ -97,4 +80,10 @@ bool CS230::Input::MouseButtonJustReleased(Uint8 button) {
 
 vec2 CS230::Input::GetMousePosition() const {
     return mouse_position;
+}
+
+bool CS230::Input::IsMouseMoving() {
+    // x, y 좌표 차이가 8 이상일 경우에만 마우스가 움직였다고 판단
+    return (std::abs(mouse_position.x - previous_mouse_position.x) >= 5 ||
+        std::abs(mouse_position.y - previous_mouse_position.y) >= 5);
 }
