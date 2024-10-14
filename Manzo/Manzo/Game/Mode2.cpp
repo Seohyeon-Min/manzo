@@ -59,16 +59,15 @@ void Mode2::Update(double dt) {
     UpdateGSComponents(dt);
     GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
     GetGSComponent<CS230::Camera>()->Update(ship_ptr->GetPosition());
-    
+
+    //float moving~
     time += float(dt);
-    //floating
     ship_ptr->SetVelocity({ 0, -(y_limit * frequency * std::cos(frequency * float(time))) });
 
 
-    if (Engine::GetInput().KeyDown(CS230::Input::Keys::Q)) {
-        //ship_ptr->SetVelocity({ 0, -50 });
-        //if (ship_ptr->GetPosition().x == -100) { ship_ptr->SetVelocity({ 0, 0 }); }
+    if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Q)) {
         Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode1));
+        
     }
 }
 

@@ -64,10 +64,9 @@ void Mode1::Update(double dt) {
     GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
     GetGSComponent<CS230::Camera>()->Update(ship_ptr->GetPosition());
 
-    if (Engine::GetInput().KeyDown(CS230::Input::Keys::Q)) {
-        //ship_ptr->SetVelocity({0, 70});
-        //if(ship_ptr->GetPosition().x == -360){ ship_ptr->SetVelocity({ 0, 0 }); }
+    if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Q)) {
         Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
+        
     }
 
 }

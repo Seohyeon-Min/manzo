@@ -17,14 +17,14 @@ int main() {
         GLApp OpenGLAPPlication("Manzo");
         Engine& engine = Engine::Instance();
 
-        Splash splash;
-        engine.GetGameStateManager().AddGameState(splash);
+        //Splash splash;
+        //engine.GetGameStateManager().AddGameState(splash);
 
-        Mode2 mode2;
+        Mode2 mode2;    // Home
         engine.GetGameStateManager().AddGameState(mode2);
 
 
-        Mode1 mode1;
+        Mode1 mode1;    // Sea
         engine.GetGameStateManager().AddGameState(mode1);
 
         SDL_GL_SetSwapInterval(1);
