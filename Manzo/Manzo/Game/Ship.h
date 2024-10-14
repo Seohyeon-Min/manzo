@@ -29,13 +29,15 @@ public:
     const vec2& GetPosition() const { return GameObject::GetPosition(); }
 
 private:
-    static constexpr double initialSpeed = 1000.f;
-    static constexpr float deceleration = 50.0f;
+    static constexpr double initialSpeed = 1200.f;
+    static constexpr float deceleration = 100.0f;
+    static constexpr float totalDistanceToMove_SQUARED = 20000.0f;
     float currentSpeed = initialSpeed;
     bool moving;
     bool set_dest;
     bool ready_to_move;
     bool move;
+    bool clickable = true;
     vec2 destination;
     vec2 initialPosition;
     Beat* beat;

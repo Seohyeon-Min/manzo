@@ -27,29 +27,35 @@ void CS230::Input::Update() {
         previous_keys_down[i] = current_key_state[i];
     }
 
-    switch (event.type) {
-    case SDL_KEYDOWN:
-        SetKeyDown(static_cast<Keys>(event.key.keysym.scancode), true);
-        break;
-    case SDL_KEYUP:
-        SetKeyDown(static_cast<Keys>(event.key.keysym.scancode), false);
-        break;
-    case SDL_MOUSEBUTTONDOWN:
-        SetMouseButtonDown(event.button.button, true);
-        break;
-    case SDL_MOUSEBUTTONUP:
-        SetMouseButtonDown(event.button.button, false);
-        break;
-    case SDL_MOUSEMOTION:
-        mouse_position.x = static_cast<float>(event.motion.x) - (Engine::window_width / 2);
-        mouse_position.y = (Engine::window_height / 2) - static_cast<float>(event.motion.y);
-        break;
-    default:
-        break;
-    }
+    //switch (event.type) {
+    //case SDL_KEYDOWN:
+    //    SetKeyDown(static_cast<Keys>(event.key.keysym.scancode), true);
+    //    break;
+    //case SDL_KEYUP:
+    //    SetKeyDown(static_cast<Keys>(event.key.keysym.scancode), false);
+    //    break;
+    //case SDL_MOUSEBUTTONDOWN:
+    //    SetMouseButtonDown(event.button.button, true);
+    //    break;
+    //case SDL_MOUSEBUTTONUP:
+    //    SetMouseButtonDown(event.button.button, false);
+    //    break;
+    //case SDL_MOUSEMOTION:
+    //    mouse_position.x = static_cast<float>(event.motion.x) - (Engine::window_width / 2);
+    //    mouse_position.y = (Engine::window_height / 2) - static_cast<float>(event.motion.y);
+    //    break;
+    //default:
+    //    break;
+    //}
+
+    int x, y;
 
     current_key_state = SDL_GetKeyboardState(nullptr);
-    Uint32 mouse_state = SDL_GetMouseState(nullptr, nullptr);
+    Uint32 mouse_state = SDL_GetMouseState(&x, &y);
+
+    mouse_position.x = static_cast<float>(x) - (Engine::window_width / 2);
+    mouse_position.y = (Engine::window_height / 2) - static_cast<float>(y);
+
     current_mouse_state[0] = mouse_state & SDL_BUTTON(SDL_BUTTON_LEFT);
     current_mouse_state[1] = mouse_state & SDL_BUTTON(SDL_BUTTON_MIDDLE);
     current_mouse_state[2] = mouse_state & SDL_BUTTON(SDL_BUTTON_RIGHT);

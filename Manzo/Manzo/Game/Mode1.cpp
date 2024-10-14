@@ -53,7 +53,7 @@ void Mode1::Load() {
     //GetGSComponent<CS230::Camera>()->SetLimit({ { 0, 0}, {  1680 , 5000} });
 
     //// audio
-    Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("assets/audios/basic_beat_100_4.wav", "sample");
+    Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("assets/audios/basic_beat_100_5.wav", "sample");
     if (sample) {
         GetGSComponent<AudioManager>()->PlayMusic(sample, -1);
     }

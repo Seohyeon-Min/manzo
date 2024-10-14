@@ -17,6 +17,6 @@ private:
     double time_taken = 0;
     bool beat = false;
     bool is_on_beat = false;
-    static constexpr double judge_offset = 0.22;
+    static constexpr double judge_offset = 0.20;
     AudioManager* audio;
 };
