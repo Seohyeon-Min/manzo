@@ -50,8 +50,8 @@ void CS230::GameObject::Draw() {
         Engine::GetRender().AddDrawCall(
             {
             sprite->GetTexture(),
-            GetMatrix(),
-            shader
+            &GetMatrix(),
+            shader,
             }
         );
     }
@@ -79,11 +79,10 @@ bool CS230::GameObject::CanCollideWith([[maybe_unused]] GameObjectTypes other_ob
 
 const mat3& CS230::GameObject::GetMatrix() {
     if (matrix_outdated) {
-        Sprite* sprite = GetGOComponent<Sprite>();
-        const vec2 texture_size = (vec2)sprite->GetTexture()->GetSize();
-        object_matrix = mat3::build_translation(position) *
+        object_matrix = 
+            mat3::build_translation(position) *
             mat3::build_rotation((float)rotation) *
-            mat3::build_scale(texture_size.x * scale.x, texture_size.y * scale.y);
+            mat3::build_scale( scale.x, scale.y);
         matrix_outdated = false;
     }
     return object_matrix;
