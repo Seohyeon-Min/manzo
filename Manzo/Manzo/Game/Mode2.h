@@ -33,4 +33,9 @@ private:
     CS230::Timer* timer;
     double swimming_range = 15.0;
     Ship* ship_ptr;
+
+    // 동동 떠다니기. 굳이 ship 내부로 넣어야할까? 얘기해보기
+    float y_limit = 20.0f;
+    float frequency = 0.9f;
+    float time = 0.0f;
 };

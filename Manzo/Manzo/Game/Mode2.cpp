@@ -11,6 +11,7 @@ Created:    March 8, 2023
 #include "../Engine/Engine.h"
 #include "../Engine/ShowCollision.h"
 #include "../Engine/AudioManager.h"
+#include <cmath>
 
 #include "States.h"
 #include "Background.h"
@@ -58,6 +59,11 @@ void Mode2::Update(double dt) {
     UpdateGSComponents(dt);
     GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
     GetGSComponent<CS230::Camera>()->Update(ship_ptr->GetPosition());
+    
+    time += float(dt);
+    //floating
+    ship_ptr->SetVelocity({ 0, -(y_limit * frequency * std::cos(frequency * float(time))) });
+
 
     if (Engine::GetInput().KeyDown(CS230::Input::Keys::Q)) {
         ship_ptr->SetVelocity({ 0, -50 });
