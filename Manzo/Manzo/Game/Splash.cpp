@@ -32,7 +32,7 @@ void Splash::Update([[maybe_unused]] double dt) {
 }
 
 void Splash::Unload() {
-    Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode1));
+    Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
 }
 
 

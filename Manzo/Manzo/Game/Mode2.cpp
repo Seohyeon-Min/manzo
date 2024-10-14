@@ -66,9 +66,9 @@ void Mode2::Update(double dt) {
 
 
     if (Engine::GetInput().KeyDown(CS230::Input::Keys::Q)) {
-        ship_ptr->SetVelocity({ 0, -50 });
+        //ship_ptr->SetVelocity({ 0, -50 });
         //if (ship_ptr->GetPosition().x == -100) { ship_ptr->SetVelocity({ 0, 0 }); }
-        //Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
+        Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode1));
     }
 }
 

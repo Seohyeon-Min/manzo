@@ -43,13 +43,13 @@ void Mode1::Load() {
     //GetGSComponent<Background>()->Add("assets/images/temp_back.png", 0.25);
 
     //// ship
-    ship_ptr = new Ship({ 0, 0 });
-    GetGSComponent<CS230::GameObjectManager>()->Add(ship_ptr);
+    //ship_ptr = new Ship({ 0, 0 });
+    //GetGSComponent<CS230::GameObjectManager>()->Add(ship_ptr);
 
     //// camera
     AddGSComponent(new CS230::Camera({ {1280 / 2 , 720 / 2 }, {1280 / 2, 720 / 2 } }));
-    vec2 playerPosition = ship_ptr->GetPosition();
-    GetGSComponent<CS230::Camera>()->SetPosition({ playerPosition.x - 1280 / 2, playerPosition.y - 720 / 2 });
+    //vec2 playerPosition = ship_ptr->GetPosition();
+    //GetGSComponent<CS230::Camera>()->SetPosition({ playerPosition.x - 1280 / 2, playerPosition.y - 720 / 2 });
     //GetGSComponent<CS230::Camera>()->SetLimit({ { 0, 0}, {  1680 , 5000} });
 
     //// audio
@@ -62,12 +62,12 @@ void Mode1::Load() {
 void Mode1::Update(double dt) {
     UpdateGSComponents(dt);
     GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
-    GetGSComponent<CS230::Camera>()->Update(ship_ptr->GetPosition());
+    //GetGSComponent<CS230::Camera>()->Update(ship_ptr->GetPosition());
 
     if (Engine::GetInput().KeyDown(CS230::Input::Keys::Q)) {
-        ship_ptr->SetVelocity({0, 70});
-        if(ship_ptr->GetPosition().x == -360){ ship_ptr->SetVelocity({ 0, 0 }); }
-        //Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
+        //ship_ptr->SetVelocity({0, 70});
+        //if(ship_ptr->GetPosition().x == -360){ ship_ptr->SetVelocity({ 0, 0 }); }
+        Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
     }
 
 }
