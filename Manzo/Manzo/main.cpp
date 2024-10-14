@@ -17,11 +17,9 @@ int main() {
         GLApp OpenGLAPPlication("Manzo");
         Engine& engine = Engine::Instance();
 
-        Splash splash;
-        engine.GetGameStateManager().AddGameState(splash);
 
-        Mode1 mode1;
-        engine.GetGameStateManager().AddGameState(mode1);
+        //Mode1 mode1;
+        //engine.GetGameStateManager().AddGameState(mode1);
 
         Mode2 mode2;
         engine.GetGameStateManager().AddGameState(mode2);
