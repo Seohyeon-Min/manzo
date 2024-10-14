@@ -91,7 +91,7 @@ void CS230::Render::Draw(const DrawCall& draw_call) {
     }
 
     vec2 texture_size = (vec2)draw_call.texture->GetSize();
-    mat3 model_to_world = *draw_call.transform * mat3::build_scale(texture_size);
+    mat3 model_to_world = draw_call.transform * mat3::build_scale(texture_size);
 
     mat3 WORLD_TO_NDC = mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height) ;
 
