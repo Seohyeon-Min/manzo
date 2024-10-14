@@ -28,7 +28,8 @@ namespace CS230 {
     public:
         enum class CollisionShape {
             Rect,
-            Circle
+            Circle,
+            Poly
         };
         virtual CollisionShape Shape() = 0;
         virtual void Draw() = 0;
@@ -46,7 +47,7 @@ namespace CS230 {
         void Draw();
         bool IsCollidingWith(GameObject* other_object) override;
         bool IsCollidingWith(vec2 point) override;
-        Math::rect WorldBoundary();
+        Math::rect WorldBoundary_rect();
     private:
         GameObject* object;
         Math::irect boundary;
@@ -55,13 +56,14 @@ namespace CS230 {
     class MAP_SATCollision : public Collision {
     public:
         MAP_SATCollision(Polygon boundary, GameObject* object);
-        bool MapCollision(const Polygon& poly1, const Polygon& poly2, GameObject* object);
         void Draw() override;
         CollisionShape Shape() override {
-            return CollisionShape::Rect; // chanbge name
+            return CollisionShape::Rect; 
         }
+
         bool IsCollidingWith(GameObject* other_object) override;
         bool IsCollidingWith(vec2 point) override;
+        Polygon WorldBoundary_poly();
     private:
         GameObject* object;
         Polygon boundary;

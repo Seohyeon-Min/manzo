@@ -19,6 +19,8 @@ Created:    March 8, 2023
 #include <array>
 #define GREEN color3(0,255,0)
 
+
+
 CS230::RectCollision::RectCollision(Math::irect boundary, GameObject* object) :
     boundary(boundary),
     object(object)
@@ -26,18 +28,33 @@ CS230::RectCollision::RectCollision(Math::irect boundary, GameObject* object) :
     Engine::GetShaderManager().LoadShader("default_collision", "assets/shaders/default_collision.vert", "assets/shaders/default_collision.frag");
 }
 
-Math::rect CS230::RectCollision::WorldBoundary() {
-    std::cout << object->GetMatrix().column2.x << std::endl;
+Math::rect CS230::RectCollision::WorldBoundary_rect() {
+    //std::cout << object->GetMatrix().column2.x << std::endl;
     return {
-        {(object->GetMatrix() * mat3::build_translation((vec2)boundary.point_1)).column2.x,(object->GetMatrix() * mat3::build_translation((vec2)boundary.point_1)).column2.y},
-        {(object->GetMatrix() * mat3::build_translation((vec2)boundary.point_2)).column2.x,(object->GetMatrix() * mat3::build_translation((vec2)boundary.point_2)).column2.y},
+        {(object->GetMatrix() * mat3::build_translation((vec2)boundary.point_1)).column2.x,
+         (object->GetMatrix() * mat3::build_translation((vec2)boundary.point_1)).column2.y},
+        {(object->GetMatrix() * mat3::build_translation((vec2)boundary.point_2)).column2.x,
+         (object->GetMatrix() * mat3::build_translation((vec2)boundary.point_2)).column2.y},
     };
+}
+
+Polygon CS230::MAP_SATCollision::WorldBoundary_poly() {
+    Polygon boundary_poly;
+    vec2 transformedPoint;
+    for (int i = 0; i < boundary.vertexCount; ++i) {
+        transformedPoint.x = (object->GetMatrix() * mat3::build_translation(boundary.vertices[j])).column2.x;
+        boundary_poly.vertices.push_back(transformedPoint);
+    }
+
+    boundary_poly.vertexCount = boundary_poly.vertices.size();
+
+    return boundary_poly;
 }
 
 void CS230::RectCollision::Draw() {
     const float render_height = (float)Engine::window_height;
 
-    Math::rect world_boundary = WorldBoundary();
+    Math::rect world_boundary = WorldBoundary_rect();
 
     vec2 bottom_left =  vec2{ world_boundary.Left(), world_boundary.Bottom() };
     vec2 bottom_right =  vec2{ world_boundary.Right(), world_boundary.Bottom() };
@@ -69,8 +86,8 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
         return false;
     }
 
-    Math::rect rectangle_1 = WorldBoundary();
-    Math::rect rectangle_2 = dynamic_cast<RectCollision*>(other_collider)->WorldBoundary();
+    Math::rect rectangle_1 = WorldBoundary_rect();
+    Math::rect rectangle_2 = dynamic_cast<RectCollision*>(other_collider)->WorldBoundary_rect();
 
     if (rectangle_1.Right() > rectangle_2.Left() &&
         rectangle_1.Left() < rectangle_2.Right() &&
@@ -83,7 +100,7 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
 
 bool CS230::RectCollision::IsCollidingWith(vec2 point)
 {
-    Math::rect rectangle_1 = WorldBoundary();
+    Math::rect rectangle_1 = WorldBoundary_rect();
 
     if (rectangle_1.Right() >= point.x &&
         rectangle_1.Left() <= point.x &&
@@ -95,7 +112,15 @@ bool CS230::RectCollision::IsCollidingWith(vec2 point)
 }
 
 
-//This four funtion is need for SATCollision
+
+
+CS230::MAP_SATCollision::MAP_SATCollision(Polygon boundary, GameObject* object) :
+    boundary(boundary),
+    object(object)
+{
+}
+
+
 vec2 GetPerpendicular(const vec2& v) {
     return { -v.y, v.x };
 }
@@ -118,34 +143,74 @@ void ProjectPolygon(const Polygon& polygon, const vec2& axis, float& min, float&
     }
 }
 
-bool CS230::MAP_SATCollision::MapCollision(const Polygon& poly1, const Polygon& poly2)
-{
-    for (int i = 0; i < poly1.vertexCount; i++) {
-        vec2 edge = { poly1.vertices[(i + 1) % poly1.vertexCount].x - poly1.vertices[i].x,
-                         poly1.vertices[(i + 1) % poly1.vertexCount].y - poly1.vertices[i].y };
+bool CS230::MAP_SATCollision::IsCollidingWith(vec2 point) {
+    Polygon poly_1 = WorldBoundary_poly();
+    for (int i = 0; i < poly_1.vertexCount; i++) {
+        vec2 edge = { poly_1.vertices[(i + 1) % poly_1.vertexCount].x - poly_1.vertices[i].x,
+                      poly_1.vertices[(i + 1) % poly_1.vertexCount].y - poly_1.vertices[i].y };
         vec2 axis = NormalizeVector2(GetPerpendicular(edge));  
 
         float minA, maxA;
-        ProjectPolygon(poly1, axis, minA, maxA);    
+        ProjectPolygon(poly_1, axis, minA, maxA);
+
+        float projection = Vector2DotProduct(point, axis);  
+        float minB = projection;
+        float maxB = projection;
+        if (maxA < minB || maxB < minA) {
+            return false;
+        }
+    }
+
+    return true; 
+}
+
+bool CS230::MAP_SATCollision::IsCollidingWith(GameObject* other_object)
+{
+    Collision* other_collider = other_object->GetGOComponent<Collision>();
+
+
+    if (other_collider == nullptr) {
+        return false;
+    }
+
+
+    if (other_collider->Shape() != CollisionShape::Circle) {
+        Engine::GetLogger().LogError("Circle type is cannot apply in Map Collision");
+        return false;
+    }
+
+    Polygon poly_1 = WorldBoundary_poly();
+    Polygon poly_2 = dynamic_cast<MAP_SATCollision*>(other_collider)->WorldBoundary_poly();
+
+
+    for (int i = 0; i < poly_1.vertexCount; i++) {
+        vec2 edge = { poly_1.vertices[(i + 1) % poly_1.vertexCount].x - poly_1.vertices[i].x,
+                         poly_1.vertices[(i + 1) % poly_1.vertexCount].y - poly_1.vertices[i].y };
+        vec2 axis = NormalizeVector2(GetPerpendicular(edge));  
+
+        float minA, maxA;
+        ProjectPolygon(poly_1, axis, minA, maxA);
 
         float minB, maxB;
-        ProjectPolygon(poly2, axis, minB, maxB);    
+        ProjectPolygon(poly_2, axis, minB, maxB);
 
         if (maxA < minB || maxB < minA) {   
             return false;
         }
     }
 
-    for (int i = 0; i < poly2.vertexCount; i++) {
-        vec2 edge = { poly2.vertices[(i + 1) % poly2.vertexCount].x - poly2.vertices[i].x,
-                         poly2.vertices[(i + 1) % poly2.vertexCount].y - poly2.vertices[i].y };
+    
+
+    for (int i = 0; i < poly_2.vertexCount; i++) {
+        vec2 edge = { poly_2.vertices[(i + 1) % poly_2.vertexCount].x - poly_2.vertices[i].x,
+                         poly_2.vertices[(i + 1) % poly_2.vertexCount].y - poly_2.vertices[i].y };
         vec2 axis = NormalizeVector2(GetPerpendicular(edge));
 
         float minA, maxA;
-        ProjectPolygon(poly1, axis, minA, maxA);
+        ProjectPolygon(poly_1, axis, minA, maxA);
 
         float minB, maxB;
-        ProjectPolygon(poly2, axis, minB, maxB);
+        ProjectPolygon(poly_2, axis, minB, maxB);
 
         if (maxA < minB || maxB < minA) {
             return false;
@@ -155,11 +220,7 @@ bool CS230::MAP_SATCollision::MapCollision(const Polygon& poly1, const Polygon& 
     return true;    
 }
 
-CS230::MAP_SATCollision::MAP_SATCollision(Polygon boundary, GameObject* object) : 
-    boundary(boundary),
-    object(object)
-{
-}
+
 
 void CS230::MAP_SATCollision::Draw() {
 
