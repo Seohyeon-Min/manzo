@@ -17,6 +17,7 @@ int main() {
         GLApp OpenGLAPPlication("Manzo");
         Engine& engine = Engine::Instance();
 
+
         Mode1 mode1;
         engine.GetGameStateManager().AddGameState(mode1);
 

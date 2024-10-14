@@ -60,6 +60,7 @@ void Engine::Update() {
         frame_count = 0;
         last_test = now;
     }
+
 }
 
 void Engine::HandleEvent(SDL_Window& sdl_window, const SDL_Event& event)

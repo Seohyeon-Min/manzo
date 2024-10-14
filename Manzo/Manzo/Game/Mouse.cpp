@@ -1,6 +1,7 @@
 #include "mouse.h"
 #include "..\Engine\Input.h"
 #include "Particles.h"
+#include <iostream>
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -36,7 +37,7 @@ void Mouse::UpdateTrail(const vec2& new_position) {
     }
 
     // 잔향의 크기가 100개를 넘으면 가장 오래된 것을 제거
-    if (trails.size() > 100) {
+    if (trails.size() > 4) {
         trails.erase(trails.begin());
     }
 }
@@ -52,12 +53,17 @@ void Mouse::FollowMouse(const vec2& mouse_position) {
             }
         }
 
-        // 최소 4개의 포인트가 필요하므로 보충
+        // visible_trails의 크기가 4가 되도록 보충
         while (visible_trails.size() < 4) {
             visible_trails.push_back(mouse_position); // 현재 마우스 위치를 추가
         }
 
-        if(visible_trails.size() >=4)
+        // visible_trails의 크기를 4로 유지
+        if (visible_trails.size() > 4) {
+            visible_trails.resize(4); // 크기가 4를 초과할 경우 잘라냄
+        }
+
+        // 항상 visible_trails의 크기가 4이므로 곡선 그리기
         DrawLaserCurve(visible_trails); // 가시적인 잔향으로 곡선 그리기
     }
 }
@@ -76,7 +82,7 @@ void Mouse::DrawLaserCurve(const std::vector<vec2>& control_points) {
         vec2 current_point = CalculateBezierPoint(t, control_points);
 
         // 선분 그리기
-        Engine::GetRender().AddDrawCall(previous_point, current_point, {255,255,255});
+        Engine::GetRender().AddDrawCall(previous_point, current_point, {255,255,255}, false);
 
         previous_point = current_point;
     }

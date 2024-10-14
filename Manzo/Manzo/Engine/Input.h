@@ -114,6 +114,7 @@ namespace CS230 {
         std::array<bool, 6> previous_mouse_state;
         vec2 mouse_position;
         vec2 previous_mouse_position;
+        static constexpr int move_factor = 8;
         bool quit = false;
     };
 }

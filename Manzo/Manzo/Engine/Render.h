@@ -35,7 +35,7 @@ namespace CS230 {
         Render() { CreatModel(); CreatLineModel(); };
 
         void AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase = DrawLayer::Draw);
-        void AddDrawCall(vec2 start, vec2 end, color3 color);
+        void AddDrawCall(vec2 start, vec2 end, color3 color, bool iscollision = true);
         void RenderAll();
         void CreatModel();
         void CreatLineModel();
@@ -49,6 +49,7 @@ namespace CS230 {
         std::vector<DrawCall> draw_first_calls;
         std::vector<DrawCall> draw_calls;
         std::vector<DrawCall> draw_late_calls;
+        std::vector<CollisionDrawCall> draw_line_calls;
         std::vector<CollisionDrawCall> draw_collision_calls;
 
         GLVertexArray model;

@@ -31,8 +31,13 @@ void CS230::Render::AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase
     }
 }
 
-void CS230::Render::AddDrawCall(vec2 start, vec2 end , color3 color) {
-    draw_collision_calls.push_back({ start , end, color });
+void CS230::Render::AddDrawCall(vec2 start, vec2 end , color3 color, bool iscollision) {
+    if (iscollision) {
+        draw_collision_calls.push_back({ start , end, color });
+    }
+    else {
+        draw_line_calls.push_back({ start , end, color });
+    }
 }
 
 // Render all draw calls
@@ -51,6 +56,10 @@ void CS230::Render::RenderAll() {
         Draw(draw_call);
     }
 
+    for (const auto& draw_call : draw_line_calls) {
+        DrawLine(draw_call);
+    }
+
     if (Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>() != nullptr && Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>()->Enabled()) {
         for (const auto& draw_call : draw_collision_calls) {
             DrawLine(draw_call);
@@ -62,6 +71,7 @@ void CS230::Render::RenderAll() {
     draw_first_calls.clear();
     draw_calls.clear();
     draw_late_calls.clear();
+    draw_line_calls.clear();
     draw_collision_calls.clear();
 }
 

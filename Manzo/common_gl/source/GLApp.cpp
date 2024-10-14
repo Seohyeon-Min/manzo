@@ -12,7 +12,7 @@
 #include <SDL2/SDL.h>
 #include <iostream>
 #include <sstream>
-
+#include <SDL2/SDL_mouse.h>
 
 namespace
 {
@@ -45,6 +45,8 @@ GLApp::GLApp(const char* title, int desired_width, int desired_height)
     {
         throw_error_message("Failed to init SDK error: ", SDL_GetError());
     }
+    SDL_ShowCursor(SDL_DISABLE);
+
     hint_gl(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     hint_gl(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
     hint_gl(SDL_GL_CONTEXT_MINOR_VERSION, 5);
@@ -61,11 +63,14 @@ GLApp::GLApp(const char* title, int desired_width, int desired_height)
     // https://wiki.libsdl.org/SDL_CreateWindow
     desired_width  = std::max(640, std::min(16384, desired_width));
     desired_height = std::max(480, std::min(16384, desired_height));
-    ptr_window     = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, desired_width, desired_height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+    ptr_window     = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, desired_width, desired_height, SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI);
     if (ptr_window == nullptr)
     {
         throw_error_message("Failed to create window: ", SDL_GetError());
     }
+ /*   int32_t cursorData[2] = { 0, 0 };
+    cursor = SDL_CreateCursor((Uint8*)cursorData, (Uint8*)cursorData, 8, 8, 4, 4);
+    SDL_SetCursor(cursor);*/
 
     // https://wiki.libsdl.org/SDL_GL_CreateContext
     if (gl_context = SDL_GL_CreateContext(ptr_window); gl_context == nullptr)
@@ -103,6 +108,7 @@ GLApp::~GLApp()
 {
     delete ptr_program;
     ImGuiHelper::Shutdown();
+    //SDL_FreeCursor(cursor);
     SDL_GL_DeleteContext(gl_context);
     SDL_DestroyWindow(ptr_window);
     SDL_Quit();

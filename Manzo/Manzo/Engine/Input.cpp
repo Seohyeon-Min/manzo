@@ -40,10 +40,6 @@ void CS230::Input::Update() {
     current_mouse_state[2] = mouse_state & SDL_BUTTON(SDL_BUTTON_RIGHT);
     current_mouse_state[3] = mouse_state & SDL_BUTTON(SDL_BUTTON_X1);
     current_mouse_state[4] = mouse_state & SDL_BUTTON(SDL_BUTTON_X2);
-
-    if (IsMouseMoving()) {
-        Engine::GetLogger().LogEvent("Mouse moved significantly");
-    }
 }
 
 bool CS230::Input::KeyDown(Keys key) {
@@ -84,6 +80,6 @@ vec2 CS230::Input::GetMousePosition() const {
 
 bool CS230::Input::IsMouseMoving() {
     // x, y 좌표 차이가 8 이상일 경우에만 마우스가 움직였다고 판단
-    return (std::abs(mouse_position.x - previous_mouse_position.x) >= 5 ||
-        std::abs(mouse_position.y - previous_mouse_position.y) >= 5);
+    return (std::abs(mouse_position.x - previous_mouse_position.x) >= move_factor ||
+        std::abs(mouse_position.y - previous_mouse_position.y) >= move_factor);
 }
