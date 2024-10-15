@@ -39,6 +39,10 @@ void Mode1::Load() {
     AddGSComponent(new Beat());
     AddGSComponent(new AudioManager());
 
+    //// background
+    background = new Background({0,0});
+    GetGSComponent<CS230::GameObjectManager>()->Add(background);
+
     //// ship
     ship_ptr = new Ship({ 0, 0 });
     GetGSComponent<CS230::GameObjectManager>()->Add(ship_ptr);
@@ -46,6 +50,7 @@ void Mode1::Load() {
     //// camera
     camera = new CS230::Cam();
     AddGSComponent(camera);
+
 
     //// audio
     Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("assets/audios/basic_beat_100_5.wav", "sample");
@@ -59,8 +64,6 @@ void Mode1::Load() {
     //// reef
     reef = new Reef({ -400,200 });
     GetGSComponent<CS230::GameObjectManager>()->Add(reef);
-
-    GetGSComponent<CS230::Cam>()->SetLimit({ { 0, 0 }, { Engine::window_width, Engine::window_height } });
 }
 
 void Mode1::Update(double dt) {
@@ -79,7 +82,6 @@ void Mode1::Draw() {
 }
 
 void Mode1::Unload() {
-
 	GetGSComponent<CS230::GameObjectManager>()->Unload();
 	fishGenerator->DeleteFish();
 	ClearGSComponents();

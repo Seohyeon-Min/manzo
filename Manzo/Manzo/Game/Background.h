@@ -13,18 +13,20 @@ Created:    March 8, 2023
 #include "../Engine/Camera.h"
 #include "../Engine/Engine.h"
 #include "../Engine/Component.h"
+#include "GameObjectTypes.h"
 
-class Background : public CS230::Component {
+class Background : public CS230::GameObject {
 public:
-    void Add(const std::filesystem::path& texture_path, double speed);
-    void Unload();
+    Background(vec2 start_position);
+    GameObjectTypes Type() override { return GameObjectTypes::Background; }
+    std::string TypeName() override { return "Background"; }
     void Draw();
     ivec2 GetSize();
 private:
     struct ParallaxLayer {
         GLTexture* texture;
-        double speed = 1;
+        float speed = 1.f;
     };
-
+    CS230::DrawCall draw_call;
     std::vector<ParallaxLayer> backgrounds;
 };
