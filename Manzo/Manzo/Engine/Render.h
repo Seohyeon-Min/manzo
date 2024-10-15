@@ -45,6 +45,8 @@ namespace CS230 {
         void Draw(const DrawCall& draw_call);
         void DrawLine(CollisionDrawCall drawcall);
 
+        mat3 GetWorldtoNDC();
+
         // Vectors for draw calls
         std::vector<DrawCall> draw_first_calls;
         std::vector<DrawCall> draw_calls;

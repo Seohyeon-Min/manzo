@@ -1,58 +1,26 @@
 #include "Camera.h"
 #include <iostream>
-CS230::Cam::Cam(Math::rect player_zone)
+CS230::Cam::Cam()
 {
-    this->player_zone = player_zone;
+    //this->player_zone = player_zone;
 	caminfo.camera_view.SetFramebufferSize(Engine::window_width, Engine::window_height);
 }
 
-void CS230::Cam::Update(double dt, const vec2& player_position)
+void CS230::Cam::Update(double dt, const vec2& player_position, bool playerMove)
 {
-    if (player_position.x > player_zone.Right() + caminfo.camera.Position.x) {
-        caminfo.camera.Position.x = player_position.x - player_zone.Right();
-    }
-    if (player_position.x < player_zone.Left() + caminfo.camera.Position.x) {
-        caminfo.camera.Position.x = player_position.x - player_zone.Left();
-    }
+    if(playerMove)
+	{
+		caminfo.camera.MoveUp(caminfo.move_speed * (float)dt * 1.f);
+		caminfo.camera.MoveRight(caminfo.move_speed * (float)dt * 1.f);
+	}
 
-    if (player_position.y > player_zone.Top() + caminfo.camera.Position.y) {
-        caminfo.camera.Position.y = player_position.y - player_zone.Top();
-    }
-    if (player_position.y < player_zone.Bottom() + caminfo.camera.Position.y) {
-        caminfo.camera.Position.y = player_position.y - player_zone.Bottom();
-    }
+	world_to_cam = caminfo.camera.BuildWorldToCamera();
 
-    if (caminfo.camera.Position.x < limit.Left()) {
-        caminfo.camera.Position.x = limit.Left();
-    }
-    if (caminfo.camera.Position.x > limit.Right()) {
-        caminfo.camera.Position.x = limit.Right();
-    }
-    if (caminfo.camera.Position.y < limit.Bottom()) {
-        caminfo.camera.Position.y = limit.Bottom();
-    }
-    if (caminfo.camera.Position.y > limit.Top()) {
-        caminfo.camera.Position.y = limit.Top();
-    }
+	// cam_to_ndc   <- get CalculateCameraToNDC from camera view
+	cam_to_ndc = caminfo.camera_view.BuildCameraToNDC();
 
-    mat3 world_to_cam = caminfo.camera.BuildWorldToCamera();
-
-    vec2 bottom_left = vec2{ limit.Left(), limit.Bottom() };
-    vec2 bottom_right = vec2{ limit.Right(), limit.Bottom() };
-    vec2 top_left = vec2{ limit.Left(), limit.Top() };
-    vec2 top_right = vec2{ limit.Right(), limit.Top() };
-
-    //draw limit
-    /*Engine::GetRender().AddDrawCall(top_left, top_right, { 255, 0, 0 });
-    Engine::GetRender().AddDrawCall(bottom_right, top_right, { 255, 0, 0 });
-    Engine::GetRender().AddDrawCall(bottom_right, bottom_left, { 255, 0, 0 });
-    Engine::GetRender().AddDrawCall(top_left, bottom_left, { 255, 0, 0 });*/
-
-    //cam position
-    Engine::GetRender().AddDrawCall({ caminfo.camera.Position.x-100 ,caminfo.camera.Position.y-100 }, { caminfo.camera.Position.x-100 , caminfo.camera.Position.y+100}, {0, 255, 255});
-    Engine::GetRender().AddDrawCall({ caminfo.camera.Position.x - 100 ,caminfo.camera.Position.y - 100 }, { caminfo.camera.Position.x + 100 , caminfo.camera.Position.y - 100 }, { 0, 255, 255 });
-    Engine::GetRender().AddDrawCall({ caminfo.camera.Position.x + 100 ,caminfo.camera.Position.y - 100 }, { caminfo.camera.Position.x + 100 , caminfo.camera.Position.y + 100 }, { 0, 255, 255 });
-    Engine::GetRender().AddDrawCall({ caminfo.camera.Position.x - 100 ,caminfo.camera.Position.y + 100 }, { caminfo.camera.Position.x + 100 , caminfo.camera.Position.y + 100 }, { 0, 255, 255 });
+	// world_to_ndc <- cam_to_ndc * world_to_cam
+	world_to_ndc = cam_to_ndc * world_to_cam;
 }
 
 

@@ -28,15 +28,18 @@ Created:    March 8, 2023
 namespace CS230 {
     class Cam : public Component{
     public:
-        Cam(Math::rect player_zone);
-        void Update(double dt, const vec2& player_position);
+        Cam();
+        void Update(double dt, const vec2& player_position, bool playerMove);
         void SetPosition(vec2 new_position);
         const vec2& GetPosition() const;
         void SetLimit(Math::rect new_limit);
 
+        mat3 world_to_cam;
+        mat3 cam_to_ndc;
+        mat3 world_to_ndc;
+
     private:
         Math::rect limit;
-        Math::rect player_zone;
 
         struct CamInfo
         {
@@ -45,7 +48,7 @@ namespace CS230 {
             float      move_scalar = 0;
             float      turn_scalar = 0;
             float      strafe_scalar = 0;
-            float      move_speed = 120.0f;
+            float      move_speed = 240.0f;
         } caminfo;
     };
 }

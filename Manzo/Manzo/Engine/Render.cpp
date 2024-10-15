@@ -4,7 +4,6 @@
 #include "Engine.h"
 #include "GameObject.h"
 
-
 #include <vector>
 #include <unordered_map>
 #include <filesystem>
@@ -12,6 +11,7 @@
 #include <span>
 #include <array>
 #include <iostream>
+#include "Camera.h"
 
 
 const float WORLD_SIZE_MAX = (float)std::max(Engine::window_width, Engine::window_height);
@@ -93,7 +93,7 @@ void CS230::Render::Draw(const DrawCall& draw_call) {
     vec2 texture_size = (vec2)draw_call.texture->GetSize();
     mat3 model_to_world = *draw_call.transform * mat3::build_scale(texture_size);
 
-    mat3 WORLD_TO_NDC = mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height);
+    mat3 WORLD_TO_NDC = GetWorldtoNDC();
 
     const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
     shader->SendUniform("uModelToNDC", to_span(model_to_ndc));
@@ -119,7 +119,7 @@ void CS230::Render::DrawLine(CollisionDrawCall drawcall)
 
     mat3 model_to_world = mat3::build_translation(start) * mat3::build_rotation(angle)* mat3::build_scale(length);
     
-    mat3 WORLD_TO_NDC = mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height);
+    mat3 WORLD_TO_NDC = GetWorldtoNDC();
     const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
 
     shader->Use();
@@ -132,6 +132,11 @@ void CS230::Render::DrawLine(CollisionDrawCall drawcall)
 
     shader->Use(false);
     line_model.Use(false);
+}
+
+mat3 CS230::Render::GetWorldtoNDC()
+{
+    return Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->world_to_ndc;
 }
 
 
