@@ -17,6 +17,8 @@ Created:    Sept 12, 2024
 
 class Ship;
 
+class Skillsys;
+
 class Mode2 : public CS230::GameState {
 public:
     Mode2();
@@ -33,6 +35,7 @@ private:
     CS230::Timer* timer;
     double swimming_range = 15.0;
     Ship* ship_ptr;
+    Skillsys* Skill_ptr;
 
     float y_limit = 20.0f;
     float frequency = 0.9f;

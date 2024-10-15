@@ -88,6 +88,9 @@
     <ClCompile Include="Game\Mode2.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Skill.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h">
@@ -187,6 +190,9 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Game\Mode2.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Skill.h">
       <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>

@@ -36,6 +36,7 @@
     <ClCompile Include="Game\Mode2.cpp" />
     <ClCompile Include="Game\Reef.cpp" />
     <ClCompile Include="Game\Ship.cpp" />
+    <ClCompile Include="Game\Skill.cpp" />
     <ClCompile Include="Game\Splash.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -71,6 +72,7 @@
     <ClInclude Include="Game\Mode2.h" />
     <ClInclude Include="Game\Reef.h" />
     <ClInclude Include="Game\Ship.h" />
+    <ClInclude Include="Game\Skill.h" />
     <ClInclude Include="Game\Splash.h" />
     <ClInclude Include="Game\States.h" />
   </ItemGroup>
