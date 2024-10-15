@@ -16,58 +16,67 @@
 
 const float WORLD_SIZE_MAX = (float)std::max(Engine::window_width, Engine::window_height);
 
-// Add a draw call to the corresponding vector based on the phase
-// for each frame
+// Add a draw call to the corresponding vector based on the draw layer
+// Draw calls are grouped into first, normal, and late phases
 void CS230::Render::AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase) {
-
     if (phase == DrawLayer::DrawFirst) {
-        draw_first_calls.push_back(drawCall);
+        draw_first_calls.push_back(drawCall); // Add to early phase
     }
     else if (phase == DrawLayer::DrawLast) {
-        draw_late_calls.push_back(drawCall);
+        draw_late_calls.push_back(drawCall); // Add to late phase
     }
     else {
-        draw_calls.push_back(drawCall);
+        draw_calls.push_back(drawCall); // Add to normal phase
     }
 }
 
-void CS230::Render::AddDrawCall(vec2 start, vec2 end , color3 color, bool iscollision) {
+// Overloaded function to add a line or collision draw call
+// depending on whether it is a collision line
+void CS230::Render::AddDrawCall
+(vec2 start, vec2 end, color3 color,float width, float alpha ,const GLShader* shader, bool iscollision) {
     if (iscollision) {
-        draw_collision_calls.push_back({ start , end, color });
+        draw_collision_calls.push_back({ start, end, color, shader }); // Collision line
     }
     else {
-        draw_line_calls.push_back({ start , end, color });
+        draw_line_calls.push_back({ start, end, color, width, alpha, shader }); // Regular line
     }
 }
 
-// Render all draw calls
+// Render all stored draw calls, starting with early phase, normal phase, and then late phase
+// Also handles rendering of lines and collision shapes
 void CS230::Render::RenderAll() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear screen
 
+    // Draw calls in the early phase
     for (const auto& draw_call : draw_first_calls) {
         Draw(draw_call);
     }
 
+    // Draw normal draw calls
     for (const auto& draw_call : draw_calls) {
         Draw(draw_call);
     }
 
+    // Draw calls in the late phase
     for (const auto& draw_call : draw_late_calls) {
         Draw(draw_call);
     }
 
+    // Draw lines
+    float line_width = 2.0f;
     for (const auto& draw_call : draw_line_calls) {
-        DrawLine(draw_call);
+        DrawLinePro(draw_call);
     }
 
-    if (Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>() != nullptr && Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>()->Enabled()) {
+    // If collision debug mode is enabled, render collision lines
+    if (Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>() != nullptr &&
+        Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>()->Enabled()) {
         for (const auto& draw_call : draw_collision_calls) {
-            DrawLine(draw_call);
+            DrawLine(draw_call); // Collision lines
         }
     }
 
-    //std::cout << draw_calls.size() << std::endl;
-    // Clear the draw call vectors if needed for the next frame
+    // Clear draw call vectors for the next frame
     draw_first_calls.clear();
     draw_calls.clear();
     draw_late_calls.clear();
@@ -75,73 +84,120 @@ void CS230::Render::RenderAll() {
     draw_collision_calls.clear();
 }
 
-namespace
-{
-    std::span<const float, 3 * 3> to_span(const mat3& m)
-    {
+// Helper function to convert matrix or color to a span of floats
+namespace {
+    std::span<const float, 3 * 3> to_span(const mat3& m) {
         return std::span<const float, 3 * 3>(&m.elements[0][0], 9);
     }
-    std::span<const float, 3> to_span(const color3& c)
-    {
+    std::span<const float, 3> to_span(const color3& c) {
         return std::span<const float, 3>(&c.elements[0], 3);
     }
 }
 
-// Internal render method
+// Draw an individual draw call (textured quad)
+// Converts world coordinates to normalized device coordinates (NDC)
 void CS230::Render::Draw(const DrawCall& draw_call) {
     const GLShader* shader = draw_call.shader;
-    shader->Use();
+    shader->Use(); // Use the specified shader
 
+    // Ensure the texture is valid, then use it and send it to the shader
     if (draw_call.texture) {
         draw_call.texture->UseForSlot(0);
         shader->SendUniform("uTex2d", 0);
     }
     else {
-        throw std::runtime_error("no texture!");
+        throw std::runtime_error("no texture!"); // Error if no texture is assigned
     }
 
     vec2 texture_size = (vec2)draw_call.texture->GetSize();
-    mat3 model_to_world = *draw_call.transform * mat3::build_scale(texture_size);
+    mat3 model_to_world = *draw_call.transform * mat3::build_scale(texture_size); // Scale the model based on texture size
 
+    // Convert world coordinates to NDC coordinates for rendering
     mat3 WORLD_TO_NDC = mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height);
-
     const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
-    shader->SendUniform("uModelToNDC", to_span(model_to_ndc));
-    model.Use();
-    GLDrawIndexed(model);
 
-    model.Use(false);
-    shader->Use(false);
+    shader->SendUniform("uModelToNDC", to_span(model_to_ndc)); // Send transformation matrix to shader
+    model.Use(); // Bind the model for drawing
+    GLDrawIndexed(model); // Draw the model
+
+    model.Use(false); // Unbind the model
+    shader->Use(false); // Unbind the shader
 }
 
-void CS230::Render::DrawLine(CollisionDrawCall drawcall)
+// Draw a line between two points for collision or debugging purposes
+void CS230::Render::DrawLine(LineDrawCall drawcall) {
+    vec2 start = drawcall.start;
+    vec2 end = drawcall.end;
+    color3 color = drawcall.color;
+    const GLShader* shader = drawcall.shader;
+
+    // Use default collision shader if no shader is provided
+    if (shader == nullptr) {
+        shader = Engine::GetShaderManager().GetShader("default_collision");
+    }
+
+    vec2 direction = end - start;
+    float length = direction.Length(); // Calculate length of the line
+    direction = direction.Normalize(); // Normalize direction vector
+
+    float angle = std::atan2(direction.y, direction.x); // Calculate angle of the line
+
+    // Build transformation matrix for the line
+    mat3 model_to_world = mat3::build_translation(start) * mat3::build_rotation(angle) * mat3::build_scale(length);
+
+    // Convert to NDC coordinates
+    mat3 WORLD_TO_NDC = mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height);
+    const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
+
+    shader->Use(); // Use shader
+    shader->SendUniform("uModelToNDC", to_span(model_to_ndc)); // Send transformation matrix to shader
+    shader->SendUniform("uFillColor", to_span(color)); // Send line color to shader
+
+    line_model.Use(); // Bind line model
+    GLDrawVertices(line_model); // Draw the line
+
+    shader->Use(false); // Unbind shader
+    line_model.Use(false); // Unbind line model
+}
+
+void CS230::Render::DrawLinePro(LineDrawCallPro drawcall)
 {
     vec2 start = drawcall.start;
     vec2 end = drawcall.end;
     color3 color = drawcall.color;
-    GLShader* shader = Engine::GetShaderManager().GetShader("default_collision");
+    const GLShader* shader = drawcall.shader;
+    const float width = drawcall.width;
+    const float alpha = drawcall.alpha;
+
+    // Use default collision shader if no shader is provided
+    if (shader == nullptr) {
+        shader = Engine::GetShaderManager().GetShader("default_collision");
+    }
 
     vec2 direction = end - start;
-    float length = direction.Length();
-    direction = direction.Normalize();
+    float length = direction.Length(); // Calculate length of the line
+    direction = direction.Normalize(); // Normalize direction vector
 
-    float angle = std::atan2(direction.y, direction.x);
+    float angle = std::atan2(direction.y, direction.x); // Calculate angle of the line
 
-    mat3 model_to_world = mat3::build_translation(start) * mat3::build_rotation(angle)* mat3::build_scale(length);
-    
+    // Build transformation matrix for the line
+    mat3 model_to_world = mat3::build_translation(start) * mat3::build_rotation(angle) * mat3::build_scale(length);
+
+    // Convert to NDC coordinates
     mat3 WORLD_TO_NDC = mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height);
     const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
 
-    shader->Use();
-    shader->SendUniform("uModelToNDC", to_span(model_to_ndc));
-    shader->SendUniform("uFillColor", to_span(color));
+    shader->Use(); // Use shader
+    shader->SendUniform("uModelToNDC", to_span(model_to_ndc)); // Send transformation matrix to shader
+    shader->SendUniform("uFillColor", to_span(color)); // Send line color to shader
 
-    glCheck(glLineWidth(1.0f));
-    line_model.Use();
-    GLDrawVertices(line_model);
+    glCheck(glLineWidth(width)); // Set line width
+    line_model.Use(); // Bind line model
+    GLDrawVertices(line_model); // Draw the line
 
-    shader->Use(false);
-    line_model.Use(false);
+    shader->Use(false); // Unbind shader
+    line_model.Use(false); // Unbind line model
+    glCheck(glLineWidth(1.0f)); // Set line width
 }
 
 
