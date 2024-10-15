@@ -17,16 +17,15 @@ Ship::Ship(vec2 start_position) :
 
 void Ship::Update(double dt)
 { 
-    //std::cout << (!set_dest && beat->GetIsOnBeat() && !move) << std::endl;
     GameObject::Update(dt);
 
-    SetDest();
-    
-    if (move) {
-        Move(dt);
-    }
-
     if ("Mode1" == Engine::GetGameStateManager().GetGameStateName()) {
+        SetDest();
+
+        if (move) {
+            Move(dt);
+        }
+
         FuelUpdate(dt);
         if (isCollidingWithReef && !IsTouchingReef())
         {
