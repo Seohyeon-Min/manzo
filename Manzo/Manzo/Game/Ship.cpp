@@ -89,6 +89,7 @@ void Ship::Move(double dt)
 bool Ship::CanCollideWith(GameObjectTypes other_object)
 {
 	switch (other_object) {
+    case GameObjectTypes::Reef:
 	case GameObjectTypes::Fish:
 		return true;
 		break;

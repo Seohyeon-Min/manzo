@@ -48,7 +48,6 @@ namespace CS230 {
         void Draw();
         bool IsCollidingWith(GameObject* other_object) override;
         bool IsCollidingWith(vec2 point) override;
-        bool IsCollidingWith(Polygon map_object);
         Math::rect WorldBoundary_rect();
     private:
         GameObject* object;
