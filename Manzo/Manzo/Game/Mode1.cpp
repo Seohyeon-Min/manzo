@@ -40,21 +40,21 @@ void Mode1::Load() {
 #endif
     // component
     AddGSComponent(new CS230::GameObjectManager());
+    AddGSComponent(new Background());
     AddGSComponent(new Beat());
     AddGSComponent(new AudioManager());
-
-    //// background
-    background = new Background({0,0});
-    GetGSComponent<CS230::GameObjectManager>()->Add(background);
+    GetGSComponent<Background>()->Add("assets/images/temp_back.png", 0.25);
 
     //// ship
     ship_ptr = new Ship({ 0, 0 });
     GetGSComponent<CS230::GameObjectManager>()->Add(ship_ptr);
 
     //// camera
-    camera = new CS230::Cam();
+    camera = new CS230::Camera({ {1280 / 2 , 720 / 2 }, {1280 / 2, 720 / 2 } });
     AddGSComponent(camera);
-
+    vec2 playerPosition = ship_ptr->GetPosition();
+    GetGSComponent<CS230::Camera>()->SetPosition({ playerPosition.x - 1280 / 2, playerPosition.y - 720 / 2 });
+    //GetGSComponent<CS230::Camera>()->SetLimit({ { 0, 0}, {  1680 , 5000} });
 
     //// audio
     Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("assets/audios/basic_beat_100_5.wav", "sample");
@@ -79,11 +79,7 @@ void Mode1::Load() {
 void Mode1::Update(double dt) {
     UpdateGSComponents(dt);
     GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
-
-    //camera postion update
-    camera->SetPosition(ship_ptr->GetPosition());
-    camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
-
+    GetGSComponent<CS230::Camera>()->Update(ship_ptr->GetPosition());
 	fishGenerator->GenerateFish(dt);
 
     if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Q)) {
@@ -99,6 +95,7 @@ void Mode1::Update(double dt) {
 
 void Mode1::Draw() {
     GetGSComponent<CS230::GameObjectManager>()->DrawAll();
+    GetGSComponent<Background>()->Draw(*camera);
 }
 
 void Mode1::Unload() {

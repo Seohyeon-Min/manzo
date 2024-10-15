@@ -9,11 +9,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Animation.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\AudioManager.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Camera.cpp">
@@ -43,12 +39,6 @@
     <ClCompile Include="Engine\Particle.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Render.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\ShaderManager.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\ShowCollision.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -64,25 +54,35 @@
     <ClCompile Include="Game\Background.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="Game\BeatSystem.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Fish.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\FishEcosystem.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Mode1.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Reef.cpp">
+    <ClCompile Include="Game\Splash.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Game\BeatSystem.cpp">
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Game\Ship.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Splash.cpp">
+    <ClCompile Include="Engine\AudioManager.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Fish.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Reef.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Render.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\ShaderManager.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\FishEcosystem.cpp">
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Game\Mode2.cpp">
@@ -97,9 +97,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\AudioManager.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Camera.h">
@@ -141,12 +138,6 @@
     <ClInclude Include="Engine\Rect.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Render.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\ShaderManager.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\ShowCollision.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -162,15 +153,6 @@
     <ClInclude Include="Game\Background.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Game\BeatSystem.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Fish.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\FishEcosystem.h">
-      <Filter>Game</Filter>
-    </ClInclude>
     <ClInclude Include="Game\GameObjectTypes.h">
       <Filter>Game</Filter>
     </ClInclude>
@@ -178,12 +160,6 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Game\Mode1.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Reef.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Ship.h">
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Game\Splash.h">

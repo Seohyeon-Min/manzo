@@ -4,6 +4,7 @@
 #include "Engine.h"
 #include "GameObject.h"
 
+
 #include <vector>
 #include <unordered_map>
 #include <filesystem>
@@ -11,7 +12,6 @@
 #include <span>
 #include <array>
 #include <iostream>
-#include "Camera.h"
 
 
 const float WORLD_SIZE_MAX = (float)std::max(Engine::window_width, Engine::window_height);
@@ -112,8 +112,8 @@ void CS230::Render::Draw(const DrawCall& draw_call) {
     vec2 texture_size = (vec2)draw_call.texture->GetSize();
     mat3 model_to_world = *draw_call.transform * mat3::build_scale(texture_size); // Scale the model based on texture size
 
-    mat3 WORLD_TO_NDC = GetWorldtoNDC();
-
+    // Convert world coordinates to NDC coordinates for rendering
+    mat3 WORLD_TO_NDC = mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height);
     const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
 
     shader->SendUniform("uModelToNDC", to_span(model_to_ndc)); // Send transformation matrix to shader
@@ -180,9 +180,11 @@ void CS230::Render::DrawLinePro(LineDrawCallPro drawcall)
 
     float angle = std::atan2(direction.y, direction.x); // Calculate angle of the line
 
-    mat3 model_to_world = mat3::build_translation(start) * mat3::build_rotation(angle)* mat3::build_scale(length);
-    
-    mat3 WORLD_TO_NDC = GetWorldtoNDC();
+    // Build transformation matrix for the line
+    mat3 model_to_world = mat3::build_translation(start) * mat3::build_rotation(angle) * mat3::build_scale(length);
+
+    // Convert to NDC coordinates
+    mat3 WORLD_TO_NDC = mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height);
     const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
 
     shader->Use(); // Use shader
@@ -196,11 +198,6 @@ void CS230::Render::DrawLinePro(LineDrawCallPro drawcall)
     shader->Use(false); // Unbind shader
     line_model.Use(false); // Unbind line model
     glCheck(glLineWidth(1.0f)); // Set line width
-}
-
-mat3 CS230::Render::GetWorldtoNDC()
-{
-    return Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->world_to_ndc;
 }
 
 
