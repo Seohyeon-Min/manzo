@@ -36,10 +36,9 @@ void Background::Draw(const CS230::Cam& camera)
             Engine::GetShaderManager().GetDefaultShader() // Shader to use
         };
 
-        // Add the draw call to the renderer
-        Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawFirst);
-    }// Somewhere in your main game loop or rendering function
-    Engine::GetRender().DrawBackground(draw_call);
+        Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawBackground);
+    }
+    Engine::GetRender().RenderBackgrounds();
 }
 
 ivec2 Background::GetSize()

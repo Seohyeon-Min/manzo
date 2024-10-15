@@ -26,6 +26,10 @@ void CS230::Render::AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase
     else if (phase == DrawLayer::DrawLast) {
         draw_late_calls.push_back(drawCall);
     }
+    else if (phase == DrawLayer::DrawBackground)
+    {
+        draw_background_calls.push_back(drawCall);
+    }
     else {
         draw_calls.push_back(drawCall);
     }
@@ -101,6 +105,16 @@ void CS230::Render::Draw(const DrawCall& draw_call) {
     model.Use(false);
     shader->Use(false);
 }
+
+void CS230::Render::RenderBackgrounds()
+{
+    for (const auto& draw_call : draw_background_calls) {
+        DrawBackground(draw_call);
+    }
+
+    draw_background_calls.clear();
+}
+
 
 void CS230::Render::DrawBackground(const DrawCall& draw_call)
 {
@@ -240,3 +254,4 @@ void CS230::Render::CreatLineModel()
     line_model.AddVertexBuffer(std::move(buffer), { position });
     line_model.SetPrimitivePattern(GLPrimitive::Lines);
 }
+

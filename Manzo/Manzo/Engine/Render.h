@@ -12,6 +12,7 @@
 
 // A structure to represent a draw call
 enum class DrawLayer {
+    DrawBackground,
     DrawFirst,
     Draw,
     DrawLast
@@ -39,16 +40,18 @@ namespace CS230 {
         void RenderAll();
         void CreatModel();
         void CreatLineModel();
-        void DrawBackground(const DrawCall& draw_call);
+        void RenderBackgrounds();
 
     private:
         // Internal render method
         void Draw(const DrawCall& draw_call);
+        void DrawBackground(const DrawCall& draw_call);
         void DrawLine(CollisionDrawCall drawcall);
 
         mat3 GetWorldtoNDC();
 
         // Vectors for draw calls
+        std::vector<DrawCall> draw_background_calls;
         std::vector<DrawCall> draw_first_calls;
         std::vector<DrawCall> draw_calls;
         std::vector<DrawCall> draw_late_calls;
