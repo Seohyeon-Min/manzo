@@ -29,14 +29,16 @@ public:
     void SetDest();
     bool CanCollideWith(GameObjectTypes) override;
     void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
+
+    //get
     const vec2& GetPosition() const { return GameObject::GetPosition(); }
 
     //for fuel
     void FuelUpdate(double dt);
     void SetMaxFuel(double input);
     void HitWithReef();
-    bool IsTouchingReef();
-    bool IsFuelZero();
+    bool IsTouchingReef(){ return isCollidingWithReef; }
+    bool IsFuelZero() { return FuelFlag; }
 
 private:
     static constexpr double initialSpeed = 1200.f;
@@ -54,7 +56,6 @@ private:
     Skillsys* skill;
 
     //for fuel
-
     bool isCollidingWithReef;
     bool FuelFlag = false;
     double fuel;

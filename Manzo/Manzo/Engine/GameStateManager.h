@@ -27,6 +27,8 @@ namespace CS230 {
         void ReloadState();
         bool HasGameEnded();
         bool IsNull() { return current_gamestate == nullptr; }
+        std::string GetGameStateName() { return current_gamestate->GetName(); };
+
         template<typename T>
         T* GetGSComponent() { return current_gamestate->GetGSComponent<T>(); }
 

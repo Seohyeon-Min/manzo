@@ -26,10 +26,12 @@ void Ship::Update(double dt)
         Move(dt);
     }
 
-    FuelUpdate(dt);
-    if (isCollidingWithReef && !IsTouchingReef())
-    {
-        isCollidingWithReef = false;
+    if ("Mode1" == Engine::GetGameStateManager().GetGameStateName()) {
+        FuelUpdate(dt);
+        if (isCollidingWithReef && !IsTouchingReef())
+        {
+            isCollidingWithReef = false;
+        }
     }
 }
 
@@ -140,7 +142,6 @@ void Ship::ResolveCollision(GameObject* other_object)
 
 
 //for fuel
-
 void Ship::FuelUpdate(double dt)
 {
  
@@ -188,16 +189,4 @@ void Ship::HitWithReef()
 {
     fuel -= HitDecFuel;
     std::cout << "Collision with Reef!" << std::endl;
-}
-bool Ship::IsTouchingReef()
-{
-    if (isCollidingWithReef == true)
-    {
-        return true;
-    }
-    return false;
-}
-bool Ship::IsFuelZero()
-{
-    return FuelFlag;
 }
