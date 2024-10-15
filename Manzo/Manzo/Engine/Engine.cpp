@@ -122,8 +122,9 @@ void Engine::ImGuiDraw()
         //{
         //    caminfo.camera_view.SetZoom(zoom / 100.0f);
         //}
-        if (!GetGameStateManager().IsNull()) {
-            //ImGui::LabelText("Is on beat?", "%s", GetGameStateManager().GetGSComponent<Beat>()->GetIsOnBeat() ? "true" : "false");
+        if (!GetGameStateManager().IsNull()
+            && GetGameStateManager().GetGSComponent<Beat>() != nullptr) {
+            ImGui::LabelText("Is on beat?", "%s", GetGameStateManager().GetGSComponent<Beat>()->GetIsOnBeat() ? "true" : "false");
             //ImGui::LabelText("Collision", "%s", GetGameStateManager().GetGSComponent<CS230::ShowCollision>()->Enabled() ? "true" : "false");
         }
     }
