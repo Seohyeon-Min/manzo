@@ -143,6 +143,10 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
             if (maxA < minB || maxB < minA) {
                 return false;
             }
+            else {
+                CollidingSide_1 = other_poly.vertices[i];
+                CollidingSide_2 = other_poly.vertices[(i+1) % 4];
+            }
         }
 
         for (int i = 0; i < other_poly.vertexCount; i++) {
@@ -158,6 +162,10 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
 
             if (maxA < minB || maxB < minA) {
                 return false;
+            }
+            else {
+                CollidingSide_1 = other_poly.vertices[i];
+                CollidingSide_2 = other_poly.vertices[(i + 1) % other_poly.vertexCount];
             }
         }
 

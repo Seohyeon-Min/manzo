@@ -26,6 +26,7 @@ public:
     void SetDest();
     bool CanCollideWith(GameObjectTypes) override;
     void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
+    vec2 GetNormal(vec2 reefPosition1, vec2 reefPosition2);
     const vec2& GetPosition() const { return GameObject::GetPosition(); }
 
 private:

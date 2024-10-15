@@ -10,6 +10,8 @@ public:
 	std::string TypeName() override { return "Reef"; }
 
 private:
+
 	void Update(double dt);
 	void Draw();
+	float rotationAngle;
 };
