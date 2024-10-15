@@ -37,8 +37,6 @@ void CS230::Render::AddDrawCall(vec2 start, vec2 end , color3 color) {
 
 // Render all draw calls
 void CS230::Render::RenderAll() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     for (const auto& draw_call : draw_first_calls) {
         Draw(draw_call);
     }
@@ -103,6 +101,34 @@ void CS230::Render::Draw(const DrawCall& draw_call) {
     model.Use(false);
     shader->Use(false);
 }
+
+void CS230::Render::DrawBackground(const DrawCall& draw_call)
+{
+    const GLShader* shader = draw_call.shader;
+    shader->Use();
+
+    if (draw_call.texture) {
+        draw_call.texture->UseForSlot(1);
+        shader->SendUniform("uTex2d", 1);
+    }
+    else {
+        throw std::runtime_error("no texture!");
+    }
+
+    vec2 texture_size = (vec2)draw_call.texture->GetSize();
+    mat3 model_to_world = *draw_call.transform * mat3::build_scale(texture_size);
+
+    mat3 WORLD_TO_NDC = GetWorldtoNDC();
+
+    const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
+    shader->SendUniform("uModelToNDC", to_span(model_to_ndc));
+    model.Use();
+    GLDrawIndexed(model);
+
+    model.Use(false);
+    shader->Use(false);
+}
+
 
 void CS230::Render::DrawLine(CollisionDrawCall drawcall)
 {

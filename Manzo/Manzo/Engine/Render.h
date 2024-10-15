@@ -39,6 +39,7 @@ namespace CS230 {
         void RenderAll();
         void CreatModel();
         void CreatLineModel();
+        void DrawBackground(const DrawCall& draw_call);
 
     private:
         // Internal render method
