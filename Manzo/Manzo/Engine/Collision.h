@@ -29,7 +29,6 @@ namespace CS230 {
     public:
         enum class CollisionShape {
             Rect,
-            Circle,
             Poly
         };
         virtual CollisionShape Shape() = 0;
@@ -59,7 +58,7 @@ namespace CS230 {
         MAP_SATCollision(Polygon boundary, GameObject* object);
         void Draw() override;
         CollisionShape Shape() override {
-            return CollisionShape::Rect; 
+            return CollisionShape::Poly;
         }
         bool IsCollidingWith(GameObject* other_object) override;
         bool IsCollidingWith(vec2 point) override;

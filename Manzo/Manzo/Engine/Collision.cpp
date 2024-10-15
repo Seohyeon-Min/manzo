@@ -69,8 +69,8 @@ Polygon CS230::MAP_SATCollision::WorldBoundary_poly() {
     vec2 transformedPoint;
 
     for (int i = 0; i < boundary.vertexCount; ++i) {
-        transformedPoint.x = (object->GetMatrix() * mat3::build_translation({ boundary.vertices[i].x, 0 })).column2.y;
-        transformedPoint.y = (object->GetMatrix() * mat3::build_translation({ 0, boundary.vertices[i].y })).column2.x;
+        transformedPoint.x = (object->GetMatrix() * mat3::build_translation({ boundary.vertices[i] })).column2.x;
+        transformedPoint.y = (object->GetMatrix() * mat3::build_translation({ boundary.vertices[i]})).column2.y;
         boundary_poly.vertices.push_back(transformedPoint);
     }
 
@@ -215,12 +215,6 @@ bool CS230::MAP_SATCollision::IsCollidingWith(GameObject* other_object)
 
 
     if (other_collider == nullptr) {
-        return false;
-    }
-
-
-    if (other_collider->Shape() != CollisionShape::Circle) {
-        Engine::GetLogger().LogError("Circle type is cannot apply in Map Collision");
         return false;
     }
 
