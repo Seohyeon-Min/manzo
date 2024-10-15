@@ -26,12 +26,12 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="0.25"
-     inkscape:cx="1306"
-     inkscape:cy="1302"
+     inkscape:zoom="0.1767767"
+     inkscape:cx="25.455844"
+     inkscape:cy="110.30866"
      inkscape:window-width="1920"
      inkscape:window-height="1057"
-     inkscape:window-x="-8"
+     inkscape:window-x="1912"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" />
@@ -44,27 +44,11 @@
      transform="translate(-70.714288,-96.58537)">
     <path
        style="fill:#1a1a1a;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-       d="m 305.66429,218.2937 -67.73333,29.63334 78.31666,77.25833 z"
-       id="path4" />
+       d="m 145.54976,108.55904 -67.351924,62.86179 79.325614,34.42431 z"
+       id="path1" />
     <path
        style="fill:#1a1a1a;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-       d="m 318.36428,342.1187 -121.70833,89.95833 37.04167,81.49167 241.29999,4.23333 73.025,-124.88333 z"
-       id="path5" />
-    <path
-       style="fill:#1a1a1a;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-       d="m 477.11428,234.1687 -104.775,26.45833 110.06667,93.13334 z"
-       id="path6" />
-    <path
-       style="fill:#1a1a1a;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-       d="m 164.90595,136.80204 -50.8,183.09166 58.20834,79.375 z"
+       d="m -43.035621,107.06234 -62.861789,17.96051 61.365078,74.83546 z"
        id="path2" />
-    <path
-       style="fill:#1a1a1a;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-       d="m 598.82261,204.53537 -128.05833,-38.1 59.26667,168.27499 z"
-       id="path3" />
-    <path
-       style="fill:#1a1a1a;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-       d="m 364.93095,135.7437 -100.54166,-8.46666 62.44166,65.61666 z"
-       id="path7" />
   </g>
 </svg>

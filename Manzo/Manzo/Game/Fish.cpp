@@ -22,7 +22,7 @@ Fish::Fish(Fish* parent) : CS230::GameObject({ 0, 0 }) {
 bool Fish::CanCollideWith(GameObjectTypes other_object)
 {
     switch (other_object) {
-    case GameObjectTypes::Ship:
+    case GameObjectTypes::Reef:
         return true;
         break;
     }
@@ -32,7 +32,7 @@ bool Fish::CanCollideWith(GameObjectTypes other_object)
 void Fish::ResolveCollision(GameObject* other_object)
 {
     switch (other_object->Type()) {
-    case GameObjectTypes::Ship:
+    case GameObjectTypes::Reef:
         Destroy();
         break;
     }

@@ -43,7 +43,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 float last_y = 0;
 
                 std::vector<vec2> positions;
-
+                float render_height = static_cast<float>(Engine::window_height);
                 while (std::getline(stream, data, ',')) {
                     if (data == "m" || data == "z") {
                         continue;
@@ -67,9 +67,10 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                             last_y = y;
                         }
                     }
+
                     vec2 vec;
                     vec.x = x;
-                    vec.y = y;
+                    vec.y = -y;
                     std::cout << "x : " << x << "       " << "y : " << y << std::endl;
                     positions.push_back(vec);
                     count++;
@@ -78,11 +79,11 @@ void CS230::Map::ParseSVG(const std::string& filename) {
 
                 //new object rock
                 Polygon poly;
-                Rock* rock = new Rock(poly);
-                Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rock);
                 poly.vertices = positions;
                 poly.vertexCount = int(positions.size());
                 objects.push_back(poly);
+                Rock* rock = new Rock(poly);
+                Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rock);
                 rock-> AddGOComponent(new MAP_SATCollision(poly, rock));
             }
 

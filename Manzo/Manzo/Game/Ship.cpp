@@ -92,7 +92,9 @@ bool Ship::CanCollideWith(GameObjectTypes other_object)
 	case GameObjectTypes::Fish:
 		return true;
 		break;
+
 	}
+
 
 	return false;
 }
