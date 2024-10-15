@@ -28,12 +28,16 @@ Created:    March 8, 2023
 namespace CS230 {
     class Cam : public Component{
     public:
-        Cam();
-        void Update(double dt);
+        Cam(Math::rect player_zone);
+        void Update(double dt, const vec2& player_position);
         void SetPosition(vec2 new_position);
         const vec2& GetPosition() const;
+        void SetLimit(Math::rect new_limit);
 
     private:
+        Math::rect limit;
+        Math::rect player_zone;
+
         struct CamInfo
         {
             Camera     camera{};

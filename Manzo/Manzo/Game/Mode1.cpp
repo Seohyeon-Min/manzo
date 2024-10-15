@@ -44,7 +44,7 @@ void Mode1::Load() {
     GetGSComponent<CS230::GameObjectManager>()->Add(ship_ptr);
 
     //// camera
-    camera = new CS230::Cam();
+    camera = new CS230::Cam({ { -100 , -100 }, { 100, 100} });
     AddGSComponent(camera);
 
     //// audio
@@ -59,6 +59,9 @@ void Mode1::Load() {
     //// reef
     reef = new Reef({ -400,200 });
     GetGSComponent<CS230::GameObjectManager>()->Add(reef);
+
+    GetGSComponent<CS230::Cam>()->SetLimit({ { -200, -200 }, { 200, 200 } });
+    camera->SetPosition({0,0});
 }
 
 void Mode1::Update(double dt) {
@@ -66,8 +69,10 @@ void Mode1::Update(double dt) {
     GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
 
     //camera postion update
-    camera->SetPosition(ship_ptr->GetPosition());
-    camera->Update(dt);
+    camera->Update(dt, ship_ptr->GetPosition());
+
+    std::cout << "ship pos: " << ship_ptr->GetPosition().x << ", " << ship_ptr->GetPosition().y << std::endl;
+    std::cout << "camera pos: " << camera->GetPosition().x << ", " << camera->GetPosition().y << std::endl;
 
 	fishGenerator->GenerateFish(dt);
 }
