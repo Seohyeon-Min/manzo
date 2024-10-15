@@ -116,6 +116,7 @@ bool Ship::CanCollideWith(GameObjectTypes other_object)
 {
     switch (other_object) {
     case GameObjectTypes::Fish:
+    case GameObjectTypes::Reef:
         return true;
         break;
     }
