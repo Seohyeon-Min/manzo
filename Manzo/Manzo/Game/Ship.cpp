@@ -13,12 +13,9 @@ Ship::Ship(vec2 start_position) :
 }
 
 void Ship::Update(double dt)
-{ 
-    //std::cout << (!set_dest && beat->GetIsOnBeat() && !move) << std::endl;
+{
     GameObject::Update(dt);
-
     SetDest();
-    
     if (move) {
         Move(dt);
     }
@@ -32,26 +29,23 @@ void Ship::Draw()
 
 void Ship::SetDest()
 {
-    if (clickable && !set_dest) {
-        if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT) && beat->GetIsOnBeat() ) {
-            // Get mouse position relative to the center of the screen
-            destination.x = Engine::GetInput().GetMousePosition().x;
-            destination.y = Engine::GetInput().GetMousePosition().y;
-            clickable = false;
-            set_dest = true;
-        }
+    if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT) && !set_dest && beat->GetIsOnBeat() && !move) {
+        // Get mouse position relative to the center of the screen
+        destination.x = Engine::GetInput().GetMousePosition().x;
+        destination.y = Engine::GetInput().GetMousePosition().y;
+
+        set_dest = true;
     }
 
     if (set_dest) { // if clicked the destination
-        if (!beat->GetIsOnBeat() && !ready_to_move && !move) { // wait for next beat
-            //std::cout << "ready_to_move" << std::endl;
+        if (!beat->GetIsOnBeat()) { // wait for next beat
             ready_to_move = true;
         }
     }
 
     if (ready_to_move && beat->GetBeat()) { // move when its on next beat
         initialPosition = GetPosition();
-        //std::cout << "move" << std::endl;
+
         move = true;
         set_dest = false;
         ready_to_move = false;
@@ -61,7 +55,7 @@ void Ship::SetDest()
 void Ship::Move(double dt)
 { // there is a bug that if destination is too short, ship doesn't move any more
 
-    double distanceMoved_SQUARED = (double)pow(GetPosition().x - initialPosition.x, 2) + pow(GetPosition().y - initialPosition.y, 2);
+    double distanceMoved = (double)sqrt(pow(GetPosition().x - initialPosition.x, 2) + pow(GetPosition().y - initialPosition.y, 2));
 
 
     vec2 direction = { destination.x - (GetPosition().x),
@@ -75,24 +69,15 @@ void Ship::Move(double dt)
         direction.y /= magnitude;
     }
 
+    double totalDistanceToMove = 50.0;
 
-    if (distanceMoved_SQUARED >= totalDistanceToMove_SQUARED) { // stop
-
+    if (distanceMoved >= totalDistanceToMove) { // stop
         SetVelocity({ 0, 0 });
         currentSpeed = initialSpeed;
-        if (beat->GetIsOnBeat() && !clickable) { // wait for next beat
-            //std::cout << "clickable" << std::endl;
-            clickable = true;
-        }
-        if(beat->GetBeat()){
-            //std::cout << "move_false" << std::endl;
-            move = false;
-        }
-
-  
+        move = false;
     }
     else {
-        SetVelocity({ direction.x * float(initialSpeed), direction.y * float(initialSpeed)}); //move if left
+        SetVelocity({ direction.x * currentSpeed, direction.y * currentSpeed }); //move if left
         if (currentSpeed > 0) {
             currentSpeed -= (float)(deceleration);
             if (currentSpeed < 0)
@@ -100,6 +85,7 @@ void Ship::Move(double dt)
                 currentSpeed = 0;
             }
         }
+
     }
 }
 

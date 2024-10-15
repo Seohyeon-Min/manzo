@@ -56,7 +56,7 @@ void Mode1::Load() {
     GetGSComponent<CS230::Camera>()->SetPosition({ playerPosition.x - 1280 / 2, playerPosition.y - 720 / 2 });
     GetGSComponent<CS230::Camera>()->SetLimit({ { 0,0 }, { (Engine::window_width), (Engine::window_height) } });
     //// audio
-    Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("assets/audios/basic_beat_100_5.wav", "sample");
+    Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("assets/audios/basic_beat_100_4.wav", "sample");
     if (sample) {
         GetGSComponent<AudioManager>()->PlayMusic(sample, -1);
     }
