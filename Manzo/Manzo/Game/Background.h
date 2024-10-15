@@ -16,9 +16,9 @@ Created:    March 8, 2023
 
 class Background : public CS230::Component {
 public:
-    void Add(const std::filesystem::path& texture_path, double speed);
+    void Add(const std::filesystem::path& texture_path, float speed);
     void Unload();
-    void Draw(const CS230::Camera& camera);
+    void Draw(const CS230::Cam& camera);
     ivec2 GetSize();
 private:
     struct ParallaxLayer {

@@ -11,7 +11,7 @@ Updated:    March 29, 2023
 
 #include "Background.h"
 
-void Background::Add(const std::filesystem::path& texture_path, double speed)
+void Background::Add(const std::filesystem::path& texture_path, float speed)
 {
 	backgrounds.push_back(ParallaxLayer({ Engine::GetTextureManager().Load(texture_path), speed }));
 }
@@ -21,24 +21,25 @@ void Background::Unload()
 	backgrounds.clear();
 }
 
-void Background::Draw(const CS230::Camera& camera)
+void Background::Draw(const CS230::Cam& camera)
 {
+    vec2 cameraPos = camera.GetPosition();
+
     for (ParallaxLayer& background : backgrounds) {
-        vec2 parallax_position = -camera.GetPosition() * (float)background.speed;
+   
+        // Build the translation matrix with parallax effect
+        mat3 parallax_matrix = mat3::build_translation({ (0 - cameraPos.x) * background.speed, (0 - cameraPos.y) * background.speed });
 
-        //// Build the translation matrix with parallax effect
-        //mat3 parallax_matrix = mat3::build_translation(parallax_position);
+        draw_call = {
+            background.texture,                       // Texture to draw
+            &parallax_matrix,                          // Transformation matrix
+            Engine::GetShaderManager().GetDefaultShader() // Shader to use
+        };
 
-        //CS230::DrawCall draw_call = {
-        //    background.texture,                       // Texture to draw
-        //    parallax_matrix,                          // Transformation matrix
-        //    Engine::GetShaderManager().GetDefaultShader() // Shader to use
-        //};
-
-        //// Add the draw call to the renderer
-        //Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawFirst);
+        // Add the draw call to the renderer
+        Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawFirst);
     }// Somewhere in your main game loop or rendering function
-
+    Engine::GetRender().DrawBackground(draw_call);
 }
 
 ivec2 Background::GetSize()

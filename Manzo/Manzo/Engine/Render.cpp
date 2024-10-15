@@ -124,43 +124,35 @@ void CS230::Render::Draw(const DrawCall& draw_call) {
     shader->Use(false); // Unbind the shader
 }
 
-// Draw a line between two points for collision or debugging purposes
-void CS230::Render::DrawLine(LineDrawCall drawcall) {
-    vec2 start = drawcall.start;
-    vec2 end = drawcall.end;
-    color3 color = drawcall.color;
-    const GLShader* shader = drawcall.shader;
+void CS230::Render::DrawBackground(const DrawCall& draw_call)
+{
+    const GLShader* shader = draw_call.shader;
+    shader->Use();
 
-    // Use default collision shader if no shader is provided
-    if (shader == nullptr) {
-        shader = Engine::GetShaderManager().GetShader("default_collision");
+    if (draw_call.texture) {
+        draw_call.texture->UseForSlot(1);
+        shader->SendUniform("uTex2d", 1);
+    }
+    else {
+        throw std::runtime_error("no texture!");
     }
 
-    vec2 direction = end - start;
-    float length = direction.Length(); // Calculate length of the line
-    direction = direction.Normalize(); // Normalize direction vector
+    vec2 texture_size = (vec2)draw_call.texture->GetSize();
+    mat3 model_to_world = *draw_call.transform * mat3::build_scale(texture_size);
 
-    float angle = std::atan2(direction.y, direction.x); // Calculate angle of the line
+    mat3 WORLD_TO_NDC = GetWorldtoNDC();
 
-    // Build transformation matrix for the line
-    mat3 model_to_world = mat3::build_translation(start) * mat3::build_rotation(angle) * mat3::build_scale(length);
-
-    // Convert to NDC coordinates
-    mat3 WORLD_TO_NDC = mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height);
     const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
+    shader->SendUniform("uModelToNDC", to_span(model_to_ndc));
+    model.Use();
+    GLDrawIndexed(model);
 
-    shader->Use(); // Use shader
-    shader->SendUniform("uModelToNDC", to_span(model_to_ndc)); // Send transformation matrix to shader
-    shader->SendUniform("uFillColor", to_span(color)); // Send line color to shader
-
-    line_model.Use(); // Bind line model
-    GLDrawVertices(line_model); // Draw the line
-
-    shader->Use(false); // Unbind shader
-    line_model.Use(false); // Unbind line model
+    model.Use(false);
+    shader->Use(false);
 }
 
-void CS230::Render::DrawLinePro(LineDrawCallPro drawcall)
+
+void CS230::Render::DrawLine(CollisionDrawCall drawcall)
 {
     vec2 start = drawcall.start;
     vec2 end = drawcall.end;

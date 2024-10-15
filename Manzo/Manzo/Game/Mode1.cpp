@@ -52,9 +52,10 @@ void Mode1::Load() {
     //// camera
     camera = new CS230::Camera({ {1280 / 2 , 720 / 2 }, {1280 / 2, 720 / 2 } });
     AddGSComponent(camera);
-    vec2 playerPosition = ship_ptr->GetPosition();
-    GetGSComponent<CS230::Camera>()->SetPosition({ playerPosition.x - 1280 / 2, playerPosition.y - 720 / 2 });
-    //GetGSComponent<CS230::Camera>()->SetLimit({ { 0, 0}, {  1680 , 5000} });
+
+    //// background
+    background = new Background();
+    AddGSComponent(background);
 
     //// audio
     Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("assets/audios/basic_beat_100_5.wav", "sample");
@@ -74,6 +75,7 @@ void Mode1::Load() {
     AddGSComponent(new Mouse());
     //Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::Mouse>>()->Emit(2, mouse_position, { 0, 0 }, { 0, 100 }, M_PI / 2);
 
+    GetGSComponent<Background>()->Add("assets/images/temp_back.png", 0.25f);
 }
 
 void Mode1::Update(double dt) {
@@ -94,6 +96,7 @@ void Mode1::Update(double dt) {
 }
 
 void Mode1::Draw() {
+    GetGSComponent<Background>()->Draw(*GetGSComponent<CS230::Cam>());
     GetGSComponent<CS230::GameObjectManager>()->DrawAll();
     GetGSComponent<Background>()->Draw(*camera);
 }
@@ -101,6 +104,7 @@ void Mode1::Draw() {
 void Mode1::Unload() {
 
     ship_ptr = nullptr;
+    GetGSComponent<Background>()->Unload();
 	GetGSComponent<CS230::GameObjectManager>()->Unload();
     GetGSComponent<Background>()->Unload();
 	//fishGenerator->DeleteFish();
