@@ -124,7 +124,7 @@ void Engine::ImGuiDraw()
         //}
         if (!GetGameStateManager().IsNull()) {
             ImGui::LabelText("Is on beat?", "%s", GetGameStateManager().GetGSComponent<Beat>()->GetIsOnBeat() ? "true" : "false");
-            ImGui::LabelText("Collision", "%s", GetGameStateManager().GetGSComponent<CS230::ShowCollision>()->Enabled() ? "true" : "false");
+            //ImGui::LabelText("Collision", "%s", GetGameStateManager().GetGSComponent<CS230::ShowCollision>()->Enabled() ? "true" : "false");
         }
     }
     ImGui::End();

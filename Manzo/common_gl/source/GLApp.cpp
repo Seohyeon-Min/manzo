@@ -101,7 +101,7 @@ GLApp::GLApp(const char* title, int desired_width, int desired_height)
 
 GLApp::~GLApp()
 {
-    //delete ptr_program;
+    delete ptr_program;
     ImGuiHelper::Shutdown();
     SDL_GL_DeleteContext(gl_context);
     SDL_DestroyWindow(ptr_window);

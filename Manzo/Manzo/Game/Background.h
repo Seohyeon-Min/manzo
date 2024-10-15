@@ -13,18 +13,18 @@ Created:    March 8, 2023
 #include "../Engine/Camera.h"
 #include "../Engine/Engine.h"
 #include "../Engine/Component.h"
-#include "../Engine/GameObject.h"
-#include "GameObjectTypes.h"
 
-class Background : public CS230::GameObject {
+class Background : public CS230::Component {
 public:
-    Background(vec2 start_position, CS230::Camera& camera);  // 카메라를 참조로 받음
-    GameObjectTypes Type() override { return GameObjectTypes::Background; }
-    std::string TypeName() override { return "Background"; }
-
-    void Update(double dt);
-    void Draw(const mat3& camera_matrix);
-
+    void Add(const std::filesystem::path& texture_path, double speed);
+    void Unload();
+    void Draw();
+    ivec2 GetSize();
 private:
-    CS230::Camera camera;  // 참조로 저장
+    struct ParallaxLayer {
+        GLTexture* texture;
+        double speed = 1;
+    };
+
+    std::vector<ParallaxLayer> backgrounds;
 };

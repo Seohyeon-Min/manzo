@@ -15,13 +15,13 @@ bool AudioManager::Init() {
     }
     if (Mix_Init(MIX_INIT_MP3 | MIX_INIT_OGG) == 0) {
         std::cerr << "Mix_Init error: " << Mix_GetError() << std::endl;
-        SDL_Quit();
+        //SDL_Quit();
         return false;
     }
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
         std::cerr << "Mix_OpenAudio error: " << Mix_GetError() << std::endl;
         Mix_Quit();
-        SDL_Quit();
+        //SDL_Quit();
         return false;
     }
     return true;
@@ -35,8 +35,8 @@ void AudioManager::CleanUp() {
         Mix_FreeMusic(music.second);
     }
     Mix_CloseAudio();
-    Mix_Quit();
-    SDL_Quit();
+    //Mix_Quit();
+    //SDL_Quit();
 }
 
 Mix_Chunk* AudioManager::LoadSound(const std::string& filePath, const std::string& name) {

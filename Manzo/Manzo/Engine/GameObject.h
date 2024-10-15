@@ -38,7 +38,6 @@ namespace CS230 {
         virtual void ResolveCollision([[maybe_unused]] GameObject* other_object) { };
         virtual void Update(double dt);
         virtual void Draw();
-        virtual void Draw(const mat3& camera_matrix);
         virtual void Destroy() { destroy = true; }
         virtual bool Destroyed() { return destroy; }
 

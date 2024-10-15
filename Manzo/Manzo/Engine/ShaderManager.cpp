@@ -41,4 +41,5 @@ GLShader* ShaderManager::GetDefaultShader()
 // 모든 셰이더 제거
 void ShaderManager::Clear() {
     shaders.clear();
+    default_shader = nullptr;
 }
