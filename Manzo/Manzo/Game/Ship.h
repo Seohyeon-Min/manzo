@@ -12,8 +12,11 @@ Created:    June 13, 2024
 #include "..\Engine\GameObject.h"
 #include "GameObjectTypes.h"
 #include "..\Engine\Timer.h"
+#include "..\Game\Skill.h"
 
 class Beat;
+
+class Skillsys;
 
 class Ship : public CS230::GameObject {
 public:
@@ -28,6 +31,13 @@ public:
     void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
     const vec2& GetPosition() const { return GameObject::GetPosition(); }
 
+    //for fuel
+    void FuelUpdate(double dt);
+    void SetMaxFuel(double input);
+    void HitWithReef();
+    bool IsTouchingReef();
+    bool IsFuelZero();
+
 private:
     static constexpr double initialSpeed = 1200.f;
     static constexpr float deceleration = 100.0f;
@@ -41,4 +51,16 @@ private:
     vec2 destination;
     vec2 initialPosition;
     Beat* beat;
+    Skillsys* skill;
+
+    //for fuel
+
+    bool isCollidingWithReef;
+    bool FuelFlag = false;
+    double fuel;
+    double Maxfuel = 500;
+    double baseDecfuel = 2;
+    double MoveDecfuel = 0.5;
+    double HitDecFuel = 50;
+    double fuelcounter = 0;
 };
