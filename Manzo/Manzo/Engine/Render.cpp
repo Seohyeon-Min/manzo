@@ -146,7 +146,7 @@ void CS230::Render::DrawLine(LineDrawCall drawcall) {
     mat3 model_to_world = mat3::build_translation(start) * mat3::build_rotation(angle) * mat3::build_scale(length);
 
     // Convert to NDC coordinates
-    mat3 WORLD_TO_NDC = mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height);
+    mat3 WORLD_TO_NDC = GetWorldtoNDC();
     const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
 
     shader->Use(); // Use shader

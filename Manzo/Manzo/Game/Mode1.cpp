@@ -105,7 +105,7 @@ void Mode1::Unload() {
 
     ship_ptr = nullptr;
 	GetGSComponent<CS230::GameObjectManager>()->Unload();
-    GetGSComponent<Background>()->Unload();
+    //GetGSComponent<Background>()->Unload();
 	//fishGenerator->DeleteFish();
 	ClearGSComponents();
 }
