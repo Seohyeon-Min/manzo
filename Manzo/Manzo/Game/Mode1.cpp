@@ -34,7 +34,7 @@ void Mode1::Load() {
     AddGSComponent(new CS230::ShowCollision());
 #else
 #endif
-    // compenent
+    // component
     AddGSComponent(new CS230::GameObjectManager());
     AddGSComponent(new Background());
     AddGSComponent(new Beat());
@@ -77,6 +77,10 @@ void Mode1::Update(double dt) {
         Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
 
     }
+    if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::W)) {
+        Engine::GetGameStateManager().ReloadState();
+
+    }
 }
 
 void Mode1::Draw() {
@@ -86,7 +90,10 @@ void Mode1::Draw() {
 
 void Mode1::Unload() {
 
+    ship_ptr = nullptr;
 	GetGSComponent<CS230::GameObjectManager>()->Unload();
+    GetGSComponent<Background>()->Unload();
+    delete fishGenerator;
 	//fishGenerator->DeleteFish();
 	ClearGSComponents();
 }

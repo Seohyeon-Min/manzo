@@ -67,6 +67,10 @@ void Mode2::Update(double dt) {
         Engine::GetGameStateManager().ClearNextGameState();
         Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode1));
     }
+    if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::W)) {
+        Engine::GetGameStateManager().ReloadState();
+
+    }
 }
 
 void Mode2::Draw() {
