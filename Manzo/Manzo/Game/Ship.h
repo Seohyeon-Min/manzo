@@ -27,6 +27,7 @@ public:
     void Draw() override;
     void Move(double dt);
     void SetDest();
+    bool IsShipMoving() { return move; }
     bool CanCollideWith(GameObjectTypes) override;
     void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
     const vec2& GetPosition() const { return GameObject::GetPosition(); }

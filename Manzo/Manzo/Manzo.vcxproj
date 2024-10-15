@@ -42,6 +42,11 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\common_gl\common_gl.vcxproj">
+      <Project>{e5f9bddd-0304-4353-8688-90e8269eaba1}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="Engine\Animation.h" />
     <ClInclude Include="Engine\AudioManager.h" />
     <ClInclude Include="Engine\Camera.h" />
@@ -78,11 +83,6 @@
     <ClInclude Include="Game\Skill.h" />
     <ClInclude Include="Game\Splash.h" />
     <ClInclude Include="Game\States.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\common_gl\common_gl.vcxproj">
-      <Project>{e5f9bddd-0304-4353-8688-90e8269eaba1}</Project>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -147,6 +147,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

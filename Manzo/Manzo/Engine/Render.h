@@ -79,6 +79,8 @@ namespace CS230 {
         void DrawLine(LineDrawCall drawcall);
         void DrawLinePro(LineDrawCallPro drawcall);
 
+        mat3 GetWorldtoNDC();
+
         // Vectors for draw calls
         std::vector<DrawCall> draw_first_calls;
         std::vector<DrawCall> draw_calls;

@@ -76,6 +76,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\Camera.cpp" />
+    <ClCompile Include="source\CameraView.cpp" />
     <ClCompile Include="source\GLApp.cpp" />
     <ClCompile Include="source\glCheck.cpp" />
     <ClCompile Include="source\GLIndexBuffer.cpp" />
@@ -91,6 +93,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\angles.h" />
+    <ClInclude Include="include\Camera.h" />
+    <ClInclude Include="include\CameraView.h" />
     <ClInclude Include="include\color3.h" />
     <ClInclude Include="include\GLApp.h" />
     <ClInclude Include="include\glCheck.h" />
