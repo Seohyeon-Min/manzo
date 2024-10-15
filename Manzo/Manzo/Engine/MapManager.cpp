@@ -41,16 +41,27 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 int count = 0;
                 float last_x = 0;
                 float last_y = 0;
+                bool isRelative = false;
 
                 std::vector<vec2> positions;
-                float render_height = static_cast<float>(Engine::window_height);
                 while (std::getline(stream, data, ',')) {
-                    if (data == "m" || data == "z") {
+                    if (data == "m") {
+                        isRelative = true;
+                        count = 0; // reset count for new relative coordinates
                         continue;
+                    }
+                    else if (data == "M") {
+                        isRelative = false;  // absolute coordinates
+                        count = 0;  // reset count for new absolute coordinates
+                        continue;
+                    }
+                    else if (data == "z" || data == "Z") {
+                        continue;  // Ignore close path commands for now
                     }
 
                     float x = 0, y = 0;
 
+                    // First coordinate set (whether relative or absolute)
                     if (count < 1) {
                         x = std::stof(data);
                         last_x = x;
@@ -60,31 +71,42 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                         }
                     }
                     else {
-                        x = last_x + std::stof(data);
-                        last_x = x;
-                        if (std::getline(stream, data, ',')) {
-                            y = last_y + std::stof(data);
-                            last_y = y;
+                        if (isRelative) {
+                            // Relative coordinates
+                            x = last_x + std::stof(data);
+                            last_x = x;
+                            if (std::getline(stream, data, ',')) {
+                                y = last_y + std::stof(data);
+                                last_y = y;
+                            }
+                        }
+                        else {
+                            // Absolute coordinates
+                            x = std::stof(data);
+                            last_x = x;
+                            if (std::getline(stream, data, ',')) {
+                                y = std::stof(data);
+                                last_y = y;
+                            }
                         }
                     }
 
                     vec2 vec;
                     vec.x = x;
-                    vec.y = -y;
+                    vec.y = -y;  // Adjust Y axis as needed for your rendering
                     std::cout << "x : " << x << "       " << "y : " << y << std::endl;
                     positions.push_back(vec);
                     count++;
                 }
 
-
-                //new object rock
+                // Create a new rock object
                 Polygon poly;
                 poly.vertices = positions;
                 poly.vertexCount = int(positions.size());
                 objects.push_back(poly);
                 Rock* rock = new Rock(poly);
                 Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rock);
-                rock-> AddGOComponent(new MAP_SATCollision(poly, rock));
+                rock->AddGOComponent(new MAP_SATCollision(poly, rock));
             }
 
             currentTag.clear();
