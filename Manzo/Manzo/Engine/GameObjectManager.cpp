@@ -10,6 +10,8 @@ Created:    Aprill 29, 2023
 
 
 #include "GameObjectManager.h"
+#include "../Game/GameObjectTypes.h"
+#include <iostream>
 
 void CS230::GameObjectManager::Add(GameObject* object)
 {
@@ -39,10 +41,15 @@ void CS230::GameObjectManager::UpdateAll(double dt)
 	}
 }
 
-void CS230::GameObjectManager::DrawAll()
+void CS230::GameObjectManager::DrawAll(const mat3& camera_matrix)
 {
 	for (auto object : objects) {
-		object->Draw();
+		if (object->Type() == GameObjectTypes::Background)
+		{
+			object->Draw(camera_matrix);
+		}
+		else
+			object->Draw();
 	}
 	Engine::GetRender().RenderAll();
 }

@@ -22,7 +22,7 @@ namespace CS230 {
         void Unload();
 
         void UpdateAll(double dt);
-        void DrawAll();
+        void DrawAll(const mat3& camera_matrix);
         void CollisionTest();
     private:
         std::list<GameObject*> objects;

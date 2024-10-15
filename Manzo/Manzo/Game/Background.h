@@ -18,13 +18,13 @@ Created:    March 8, 2023
 
 class Background : public CS230::GameObject {
 public:
-    Background(vec2 start_position, const CS230::Camera& camera);  // 카메라를 참조로 받음
+    Background(vec2 start_position, CS230::Camera& camera);  // 카메라를 참조로 받음
     GameObjectTypes Type() override { return GameObjectTypes::Background; }
     std::string TypeName() override { return "Background"; }
 
     void Update(double dt);
-    void Draw();
+    void Draw(const mat3& camera_matrix);
 
 private:
-    const CS230::Camera& camera;  // 참조로 저장
+    CS230::Camera camera;  // 참조로 저장
 };

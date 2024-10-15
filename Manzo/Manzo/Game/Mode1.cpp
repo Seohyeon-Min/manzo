@@ -71,7 +71,6 @@ void Mode1::Load() {
 
 void Mode1::Update(double dt) {
     GetGSComponent<CS230::Camera>()->Update(ship_ptr->GetPosition());
-    background->UpdatePosition(-camera->GetPosition());
     UpdateGSComponents(dt);
     GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
 
@@ -90,7 +89,9 @@ void Mode1::Update(double dt) {
 }
 
 void Mode1::Draw() {
-    GetGSComponent<CS230::GameObjectManager>()->DrawAll();
+    mat3 camera_matrix = GetGSComponent<CS230::Camera>()->GetMatrix();
+
+    GetGSComponent<CS230::GameObjectManager>()->DrawAll(camera_matrix);
 }
 
 void Mode1::Unload() {

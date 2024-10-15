@@ -63,6 +63,23 @@ void CS230::GameObject::Draw() {
     }
 }
 
+void CS230::GameObject::Draw(const mat3& camera_matrix) {
+	Sprite* sprite = GetGOComponent<Sprite>();
+	if (sprite != nullptr) {
+		if (shader == nullptr) {
+			shader = Engine::GetShaderManager().GetDefaultShader();
+		}
+		mat3 model_matrix = GetMatrix(); // Get the object's transformation
+		mat3 final_matrix = camera_matrix * model_matrix; // Combine with camera matrix
+
+		Engine::GetRender().AddDrawCall({
+			sprite->GetTexture(),
+			&final_matrix,
+			shader,
+			}, DrawLayer::DrawFirst);
+	}
+}
+
 bool CS230::GameObject::IsCollidingWith(GameObject* other_object) {
 	Collision* collider = GetGOComponent<Collision>();
 	return collider != nullptr && collider->IsCollidingWith(other_object);
