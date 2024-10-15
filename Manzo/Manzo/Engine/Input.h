@@ -102,7 +102,7 @@ namespace CS230 {
         bool MouseButtonDown(Uint8 button);
         bool MouseButtonJustPressed(Uint8 button);
         bool MouseButtonJustReleased(Uint8 button);
-
+        bool IsMouseMoving();
         // 마우스 포지션을 가져오는 메소드 추가
         vec2 GetMousePosition() const;
 
@@ -113,6 +113,8 @@ namespace CS230 {
         std::array<bool, 6> current_mouse_state; // 0: Left, 1: Middle, 2: Right, 3: X1, 4: X2
         std::array<bool, 6> previous_mouse_state;
         vec2 mouse_position;
+        vec2 previous_mouse_position;
+        static constexpr int move_factor = 8;
         bool quit = false;
     };
 }

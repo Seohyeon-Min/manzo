@@ -10,6 +10,28 @@
 #include <filesystem>
 #include <memory>
 
+//struct DrawSettings {
+//    bool enableBlending;
+//    GLenum drawMode;  // GL_TRIANGLES, GL_LINES 등
+//    // 추가 설정 가능
+//};
+//// 오브젝트의 Draw 메서드
+//void MyObject::Draw()
+//{
+//    // 각 오브젝트마다 고유한 드로우 설정
+//    DrawSettings settings;
+//    settings.enableBlending = true;   // 예시: 블렌딩 활성화
+//    settings.drawMode = GL_TRIANGLES; // 예시: 삼각형 모드로 그리기
+//
+//    Engine::GetRender().AddDrawCall({
+//        sprite->GetTexture(),
+//        &GetMatrix(),
+//        shader,
+//        settings  // 드로우 설정 전달
+//        });
+//}
+
+
 // A structure to represent a draw call
 enum class DrawLayer {
     DrawFirst,
@@ -24,10 +46,20 @@ namespace CS230 {
         const GLShader* shader;
     };
 
-    struct CollisionDrawCall {
+    struct LineDrawCall {
         vec2 start;
         vec2 end;
         color3 color;
+        const GLShader* shader;
+    };
+
+    struct LineDrawCallPro {
+        vec2 start;
+        vec2 end;
+        color3 color;
+        const float width;
+        const float alpha;
+        const GLShader* shader;
     };
 
     class Render {
@@ -35,7 +67,8 @@ namespace CS230 {
         Render() { CreatModel(); CreatLineModel(); };
 
         void AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase = DrawLayer::Draw);
-        void AddDrawCall(vec2 start, vec2 end, color3 color);
+        void AddDrawCall
+        (vec2 start, vec2 end, color3 color, float width = 1.0f, float alpha = 255.0f, const GLShader* shader = nullptr, bool iscollision = true);
         void RenderAll();
         void CreatModel();
         void CreatLineModel();
@@ -43,13 +76,15 @@ namespace CS230 {
     private:
         // Internal render method
         void Draw(const DrawCall& draw_call);
-        void DrawLine(CollisionDrawCall drawcall);
+        void DrawLine(LineDrawCall drawcall);
+        void DrawLinePro(LineDrawCallPro drawcall);
 
         // Vectors for draw calls
         std::vector<DrawCall> draw_first_calls;
         std::vector<DrawCall> draw_calls;
         std::vector<DrawCall> draw_late_calls;
-        std::vector<CollisionDrawCall> draw_collision_calls;
+        std::vector<LineDrawCallPro> draw_line_calls;
+        std::vector<LineDrawCall> draw_collision_calls;
 
         GLVertexArray model;
         GLVertexArray line_model;

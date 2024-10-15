@@ -69,14 +69,14 @@ namespace CS230 {
     {
         mat3 m;
         for (int i = 0; i < count; i++) {
-            if(particles[index]->Alive())
-                Engine::GetLogger().LogEvent("Particle overwritten");
+            //if(particles[index]->Alive())
+            //    Engine::GetLogger().LogEvent("Particle overwritten");
             double angle_variation = 0.0;
 
             if (spread != 0) 
                 angle_variation = ((rand() % static_cast<int>(spread * 1024)) / 1024.0f) - spread / 2;
             vec2 random_magnitude = direction * (((rand() % 1024) / 2048.0f) + 0.5f);
-            vec2 particle_velocity = m.build_rotation(angle_variation) * random_magnitude + emitter_velocity;
+            vec2 particle_velocity = m.build_rotation(float(angle_variation)) * random_magnitude + emitter_velocity;
             particles[index]->Start(emitter_position, particle_velocity, T::MaxLife);
 
             index++;

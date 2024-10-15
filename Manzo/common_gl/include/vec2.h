@@ -40,6 +40,12 @@ struct [[nodiscard]] vec2
         return vec2(x / length, y / length);
     }
     //vec2(const ivec2& iv) : x(static_cast<float>(iv.x)), y(static_cast<float>(iv.y)) {}
+        // °ö¼À ¿¬»êÀÚ ¿À¹ö·Îµå (½ºÄ®¶ó °ö)
+
+    // ½ºÄ®¶ó °ö¼ÀÀ» À§ÇÑ ÇÁ·»µå ÇÔ¼ö
+    friend vec2 operator*(float scalar, const vec2& vec) {
+        return vec2(scalar * vec.x, scalar * vec.y);
+    }
 };
 
 constexpr vec2& operator+=(vec2& v, const vec2& adding_vector) noexcept;
