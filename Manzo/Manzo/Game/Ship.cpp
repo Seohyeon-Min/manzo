@@ -26,7 +26,7 @@ void Ship::Update(double dt)
         Move(dt);
     }
 
-    //FuelUpdate(dt);
+    FuelUpdate(dt);
     if (isCollidingWithReef && !IsTouchingReef())
     {
         isCollidingWithReef = false;
