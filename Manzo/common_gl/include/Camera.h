@@ -38,8 +38,8 @@ public:
     void SetUp(vec2 camera_up = {0, 1}) noexcept;
     void SetOrientation(float angle_radians) noexcept;
 
-    void MoveUp(float distance) noexcept;
-    void MoveRight(float distance) noexcept;
+    void MoveUp(float distance, float dt, float smoothFactor) noexcept;
+    void MoveRight(float distance, float dt, float smoothFactor) noexcept;
     void Rotate(float angle_radians) noexcept;
 
     mat3 BuildCameraToWorld() const noexcept;
