@@ -53,37 +53,45 @@ void Ship::SetDest()
     }
 }
 
+vec2 Lerp(vec2 start, vec2 end, float t) {
+    vec2 result;
+    result.x = start.x + t * (end.x - start.x);
+    result.y = start.y + t * (end.y - start.y);
+    return result;
+}
+
 void Ship::Move(double dt)
 {
-    // 목적지가 너무 가까우면 배가 멈추는 버그가 있음
+    // 이동한 거리 계산
     float distanceMoved = (float)sqrt(pow(GetPosition().x - initialPosition.x, 2) + pow(GetPosition().y - initialPosition.y, 2));
 
-    vec2 direction = { destination.x - (GetPosition().x),
-                       destination.y - (GetPosition().y) };
+    // 이동할 총 거리
+    float totalDistanceToMove = 200.0f;
 
-    float magnitude = (float)sqrt(direction.x * direction.x + direction.y * direction.y);
-
-    if (magnitude != 0) {
-        direction.x /= magnitude;
-        direction.y /= magnitude;
-    }
-
-    float totalDistanceToMove = 150.0f;
-
-    if (distanceMoved >= totalDistanceToMove) { // 멈춤
+    // 목적지에 도착했거나 이동할 거리를 초과하면 멈춤
+    if (distanceMoved >= totalDistanceToMove) {
         SetVelocity({ 0, 0 });
         currentSpeed = initialSpeed;
         move = false;
     }
     else {
+        // 속도 감속
         if (currentSpeed > 0) {
             currentSpeed -= (float)(deceleration);
             if (currentSpeed < 0) currentSpeed = 0;
         }
 
-        SetVelocity({ direction.x * currentSpeed, direction.y * currentSpeed }); // 이동
+        std::cout << destination.x << "    " << destination.y<<"    " << distanceMoved<< "||  "<<std::endl;
+
+        // Lerp를 사용해 선형 보간으로 이동 위치 계산
+        float t = ((float)currentSpeed / (float)initialSpeed)*0.9f;  // t는 속도에 따라 변함
+        vec2 newPosition = Lerp(GetPosition(), destination, (float)(t * dt));
+
+        // 새로운 위치 설정
+        SetPosition(newPosition);
     }
 }
+
 
 bool Ship::CanCollideWith(GameObjectTypes other_object)
 {

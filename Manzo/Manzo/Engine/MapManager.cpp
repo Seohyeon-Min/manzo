@@ -94,7 +94,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                     vec2 vec;
                     vec.x = x;
                     vec.y = -y;  
-                    std::cout << "x : " << x << "       " << "y : " << y << std::endl;
+                    //std::cout << "x : " << x << "       " << "y : " << y << std::endl;
                     positions.push_back(vec);
                     count++;
                 }

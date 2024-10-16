@@ -30,8 +30,8 @@ public:
     const vec2& GetPosition() const { return GameObject::GetPosition(); }
 
 private:
-    static constexpr double initialSpeed = 1000.f;
-    static constexpr float deceleration = 50.0f;
+    static constexpr double initialSpeed = 500.f;
+    static constexpr float deceleration = 10.0f;
     float currentSpeed = initialSpeed;
     bool moving;
     bool set_dest;
