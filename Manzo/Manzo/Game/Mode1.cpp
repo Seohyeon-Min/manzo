@@ -59,7 +59,8 @@ void Mode1::Load() {
 
     //// to generate fish
     fishGenerator = new FishGenerator();
-
+    Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
+    
     //// reef
     reef = new Reef({ -400,200 });
     GetGSComponent<CS230::GameObjectManager>()->Add(reef);
@@ -75,7 +76,7 @@ void Mode1::Update(double dt) {
     camera->SetPosition(ship_ptr->GetPosition());
     camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
 
-	fishGenerator->GenerateFish(dt);
+    fishGenerator->GenerateFish(dt);
 }
 
 void Mode1::Draw() {
@@ -85,7 +86,7 @@ void Mode1::Draw() {
 
 void Mode1::Unload() {
     GetGSComponent<Background>()->Unload();
-	GetGSComponent<CS230::GameObjectManager>()->Unload();
-	fishGenerator->DeleteFish();
-	ClearGSComponents();
+    GetGSComponent<CS230::GameObjectManager>()->Unload();
+    fishGenerator->DeleteFish();
+    ClearGSComponents();
 }

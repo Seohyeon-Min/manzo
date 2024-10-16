@@ -19,7 +19,6 @@ void FishGenerator::GenerateFish(double dt)
 
         timer->Reset();
 
-        //Generate School of Fish if parent's type is 3
         if (newFish->type == Fish::FishType::Fish3)
         {
             for (int i = 0; i < 4; i++)
@@ -37,10 +36,5 @@ void FishGenerator::GenerateFish(double dt)
 
 void FishGenerator::DeleteFish()
 {
-    for (Fish* fish : fishList)
-    {
-        delete fish;
-    }
-
     fishList.clear();
 }
