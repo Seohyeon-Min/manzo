@@ -137,8 +137,9 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
                 return false;
             }
             else {
-                CollidingSide_1 = other_poly.vertices[i];
-                CollidingSide_2 = other_poly.vertices[(i + 1) % 4];
+                CollidingSide_1 = other_poly.vertices[i % other_poly.vertexCount];
+                CollidingSide_2 = other_poly.vertices[(i + 1) % other_poly.vertexCount];
+                
             }
         }
 
