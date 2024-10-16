@@ -48,7 +48,7 @@ void Mode1::Load() {
     GetGSComponent<CS230::GameObjectManager>()->Add(background);
 
     //// ship
-    ship_ptr = new Ship({ 0, 0 });
+    ship_ptr = new Ship({ Engine::window_width/2, Engine::window_height / 2 });
     GetGSComponent<CS230::GameObjectManager>()->Add(ship_ptr);
 
     //// camera

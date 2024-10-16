@@ -44,8 +44,11 @@ void Ship::SetDest()
     if (clickable && !set_dest) {
         if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT) && beat->GetIsOnBeat() ) {
             // Get mouse position relative to the center of the screen
-            destination.x = Engine::GetInput().GetMousePosition().x;
-            destination.y = Engine::GetInput().GetMousePosition().y;
+            vec2 window = { Engine::window_width/2, Engine::window_height/2 };
+            vec2 mouse_pos = { (float)Engine::GetInput().GetMousePos().mouseWorldSpaceX, (float)Engine::GetInput().GetMousePos().mouseWorldSpaceY };
+            vec2 pos = mouse_pos - window;
+            destination.x = pos.x;
+            destination.y = pos.y;
             clickable = false;
             set_dest = true;
         }

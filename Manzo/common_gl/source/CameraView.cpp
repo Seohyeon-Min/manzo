@@ -76,10 +76,24 @@ mat3 CameraView::BuildCameraToNDC() const noexcept
 *************************************************************************/
 mat3 CameraView::BuildWindowDeviceToCamera() const noexcept
 {
-	// get view size with zoom
-	vec2 view_size = GetViewSize();
-	float zoomDegree = GetZoom();
-	vec2 zoomed = { view_size.x / zoomDegree, view_size.y / zoomDegree };
-	// build and return camera to NDC matrix
-	return { {zoomed.x / view_size.x,0,0},{0,-zoomed.y / view_size.y,0},{-zoomed.x / 2,zoomed.y / 2,1} };
+    //    (0,0)             (-v.w/2,v.h/2)
+    //      o--------+             o--------+
+    //      |        |             |        |
+    //      | win    |     --->    | cam    |
+    //      +--------o             +--------o
+    //           (f.w,f.h)            (v.w/2,-v.h/2)
+    //
+
+    // get view size with zoom
+    // build and return window to camera matrix
+
+    vec2 view_size = CalcViewSizeWithZoom();
+    vec2 frame_size = GetViewSize();
+
+    mat3 mat;
+    mat.column0 = { view_size.x / frame_size.x ,    0.0f ,                                  0.0f };
+    mat.column1 = { 0.0f ,                          view_size.y / frame_size.y,            0.0f };
+    mat.column2 = { -view_size.x / 2.0f ,           -view_size.y / 2.0f ,                    1.0f };
+
+    return mat;
 }

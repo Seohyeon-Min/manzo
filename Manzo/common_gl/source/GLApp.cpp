@@ -45,7 +45,8 @@ GLApp::GLApp(const char* title, int desired_width, int desired_height)
     {
         throw_error_message("Failed to init SDK error: ", SDL_GetError());
     }
-    SDL_ShowCursor(SDL_DISABLE);
+    //SDL_ShowCursor(SDL_DISABLE);
+    SDL_ShowCursor(SDL_FALSE);
 
     hint_gl(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     hint_gl(SDL_GL_CONTEXT_MAJOR_VERSION, 4);

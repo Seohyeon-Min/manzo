@@ -39,6 +39,7 @@ namespace ImGuiHelper
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
+        ImGui::SetMouseCursor(ImGuiMouseCursor_None);
     }
     void End(util::not_null<SDL_Window*> sdl_window, util::not_null<SDL_GLContext> gl_context)
     {
