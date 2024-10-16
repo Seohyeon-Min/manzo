@@ -16,20 +16,22 @@ Ship::Ship(vec2 start_position) :
 }
 
 void Ship::Update(double dt)
-{ 
+{
     //std::cout << (!set_dest && beat->GetIsOnBeat() && !move) << std::endl;
     GameObject::Update(dt);
 
-    SetDest();
-    
-    if (move) {
-        Move(dt);
-    }
+    if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
+        SetDest();
 
-    FuelUpdate(dt);
-    if (isCollidingWithReef && !IsTouchingReef())
-    {
-        isCollidingWithReef = false;
+        if (move) {
+            Move(dt);
+        }
+
+        FuelUpdate(dt);
+        if (isCollidingWithReef && !IsTouchingReef())
+        {
+            isCollidingWithReef = false;
+        }
     }
 }
 
@@ -42,10 +44,13 @@ void Ship::Draw()
 void Ship::SetDest()
 {
     if (clickable && !set_dest) {
-        if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT) && beat->GetIsOnBeat() ) {
+        if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT) && beat->GetIsOnBeat()) {
             // Get mouse position relative to the center of the screen
-            destination.x = Engine::GetInput().GetMousePosition().x;
-            destination.y = Engine::GetInput().GetMousePosition().y;
+            vec2 window = { Engine::window_width / 2, Engine::window_height / 2 };
+            vec2 mouse_pos = { (float)Engine::GetInput().GetMousePos().mouseWorldSpaceX, (float)Engine::GetInput().GetMousePos().mouseWorldSpaceY };
+            vec2 pos = mouse_pos - window;
+            destination.x = pos.x;
+            destination.y = pos.y;
             clickable = false;
             set_dest = true;
         }
@@ -93,15 +98,15 @@ void Ship::Move(double dt)
             //std::cout << "clickable" << std::endl;
             clickable = true;
         }
-        if(beat->GetBeat()){
+        if (beat->GetBeat()) {
             //std::cout << "move_false" << std::endl;
             move = false;
         }
 
-  
+
     }
     else {
-        SetVelocity({ direction.x * float(initialSpeed), direction.y * float(initialSpeed)}); //move if left
+        SetVelocity({ direction.x * float(initialSpeed), direction.y * float(initialSpeed) }); //move if left
         if (currentSpeed > 0) {
             currentSpeed -= (float)(deceleration);
             if (currentSpeed < 0)
@@ -143,7 +148,7 @@ void Ship::ResolveCollision(GameObject* other_object)
 
 void Ship::FuelUpdate(double dt)
 {
- 
+
     bool Reduce = false;
 
     if (fuel <= 0)
