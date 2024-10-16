@@ -20,16 +20,18 @@ void Ship::Update(double dt)
     //std::cout << (!set_dest && beat->GetIsOnBeat() && !move) << std::endl;
     GameObject::Update(dt);
 
-    SetDest();
-    
-    if (move) {
-        Move(dt);
-    }
+    if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
+        SetDest();
 
-    FuelUpdate(dt);
-    if (isCollidingWithReef && !IsTouchingReef())
-    {
-        isCollidingWithReef = false;
+        if (move) {
+            Move(dt);
+        }
+
+        FuelUpdate(dt);
+        if (isCollidingWithReef && !IsTouchingReef())
+        {
+            isCollidingWithReef = false;
+        }
     }
 }
 

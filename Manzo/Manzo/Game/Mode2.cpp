@@ -45,7 +45,7 @@ void Mode2::Load() {
     //// camera
     AddGSComponent(new CS230::Cam());
     vec2 playerPosition = ship_ptr->GetPosition();
-    GetGSComponent<CS230::Cam>()->SetPosition({ playerPosition.x - 1280 / 2, playerPosition.y - 720 / 2 });
+    GetGSComponent<CS230::Cam>()->SetPosition({playerPosition.x, 100});
 
     //// audio
     Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("assets/audios/basic_beat_100_4.wav", "sample");
@@ -60,7 +60,7 @@ void Mode2::Load() {
 void Mode2::Update(double dt) {
     UpdateGSComponents(dt);
     GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
-    GetGSComponent<CS230::Cam>()->Update(dt,ship_ptr->GetPosition(),true);
+    GetGSComponent<CS230::Cam>()->Update(dt,ship_ptr->GetPosition(),false);
     //Skill_ptr->Update(dt);
     GetGSComponent<Skillsys>()->Update(dt);
 
