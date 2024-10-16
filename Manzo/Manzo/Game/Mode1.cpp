@@ -13,6 +13,7 @@ Created:    March 8, 2023
 #include "../Engine/ShowCollision.h"
 #include "../Engine/AudioManager.h"
 #include "../Engine/Particle.h"
+#include "../Engine/MapManager.h"
 
 #include "Particles.h"
 #include "Mouse.h"
@@ -42,6 +43,7 @@ void Mode1::Load() {
     AddGSComponent(new CS230::GameObjectManager());
     AddGSComponent(new Beat());
     AddGSComponent(new AudioManager());
+    AddGSComponent(new CS230::Map());
 
     //// ship
     ship_ptr = new Ship({ 0, 0 });
@@ -77,6 +79,7 @@ void Mode1::Load() {
     AddGSComponent(new Mouse());
     //Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::Mouse>>()->Emit(2, mouse_position, { 0, 0 }, { 0, 100 }, M_PI / 2);
 
+    GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/test.svg");
 }
 
 void Mode1::Update(double dt) {

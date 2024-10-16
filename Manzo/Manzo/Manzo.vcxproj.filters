@@ -94,6 +94,9 @@
     <ClCompile Include="Game\Mouse.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\MapManager.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h">
@@ -227,6 +230,12 @@
     </ClInclude>
     <ClInclude Include="Game\Mouse.h">
       <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\MapManager.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Polygon.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

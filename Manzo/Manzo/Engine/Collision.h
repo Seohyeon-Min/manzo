@@ -13,6 +13,8 @@ Created:    March 8, 2023
 #include "color3.h"
 #include "GLVertexArray.h"
 #include "GLShader.h"
+#include "vec2.h"
+#include "Polygon.h"
 
 #pragma once
 namespace Math {
@@ -26,7 +28,7 @@ namespace CS230 {
     public:
         enum class CollisionShape {
             Rect,
-            Circle
+            Poly
         };
         virtual CollisionShape Shape() = 0;
         virtual void Draw() = 0;
@@ -44,9 +46,27 @@ namespace CS230 {
         void Draw();
         bool IsCollidingWith(GameObject* other_object) override;
         bool IsCollidingWith(vec2 point) override;
-        Math::rect WorldBoundary();
+        Math::rect WorldBoundary_rect();
+        vec2 CollidingSide_1 = { 0,0 };
+        vec2 CollidingSide_2 = { 0,0 };
+
     private:
         GameObject* object;
         Math::irect boundary;
+    };
+
+    class MAP_SATCollision : public Collision {
+    public:
+        MAP_SATCollision(Polygon boundary, GameObject* object);
+        void Draw() override;
+        CollisionShape Shape() override {
+            return CollisionShape::Poly;
+        }
+        bool IsCollidingWith(GameObject* other_object) override;
+        bool IsCollidingWith(vec2 point) override;
+        Polygon WorldBoundary_poly();
+    private:
+        GameObject* object;
+        Polygon boundary;
     };
 }

@@ -21,6 +21,7 @@
     <ClCompile Include="Engine\GameStateManager.cpp" />
     <ClCompile Include="Engine\Input.cpp" />
     <ClCompile Include="Engine\logger.cpp" />
+    <ClCompile Include="Engine\MapManager.cpp" />
     <ClCompile Include="Engine\Particle.cpp" />
     <ClCompile Include="Engine\Render.cpp" />
     <ClCompile Include="Engine\ShaderManager.cpp" />
@@ -60,7 +61,9 @@
     <ClInclude Include="Engine\GameStateManager.h" />
     <ClInclude Include="Engine\Input.h" />
     <ClInclude Include="Engine\logger.h" />
+    <ClInclude Include="Engine\MapManager.h" />
     <ClInclude Include="Engine\Particle.h" />
+    <ClInclude Include="Engine\Polygon.h" />
     <ClInclude Include="Engine\Rect.h" />
     <ClInclude Include="Engine\Render.h" />
     <ClInclude Include="Engine\ShaderManager.h" />
