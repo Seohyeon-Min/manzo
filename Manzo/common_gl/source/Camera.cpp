@@ -49,20 +49,24 @@ void Camera::SetOrientation(float angle_radians) noexcept
 * brief		moving camera up
 * param		float distance (add distance)
 *************************************************************************/
-void Camera::MoveUp(float distance) noexcept
+void Camera::MoveUp(float distance, float dt, float smoothFactor) noexcept
 {
-	Position.x += up.x * distance;
-	Position.y += up.y * distance;
+	vec2 targetPosition = Position + up * distance;
+
+	Position.x += (targetPosition.x - Position.x) * smoothFactor * dt;
+	Position.y += (targetPosition.y - Position.y) * smoothFactor * dt;
 }
 
 /*!***********************************************************************
 * brief		moving camera right
 * param		float distance (add distance)
 *************************************************************************/
-void Camera::MoveRight(float distance) noexcept
+void Camera::MoveRight(float distance, float dt, float smoothFactor) noexcept
 {
-	Position.x += right.x * distance;
-	Position.y += right.y * distance;
+	vec2 targetPosition = Position + right * distance;
+
+	Position.x += (targetPosition.x - Position.x) * smoothFactor * dt;
+	Position.y += (targetPosition.y - Position.y) * smoothFactor * dt;
 }
 
 /*!***********************************************************************
