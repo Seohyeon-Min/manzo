@@ -17,7 +17,17 @@ Created:    March 8, 2023
 #include <array>
 
 namespace CS230 {
+
     class Input {
+    private:
+        struct MousePos
+        {
+            float mouseCamSpaceX = 0;
+            float mouseCamSpaceY = 0;
+            float mouseWorldSpaceX = 0;
+            float mouseWorldSpaceY = 0;
+        };
+
     public:
         enum class Keys {
             A = SDL_SCANCODE_A,
@@ -105,8 +115,11 @@ namespace CS230 {
         bool IsMouseMoving();
         // 마우스 포지션을 가져오는 메소드 추가
         vec2 GetMousePosition() const;
+        MousePos GetMousePos() const { return environment; }
 
     private:
+        MousePos environment;
+        void compute_mouse_coordinates();
         SDL_Event event;
         const Uint8* current_key_state;
         std::array<bool, SDL_NUM_SCANCODES> previous_keys_down;

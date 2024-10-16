@@ -71,17 +71,6 @@ public:
 
 private:
     Engine();
-    void compute_mouse_coordinates();
-
-    struct
-    {
-        int   mouseX = 0;
-        int   mouseY = 0;
-        float mouseCamSpaceX = 0;
-        float mouseCamSpaceY = 0;
-        float mouseWorldSpaceX = 0;
-        float mouseWorldSpaceY = 0;
-    } environment;
 
     std::chrono::system_clock::time_point last_tick = std::chrono::system_clock::now();
     std::chrono::system_clock::time_point last_test;
