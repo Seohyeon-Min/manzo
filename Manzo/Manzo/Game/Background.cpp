@@ -11,17 +11,37 @@ Updated:    March 29, 2023
 
 #include "Background.h"
 
-Background::Background(vec2 start_position) : GameObject(start_position)
+void Background::Add(const std::filesystem::path& texture_path, float speed)
 {
-    AddGOComponent(new CS230::Sprite("assets/images/temp_back.spt", this));
+    backgrounds.push_back(ParallaxLayer({ Engine::GetTextureManager().Load(texture_path), speed }));
 }
 
-void Background::Draw()
+void Background::Unload()
 {
-    GameObject::Draw();
+    backgrounds.clear();
+}
+
+void Background::Draw(const CS230::Cam& camera)
+{
+    vec2 cameraPos = camera.GetPosition();
+
+    for (ParallaxLayer& background : backgrounds) {
+
+        // Build the translation matrix with parallax effect
+        mat3 parallax_matrix = mat3::build_translation({ (0 - cameraPos.x) * background.speed, (0 - cameraPos.y) * background.speed });
+
+        draw_call = {
+            background.texture,                       // Texture to draw
+            &parallax_matrix,                          // Transformation matrix
+            Engine::GetShaderManager().GetDefaultShader() // Shader to use
+        };
+
+        Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawBackground);
+    }
+    Engine::GetRender().RenderBackgrounds();
 }
 
 ivec2 Background::GetSize()
 {
-	return backgrounds[backgrounds.size()-1].texture->GetSize();;
+    return backgrounds[backgrounds.size() - 1].texture->GetSize();;
 }

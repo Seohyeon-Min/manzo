@@ -1,14 +1,14 @@
 #include "Camera.h"
-#include <iostream>
+
 CS230::Cam::Cam()
 {
-    //this->player_zone = player_zone;
+	//this->player_zone = player_zone;
 	caminfo.camera_view.SetFramebufferSize(Engine::window_width, Engine::window_height);
 }
 
 void CS230::Cam::Update(double dt, const vec2& player_position, bool playerMove)
 {
-    if(playerMove)
+	if (playerMove)
 	{
 		caminfo.camera.MoveUp(caminfo.move_speed * (float)dt * 1.f);
 		caminfo.camera.MoveRight(caminfo.move_speed * (float)dt * 1.f);

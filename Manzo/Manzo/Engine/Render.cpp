@@ -25,6 +25,10 @@ void CS230::Render::AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase
     else if (phase == DrawLayer::DrawLast) {
         draw_late_calls.push_back(drawCall); // Add to late phase
     }
+    else if (phase == DrawLayer::DrawBackground)
+    {
+        draw_background_calls.push_back(drawCall);
+    }
     else {
         draw_calls.push_back(drawCall); // Add to normal phase
     }
@@ -45,8 +49,6 @@ void CS230::Render::AddDrawCall
 // Render all stored draw calls, starting with early phase, normal phase, and then late phase
 // Also handles rendering of lines and collision shapes
 void CS230::Render::RenderAll() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear screen
-
     // Draw calls in the early phase
     for (const auto& draw_call : draw_first_calls) {
         Draw(draw_call);
@@ -122,6 +124,43 @@ void CS230::Render::Draw(const DrawCall& draw_call) {
 
     model.Use(false); // Unbind the model
     shader->Use(false); // Unbind the shader
+}
+
+void CS230::Render::RenderBackgrounds()
+{
+    for (const auto& draw_call : draw_background_calls) {
+        DrawBackground(draw_call);
+    }
+
+    draw_background_calls.clear();
+}
+
+
+void CS230::Render::DrawBackground(const DrawCall& draw_call)
+{
+    const GLShader* shader = draw_call.shader;
+    shader->Use();
+
+    if (draw_call.texture) {
+        draw_call.texture->UseForSlot(1);
+        shader->SendUniform("uTex2d", 1);
+    }
+    else {
+        throw std::runtime_error("no texture!");
+    }
+
+    vec2 texture_size = (vec2)draw_call.texture->GetSize();
+    mat3 model_to_world = *draw_call.transform * mat3::build_scale(texture_size);
+
+    mat3 WORLD_TO_NDC = GetWorldtoNDC();
+
+    const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
+    shader->SendUniform("uModelToNDC", to_span(model_to_ndc));
+    model.Use();
+    GLDrawIndexed(model);
+
+    model.Use(false);
+    shader->Use(false);
 }
 
 // Draw a line between two points for collision or debugging purposes

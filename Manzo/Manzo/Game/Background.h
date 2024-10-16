@@ -13,14 +13,12 @@ Created:    March 8, 2023
 #include "../Engine/Camera.h"
 #include "../Engine/Engine.h"
 #include "../Engine/Component.h"
-#include "GameObjectTypes.h"
 
-class Background : public CS230::GameObject {
+class Background : public CS230::Component {
 public:
-    Background(vec2 start_position);
-    GameObjectTypes Type() override { return GameObjectTypes::Background; }
-    std::string TypeName() override { return "Background"; }
-    void Draw();
+    void Add(const std::filesystem::path& texture_path, float speed);
+    void Unload();
+    void Draw(const CS230::Cam& camera);
     ivec2 GetSize();
 private:
     struct ParallaxLayer {

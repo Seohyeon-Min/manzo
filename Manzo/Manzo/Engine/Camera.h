@@ -26,7 +26,7 @@ Created:    March 8, 2023
 
 
 namespace CS230 {
-    class Cam : public Component{
+    class Cam : public Component {
     public:
         Cam();
         void Update(double dt, const vec2& player_position, bool playerMove);

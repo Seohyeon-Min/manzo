@@ -63,7 +63,7 @@ void CS230::GameStateManager::Update(double dt) {
             status = Status::UNLOADING;
         }
         else {
-            //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             Engine::GetLogger().LogVerbose("Update" + current_gamestate->GetName());
             current_gamestate->Update(dt);
             if (current_gamestate->GetGSComponent<CS230::GameObjectManager>() != nullptr) {

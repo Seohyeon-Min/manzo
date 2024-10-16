@@ -1,69 +1,32 @@
 #include "Fish.h"
 #include <random>
+#include <iostream>
 
 std::mt19937 dre;
+std::vector<Fish::FishDex> Fish::fishBook;
 
 Fish::Fish(Fish* parent) : CS230::GameObject({ 0, 0 }) {
 
-	std::uniform_int_distribution<int> random_value(0, 99);
-	std::uniform_int_distribution<int> size(0, 2);
+	std::uniform_int_distribution<int> fishIndex(0, static_cast<int>(fishBook.size() - 1));
+	int index = fishIndex(dre);
 
 	if (parent == nullptr) {
-		SetVelocity(vec2{
-			((float)(rand() % 5) + 1.f) * default_velocity * 2.f,
-			((float)(rand() % 5) + 0.1f) * default_velocity
-			});
-
 		ivec2 windowSize = { Engine::window_width, Engine::window_height };
 		start_position = { -640 ,((float)rand() / RAND_MAX) * 2.0f * windowSize.y - windowSize.y }; //outside of window
 		SetPosition(start_position);
-
-		if (random_value(dre) < 20)  //20%
-		{
-			type = FishType::Fish3;
-		}
-		else if (random_value(dre) < 60)  //40%
-		{
-			type = FishType::Fish1;
-		}
-		else  //40%
-		{
-			type = FishType::Fish2;
-		}
-
+		SetVelocity(fishBook[index].velocity);
+		SetScale(fishBook[index].scale);
+		type = fishBook[index].type;
 	}
 	else
 	{
+		index = 2;
 		type = parent->type;
 		SetVelocity(parent->GetPosition());
 		SetPosition(parent->GetPosition());
-		SetRotation(parent->GetRotation());
 	}
 
-	int scale_type = size(dre);
-	SetScale(vec2{ static_cast<float>(default_scales[scale_type]), static_cast<float>(default_scales[scale_type]) });
-
-
-	if (this->type == FishType::Fish2)
-	{
-		SetVelocity({ GetVelocity().x * 3.f, GetVelocity().y * 3.f });
-	}
-
-	switch (type)
-	{
-	case FishType::Fish1:
-		AddGOComponent(new CS230::Sprite("assets/images/Fish1.spt", this));
-		break;
-
-	case FishType::Fish2:
-		AddGOComponent(new CS230::Sprite("assets/images/Fish2.spt", this));
-		break;
-
-	case FishType::Fish3:
-		AddGOComponent(new CS230::Sprite("assets/images/Fish3.spt", this));
-		break;
-	}
-
+	AddGOComponent(new CS230::Sprite(fishBook[index].filePath, this));
 }
 
 bool Fish::CanCollideWith(GameObjectTypes other_object)
@@ -105,4 +68,44 @@ void Fish::Update(double dt) {
 void Fish::Draw()
 {
 	CS230::GameObject::Draw();
+}
+
+void Fish::ReadFishCSV(const std::string& filename)
+{
+	std::ifstream        file(filename);
+	std::string          line, cell;
+
+	if (!file.is_open()) {
+		std::cerr << "Failed to open file: " << filename << std::endl;
+		return;
+	}
+
+	if (file.is_open())
+	{
+		std::getline(file, line);
+
+		while (std::getline(file, line))
+		{
+			std::stringstream linestream(line);
+			FishDex f;
+			float scaleSize, velocitySize;
+
+			std::getline(linestream, cell, ',');
+			f.type = static_cast<FishType>(std::stoi(cell));
+
+			std::getline(linestream, cell, ',');
+			scaleSize = std::stof(cell);
+			f.scale = { scaleSize, scaleSize };
+
+			std::getline(linestream, cell, ',');
+			velocitySize = std::stof(cell);
+			f.velocity = { velocitySize, velocitySize };
+
+			std::getline(linestream, cell, ',');
+			f.filePath = cell;
+
+			fishBook.push_back(f);
+		}
+		file.close();
+	}
 }
