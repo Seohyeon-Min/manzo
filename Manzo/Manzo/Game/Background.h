@@ -23,8 +23,8 @@ public:
 private:
     struct ParallaxLayer {
         GLTexture* texture;
-        double speed = 1;
+        float speed = 1.f;
     };
-
+    CS230::DrawCall draw_call;
     std::vector<ParallaxLayer> backgrounds;
 };

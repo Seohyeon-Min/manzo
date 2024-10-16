@@ -12,11 +12,36 @@ Created:    March 8, 2023
 #include "GameObject.h"
 #include "color3.h"
 #include "ShaderManager.h"
+#include "MapManager.h"
+#include "vec2.h"
 
 #include <iostream>
-
 #include <array>
 #define GREEN color3(0,255,0)
+
+/// /////////////////////////////////////////////////////////////////////////////////////
+vec2 GetPerpendicular(const vec2& v) {
+    return { -v.y, v.x };
+}
+float Vector2DotProduct(const vec2& v1, const vec2& v2) {
+    return v1.x * v2.x + v1.y * v2.y;
+}
+vec2 NormalizeVector2(const vec2& v) {
+    float length = sqrt(v.x * v.x + v.y * v.y);
+    return { v.x / length, v.y / length };
+}
+void ProjectPolygon(const Polygon& polygon, const vec2& axis, float& min, float& max) {
+    float project_result = Vector2DotProduct(polygon.vertices[0], axis);
+    min = project_result;
+    max = project_result;
+
+    for (int i = 1; i < polygon.vertexCount; i++) {
+        project_result = Vector2DotProduct(polygon.vertices[i], axis);
+        if (project_result < min) min = project_result;
+        if (project_result > max) max = project_result;
+    }
+}
+///////////////////////////////////////////////////////////////////////////////////////
 
 CS230::RectCollision::RectCollision(Math::irect boundary, GameObject* object) :
     boundary(boundary),
@@ -25,17 +50,36 @@ CS230::RectCollision::RectCollision(Math::irect boundary, GameObject* object) :
     Engine::GetShaderManager().LoadShader("default_collision", "assets/shaders/default_collision.vert", "assets/shaders/default_collision.frag");
 }
 
-Math::rect CS230::RectCollision::WorldBoundary() {
+Math::rect CS230::RectCollision::WorldBoundary_rect() {
+    //std::cout << object->GetMatrix().column2.x << std::endl;
     return {
-        {(object->GetMatrix() * mat3::build_translation((vec2)boundary.point_1)).column2.x,(object->GetMatrix() * mat3::build_translation((vec2)boundary.point_1)).column2.y},
-        {(object->GetMatrix() * mat3::build_translation((vec2)boundary.point_2)).column2.x,(object->GetMatrix() * mat3::build_translation((vec2)boundary.point_2)).column2.y},
+        {(object->GetMatrix() * mat3::build_translation((vec2)boundary.point_1)).column2.x,
+         (object->GetMatrix() * mat3::build_translation((vec2)boundary.point_1)).column2.y},
+        {(object->GetMatrix() * mat3::build_translation((vec2)boundary.point_2)).column2.x,
+         (object->GetMatrix() * mat3::build_translation((vec2)boundary.point_2)).column2.y},
     };
 }
+
+Polygon CS230::MAP_SATCollision::WorldBoundary_poly() {
+    Polygon boundary_poly;
+    vec2 transformedPoint;
+
+    for (int i = 0; i < boundary.vertexCount; ++i) {
+        transformedPoint.x = (object->GetMatrix() * mat3::build_translation({ boundary.vertices[i] })).column2.x;
+        transformedPoint.y = (object->GetMatrix() * mat3::build_translation({ boundary.vertices[i] })).column2.y;
+        boundary_poly.vertices.push_back(transformedPoint);
+    }
+
+    boundary_poly.vertexCount = (int)boundary_poly.vertices.size();
+
+    return boundary_poly;
+}
+
 
 void CS230::RectCollision::Draw() {
     const float render_height = (float)Engine::window_height;
 
-    Math::rect world_boundary = WorldBoundary();
+    Math::rect world_boundary = WorldBoundary_rect();
 
     vec2 bottom_left =  vec2{ world_boundary.Left(), world_boundary.Bottom() };
     vec2 bottom_right =  vec2{ world_boundary.Right(), world_boundary.Bottom() };
@@ -50,6 +94,7 @@ void CS230::RectCollision::Draw() {
 
 bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
     Collision* other_collider = other_object->GetGOComponent<Collision>();
+    Math::rect rectangle_1 = WorldBoundary_rect();
 
 
     if (other_collider == nullptr) {
@@ -57,26 +102,75 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
     }
 
 
-    if (other_collider->Shape() != CollisionShape::Rect) {
-        Engine::GetLogger().LogError("Rect vs unsupported type");
+    if(other_collider->Shape() == CollisionShape::Rect) {
+        Math::rect rectangle_2 = dynamic_cast<RectCollision*>(other_collider)->WorldBoundary_rect();
+        if (rectangle_1.Right() > rectangle_2.Left() &&
+            rectangle_1.Left() < rectangle_2.Right() &&
+            rectangle_1.Top() > rectangle_2.Bottom() &&
+            rectangle_1.Bottom() < rectangle_2.Top()) {
+            return true;
+        }
         return false;
     }
 
-    Math::rect rectangle_1 = WorldBoundary();
-    Math::rect rectangle_2 = dynamic_cast<RectCollision*>(other_collider)->WorldBoundary();
+    if (other_collider->Shape() == CollisionShape::Poly) {
+        Polygon other_poly = dynamic_cast<MAP_SATCollision*>(other_collider)->WorldBoundary_poly();
 
-    if (rectangle_1.Right() > rectangle_2.Left() &&
-        rectangle_1.Left() < rectangle_2.Right() &&
-        rectangle_1.Top() > rectangle_2.Bottom() &&
-        rectangle_1.Bottom() < rectangle_2.Top()) {
+        vec2 rect_vertices[4] = {
+            {rectangle_1.Left(), rectangle_1.Bottom()},
+            {rectangle_1.Right(), rectangle_1.Bottom()},
+            {rectangle_1.Right(), rectangle_1.Top()},
+            {rectangle_1.Left(), rectangle_1.Top()}
+        };
+
+        for (int i = 0; i < 4; i++) {
+            vec2 edge = { rect_vertices[(i + 1) % 4].x - rect_vertices[i].x,
+                         rect_vertices[(i + 1) % 4].y - rect_vertices[i].y };
+            vec2 axis = NormalizeVector2(GetPerpendicular(edge));
+
+            float minA, maxA;
+            ProjectPolygon({ std::vector<vec2>(rect_vertices, rect_vertices + 4), 4 }, axis, minA, maxA);
+            float minB, maxB;
+            ProjectPolygon(other_poly, axis, minB, maxB);
+
+            if (maxA < minB || maxB < minA) {
+                return false;
+            }
+            else {
+                CollidingSide_1 = other_poly.vertices[i];
+                CollidingSide_2 = other_poly.vertices[(i + 1) % 4];
+            }
+        }
+
+        for (int i = 0; i < other_poly.vertexCount; i++) {
+            vec2 edge = { other_poly.vertices[(i + 1) % other_poly.vertexCount].x - other_poly.vertices[i].x,
+                         other_poly.vertices[(i + 1) % other_poly.vertexCount].y - other_poly.vertices[i].y };
+            vec2 axis = NormalizeVector2(GetPerpendicular(edge));
+
+            float minA, maxA;
+            ProjectPolygon({ std::vector<vec2>(rect_vertices, rect_vertices + 4), 4 }, axis, minA, maxA);
+
+            float minB, maxB;
+            ProjectPolygon(other_poly, axis, minB, maxB);
+
+            if (maxA < minB || maxB < minA) {
+                return false;
+            }
+            else {
+                CollidingSide_1 = other_poly.vertices[i];
+                CollidingSide_2 = other_poly.vertices[(i + 1) % other_poly.vertexCount];
+            }
+        }
+
         return true;
     }
+
     return false;
 }
 
 bool CS230::RectCollision::IsCollidingWith(vec2 point)
 {
-    Math::rect rectangle_1 = WorldBoundary();
+    Math::rect rectangle_1 = WorldBoundary_rect();
 
     if (rectangle_1.Right() >= point.x &&
         rectangle_1.Left() <= point.x &&
@@ -85,4 +179,97 @@ bool CS230::RectCollision::IsCollidingWith(vec2 point)
         return true;
     }
     return false;
+}
+
+CS230::MAP_SATCollision::MAP_SATCollision(Polygon boundary, GameObject* object) :
+    boundary(boundary),
+    object(object)
+{
+}
+
+bool CS230::MAP_SATCollision::IsCollidingWith(vec2 point) {
+    Polygon poly_1 = WorldBoundary_poly();
+    for (int i = 0; i < poly_1.vertexCount; i++) {
+        vec2 edge = { poly_1.vertices[(i + 1) % poly_1.vertexCount].x - poly_1.vertices[i].x,
+                      poly_1.vertices[(i + 1) % poly_1.vertexCount].y - poly_1.vertices[i].y };
+        vec2 axis = NormalizeVector2(GetPerpendicular(edge));
+
+        float minA, maxA;
+        ProjectPolygon(poly_1, axis, minA, maxA);
+
+        float projection = Vector2DotProduct(point, axis);
+        float minB = projection;
+        float maxB = projection;
+        if (maxA < minB || maxB < minA) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool CS230::MAP_SATCollision::IsCollidingWith(GameObject* other_object)
+{
+    Collision* other_collider = other_object->GetGOComponent<Collision>();
+
+
+    if (other_collider == nullptr) {
+        return false;
+    }
+
+    Polygon poly_1 = WorldBoundary_poly();
+    Polygon poly_2 = dynamic_cast<MAP_SATCollision*>(other_collider)->WorldBoundary_poly();
+
+
+    for (int i = 0; i < poly_1.vertexCount; i++) {
+        vec2 edge = { poly_1.vertices[(i + 1) % poly_1.vertexCount].x - poly_1.vertices[i].x,
+                         poly_1.vertices[(i + 1) % poly_1.vertexCount].y - poly_1.vertices[i].y };
+        vec2 axis = NormalizeVector2(GetPerpendicular(edge));
+
+        float minA, maxA;
+        ProjectPolygon(poly_1, axis, minA, maxA);
+
+        float minB, maxB;
+        ProjectPolygon(poly_2, axis, minB, maxB);
+
+        if (maxA < minB || maxB < minA) {
+            return false;
+        }
+    }
+
+
+
+    for (int i = 0; i < poly_2.vertexCount; i++) {
+        vec2 edge = { poly_2.vertices[(i + 1) % poly_2.vertexCount].x - poly_2.vertices[i].x,
+                         poly_2.vertices[(i + 1) % poly_2.vertexCount].y - poly_2.vertices[i].y };
+        vec2 axis = NormalizeVector2(GetPerpendicular(edge));
+
+        float minA, maxA;
+        ProjectPolygon(poly_1, axis, minA, maxA);
+
+        float minB, maxB;
+        ProjectPolygon(poly_2, axis, minB, maxB);
+
+        if (maxA < minB || maxB < minA) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
+
+void CS230::MAP_SATCollision::Draw() {
+
+    for (int j = 1; j < boundary.vertexCount; ++j) {
+        Engine::GetRender().AddDrawCall(vec2{ boundary.vertices[j - 1].x, boundary.vertices[j - 1].y },
+            vec2{ boundary.vertices[j].x, boundary.vertices[j].y },
+            GREEN);
+    }
+    Engine::GetRender().AddDrawCall(vec2{ boundary.vertices.back().x, boundary.vertices.back().y },
+        vec2{ boundary.vertices.front().x, boundary.vertices.front().y },
+        GREEN);
+
+
 }

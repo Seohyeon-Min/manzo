@@ -13,6 +13,7 @@ Created:    Sept 12, 2024
 #include "../Engine/Sprite.h"
 #include "..\Engine\GameObjectManager.h"
 #include "../Engine/Timer.h"
+#include "Background.h"
 
 
 class Ship;
@@ -35,9 +36,10 @@ private:
     CS230::Timer* timer;
     double swimming_range = 15.0;
     Ship* ship_ptr;
+    Background* background;
     Skillsys* Skill_ptr;
 
-    float y_limit = 20.0f;
+    float y_limit = 15.0f;
     float frequency = 0.9f;
     float time = 0.0f;
 };

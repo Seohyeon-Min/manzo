@@ -10,24 +10,47 @@ Created:    March 8, 2023
 
 #pragma once
 
-#include "Vec2.h"
-#include "Rect.h"
+#include "../../common_gl/include/Camera.h"
+#include "../../common_gl/include/CameraView.h"
+#include "GLShader.h"
+#include "GLVertexArray.h"
+#include "IProgram.h"
+#include "angles.h"
+#include "color3.h"
 #include "mat3.h"
-#include "Component.h"
+#include "Engine.h"
+#include "GameObject.h"
+
+#include <unordered_map>
+#include <vector>
+
 
 namespace CS230 {
-    class Camera : public Component{
+    class Cam : public Component {
     public:
-        Camera(Math::rect player_zone);
+        Cam();
+        void Update(double dt, const vec2& player_position, bool playerMove);
         void SetPosition(vec2 new_position);
         const vec2& GetPosition() const;
-        void SetLimit(Math::irect new_limit);
-        mat3 GetMatrix();
-        void Update(const vec2& player_position);
+        void SetLimit(Math::rect new_limit);
+        const CameraView GetCameraView() { return caminfo.camera_view; }
+        const Camera GetCamera() { return caminfo.camera; }
+
+        mat3 world_to_cam;
+        mat3 cam_to_ndc;
+        mat3 world_to_ndc;
 
     private:
-        Math::irect limit;
-        vec2 position;
-        Math::rect player_zone;
+        Math::rect limit;
+
+        struct CamInfo
+        {
+            Camera     camera{};
+            CameraView camera_view{};
+            float      move_scalar = 0;
+            float      turn_scalar = 0;
+            float      strafe_scalar = 0;
+            float      move_speed = 240.0f;
+        } caminfo;
     };
 }

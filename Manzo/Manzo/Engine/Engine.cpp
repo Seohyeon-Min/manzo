@@ -75,9 +75,8 @@ void Engine::HandleEvent(SDL_Window& sdl_window, const SDL_Event& event)
         {
             // get the mouse device positions from event.motion.x/event.motion.y
             // save to environment.mouseX/mouseY
-            
-            environment.mouseX = static_cast<int>(GetInput().GetMousePosition().x);
-            environment.mouseY = static_cast<int>(GetInput().GetMousePosition().y);
+
+
         }
         break;
     }
@@ -105,12 +104,19 @@ void Engine::ImGuiDraw()
 {
     ImGui::Begin("Program Info");
     {
+        float mouseX = GetInput().GetMousePosition().x;
+        float mouseY = GetInput().GetMousePosition().y;
+        float camX = GetInput().GetMousePos().mouseCamSpaceX;
+        float camY = GetInput().GetMousePos().mouseCamSpaceY;
+        float WorldX = GetInput().GetMousePos().mouseWorldSpaceX;
+        float WorldY = GetInput().GetMousePos().mouseWorldSpaceY;
+
         ImGui::LabelText("FPS", "%.1f", (FPS));
         ImGui::LabelText("Delta time", "%.4f seconds", static_cast<float>(dt));
         ImGui::LabelText("Mouse Positions", "Device(%4.0f,%4.0f)\nCamera(%4.0f,%4.0f)\nWorld (%4.0f,%4.0f)",
-            static_cast<double>(environment.mouseX), static_cast<double>(environment.mouseY),                                                             // device space
-            static_cast<double>(environment.mouseCamSpaceX), static_cast<double>(environment.mouseCamSpaceY),    // in Camera Space
-            static_cast<double>(environment.mouseWorldSpaceX), static_cast<double>(environment.mouseWorldSpaceY) // in World Space
+            static_cast<double>(mouseX), static_cast<double>(mouseY),                                                             // device space
+            static_cast<double>(camX), static_cast<double>(camY),    // in Camera Space
+            static_cast<double>(WorldX), static_cast<double>(WorldY) // in World Space
         );
         //const auto cam_pos = caminfo.camera.Position;
         //ImGui::LabelText("Camera World Position", "(%.1f,%.1f)", static_cast<double>(cam_pos.x), static_cast<double>(cam_pos.y));

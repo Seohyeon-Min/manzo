@@ -13,12 +13,12 @@ Updated:    March 29, 2023
 
 void Background::Add(const std::filesystem::path& texture_path, float speed)
 {
-	backgrounds.push_back(ParallaxLayer({ Engine::GetTextureManager().Load(texture_path), speed }));
+    backgrounds.push_back(ParallaxLayer({ Engine::GetTextureManager().Load(texture_path), speed }));
 }
 
 void Background::Unload()
 {
-	backgrounds.clear();
+    backgrounds.clear();
 }
 
 void Background::Draw(const CS230::Cam& camera)
@@ -26,7 +26,7 @@ void Background::Draw(const CS230::Cam& camera)
     vec2 cameraPos = camera.GetPosition();
 
     for (ParallaxLayer& background : backgrounds) {
-   
+
         // Build the translation matrix with parallax effect
         mat3 parallax_matrix = mat3::build_translation({ (0 - cameraPos.x) * background.speed, (0 - cameraPos.y) * background.speed });
 
@@ -36,13 +36,12 @@ void Background::Draw(const CS230::Cam& camera)
             Engine::GetShaderManager().GetDefaultShader() // Shader to use
         };
 
-        // Add the draw call to the renderer
-        Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawFirst);
-    }// Somewhere in your main game loop or rendering function
-    Engine::GetRender().DrawBackground(draw_call);
+        Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawBackground);
+    }
+    Engine::GetRender().RenderBackgrounds();
 }
 
 ivec2 Background::GetSize()
 {
-	return backgrounds[backgrounds.size()-1].texture->GetSize();;
+    return backgrounds[backgrounds.size() - 1].texture->GetSize();;
 }

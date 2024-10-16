@@ -14,6 +14,7 @@ Mouse::Mouse() {
 
 
 void Mouse::Update(double dt) {
+    //vec2 mouse_pos = {(float) Engine::GetInput().GetMousePos().mouseWorldSpaceX, (float)Engine::GetInput().GetMousePos().mouseWorldSpaceY };
     vec2 mouse_pos = Engine::GetInput().GetMousePosition();
     FollowMouse(mouse_pos);
 }
@@ -33,12 +34,11 @@ void Mouse::UpdateTrail(const vec2& new_position) {
 }
 
 void Mouse::DrawLaserCurve() {
-    if (trails.size() > 1){
+    if (trails.size() > 1) {
         float line_width = 5.0f;
         for (size_t i = trails.size() - 1; i > 0; --i) {
             vec2 previous_point = trails[i].position;
             vec2 current_point = trails[i - 1].position;
-
             line_width *= decrease_factor;
             if (line_width <= 0.001f) {
                 line_width = 0.0001f;

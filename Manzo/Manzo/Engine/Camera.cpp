@@ -1,76 +1,40 @@
-/*
-Copyright (C) 2023 DigiPen Institute of Technology
-Reproduction or distribution of this file or its contents without
-prior written consent is prohibited
-File Name:  Camera.cpp
-Project:    CS230 Engine
-Author:     Seohyeon Min
-Created:    March 22, 2023
-*/
-
 #include "Camera.h"
 
-CS230::Camera::Camera(Math::rect player_zone) : player_zone(player_zone), position({ 0,0 })
+CS230::Cam::Cam()
 {
-
+	//this->player_zone = player_zone;
+	caminfo.camera_view.SetFramebufferSize(Engine::window_width, Engine::window_height);
 }
 
-void CS230::Camera::SetPosition(vec2 new_position)
+void CS230::Cam::Update(double dt, const vec2& player_position, bool playerMove)
 {
-    position = new_position;
+	if (playerMove)
+	{
+		caminfo.camera.MoveUp(caminfo.move_speed * (float)dt * 1.f);
+		caminfo.camera.MoveRight(caminfo.move_speed * (float)dt * 1.f);
+	}
+
+	world_to_cam = caminfo.camera.BuildWorldToCamera();
+
+	// cam_to_ndc   <- get CalculateCameraToNDC from camera view
+	cam_to_ndc = caminfo.camera_view.BuildCameraToNDC();
+
+	// world_to_ndc <- cam_to_ndc * world_to_cam
+	world_to_ndc = cam_to_ndc * world_to_cam;
 }
 
-const vec2& CS230::Camera::GetPosition() const
+
+void CS230::Cam::SetPosition(vec2 new_position)
 {
-    return position;
+	caminfo.camera.Position = new_position;
 }
 
-void CS230::Camera::SetLimit(Math::irect new_limit)
+const vec2& CS230::Cam::GetPosition() const
 {
-    limit = new_limit;
+	return caminfo.camera.Position;
 }
 
-mat3 CS230::Camera::GetMatrix() {
-    return mat3(-position);
+void CS230::Cam::SetLimit(Math::rect new_limit)
+{
+	limit = new_limit;
 }
-
-
-void CS230::Camera::Update(const vec2& player_position) {
-
-    float lerpFactor = 0.1f; // (0.0 ~ 1.0)
-
-    vec2 target_position = position;
-
-    if (player_position.x > player_zone.Right() + position.x) {
-        target_position.x = player_position.x - player_zone.Right();
-    }
-    if (player_position.x - position.x < player_zone.Left()) {
-        target_position.x = player_position.x - player_zone.Left();
-    }
-
-    position.x += (target_position.x - position.x) * lerpFactor;
-
-    if (player_position.y > player_zone.Top() + position.y) {
-        target_position.y = player_position.y - player_zone.Top();
-    }
-    if (player_position.y - position.y < player_zone.Bottom()) {
-        target_position.y = player_position.y - player_zone.Bottom();
-    }
-
-    position.y += (target_position.y - position.y) * lerpFactor;
-
-
-    //if (position.x < limit.Left()) {
-    //    position.x = limit.Left();
-    //}
-    //if (position.x > limit.Right()) {
-    //    position.x = limit.Right();
-    //}
-    //if (position.y < limit.Bottom()) {
-    //    position.y = limit.Bottom();
-    //}
-    //if (position.y > limit.Top()) {
-    //    position.y = limit.Top();
-    //}
-}
-

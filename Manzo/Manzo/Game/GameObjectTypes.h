@@ -11,7 +11,7 @@ Created:    March 8, 2023
 #pragma once
 
 enum class GameObjectTypes {
-    Ship, 
+    Ship,
     Particle,
     Count,
     Reef,

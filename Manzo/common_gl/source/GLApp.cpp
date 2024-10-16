@@ -29,7 +29,7 @@ namespace
     {
         std::ostringstream sout;
         (sout << ... << more_messages);
-        throw std::runtime_error{sout.str()};
+        throw std::runtime_error{ sout.str() };
     }
 }
 
@@ -45,7 +45,8 @@ GLApp::GLApp(const char* title, int desired_width, int desired_height)
     {
         throw_error_message("Failed to init SDK error: ", SDL_GetError());
     }
-    SDL_ShowCursor(SDL_DISABLE);
+    //SDL_ShowCursor(SDL_DISABLE);
+    SDL_ShowCursor(SDL_FALSE);
 
     hint_gl(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     hint_gl(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
@@ -61,18 +62,18 @@ GLApp::GLApp(const char* title, int desired_width, int desired_height)
     hint_gl(SDL_GL_MULTISAMPLESAMPLES, 4);
 
     // https://wiki.libsdl.org/SDL_CreateWindow
-    desired_width  = std::max(640, std::min(16384, desired_width));
+    desired_width = std::max(640, std::min(16384, desired_width));
     desired_height = std::max(480, std::min(16384, desired_height));
-    ptr_window     = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, desired_width, desired_height, SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI);
+    ptr_window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, desired_width, desired_height, SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI);
     if (ptr_window == nullptr)
     {
         throw_error_message("Failed to create window: ", SDL_GetError());
     }
- /*   int32_t cursorData[2] = { 0, 0 };
-    cursor = SDL_CreateCursor((Uint8*)cursorData, (Uint8*)cursorData, 8, 8, 4, 4);
-    SDL_SetCursor(cursor);*/
+    /*   int32_t cursorData[2] = { 0, 0 };
+       cursor = SDL_CreateCursor((Uint8*)cursorData, (Uint8*)cursorData, 8, 8, 4, 4);
+       SDL_SetCursor(cursor);*/
 
-    // https://wiki.libsdl.org/SDL_GL_CreateContext
+       // https://wiki.libsdl.org/SDL_GL_CreateContext
     if (gl_context = SDL_GL_CreateContext(ptr_window); gl_context == nullptr)
     {
         throw_error_message("Failed to create opengl context: ", SDL_GetError());
@@ -89,7 +90,7 @@ GLApp::GLApp(const char* title, int desired_width, int desired_height)
 
     // https://wiki.libsdl.org/SDL_GL_SetSwapInterval
     constexpr int ADAPTIVE_VSYNC = -1;
-    constexpr int VSYNC          = 1;
+    constexpr int VSYNC = 1;
     if (const auto result = SDL_GL_SetSwapInterval(ADAPTIVE_VSYNC); result != 0)
     {
         SDL_GL_SetSwapInterval(VSYNC);
@@ -116,7 +117,7 @@ GLApp::~GLApp()
 
 void GLApp::Update()
 {
-    SDL_Event event{0};
+    SDL_Event event{ 0 };
     while (SDL_PollEvent(&event) != 0)
     {
         ImGuiHelper::FeedEvent(event);
@@ -125,7 +126,7 @@ void GLApp::Update()
         {
             is_done = true;
         }
-         
+
     }
     ptr_program->Update();
     ImGuiHelper::Begin();

@@ -39,13 +39,20 @@ void Mode2::Load() {
     //GetGSComponent<Background>()->Add("assets/images/temp_back.png", 0.25);
 
     //// ship
-    ship_ptr = new Ship({ 0, -100 });
+    ship_ptr = new Ship({ 0, -250 });
     GetGSComponent<CS230::GameObjectManager>()->Add(ship_ptr);
 
     //// camera
-    AddGSComponent(new CS230::Camera({ {1280 / 2 , 720 / 2 }, {1280 / 2, 720 / 2 } }));
+    AddGSComponent(new CS230::Cam());
     vec2 playerPosition = ship_ptr->GetPosition();
-    GetGSComponent<CS230::Camera>()->SetPosition({ playerPosition.x - 1280 / 2, playerPosition.y - 720 / 2 });
+    GetGSComponent<CS230::Cam>()->SetPosition({ playerPosition.x, 0 });
+
+
+    //// background
+    background = new Background();
+    AddGSComponent(background);
+    GetGSComponent<Background>()->Add("assets/images/temp_back2.png", 0.25f);
+
 
     //// audio
     Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("assets/audios/basic_beat_100_4.wav", "sample");
@@ -54,14 +61,14 @@ void Mode2::Load() {
     }
 
     // skill
-    //Skill_ptr = GetGSComponent<Skillsys>();
+    Skill_ptr = GetGSComponent<Skillsys>();
 }
 
 void Mode2::Update(double dt) {
     UpdateGSComponents(dt);
     GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
-    GetGSComponent<CS230::Camera>()->Update(ship_ptr->GetPosition());
-    //Skill_ptr->Update(dt);
+    GetGSComponent<CS230::Cam>()->Update(dt, ship_ptr->GetPosition(), false);
+    Skill_ptr->Update(dt);
     GetGSComponent<Skillsys>()->Update(dt);
 
     //float moving~
@@ -79,11 +86,14 @@ void Mode2::Update(double dt) {
 }
 
 void Mode2::Draw() {
+    GetGSComponent<Background>()->Draw(*GetGSComponent<CS230::Cam>());
+
     GetGSComponent<CS230::GameObjectManager>()->DrawAll();
 }
 
 void Mode2::Unload() {
     ship_ptr = nullptr;
     GetGSComponent<CS230::GameObjectManager>()->Unload();
+    GetGSComponent<Background>()->Unload();
     ClearGSComponents();
 }

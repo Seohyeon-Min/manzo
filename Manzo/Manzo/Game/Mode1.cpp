@@ -13,6 +13,7 @@ Created:    March 8, 2023
 #include "../Engine/ShowCollision.h"
 #include "../Engine/AudioManager.h"
 #include "../Engine/Particle.h"
+#include "../Engine/MapManager.h"
 
 #include "Particles.h"
 #include "Mouse.h"
@@ -40,22 +41,22 @@ void Mode1::Load() {
 #endif
     // component
     AddGSComponent(new CS230::GameObjectManager());
-    AddGSComponent(new Background());
     AddGSComponent(new Beat());
     AddGSComponent(new AudioManager());
-    GetGSComponent<Background>()->Add("assets/images/temp_back.png", 0.25);
+    AddGSComponent(new CS230::Map());
 
     //// ship
-    ship_ptr = new Ship({ 0, 0 });
+    ship_ptr = new Ship({ Engine::window_width / 2, Engine::window_height / 2 });
     GetGSComponent<CS230::GameObjectManager>()->Add(ship_ptr);
 
     //// camera
-    camera = new CS230::Camera({ {1280 / 2 , 720 / 2 }, {1280 / 2, 720 / 2 } });
+    camera = new CS230::Cam();
     AddGSComponent(camera);
 
     //// background
     background = new Background();
     AddGSComponent(background);
+
 
     //// audio
     Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("assets/audios/basic_beat_100_5.wav", "sample");
@@ -65,23 +66,30 @@ void Mode1::Load() {
 
     //// to generate fish
     fishGenerator = new FishGenerator();
+    Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
 
     //// reef
     reef = new Reef({ -400,200 });
     GetGSComponent<CS230::GameObjectManager>()->Add(reef);
+
+    GetGSComponent<Background>()->Add("assets/images/temp_back.png", 0.25f);
 
     // Mouse and Particle
     AddGSComponent(new CS230::ParticleManager<Particles::MouseFollow>());
     AddGSComponent(new Mouse());
     //Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::Mouse>>()->Emit(2, mouse_position, { 0, 0 }, { 0, 100 }, M_PI / 2);
 
-    GetGSComponent<Background>()->Add("assets/images/temp_back.png", 0.25f);
+    GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/test.svg");
 }
 
 void Mode1::Update(double dt) {
     UpdateGSComponents(dt);
     GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
-    GetGSComponent<CS230::Camera>()->Update(ship_ptr->GetPosition());
+
+    //camera postion update
+    camera->SetPosition(ship_ptr->GetPosition());
+    camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
+
 	fishGenerator->GenerateFish(dt);
 
     if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Q)) {
@@ -98,13 +106,11 @@ void Mode1::Update(double dt) {
 void Mode1::Draw() {
     GetGSComponent<Background>()->Draw(*GetGSComponent<CS230::Cam>());
     GetGSComponent<CS230::GameObjectManager>()->DrawAll();
-    GetGSComponent<Background>()->Draw(*camera);
 }
 
 void Mode1::Unload() {
 
     ship_ptr = nullptr;
-    GetGSComponent<Background>()->Unload();
 	GetGSComponent<CS230::GameObjectManager>()->Unload();
     GetGSComponent<Background>()->Unload();
 	//fishGenerator->DeleteFish();

@@ -4,7 +4,6 @@
 #include "Engine.h"
 #include "GameObject.h"
 
-
 #include <vector>
 #include <unordered_map>
 #include <filesystem>
@@ -12,6 +11,7 @@
 #include <span>
 #include <array>
 #include <iostream>
+#include "Camera.h"
 
 
 const float WORLD_SIZE_MAX = (float)std::max(Engine::window_width, Engine::window_height);
@@ -24,6 +24,10 @@ void CS230::Render::AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase
     }
     else if (phase == DrawLayer::DrawLast) {
         draw_late_calls.push_back(drawCall); // Add to late phase
+    }
+    else if (phase == DrawLayer::DrawBackground)
+    {
+        draw_background_calls.push_back(drawCall);
     }
     else {
         draw_calls.push_back(drawCall); // Add to normal phase
@@ -45,8 +49,6 @@ void CS230::Render::AddDrawCall
 // Render all stored draw calls, starting with early phase, normal phase, and then late phase
 // Also handles rendering of lines and collision shapes
 void CS230::Render::RenderAll() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear screen
-
     // Draw calls in the early phase
     for (const auto& draw_call : draw_first_calls) {
         Draw(draw_call);
@@ -112,8 +114,8 @@ void CS230::Render::Draw(const DrawCall& draw_call) {
     vec2 texture_size = (vec2)draw_call.texture->GetSize();
     mat3 model_to_world = *draw_call.transform * mat3::build_scale(texture_size); // Scale the model based on texture size
 
-    // Convert world coordinates to NDC coordinates for rendering
-    mat3 WORLD_TO_NDC = mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height);
+    mat3 WORLD_TO_NDC = GetWorldtoNDC();
+
     const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
 
     shader->SendUniform("uModelToNDC", to_span(model_to_ndc)); // Send transformation matrix to shader
@@ -123,6 +125,16 @@ void CS230::Render::Draw(const DrawCall& draw_call) {
     model.Use(false); // Unbind the model
     shader->Use(false); // Unbind the shader
 }
+
+void CS230::Render::RenderBackgrounds()
+{
+    for (const auto& draw_call : draw_background_calls) {
+        DrawBackground(draw_call);
+    }
+
+    draw_background_calls.clear();
+}
+
 
 void CS230::Render::DrawBackground(const DrawCall& draw_call)
 {
@@ -151,8 +163,43 @@ void CS230::Render::DrawBackground(const DrawCall& draw_call)
     shader->Use(false);
 }
 
+// Draw a line between two points for collision or debugging purposes
+void CS230::Render::DrawLine(LineDrawCall drawcall) {
+    vec2 start = drawcall.start;
+    vec2 end = drawcall.end;
+    color3 color = drawcall.color;
+    const GLShader* shader = drawcall.shader;
 
-void CS230::Render::DrawLine(CollisionDrawCall drawcall)
+    // Use default collision shader if no shader is provided
+    if (shader == nullptr) {
+        shader = Engine::GetShaderManager().GetShader("default_collision");
+    }
+
+    vec2 direction = end - start;
+    float length = direction.Length(); // Calculate length of the line
+    direction = direction.Normalize(); // Normalize direction vector
+
+    float angle = std::atan2(direction.y, direction.x); // Calculate angle of the line
+
+    // Build transformation matrix for the line
+    mat3 model_to_world = mat3::build_translation(start) * mat3::build_rotation(angle) * mat3::build_scale(length);
+
+    // Convert to NDC coordinates
+    mat3 WORLD_TO_NDC = GetWorldtoNDC();
+    const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
+
+    shader->Use(); // Use shader
+    shader->SendUniform("uModelToNDC", to_span(model_to_ndc)); // Send transformation matrix to shader
+    shader->SendUniform("uFillColor", to_span(color)); // Send line color to shader
+
+    line_model.Use(); // Bind line model
+    GLDrawVertices(line_model); // Draw the line
+
+    shader->Use(false); // Unbind shader
+    line_model.Use(false); // Unbind line model
+}
+
+void CS230::Render::DrawLinePro(LineDrawCallPro drawcall)
 {
     vec2 start = drawcall.start;
     vec2 end = drawcall.end;
@@ -172,11 +219,11 @@ void CS230::Render::DrawLine(CollisionDrawCall drawcall)
 
     float angle = std::atan2(direction.y, direction.x); // Calculate angle of the line
 
-    // Build transformation matrix for the line
-    mat3 model_to_world = mat3::build_translation(start) * mat3::build_rotation(angle) * mat3::build_scale(length);
-
-    // Convert to NDC coordinates
-    mat3 WORLD_TO_NDC = mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height);
+    mat3 model_to_world = mat3::build_translation(start) * mat3::build_rotation(angle)* mat3::build_scale(length);
+    
+    mat3 WORLD_TO_NDC =
+        mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height) *
+        mat3::build_translation({ -(Engine::window_width / 2), -(Engine::window_height / 2) });
     const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
 
     shader->Use(); // Use shader
@@ -190,6 +237,11 @@ void CS230::Render::DrawLine(CollisionDrawCall drawcall)
     shader->Use(false); // Unbind shader
     line_model.Use(false); // Unbind line model
     glCheck(glLineWidth(1.0f)); // Set line width
+}
+
+mat3 CS230::Render::GetWorldtoNDC()
+{
+    return Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->world_to_ndc;
 }
 
 
