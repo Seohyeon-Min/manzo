@@ -10,8 +10,8 @@ void CS230::Cam::Update(double dt, const vec2& player_position, bool playerMove)
 {
 	if (playerMove)
 	{
-		caminfo.camera.MoveUp(caminfo.move_speed * (float)dt * 1.f, (float)dt, 1.f);
-		caminfo.camera.MoveRight(caminfo.move_speed * (float)dt * 1.f, (float)dt, 1.f);
+		caminfo.camera.MoveUp(caminfo.move_speed * (float)dt, (float)dt, 1.f);
+		caminfo.camera.MoveRight(caminfo.move_speed * (float)dt, (float)dt, 1.f);
 	}
 
 	world_to_cam = caminfo.camera.BuildWorldToCamera();

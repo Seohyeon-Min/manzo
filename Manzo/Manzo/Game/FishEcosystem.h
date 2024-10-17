@@ -7,7 +7,7 @@ class FishGenerator
 public:
 	FishGenerator();
 	void GenerateFish(double dt);
-	//void DeleteFish();
+	~FishGenerator();
 
 	std::vector<Fish*> fishList;
 

@@ -32,3 +32,8 @@ void FishGenerator::GenerateFish(double dt)
         }
     }
 }
+
+FishGenerator::~FishGenerator()
+{
+    fishList.clear();
+}

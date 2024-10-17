@@ -81,10 +81,10 @@ void CS230::RectCollision::Draw() {
 
     Math::rect world_boundary = WorldBoundary_rect();
 
-    vec2 bottom_left =  vec2{ world_boundary.Left(), world_boundary.Bottom() };
-    vec2 bottom_right =  vec2{ world_boundary.Right(), world_boundary.Bottom() };
+    vec2 bottom_left = vec2{ world_boundary.Left(), world_boundary.Bottom() };
+    vec2 bottom_right = vec2{ world_boundary.Right(), world_boundary.Bottom() };
     vec2 top_left = vec2{ world_boundary.Left(), world_boundary.Top() };
-    vec2 top_right =  vec2{ world_boundary.Right(), world_boundary.Top() };
+    vec2 top_right = vec2{ world_boundary.Right(), world_boundary.Top() };
 
     Engine::GetRender().AddDrawCall(top_left, top_right, GREEN);
     Engine::GetRender().AddDrawCall(bottom_right, top_right, GREEN);
@@ -102,7 +102,7 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
     }
 
 
-    if(other_collider->Shape() == CollisionShape::Rect) {
+    if (other_collider->Shape() == CollisionShape::Rect) {
         Math::rect rectangle_2 = dynamic_cast<RectCollision*>(other_collider)->WorldBoundary_rect();
         if (rectangle_1.Right() > rectangle_2.Left() &&
             rectangle_1.Left() < rectangle_2.Right() &&
@@ -139,7 +139,7 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
             else {
                 CollidingSide_1 = other_poly.vertices[i % other_poly.vertexCount];
                 CollidingSide_2 = other_poly.vertices[(i + 1) % other_poly.vertexCount];
-                
+
             }
         }
 
