@@ -39,6 +39,4 @@ private:
     Fish* fish;
     Background* background;
     CS230::Cam* camera;
-
-    int money = 0;
 };

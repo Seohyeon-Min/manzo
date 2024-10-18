@@ -177,9 +177,6 @@
     <ClInclude Include="Game\GameObjectTypes.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Gravity.h">
-      <Filter>Game</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Mode1.h">
       <Filter>Game</Filter>
     </ClInclude>
