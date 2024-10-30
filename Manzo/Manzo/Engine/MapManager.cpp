@@ -11,11 +11,6 @@
 #include <cmath>
 
 
-
-
-
-
-
 void CS230::Map::ParseSVG(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
@@ -128,6 +123,7 @@ void CS230::Map::AddDrawCall()
 
 Rock::Rock(Polygon) :GameObject({ 0,0 })
 {
+    AddGOComponent(new CS230::Sprite("assets/images/rock.spt", this));
 }
 
 void Rock::Update(double dt)
@@ -138,4 +134,39 @@ void Rock::Update(double dt)
 void Rock::Draw()
 {
     GameObject::Draw();
+}
+
+void Rock::ReadRockCSV(const std::string& filename) {
+    std::ifstream        file(filename);
+    std::string          line, cell;
+
+    if (!file.is_open()) {
+        std::cerr << "Failed to open file: " << filename << std::endl;
+        return;
+    }
+
+    if (file.is_open())
+    {
+        std::getline(file, line);
+
+        while (std::getline(file, line))
+        {
+            std::stringstream linestream(line);
+
+            // rock index
+            std::getline(linestream, cell, ',');
+            
+            // hotspot_x position
+            std::getline(linestream, cell, ',');
+
+            // hotspot_y_position
+            std::getline(linestream, cell, ',');
+
+            // file path
+            std::getline(linestream, cell, ',');
+
+
+        }
+        file.close();
+    }
 }

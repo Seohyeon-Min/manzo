@@ -16,8 +16,14 @@ public:
 	std::string TypeName() override { return "Polygon"; }
 	void Update(double dt);
 	void Draw();
+
+	void ReadRockCSV(const std::string& filename);
+	struct RockType {
+		vec2 hotspot;
+	};
 private:
 	Polygon poly;
+	std::vector<Rock> rockTypes;
 };
 
 namespace CS230 {
