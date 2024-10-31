@@ -72,10 +72,10 @@ void Mode1::Load() {
     reef = new Reef({ -400,200 });
     GetGSComponent<CS230::GameObjectManager>()->Add(reef);
 
-    GetGSComponent<Background>()->Add("assets/images/temp_back.png", 0.25f);
+    GetGSComponent<Background>()->Add("assets/images/temp_back.png", 0.2f);
     GetGSComponent<Background>()->Add("assets/images/temp_back_1.png", 0.5f);
-    GetGSComponent<Background>()->Add("assets/images/temp_back_2.png", 0.75f);
-    GetGSComponent<Background>()->Add("assets/images/temp_back_3.png", 0.9f);
+    GetGSComponent<Background>()->Add("assets/images/temp_back_2.png", 0.7f);
+    GetGSComponent<Background>()->Add("assets/images/temp_back_3.png", 2.0f);
 
 
     // Mouse and Particle
