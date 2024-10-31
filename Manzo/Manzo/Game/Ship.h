@@ -40,17 +40,17 @@ public:
     bool IsFuelZero();
 
 private:
-    static constexpr double initialSpeed = 1200.f;
-    static constexpr float deceleration = 100.0f;
-    static constexpr float totalDistanceToMove_SQUARED = 20000.0f;
-    float currentSpeed = initialSpeed;
+    static constexpr double speed = 4000.f;
+    static constexpr float deceleration = 0.80f;
+    static constexpr double skidding_speed = 20.f;
     bool moving;
     bool set_dest;
     bool ready_to_move;
     bool move;
     bool clickable = true;
+    vec2 force = {};
     vec2 destination;
-    vec2 initialPosition;
+    vec2 direction = {0,0};
     Beat* beat;
     Skillsys* skill;
 
