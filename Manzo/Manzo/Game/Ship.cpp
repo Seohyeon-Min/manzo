@@ -86,6 +86,25 @@ void Ship::Move(double dt)
     }
 }
 
+vec2 GetPerpendicular(vec2 v) {
+    return { -v.y, v.x };
+}
+
+vec2 Ship::GetNormal(vec2 reefPosition1, vec2 reefPosition2) {
+    vec2 wallDirection = { reefPosition2.x - reefPosition1.x, reefPosition2.y - reefPosition1.y };
+
+    vec2 normal = GetPerpendicular(wallDirection);
+
+    float magnitude = sqrt(normal.x * normal.x + normal.y * normal.y);
+    if (magnitude != 0) {
+        normal.x /= magnitude;
+        normal.y /= magnitude;
+    }
+
+    return normal;
+}
+
+
 bool Ship::CanCollideWith(GameObjectTypes other_object)
 {
     switch (other_object) {
@@ -100,17 +119,30 @@ bool Ship::CanCollideWith(GameObjectTypes other_object)
 
 void Ship::ResolveCollision(GameObject* other_object)
 {
-    switch (other_object->Type()) {
+    if (other_object->GetGOComponent<CS230::RectCollision>() != nullptr) {
+        vec2 CollisionReefpoint1 = other_object->GetGOComponent<CS230::RectCollision>()->CollidingSide_1;
+        vec2 CollisionReefpoint2 = other_object->GetGOComponent<CS230::RectCollision>()->CollidingSide_2;
 
-    case GameObjectTypes::Reef:
-        IsTouchingReef();
-        if (!isCollidingWithReef) {
-            HitWithReef();
-            isCollidingWithReef = true;
+        if (other_object->Type() == GameObjectTypes::Reef) {
+
+            Reef* reef = dynamic_cast<Reef*>(other_object);
+            vec2 normal = GetNormal(CollisionReefpoint1, CollisionReefpoint2);
+            vec2 velocity = GetVelocity();
+
+            float dotProduct = velocity.x * normal.x + velocity.y * normal.y;
+            vec2 reflection = {
+                velocity.x - 2 * dotProduct * normal.x,
+                velocity.y - 2 * dotProduct * normal.y
+            };
+
+            SetVelocity(reflection);
+
+            currentSpeed = initialSpeed;
+            move = true;
         }
-        break;
     }
 }
+
 
 
 //for fuel
