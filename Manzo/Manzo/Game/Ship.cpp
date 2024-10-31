@@ -164,17 +164,3 @@ void Ship::HitWithReef()
     fuel -= HitDecFuel;
     std::cout << "Collision with Reef!" << std::endl;
 }
-
-bool Ship::IsTouchingReef()
-{
-    if (isCollidingWithReef == true)
-    {
-        return true;
-    }
-    return false;
-}
-
-bool Ship::IsFuelZero()
-{
-    return FuelFlag;
-}

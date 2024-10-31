@@ -36,8 +36,8 @@ public:
     void FuelUpdate(double dt);
     void SetMaxFuel(double input);
     void HitWithReef();
-    bool IsTouchingReef();
-    bool IsFuelZero();
+    bool IsTouchingReef() { return isCollidingWithReef; }
+    bool IsFuelZero(){return FuelFlag;}
 
 private:
     static constexpr double speed = 4000.f;
