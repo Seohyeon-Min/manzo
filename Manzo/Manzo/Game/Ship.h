@@ -31,7 +31,6 @@ public:
     bool CanCollideWith(GameObjectTypes) override;
     void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
     const vec2& GetPosition() const { return GameObject::GetPosition(); }
-
     //for fuel
     void FuelUpdate(double dt);
     void SetMaxFuel(double input);

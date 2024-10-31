@@ -137,9 +137,9 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
                 return false;
             }
             else {
-                CollidingSide_1 = other_poly.vertices[i % other_poly.vertexCount];
-                CollidingSide_2 = other_poly.vertices[(i + 1) % other_poly.vertexCount];
-
+                vec2 CollidingSide_1 = other_poly.vertices[i % other_poly.vertexCount];
+                vec2 CollidingSide_2 = other_poly.vertices[(i + 1) % other_poly.vertexCount];
+                colliding_edge = { CollidingSide_1 , CollidingSide_2 };
             }
         }
 
@@ -158,8 +158,9 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
                 return false;
             }
             else {
-                CollidingSide_1 = other_poly.vertices[i];
-                CollidingSide_2 = other_poly.vertices[(i + 1) % other_poly.vertexCount];
+                vec2 CollidingSide_1 = other_poly.vertices[i % other_poly.vertexCount];
+                vec2 CollidingSide_2 = other_poly.vertices[(i + 1) % other_poly.vertexCount];
+                colliding_edge = { CollidingSide_1 , CollidingSide_2 };
             }
         }
 
@@ -204,6 +205,12 @@ bool CS230::MAP_SATCollision::IsCollidingWith(vec2 point) {
         if (maxA < minB || maxB < minA) {
             return false;
         }
+        else {
+            // 충돌이 발생한 축을 생성한 선분 저장
+            vec2 point_1 = poly_1.vertices[i];
+            vec2 point_2 = poly_1.vertices[(i + 1) % poly_1.vertexCount];
+            colliding_edge = { point_1 ,point_2 }; // 충돌에 기여한 선분 저장
+        }
     }
 
     return true;
@@ -236,6 +243,12 @@ bool CS230::MAP_SATCollision::IsCollidingWith(GameObject* other_object)
         if (maxA < minB || maxB < minA) {
             return false;
         }
+        else {
+            // 충돌이 발생한 축을 생성한 선분 저장
+            vec2 point_1 = poly_1.vertices[i];
+            vec2 point_2 = poly_1.vertices[(i + 1) % poly_1.vertexCount];
+            colliding_edge = { point_1 ,point_2 }; // 충돌에 기여한 선분 저장
+        }
     }
 
 
@@ -253,6 +266,12 @@ bool CS230::MAP_SATCollision::IsCollidingWith(GameObject* other_object)
 
         if (maxA < minB || maxB < minA) {
             return false;
+        }
+        else {
+            // 충돌이 발생한 축을 생성한 선분 저장
+            vec2 point_1 = poly_1.vertices[i];
+            vec2 point_2 = poly_1.vertices[(i + 1) % poly_1.vertexCount];
+            colliding_edge = { point_1 ,point_2 }; // 충돌에 기여한 선분 저장
         }
     }
 

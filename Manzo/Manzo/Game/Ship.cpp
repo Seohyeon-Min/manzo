@@ -3,6 +3,7 @@
 #include "../Engine/Camera.h"
 #include "../Engine/Input.h"
 #include <iostream>
+#include "../Engine/MapManager.h"
 
 Ship::Ship(vec2 start_position) :
     GameObject(start_position), moving(false), set_dest(false), ready_to_move(false), move(false)
@@ -90,20 +91,6 @@ vec2 GetPerpendicular(vec2 v) {
     return { -v.y, v.x };
 }
 
-vec2 Ship::GetNormal(vec2 reefPosition1, vec2 reefPosition2) {
-    vec2 wallDirection = { reefPosition2.x - reefPosition1.x, reefPosition2.y - reefPosition1.y };
-
-    vec2 normal = GetPerpendicular(wallDirection);
-
-    float magnitude = sqrt(normal.x * normal.x + normal.y * normal.y);
-    if (magnitude != 0) {
-        normal.x /= magnitude;
-        normal.y /= magnitude;
-    }
-
-    return normal;
-}
-
 
 bool Ship::CanCollideWith(GameObjectTypes other_object)
 {
@@ -119,27 +106,42 @@ bool Ship::CanCollideWith(GameObjectTypes other_object)
 
 void Ship::ResolveCollision(GameObject* other_object)
 {
-    if (other_object->GetGOComponent<CS230::RectCollision>() != nullptr) {
-        vec2 CollisionReefpoint1 = other_object->GetGOComponent<CS230::RectCollision>()->CollidingSide_1;
-        vec2 CollisionReefpoint2 = other_object->GetGOComponent<CS230::RectCollision>()->CollidingSide_2;
+    if (other_object->Type() == GameObjectTypes::Reef) {
 
-        if (other_object->Type() == GameObjectTypes::Reef) {
-
-            Reef* reef = dynamic_cast<Reef*>(other_object);
-            vec2 normal = GetNormal(CollisionReefpoint1, CollisionReefpoint2);
-            vec2 velocity = GetVelocity();
-
-            float dotProduct = velocity.x * normal.x + velocity.y * normal.y;
-            vec2 reflection = {
-                velocity.x - 2 * dotProduct * normal.x,
-                velocity.y - 2 * dotProduct * normal.y
-            };
-
-            SetVelocity(reflection);
-
-            currentSpeed = initialSpeed;
-            move = true;
+        auto* collision_edge = this->GetGOComponent<CS230::RectCollision>();
+        if (collision_edge == nullptr) {
+            // maybe an error?
         }
+
+        vec2 edge_1 = collision_edge->GetCollidingEdge().first;
+        vec2 edge_2 = collision_edge->GetCollidingEdge().second;
+
+        vec2 wall_dir = { edge_2.x - edge_1.x, edge_2.y - edge_1.y };
+        vec2 wall_perpendicular = GetPerpendicular(wall_dir);
+        vec2 normal = wall_perpendicular.Normalize();
+
+        vec2 velocity = GetVelocity();
+
+        // 반사 벡터 계산: R = V - 2 * (V · N) * N
+        float dot_product = velocity.x * normal.x + velocity.y * normal.y;
+        vec2 reflection = {
+            velocity.x - 2 * dot_product * normal.x,
+            velocity.y - 2 * dot_product * normal.y
+        };
+
+        // 반사된 벡터의 크기가 너무 작다면 약간의 임계값을 추가하여 계속 움직일 수 있도록 함
+        float magnitude = sqrt(reflection.x * reflection.x + reflection.y * reflection.y);
+        if (magnitude < 0.01f) { // 임계값 설정
+            reflection = reflection.Normalize() * 0.1f; // 최소 속도 크기 설정
+        }
+        else {
+            // 속도 크기를 원래 속도 크기로 유지하여 움직임을 계속 이어나감
+            float original_magnitude = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
+            reflection = reflection.Normalize() * original_magnitude;
+        }
+
+        SetVelocity(reflection);
+        //move = true;
     }
 }
 
