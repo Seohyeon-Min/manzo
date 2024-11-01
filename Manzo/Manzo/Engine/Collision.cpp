@@ -123,26 +123,6 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
             {rectangle_1.Left(), rectangle_1.Top()}
         };
 
-        for (int i = 0; i < 4; i++) {
-            vec2 edge = { rect_vertices[(i + 1) % 4].x - rect_vertices[i].x,
-                         rect_vertices[(i + 1) % 4].y - rect_vertices[i].y };
-            vec2 axis = NormalizeVector2(GetPerpendicular(edge));
-
-            float minA, maxA;
-            ProjectPolygon({ std::vector<vec2>(rect_vertices, rect_vertices + 4), 4 }, axis, minA, maxA);
-            float minB, maxB;
-            ProjectPolygon(other_poly, axis, minB, maxB);
-
-            if (maxA < minB || maxB < minA) {
-                return false;
-            }
-            else {
-                vec2 CollidingSide_1 = other_poly.vertices[i % other_poly.vertexCount];
-                vec2 CollidingSide_2 = other_poly.vertices[(i + 1) % other_poly.vertexCount];
-                colliding_edge = { CollidingSide_1 , CollidingSide_2 };
-            }
-        }
-
         for (int i = 0; i < other_poly.vertexCount; i++) {
             vec2 edge = { other_poly.vertices[(i + 1) % other_poly.vertexCount].x - other_poly.vertices[i].x,
                          other_poly.vertices[(i + 1) % other_poly.vertexCount].y - other_poly.vertices[i].y };
@@ -158,8 +138,8 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
                 return false;
             }
             else {
-                vec2 CollidingSide_1 = other_poly.vertices[i % other_poly.vertexCount];
-                vec2 CollidingSide_2 = other_poly.vertices[(i + 1) % other_poly.vertexCount];
+                vec2 CollidingSide_1 = edge;
+                vec2 CollidingSide_2 = axis;
                 colliding_edge = { CollidingSide_1 , CollidingSide_2 };
             }
         }

@@ -34,7 +34,7 @@ public:
     //for fuel
     void FuelUpdate(double dt);
     void SetMaxFuel(double input);
-    void HitWithReef();
+    void HitWithReef(CS230::RectCollision* collision_edge);
     bool IsTouchingReef();
     bool IsFuelZero();
 
