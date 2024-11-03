@@ -27,7 +27,19 @@ void Ship::Update(double dt)
         if (move) {
             Move(dt);
         }
+        else {
+            if (hit_with) {
+                SetVelocity(GetVelocity() * deceleration);
+                if (!beat->GetIsOnBeat()) {
+                    hit_with = false;
+                    SetVelocity(direction * skidding_speed);
+                    if (!clickable) { // wait for next beat
+                        clickable = true;
+                    }
+                }
+            }
 
+        }
         FuelUpdate(dt);
         if (isCollidingWithReef && !IsTouchingReef())
         {
@@ -115,25 +127,26 @@ void Ship::ResolveCollision(GameObject* other_object)
     }
 }
 
-void Ship::HitWithReef(CS230::RectCollision* collision_edge)
-{
+void Ship::HitWithReef(CS230::RectCollision* collision_edge) {
     fuel -= HitDecFuel;
 
     vec2 edge_1 = collision_edge->GetCollidingEdge().first;
     vec2 edge_2 = collision_edge->GetCollidingEdge().second;
 
-    std::cout << edge_1.x << std::endl;
-
     vec2 wall_dir = { edge_2.x - edge_1.x, edge_2.y - edge_1.y };
     vec2 wall_perpendicular = GetPerpendicular(wall_dir);
     vec2 normal = wall_perpendicular.Normalize();
 
-    vec2 velocity = GetVelocity();
+    vec2 velocity = GetVelocity(); 
+
+    // 들어올 때의 스피드 계산
+    float incoming_speed = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
 
     float dot_product_normal_velocity = velocity.x * normal.x + velocity.y * normal.y;
     if (dot_product_normal_velocity > 0) {
         normal = normal * -1.0f;
     }
+
     // 반사 벡터 계산: R = V - 2 * (V · N) * N
     float dot_product = velocity.x * normal.x + velocity.y * normal.y;
     vec2 reflection = {
@@ -141,35 +154,18 @@ void Ship::HitWithReef(CS230::RectCollision* collision_edge)
         velocity.y - 2 * dot_product * normal.y
     };
 
-    //// 충돌 후 위치 보정
-    //float overlap = std::max(edge_1.x - velocity.x, 0.0f);  // 겹침 확인을 위한 간단한 예시
-    //if (overlap > 0.0f) {
-    //    // 현재 위치에서 충돌한 위치만큼 다시 되돌리기
-    //    vec2 position = GetPosition();
-    //    position = position - velocity.Normalize() * overlap;
-    //    SetPosition(position);
-    //}
+    direction = reflection.Normalize();
+    if (incoming_speed > 3300.f)  incoming_speed = 3300.f;
+    if (incoming_speed < 100.f)  incoming_speed = 100.f;
+    // 반사 벡터에 들어올 때의 스피드와 감속 계수를 적용
+    SetPosition(GetPosition() + direction * incoming_speed * 0.007f);
+    SetVelocity(direction * incoming_speed * 0.55f);
 
-    float velocity_magnitude = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
-    reflection = reflection.Normalize() * velocity_magnitude;
-
-    //// 반사된 벡터의 크기가 너무 작다면 약간의 임계값을 추가하여 계속 움직일 수 있도록 함
-    //float magnitude = sqrt(reflection.x * reflection.x + reflection.y * reflection.y);
-    //if (magnitude < 0.01f) { // 임계값 설정
-    //    reflection = reflection.Normalize() * 0.1f; // 최소 속도 크기 설정
-    //}
-    //else {
-    //    // 속도 크기를 원래 속도 크기로 유지하여 움직임을 계속 이어나감
-    //    float original_magnitude = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
-    //    reflection = reflection.Normalize() * original_magnitude;
-    //}
-
-    SetVelocity(reflection * 1.0f);
-    //move = true;
+    move = false;
+    hit_with = true;
 }
 
 //for fuel
-
 void Ship::FuelUpdate(double dt)
 {
 

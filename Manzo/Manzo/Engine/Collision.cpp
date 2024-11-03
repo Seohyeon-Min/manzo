@@ -96,11 +96,9 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
     Collision* other_collider = other_object->GetGOComponent<Collision>();
     Math::rect rectangle_1 = WorldBoundary_rect();
 
-
     if (other_collider == nullptr) {
         return false;
     }
-
 
     if (other_collider->Shape() == CollisionShape::Rect) {
         Math::rect rectangle_2 = dynamic_cast<RectCollision*>(other_collider)->WorldBoundary_rect();
@@ -123,6 +121,10 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
             {rectangle_1.Left(), rectangle_1.Top()}
         };
 
+        float min_distance = std::numeric_limits<float>::max();  // 최소 거리를 추적하기 위한 변수
+        int closest_index = -1;  // 가장 가까운 선분의 인덱스
+        bool is_colliding = true;  // 충돌 여부를 확인하는 변수
+
         for (int i = 0; i < other_poly.vertexCount; i++) {
             vec2 edge = { other_poly.vertices[(i + 1) % other_poly.vertexCount].x - other_poly.vertices[i].x,
                          other_poly.vertices[(i + 1) % other_poly.vertexCount].y - other_poly.vertices[i].y };
@@ -135,13 +137,29 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
             ProjectPolygon(other_poly, axis, minB, maxB);
 
             if (maxA < minB || maxB < minA) {
-                return false;
+                is_colliding = false;  // 충돌하지 않는 경우
+                break;  // 루프를 종료하고 false 반환
             }
-            else {
-                vec2 CollidingSide_1 = edge;
-                vec2 CollidingSide_2 = axis;
-                colliding_edge = { CollidingSide_1 , CollidingSide_2 };
+
+            // 두 투영 간의 거리 계산
+            float distance = std::min(std::abs(maxA - minB), std::abs(maxB - minA));
+
+            // 더 작은 거리를 찾으면 갱신
+            if (distance < min_distance) {
+                min_distance = distance;
+                closest_index = i;  // 가장 가까운 선분의 인덱스를 저장
             }
+        }
+
+        if (!is_colliding) {
+            return false;
+        }
+
+        // 가장 가까운 선분 AB 저장
+        if (closest_index != -1) {
+            vec2 CollidingSide_1 = other_poly.vertices[closest_index];
+            vec2 CollidingSide_2 = other_poly.vertices[(closest_index + 1) % other_poly.vertexCount];
+            colliding_edge = { CollidingSide_1, CollidingSide_2 };  // colliding_edge는 클래스 멤버 변수여야 함
         }
 
         return true;
@@ -149,6 +167,9 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
 
     return false;
 }
+
+
+
 
 bool CS230::RectCollision::IsCollidingWith(vec2 point)
 {

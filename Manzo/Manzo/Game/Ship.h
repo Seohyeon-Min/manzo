@@ -47,6 +47,7 @@ private:
     bool ready_to_move;
     bool move;
     bool clickable = true;
+    bool hit_with = false;
     vec2 force = {};
     vec2 destination;
     vec2 direction = {0,0};
