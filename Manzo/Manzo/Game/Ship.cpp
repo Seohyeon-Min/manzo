@@ -29,10 +29,13 @@ void Ship::Update(double dt)
         }
         else {
             if (hit_with) {
-                SetVelocity(GetVelocity() * deceleration);
+                vec2 velocity = GetVelocity();  // 객체의 속도 벡터
+                float velocity_magnitude = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
+                if(velocity_magnitude < 20.f) SetVelocity(direction * skidding_speed);
+                else SetVelocity(GetVelocity() * deceleration);
                 if (!beat->GetIsOnBeat()) {
-                    hit_with = false;
                     SetVelocity(direction * skidding_speed);
+                    hit_with = false;
                     if (!clickable) { // wait for next beat
                         clickable = true;
                     }
@@ -123,7 +126,6 @@ void Ship::ResolveCollision(GameObject* other_object)
             // maybe an error?
         }
         HitWithReef(collision_edge);
-
     }
 }
 
@@ -154,12 +156,20 @@ void Ship::HitWithReef(CS230::RectCollision* collision_edge) {
         velocity.y - 2 * dot_product * normal.y
     };
 
+    SetPosition(GetPosition() +  -GetVelocity() * 0.007f);
     direction = reflection.Normalize();
     if (incoming_speed > 3300.f)  incoming_speed = 3300.f;
-    if (incoming_speed < 100.f)  incoming_speed = 100.f;
+    if (incoming_speed < 150.f)  incoming_speed = 150.f;
     // 반사 벡터에 들어올 때의 스피드와 감속 계수를 적용
-    SetPosition(GetPosition() + direction * incoming_speed * 0.007f);
-    SetVelocity(direction * incoming_speed * 0.55f);
+    SetVelocity(direction * incoming_speed * 0.75f);
+    SetPosition(GetPosition() + normal * 0.5f);
+
+    // 위치 보정: 법선 방향으로 보정 거리 제한
+    //float correction_distance = 0.5f;  // 보정 거리 제한 (작게 설정하여 예상치 못한 이동 방지)
+    //vec2 corrected_position = GetPosition() + normal * correction_distance;
+
+    //// 위치 보정이 지나치게 크지 않도록 조정
+    //SetPosition(corrected_position);
 
     move = false;
     hit_with = true;

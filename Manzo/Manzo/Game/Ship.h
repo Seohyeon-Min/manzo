@@ -39,7 +39,7 @@ public:
     bool IsFuelZero();
 
 private:
-    static constexpr double speed = 4000.f;
+    static constexpr double speed = 7000.f;
     static constexpr float deceleration = 0.80f;
     static constexpr double skidding_speed = 20.f;
     bool moving;
