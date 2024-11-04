@@ -29,7 +29,9 @@ void Background::Draw(const CS230::Cam& camera)
     for (ParallaxLayer& background : backgrounds) {
 
         // Build the translation matrix with parallax effect
-        background.matrix = mat3::build_translation({ (0 - cameraPos.x) * background.speed, (0 - cameraPos.y) * background.speed });
+        //background.matrix = mat3::build_translation({ (0 - cameraPos.x) * background.speed, (0 - cameraPos.y) * background.speed });
+        //background.matrix = mat3::build_translation({ 0 + cameraPos.x, 0 + cameraPos.y });
+        background.matrix = mat3::build_translation({ (0 + cameraPos.x) * background.speed, (0 + cameraPos.y) * background.speed });
         //std::cout << parallax_matrix;
         CS230::DrawCall draw_call = {
             background.texture,                       // Texture to draw
