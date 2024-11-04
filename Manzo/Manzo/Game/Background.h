@@ -24,7 +24,7 @@ private:
     struct ParallaxLayer {
         GLTexture* texture;
         float speed = 1.f;
+        mat3 matrix;
     };
-    CS230::DrawCall draw_call;
     std::vector<ParallaxLayer> backgrounds;
 };
