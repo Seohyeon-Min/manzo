@@ -6,4 +6,6 @@ struct [[nodiscard]] Polygon
 {
 	std::vector<vec2> vertices;
 	int vertexCount;
+	int polycount;
+	std::string polyindex;
 };

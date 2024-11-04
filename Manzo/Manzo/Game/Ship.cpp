@@ -176,7 +176,7 @@ void Ship::FuelUpdate(double dt)
             }
         }
 
-        std::cout << "Fuel: " << fuel << std::endl;
+        //std::cout << "Fuel: " << fuel << std::endl;
     }
 
     if (FuelFlag == true)
