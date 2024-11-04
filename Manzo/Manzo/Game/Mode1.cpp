@@ -72,8 +72,11 @@ void Mode1::Load() {
     reef = new Reef({ -400,200 });
     GetGSComponent<CS230::GameObjectManager>()->Add(reef);
 
-    GetGSComponent<Background>()->Add("assets/images/sky_first.png", 0.1f);
-    GetGSComponent<Background>()->Add("assets/images/sky_second.png", 0.2f);
+    GetGSComponent<Background>()->Add("assets/images/sky_first.png", 0.3f);
+    GetGSComponent<Background>()->Add("assets/images/sky_second.png", 0.4f);
+    GetGSComponent<Background>()->Add("assets/images/sky_third.png", 0.5f);
+    GetGSComponent<Background>()->Add("assets/images/sky_fourth.png", 0.6f);
+    GetGSComponent<Background>()->Add("assets/images/sky_fifth.png", 0.7f);
 
 
     // Mouse and Particle
