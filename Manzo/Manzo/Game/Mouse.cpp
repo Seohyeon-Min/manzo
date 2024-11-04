@@ -10,6 +10,7 @@
 
 
 Mouse::Mouse() {
+        mouse_cursor = Engine::GetTextureManager().Load("assets/images/mouse.png");
 }
 
 
@@ -17,6 +18,7 @@ void Mouse::Update(double dt) {
     //vec2 mouse_pos = {(float) Engine::GetInput().GetMousePos().mouseWorldSpaceX, (float)Engine::GetInput().GetMousePos().mouseWorldSpaceY };
     vec2 mouse_pos = Engine::GetInput().GetMousePosition();
     FollowMouse(mouse_pos);
+    DrawMouseCursor(mouse_pos);
 }
 
 void Mouse::FollowMouse(const vec2& mouse_position) {
@@ -49,4 +51,10 @@ void Mouse::DrawLaserCurve() {
             previous_point = current_point;
         }
     }
+}
+
+void Mouse::DrawMouseCursor(const vec2& mouse_position)
+{
+    mat3 pos = mat3::build_translation(mouse_position);
+    Engine::GetRender().AddDrawCall({ mouse_cursor, &pos, Engine::GetShaderManager().GetDefaultShader() },DrawLayer::DrawLast);
 }
