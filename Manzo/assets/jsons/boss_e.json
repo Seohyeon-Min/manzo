@@ -1,0 +1,24 @@
+{
+    "Boss name" : "e", 
+    "Index" : 1,
+    "Isbossfight" : false,
+    "BPM" : 100,
+    "Mp3" : "file road here",
+    "Position" : [0,0],
+    "Parttern" : [
+        {
+            "entrynum" : 1,
+            "entry": 
+            [
+                "0,0",
+                "0,2"
+            ]
+            
+        },
+        {
+            "entrynum" : 2,
+        }
+    ]
+
+
+}
