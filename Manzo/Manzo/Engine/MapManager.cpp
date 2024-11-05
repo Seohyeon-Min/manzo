@@ -235,6 +235,8 @@ void CS230::Map::AddDrawCall()
 
 Rock::Rock(Polygon) :GameObject({ 0,0 })
 {
+    AddGOComponent(new CS230::Sprite("assets/images/rock1.spt", this));
+
 }
 
 void Rock::Update(double dt)

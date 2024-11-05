@@ -76,7 +76,7 @@ void Ship::Move(double dt)
 {
     SetVelocity(force);
     force *= deceleration;
-    std::cout << force.x << std::endl;
+    //std::cout << force.x << std::endl;
     if (!beat->GetIsOnBeat()) {
         SetVelocity(direction * skidding_speed);
         if (!clickable) { // wait for next beat
@@ -162,5 +162,5 @@ void Ship::SetMaxFuel(double input)
 void Ship::HitWithReef()
 {
     fuel -= HitDecFuel;
-    std::cout << "Collision with Reef!" << std::endl;
+    //std::cout << "Collision with Reef!" << std::endl;
 }
