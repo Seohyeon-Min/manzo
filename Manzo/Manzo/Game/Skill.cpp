@@ -1,5 +1,6 @@
 #pragma once
 #include "Skill.h"
+#include "..\Engine\GameObjectManager.h"
 
 void Skillsys::Active_skill(Skill_list skill)
 {
@@ -8,85 +9,114 @@ void Skillsys::Active_skill(Skill_list skill)
     case Empty:
         break;
     case Net:
-        Skill_Net();
+        SkillNet();
         break;
     case Light:
-        Skill_Light();
+        SkillLight();
         break;
     }
 }
 
-void Skillsys::Skill_Net()
+void Skillsys::SkillNet()
 {
-
+    if (!skill_net)
+    {
+        skill_net = new Skillsys::Skill_Net({ Ship_ptr->GetPosition() }, this);
+        Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(skill_net);
+    }
 }
 
-void Skillsys::Skill_Light()
+void Skillsys::SkillLight()
 {
-
+    return;
 }
 
 // Skillsystem
 
-void Skillsys::Update(double dt)
+void Skillsys::Update()
 {
-
-    if (is_slot_selected == false)
+    if (Engine::GetGameStateManager().GetStateName() == "Mode1")
     {
-        if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::A))
+
+        if (Check_ship_ptr == false)
         {
-            Selected_slot = 0;
-            std::cout << "picked slot 1" << std::endl;
-            is_slot_selected = true;
+            if (Ship_ptr && skill_net)
+            {
+                skill_net->SetShipPtr(Ship_ptr);
+                Check_ship_ptr = true;
+            }
         }
-        if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::S))
+
+        for (auto i : skillslots)
         {
-            Selected_slot = 1;
-            std::cout << "picked slot 2" << std::endl;
-            is_slot_selected = true;
-        }
-        if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::D))
-        {
-            Selected_slot = 2;
-            std::cout << "picked slot 3" << std::endl;
-            is_slot_selected = true;
+            if (skillslots[i] != Empty)
+            {
+                Active_skill(skillslots[i]);
+            }
         }
     }
 
-    if (is_slot_selected == true)
+    if (Engine::GetGameStateManager().GetStateName() == "Mode2")
     {
 
-        if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Num1))
+        if (is_slot_selected == false)
         {
-            Selected_skill = Net;
-            std::cout << "picked Net" << std::endl;
-            Ready_to_set = true;
+            if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::A))
+            {
+                Selected_slot = 0;
+                std::cout << "picked slot 1" << std::endl;
+                is_slot_selected = true;
+            }
+            if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::S))
+            {
+                Selected_slot = 1;
+                std::cout << "picked slot 2" << std::endl;
+                is_slot_selected = true;
+            }
+            if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::D))
+            {
+                Selected_slot = 2;
+                std::cout << "picked slot 3" << std::endl;
+                is_slot_selected = true;
+            }
         }
-        if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Num2))
-        {
-            Selected_skill = Light;
-            std::cout << "picked Light" << std::endl;
-            Ready_to_set = true;
-        }
-        if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Num3))
-        {
-            Selected_skill = Empty;
-            std::cout << "picked Empty" << std::endl;
-            Ready_to_set = true;
-        }
-    }
 
-    if (Ready_to_set)
-    {
-        std::cout << "Skill changed" << std::endl;
-        Ready_to_set = false;
-        is_slot_selected = false;
-        setskill(Selected_slot, Selected_skill);
-    }
+        if (is_slot_selected == true)
+        {
 
-    if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Z))
-    {
-        skillprint();
+            if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Num1))
+            {
+                Selected_skill = Net;
+                std::cout << "picked Net" << std::endl;
+
+                Ready_to_set = true;
+            }
+            if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Num2))
+            {
+                Selected_skill = Light;
+                std::cout << "picked Light" << std::endl;
+                Ready_to_set = true;
+            }
+            if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Num3))
+            {
+                Selected_skill = Empty;
+                std::cout << "Cleared" << std::endl;
+                Ready_to_set = true;
+            }
+        }
+
+        if (Ready_to_set)
+        {
+            std::cout << "Skill changed" << std::endl;
+            Ready_to_set = false;
+            is_slot_selected = false;
+            setskill(Selected_slot, Selected_skill);
+        }
+
+        if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Z))
+        {
+            skillprint();
+        }
     }
 }
 
@@ -97,14 +127,14 @@ void Skillsys::setskill(int slot, Skill_list skill)
         std::cout << "invalid slot" << std::endl;
         return;
     }
-    if (skillslots[slot] != 0 && skillslots[slot] == skill)
+    if (skillslots[slot] != Empty && skillslots[slot] == skill)
     {
         std::cout << "Same skill(didn't changed)" << std::endl;
         return;
     }
     for (int i = 0; i < skillslots.size(); ++i)
     {
-        if (skillslots[i] == skill)
+        if (skillslots[i] == skill && skillslots[i] != Empty)
         {
             std::cout << "Already set skill" << std::endl;
             return;
@@ -144,3 +174,47 @@ void Skillsys::ClearSkill()
         skillslots[i] = Empty;
     }
 }
+
+void Skillsys::SetShipPtr(Ship* ptr)
+{
+    Ship_ptr = ptr;
+}
+
+Ship* Skillsys::GetShipPtr()
+{
+    return Ship_ptr;
+};
+
+Skillsys::Skill_Net::Skill_Net(vec2 position, Skillsys* skillsys) : GameObject(position)
+{  
+    ship_ptr = skillsys->GetShipPtr();
+    SetPosition({ ship_ptr->GetPosition() });
+    SetScale({ ship_ptr->GetScale() });
+    AddGOComponent(new CS230::Sprite("assets/images/ship.spt", this));
+};
+
+
+bool Skillsys::Skill_Net::CanCollideWith(GameObjectTypes other_objects)
+{
+    switch (other_objects)
+    {
+    case GameObjectTypes::Fish:
+        return true;
+        break;
+    }
+    return false;
+}
+
+void Skillsys::Skill_Net::Update(double [[maybe_unused]]dt)
+{
+        GameObject::Update(dt);
+        SetPosition(ship_ptr->GetPosition());
+        SetScale(ship_ptr->GetScale() * 1.5f);
+        SetVelocity( ship_ptr->GetVelocity());
+}
+
+void Skillsys::Skill_Net::Draw()
+{
+    CS230::GameObject::Draw();
+}
+

@@ -33,6 +33,7 @@ bool Fish::CanCollideWith(GameObjectTypes other_object)
 {
 	switch (other_object) {
 	case GameObjectTypes::Ship:
+	case GameObjectTypes::Net:
 		return true;
 		break;
 	}
@@ -43,6 +44,7 @@ void Fish::ResolveCollision(GameObject* other_object)
 {
 	switch (other_object->Type()) {
 	case GameObjectTypes::Ship:
+	case GameObjectTypes::Net:
 		this->Destroy();
 		break;
 	}

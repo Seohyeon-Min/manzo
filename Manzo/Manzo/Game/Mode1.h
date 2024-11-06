@@ -17,10 +17,13 @@ Created:    March 8, 2023
 #include "FishEcosystem.h"
 #include "../Engine/Camera.h"
 #include "Background.h"
+#include "Skill.h"
+
 
 class Reef;
 class Ship;
-
+class Skillsys;
+class Skillsys::Skill_Net;
 class Mode1 : public CS230::GameState {
 public:
     Mode1();
@@ -37,6 +40,8 @@ private:
     Ship* ship_ptr;
     FishGenerator* fishGenerator;
     Fish* fish;
+    Skillsys* skill_ptr;
+    Skillsys::Skill_Net* Net_ptr;
     Background* background;
     CS230::Cam* camera;
 

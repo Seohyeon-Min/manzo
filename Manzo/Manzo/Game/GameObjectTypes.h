@@ -15,5 +15,6 @@ enum class GameObjectTypes {
     Particle,
     Count,
     Reef,
-    Fish
+    Fish,
+    Net
 };

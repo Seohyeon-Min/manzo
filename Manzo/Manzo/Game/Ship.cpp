@@ -135,6 +135,7 @@ void Ship::ResolveCollision(GameObject* other_object)
 
     case GameObjectTypes::Reef:
         IsTouchingReef();
+        SetVelocity({ 0, 0 });
         if (!isCollidingWithReef) {
             HitWithReef();
             isCollidingWithReef = true;
@@ -176,7 +177,7 @@ void Ship::FuelUpdate(double dt)
             }
         }
 
-        std::cout << "Fuel: " << fuel << std::endl;
+        //std::cout << "Fuel: " << fuel << std::endl;
     }
 
     if (FuelFlag == true)

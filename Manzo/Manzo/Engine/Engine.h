@@ -65,6 +65,8 @@ public:
     bool HasGameEnded();
     void HandleEvent(SDL_Window& sdl_window, const SDL_Event& event);
     void ImGuiDraw() override;
+    void SetTmpPtr(void* tmp);
+    void* GetTmpPtr();
 
     static constexpr int window_width = 1280;
     static constexpr int window_height = 720;
@@ -82,6 +84,8 @@ private:
     static constexpr int FPSTargetFrames = static_cast<int>(FPSDuration * TargetFPS);
     double dt;
     double FPS;
+    void* tmp_ptr = nullptr;
+
 
     //std::vector<CS230::Font> fonts;
     CS230::Logger logger;

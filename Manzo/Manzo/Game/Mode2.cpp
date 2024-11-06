@@ -34,7 +34,6 @@ void Mode2::Load() {
     AddGSComponent(new CS230::GameObjectManager());
     AddGSComponent(new Beat());
     AddGSComponent(new AudioManager());
-    AddGSComponent(new Skillsys());
     //AddGSComponent(new Background());
     //GetGSComponent<Background>()->Add("assets/images/temp_back.png", 0.25);
 
@@ -54,7 +53,17 @@ void Mode2::Load() {
     }
 
     // skill
-    //Skill_ptr = GetGSComponent<Skillsys>();
+    if (!Engine::Instance().GetTmpPtr())
+    {
+        Engine::Instance().SetTmpPtr(new Skillsys);
+        skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
+        skill_ptr->SetShipPtr(ship_ptr);
+    }
+    else
+    {
+        skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
+        skill_ptr->SetShipPtr(ship_ptr);
+    }
 }
 
 void Mode2::Update(double dt) {
@@ -62,11 +71,11 @@ void Mode2::Update(double dt) {
     GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
     GetGSComponent<CS230::Cam>()->Update(dt,ship_ptr->GetPosition(),false);
     //Skill_ptr->Update(dt);
-    GetGSComponent<Skillsys>()->Update(dt);
 
     //float moving~
     time += float(dt);
     ship_ptr->SetVelocity({ 0, -(y_limit * frequency * std::cos(frequency * float(time))) });
+    skill_ptr->Update();
 
     if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Q)) {
         Engine::GetGameStateManager().ClearNextGameState();

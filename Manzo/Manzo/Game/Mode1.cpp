@@ -55,7 +55,6 @@ void Mode1::Load() {
     background = new Background();
     AddGSComponent(background);
 
-
     //// audio
     Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("assets/audios/basic_beat_100_5.wav", "sample");
     if (sample) {
@@ -77,6 +76,18 @@ void Mode1::Load() {
     AddGSComponent(new Mouse());
     //Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::Mouse>>()->Emit(2, mouse_position, { 0, 0 }, { 0, 100 }, M_PI / 2);
 
+    // Skill
+    if (!Engine::Instance().GetTmpPtr())
+    {
+        Engine::Instance().SetTmpPtr(new Skillsys);
+        skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
+        skill_ptr->SetShipPtr(ship_ptr);
+    }
+    else
+    {
+        skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
+        skill_ptr->SetShipPtr(ship_ptr);
+    }
 }
 
 void Mode1::Update(double dt) {
@@ -88,6 +99,8 @@ void Mode1::Update(double dt) {
     camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
 
 	fishGenerator->GenerateFish(dt);
+    //Net_ptr->Update(dt);
+    skill_ptr -> Update();
 
     if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Q)) {
         Engine::GetGameStateManager().ClearNextGameState();

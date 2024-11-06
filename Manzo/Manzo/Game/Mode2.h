@@ -35,7 +35,7 @@ private:
     CS230::Timer* timer;
     double swimming_range = 15.0;
     Ship* ship_ptr;
-    Skillsys* Skill_ptr;
+    Skillsys* skill_ptr;
 
     float y_limit = 20.0f;
     float frequency = 0.9f;
