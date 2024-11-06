@@ -32,7 +32,7 @@ public:
 		Active,
 	};
 
-	Skillsys() : skillslots(3, Empty) { is_active_skill = false; }
+	Skillsys() : skillslots(3, Empty) { }
 
 	void Update();
 	void setskill(int slot, Skill_list skill);
@@ -74,12 +74,12 @@ private:
 	std::vector<Skill_list> skillslots;
 	bool is_slot_selected = false;
 	bool Ready_to_set = false;
-	bool is_active_skill = false;
+	bool skill_is_activted = false;
 	int Selected_slot = NULL;
 	bool Check_ship_ptr = false;
 	Skill_list Selected_skill = Empty;
 	Ship* Ship_ptr = nullptr;
-	Skill_Net* skill_net;
+	Skill_Net* skill_net = nullptr;
 
 
 

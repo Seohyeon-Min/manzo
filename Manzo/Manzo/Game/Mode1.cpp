@@ -99,7 +99,6 @@ void Mode1::Update(double dt) {
     camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
 
 	fishGenerator->GenerateFish(dt);
-    //Net_ptr->Update(dt);
     skill_ptr -> Update();
 
     if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Q)) {

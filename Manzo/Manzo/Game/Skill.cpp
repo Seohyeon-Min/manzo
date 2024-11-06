@@ -19,14 +19,12 @@ void Skillsys::Active_skill(Skill_list skill)
 
 void Skillsys::SkillNet()
 {
-    if (!skill_net)
-    {
-        skill_net = new Skillsys::Skill_Net({ Ship_ptr->GetPosition() }, this);
-        Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(skill_net);
-    }
+    skill_net = new Skillsys::Skill_Net({ Ship_ptr->GetPosition() }, this);
+    Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(skill_net);
 }
 
 void Skillsys::SkillLight()
+
 {
     return;
 }
@@ -35,6 +33,7 @@ void Skillsys::SkillLight()
 
 void Skillsys::Update()
 {
+
     if (Engine::GetGameStateManager().GetStateName() == "Mode1")
     {
 
@@ -46,18 +45,24 @@ void Skillsys::Update()
                 Check_ship_ptr = true;
             }
         }
-
-        for (auto i : skillslots)
+        if (!skill_is_activted)
         {
-            if (skillslots[i] != Empty)
+
+            for (auto i : skillslots)
             {
-                Active_skill(skillslots[i]);
+                if (skillslots[i] != Empty)
+                {
+                    Active_skill(skillslots[i]);
+                }
             }
+
         }
+        skill_is_activted = true;
     }
 
     if (Engine::GetGameStateManager().GetStateName() == "Mode2")
     {
+        skill_is_activted = false;
 
         if (is_slot_selected == false)
         {
@@ -117,6 +122,7 @@ void Skillsys::Update()
         {
             skillprint();
         }
+
     }
 }
 
@@ -185,12 +191,19 @@ Ship* Skillsys::GetShipPtr()
     return Ship_ptr;
 };
 
+
+//list of Skill
+
+
+// Net
+
 Skillsys::Skill_Net::Skill_Net(vec2 position, Skillsys* skillsys) : GameObject(position)
 {  
     ship_ptr = skillsys->GetShipPtr();
     SetPosition({ ship_ptr->GetPosition() });
     SetScale({ ship_ptr->GetScale() });
     AddGOComponent(new CS230::Sprite("assets/images/ship.spt", this));
+
 };
 
 
@@ -218,3 +231,4 @@ void Skillsys::Skill_Net::Draw()
     CS230::GameObject::Draw();
 }
 
+// End of Net

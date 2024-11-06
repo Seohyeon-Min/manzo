@@ -41,7 +41,6 @@ private:
     FishGenerator* fishGenerator;
     Fish* fish;
     Skillsys* skill_ptr;
-    Skillsys::Skill_Net* Net_ptr;
     Background* background;
     CS230::Cam* camera;
 
