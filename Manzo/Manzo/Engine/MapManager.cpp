@@ -200,6 +200,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 Rock* rock = new Rock(poly);
                 Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rock);
                 rock->AddGOComponent(new MAP_SATCollision(poly, rock));
+                rock->MatchIndex(poly);
 
                 pathCountInGroup++;  
                 currentTag.clear();
@@ -233,10 +234,8 @@ void CS230::Map::AddDrawCall()
     }
 }
 
-Rock::Rock(Polygon) :GameObject({ 0,0 })
+Rock::Rock(Polygon poly) :GameObject({ 0,0 })
 {
-    AddGOComponent(new CS230::Sprite("assets/images/rock1.spt", this));
-
 }
 
 void Rock::Update(double dt)
@@ -247,4 +246,37 @@ void Rock::Update(double dt)
 void Rock::Draw()
 {
     GameObject::Draw();
+}
+
+void Rock::MatchIndex(Polygon poly)
+{
+    std::ifstream file("assets/images/rock.csv");
+    std::string line, cell;
+    if (!file.is_open()) {
+        std::cerr << "Failed to Open CSV." << std::endl;
+    }
+    
+    if (file.is_open()) {
+        while (std::getline(file, line)) {
+            std::stringstream linestream(line);
+            std::string index, x_str, y_str, file_path;
+
+            std::getline(linestream, index, ',');
+            
+            if (index == poly.polyindex) {
+                std::getline(linestream, x_str, ',');
+                std::getline(linestream, y_str, ',');
+                std::getline(linestream, file_path, ',');
+                float x = std::stof(x_str);
+                float y = std::stof(y_str);
+
+                SetPosition({ x, y });
+                AddGOComponent(new CS230::Sprite(file_path, this));
+
+            }
+        }
+
+    }
+
+    std::cerr << "Index not found in the file." << std::endl;
 }
