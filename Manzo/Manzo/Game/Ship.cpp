@@ -141,7 +141,6 @@ void Ship::HitWithReef(CS230::RectCollision* collision_edge) {
 
     vec2 velocity = GetVelocity(); 
 
-    // ���� ���� ���ǵ� ���
     float incoming_speed = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
 
     float dot_product_normal_velocity = velocity.x * normal.x + velocity.y * normal.y;
@@ -149,7 +148,6 @@ void Ship::HitWithReef(CS230::RectCollision* collision_edge) {
         normal = normal * -1.0f;
     }
 
-    // �ݻ� ���� ���: R = V - 2 * (V �� N) * N
     float dot_product = velocity.x * normal.x + velocity.y * normal.y;
     vec2 reflection = {
         velocity.x - 2 * dot_product * normal.x,
@@ -160,15 +158,11 @@ void Ship::HitWithReef(CS230::RectCollision* collision_edge) {
     direction = reflection.Normalize();
     if (incoming_speed > 3300.f)  incoming_speed = 3300.f;
     if (incoming_speed < 150.f)  incoming_speed = 150.f;
-    // �ݻ� ���Ϳ� ���� ���� ���ǵ�� ���� ����� ����
     SetVelocity(direction * incoming_speed * 0.75f);
     SetPosition(GetPosition() + normal * 0.5f);
 
-    // ��ġ ����: ���� �������� ���� �Ÿ� ����
-    //float correction_distance = 0.5f;  // ���� �Ÿ� ���� (�۰� �����Ͽ� ����ġ ���� �̵� ����)
+    //float correction_distance = 0.5f;
     //vec2 corrected_position = GetPosition() + normal * correction_distance;
-
-    //// ��ġ ������ ����ġ�� ũ�� �ʵ��� ����
     //SetPosition(corrected_position);
 
     move = false;
