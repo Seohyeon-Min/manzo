@@ -200,7 +200,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 Rock* rock = new Rock(poly);
                 Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rock);
                 rock->AddGOComponent(new MAP_SATCollision(poly, rock));
-                rock->MatchIndex(poly);
+                //rock->MatchIndex(poly);
 
                 pathCountInGroup++;  
                 currentTag.clear();
