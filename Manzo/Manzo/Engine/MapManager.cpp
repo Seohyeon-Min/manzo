@@ -200,8 +200,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 Rock* rock = new Rock(poly);
                 Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rock);
                 rock->AddGOComponent(new MAP_SATCollision(poly, rock));
-                rock->MatchIndex();
-
+                
                 pathCountInGroup++;  
                 currentTag.clear();
                 std::cout << "-----------------------------" << std::endl;
@@ -210,8 +209,30 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 std::cout << rotateAngle << std::endl;
                 std::cout << "poly index : " << poly.polyindex << std::endl;
                 std::cout << "-----------------------------" << std::endl;
-            }
 
+
+
+                //sooooo dirty code
+                //making poly's group
+                
+                if (rock_groups.empty()) {
+                    RockGroup* rockgroup = new RockGroup(poly.polyindex);     //make new group
+                    Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup);
+                    rockgroup->GetRocks().push_back(poly);  //add poly into new group
+                    rock_groups.push_back(*rockgroup);
+                    
+                }
+                if (!rock_groups.empty() && rock_groups.back().GetIndex() != poly.polyindex) {
+                    RockGroup* rockgroup = new RockGroup(poly.polyindex);     //make new group
+                    Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup);
+                    rockgroup->GetRocks().push_back(poly);  //add poly into new group
+                    rock_groups.push_back(*rockgroup);
+                }
+                else{
+                    rock_groups.back().GetRocks().push_back(poly); //add poly into last group
+                }
+            }
+            
             //std::cout << "vertex count : " << poly.vertexCount << std::endl;
             //std::cout << "poly count : " << poly.polycount << std::endl;
             
@@ -221,7 +242,9 @@ void CS230::Map::ParseSVG(const std::string& filename) {
         }
         
     }
-
+    for (RockGroup r_group : rock_groups) {
+        r_group.MatchIndex();
+    }
     file.close();
     AddDrawCall();
 }
@@ -231,6 +254,9 @@ void CS230::Map::AddDrawCall()
 {
     for (auto& object : objects) {
         object.Draw();
+    }
+    for (auto& rock_group : rock_groups) {
+        rock_group.Draw();
     }
 }
 
@@ -248,7 +274,21 @@ void Rock::Draw()
     GameObject::Draw();
 }
 
-bool Rock::MatchIndex()
+
+RockGroup::RockGroup(const std::string& index) :GameObject({ 0,0 }), index(index)
+{
+}
+
+void RockGroup::Update(double dt)
+{
+    GameObject::Update(dt);
+}
+
+void RockGroup::Draw()
+{
+    GameObject::Draw();
+}
+bool RockGroup::MatchIndex()
 {
     std::ifstream file("assets/images/rock.csv");
     std::string line, cell;
@@ -256,20 +296,20 @@ bool Rock::MatchIndex()
         std::cerr << "Failed to Open CSV." << std::endl;
         return false;
     }
-    
+
     if (file.is_open()) {
         while (std::getline(file, line)) {
             std::stringstream linestream(line);
             std::string index, x_str, y_str, file_path;
 
             std::getline(linestream, index, ',');
-            std::string polyind = (poly.polyindex).substr(0,2);
-            
+            std::string polyind = (this->index).substr(0, 2);
+
             if (index == polyind) {
                 std::getline(linestream, x_str, ',');
                 std::getline(linestream, y_str, ',');
                 std::getline(linestream, file_path, ',');
-                SetPosition(poly.FindCenter());
+                SetPosition(FindCenter());
                 AddGOComponent(new CS230::Sprite(file_path, this));
 
                 return true;
@@ -281,4 +321,16 @@ bool Rock::MatchIndex()
 
     std::cerr << "Index not found in the file." << std::endl;
     return false;
+}
+
+vec2 RockGroup::FindCenter() {
+    vec2 center = {0, 0};
+    for (auto& rock : rocks) {
+        center.x += rock.FindCenter().x;
+        center.y += rock.FindCenter().y;
+    }
+    float n = static_cast<float>(rocks.size());
+    center /= n;
+
+    return center;
 }
