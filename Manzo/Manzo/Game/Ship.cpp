@@ -92,6 +92,7 @@ void Ship::Move(double dt)
 {
     SetVelocity(force);
     force *= deceleration;
+    //std::cout << force.x << std::endl;
     if (!beat->GetIsOnBeat()) {
         SetVelocity(direction * skidding_speed);
         if (!clickable) { // wait for next beat
@@ -228,4 +229,6 @@ bool Ship::IsTouchingReef()
 bool Ship::IsFuelZero()
 {
     return FuelFlag;
+    fuel -= HitDecFuel;
+    //std::cout << "Collision with Reef!" << std::endl;
 }

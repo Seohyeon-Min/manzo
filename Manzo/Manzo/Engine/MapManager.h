@@ -11,11 +11,13 @@
 class Rock : public CS230::GameObject
 {
 public:
-	Rock(Polygon);
+	Rock(Polygon poly);
+	~Rock(){};
 	GameObjectTypes Type() override { return GameObjectTypes::Reef; }
 	std::string TypeName() override { return "Polygon"; }
 	void Update(double dt);
 	void Draw();
+	void MatchIndex(Polygon poly);
 private:
 	Polygon poly;
 };
