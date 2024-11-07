@@ -269,15 +269,7 @@ bool Rock::MatchIndex()
                 std::getline(linestream, x_str, ',');
                 std::getline(linestream, y_str, ',');
                 std::getline(linestream, file_path, ',');
-                if (index == "g1") {
-
-                    SetPosition({ 0, 0 });
-                }
-                if (index == "g2") {
-
-                    SetPosition({ 100, 100 });
-                }
-                else{ SetPosition({ 200, 200 }); }
+                SetPosition(poly.FindCenter());
                 AddGOComponent(new CS230::Sprite(file_path, this));
 
                 return true;
