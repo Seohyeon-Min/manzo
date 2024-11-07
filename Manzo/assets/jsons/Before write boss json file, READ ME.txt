@@ -17,6 +17,7 @@
             "entry":  // 1 entry has 16 bit. [boss x position, boss y position, beat delay]
             [
                 [
+		0,   // 0 is dot 1 is dit
                 0,0, //boss x position
                 0,2, //boss y position
                 0    //beat delay. if delay is 0 it start when entry start.

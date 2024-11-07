@@ -79,6 +79,8 @@ void Mode1::Load() {
     AddGSComponent(new CS230::ParticleManager<Particles::MouseFollow>());
     AddGSComponent(new Mouse());
     //Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::Mouse>>()->Emit(2, mouse_position, { 0, 0 }, { 0, 100 }, M_PI / 2);
+    
+    //parser test/////////////////////////////////////////////////////////////////// you can get rid of them
     CS230::JsonParser* parser = new CS230::JsonParser("assets/jsons/boss_e.json");
     AddGSComponent(parser);
     std::cout << "Boss name: " << parser->GetBossName() << std::endl;
@@ -102,6 +104,7 @@ void Mode1::Load() {
         }
         std::cout << std::endl;
     }
+    //////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 void Mode1::Update(double dt) {
