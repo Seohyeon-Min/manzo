@@ -14,6 +14,7 @@ Created:    March 8, 2023
 #include "../Engine/AudioManager.h"
 #include "../Engine/Particle.h"
 #include "../Engine/MapManager.h"
+#include "../Engine/Rapidjson.h"
 
 #include "Particles.h"
 #include "Mouse.h"
@@ -78,8 +79,29 @@ void Mode1::Load() {
     AddGSComponent(new CS230::ParticleManager<Particles::MouseFollow>());
     AddGSComponent(new Mouse());
     //Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::Mouse>>()->Emit(2, mouse_position, { 0, 0 }, { 0, 100 }, M_PI / 2);
+    CS230::JsonParser* parser = new CS230::JsonParser("assets/jsons/boss_e.json");
+    AddGSComponent(parser);
+    std::cout << "Boss name: " << parser->GetBossName() << std::endl;
+    std::cout << "Index: " << parser->GetIndex() << std::endl;
+    std::cout << "Is Boss Fight: " << std::boolalpha << parser->IsBossFight() << std::endl;
+    std::cout << "BPM: " << parser->GetBPM() << std::endl;
+    std::cout << "Mp3: " << parser->GetMp3() << std::endl;
+    std::cout << "Move Position: ";
+    for (auto& pos : parser->GetMovePosition()) {
+        std::cout << pos << " ";
+    }
+    std::cout << std::endl;
 
-    GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/test.svg");
+    std::cout << "Parttern:" << std::endl;
+    for (const auto& entryVec : parser->GetParttern()) {
+        for (const auto& beat_belay : entryVec) {
+            for (float value : beat_belay) {
+                std::cout << value << " ";
+            }
+            std::cout << std::endl;
+        }
+        std::cout << std::endl;
+    }
 }
 
 void Mode1::Update(double dt) {

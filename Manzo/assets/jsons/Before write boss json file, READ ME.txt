@@ -1,0 +1,28 @@
+// This text file explains how the boss JSON file works. Please read it before creating a new boss!
+// If you have any confusing points, contact me!
+
+// File by Seokhwa Hong
+
+
+{
+    "Boss name" : "e", //enter boss name
+    "Index" : 1, //enter boss index
+    "Isbossfight" : false, //is boss fight is finsh?
+    "BPM" : 100, //boss fight music bpm
+    "Mp3" : "file road here", //enter boss fight music file name here
+    "Position" : [0,0], //start position
+    "Parttern" : [  //boss parttern
+        {
+            "entrynum" : 1,  //this is entrynum.
+            "entry":  // 1 entry has 16 bit. [boss x position, boss y position, beat delay]
+            [
+                [
+                0,0, //boss x position
+                0,2, //boss y position
+                0    //beat delay. if delay is 0 it start when entry start.
+                ]
+            ]
+            
+        }   
+]
+}
