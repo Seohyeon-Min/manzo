@@ -46,7 +46,7 @@ void Mode1::Load() {
     AddGSComponent(new CS230::Map());
 
     //// ship
-    ship_ptr = new Ship({ Engine::window_width / 2, Engine::window_height / 2 });
+    ship_ptr = new Ship({ 0, 0 });
     GetGSComponent<CS230::GameObjectManager>()->Add(ship_ptr);
 
     //// camera
@@ -92,7 +92,6 @@ void Mode1::Update(double dt) {
     GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
 
     //camera postion update
-    camera->SetPosition(ship_ptr->GetPosition());
     camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
 
 	fishGenerator->GenerateFish(dt);
