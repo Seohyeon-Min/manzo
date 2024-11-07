@@ -86,6 +86,15 @@ void CS230::Render::RenderAll() {
     draw_collision_calls.clear();
 }
 
+void CS230::Render::RenderBackgrounds()
+{
+    for (const auto& draw_call : draw_background_calls) {
+        Draw(draw_call);
+    }
+
+    draw_background_calls.clear();
+}
+
 // Helper function to convert matrix or color to a span of floats
 namespace {
     std::span<const float, 3 * 3> to_span(const mat3& m) {
@@ -124,43 +133,6 @@ void CS230::Render::Draw(const DrawCall& draw_call) {
 
     model.Use(false); // Unbind the model
     shader->Use(false); // Unbind the shader
-}
-
-void CS230::Render::RenderBackgrounds()
-{
-    for (const auto& draw_call : draw_background_calls) {
-        DrawBackground(draw_call);
-    }
-
-    draw_background_calls.clear();
-}
-
-
-void CS230::Render::DrawBackground(const DrawCall& draw_call)
-{
-    const GLShader* shader = draw_call.shader;
-    shader->Use();
-
-    if (draw_call.texture) {
-        draw_call.texture->UseForSlot(1);
-        shader->SendUniform("uTex2d", 1);
-    }
-    else {
-        throw std::runtime_error("no texture!");
-    }
-
-    vec2 texture_size = (vec2)draw_call.texture->GetSize();
-    mat3 model_to_world = *draw_call.transform * mat3::build_scale(texture_size);
-
-    mat3 WORLD_TO_NDC = GetWorldtoNDC();
-
-    const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
-    shader->SendUniform("uModelToNDC", to_span(model_to_ndc));
-    model.Use();
-    GLDrawIndexed(model);
-
-    model.Use(false);
-    shader->Use(false);
 }
 
 // Draw a line between two points for collision or debugging purposes
@@ -319,3 +291,64 @@ void CS230::Render::CreatLineModel()
     line_model.AddVertexBuffer(std::move(buffer), { position });
     line_model.SetPrimitivePattern(GLPrimitive::Lines);
 }
+
+void CS230::Render::CreatCircleOutlineModel(int num_segments) // 36
+{
+    float radius = 0.5f;
+    std::vector<vec2> positions;
+
+    for (int i = 0; i <= num_segments; ++i) {
+        float theta = 2.0f * 3.1415926f * static_cast<float>(i) / static_cast<float>(num_segments); // 각도 계산
+        float x = radius * cos(theta);
+        float y = radius * sin(theta);
+
+        positions.emplace_back(x, y);
+    }
+
+    const auto positions_byte_size = static_cast<long long>(sizeof(vec2) * positions.size());
+    GLsizei buffer_size = static_cast<GLsizei>(positions_byte_size);
+
+    GLVertexBuffer buffer(buffer_size);
+    buffer.SetData(std::span(positions));
+
+    GLAttributeLayout position;
+    position.component_type = GLAttributeLayout::Float;
+    position.component_dimension = GLAttributeLayout::_2;
+    position.normalized = false;
+    position.vertex_layout_location = 0; // Layout location for position
+    position.stride = sizeof(vec2); // Stride for position
+    position.offset = 0; // Offset for position
+
+    circle_outline_model.AddVertexBuffer(std::move(buffer), { position });
+    circle_outline_model.SetPrimitivePattern(GLPrimitive::LineLoop); // Line loop
+}
+
+
+
+
+//void CS230::Render::DrawBackground(const DrawCall& draw_call)
+//{
+//    const GLShader* shader = draw_call.shader;
+//    shader->Use();
+//
+//    if (draw_call.texture) {
+//        draw_call.texture->UseForSlot(1);
+//        shader->SendUniform("uTex2d", 1);
+//    }
+//    else {
+//        throw std::runtime_error("no texture!");
+//    }
+//
+//    vec2 texture_size = (vec2)draw_call.texture->GetSize();
+//    mat3 model_to_world = *draw_call.transform * mat3::build_scale(texture_size);
+//
+//    mat3 WORLD_TO_NDC = GetWorldtoNDC();
+//
+//    const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
+//    shader->SendUniform("uModelToNDC", to_span(model_to_ndc));
+//    model.Use();
+//    GLDrawIndexed(model);
+//
+//    model.Use(false);
+//    shader->Use(false);
+//}

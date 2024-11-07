@@ -65,25 +65,25 @@ namespace CS230 {
 
     class Render {
     public:
-        Render() { CreatModel(); CreatLineModel(); };
+        Render() { CreatModel(); CreatLineModel(); CreatCircleOutlineModel(); };
 
         void AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase = DrawLayer::Draw);
         void AddDrawCall
         (vec2 start, vec2 end, color3 color, float width = 1.0f, float alpha = 255.0f, const GLShader* shader = nullptr, bool iscollision = true);
         void RenderAll();
+        void RenderBackgrounds();
+   
+    private:
         void CreatModel();
         void CreatLineModel();
-        void RenderBackgrounds();
-
-    private:
+        void CreatCircleOutlineModel(int num_segments = 36);
         // Internal render method
         void Draw(const DrawCall& draw_call);
-        void DrawBackground(const DrawCall& draw_call);
         void DrawLine(LineDrawCall drawcall);
         void DrawLinePro(LineDrawCallPro drawcall);
+        //void DrawBackground(const DrawCall& draw_call);
 
         mat3 GetWorldtoNDC();
-
 
         // Vectors for draw calls
         std::vector<DrawCall> draw_background_calls;
@@ -95,5 +95,6 @@ namespace CS230 {
 
         GLVertexArray model;
         GLVertexArray line_model;
+        GLVertexArray circle_outline_model;
     };
 }
