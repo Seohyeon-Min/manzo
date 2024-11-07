@@ -8,4 +8,5 @@ struct [[nodiscard]] Polygon
 	int vertexCount;
 	int polycount;
 	std::string polyindex;
+	vec2 center;
 };

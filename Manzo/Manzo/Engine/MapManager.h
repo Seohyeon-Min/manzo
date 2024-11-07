@@ -17,7 +17,7 @@ public:
 	std::string TypeName() override { return "Polygon"; }
 	void Update(double dt);
 	void Draw();
-	void MatchIndex(Polygon poly);
+	bool MatchIndex();
 private:
 	Polygon poly;
 };

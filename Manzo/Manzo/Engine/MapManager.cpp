@@ -200,7 +200,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 Rock* rock = new Rock(poly);
                 Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rock);
                 rock->AddGOComponent(new MAP_SATCollision(poly, rock));
-                //rock->MatchIndex(poly);
+                rock->MatchIndex();
 
                 pathCountInGroup++;  
                 currentTag.clear();
@@ -234,7 +234,7 @@ void CS230::Map::AddDrawCall()
     }
 }
 
-Rock::Rock(Polygon poly) :GameObject({ 0,0 })
+Rock::Rock(Polygon poly) :GameObject({ 0,0 }), poly(poly)
 {
 }
 
@@ -248,12 +248,13 @@ void Rock::Draw()
     GameObject::Draw();
 }
 
-void Rock::MatchIndex(Polygon poly)
+bool Rock::MatchIndex()
 {
     std::ifstream file("assets/images/rock.csv");
     std::string line, cell;
     if (!file.is_open()) {
         std::cerr << "Failed to Open CSV." << std::endl;
+        return false;
     }
     
     if (file.is_open()) {
@@ -262,16 +263,24 @@ void Rock::MatchIndex(Polygon poly)
             std::string index, x_str, y_str, file_path;
 
             std::getline(linestream, index, ',');
+            std::string polyind = (poly.polyindex).substr(0,2);
             
-            if (index == poly.polyindex) {
+            if (index == polyind) {
                 std::getline(linestream, x_str, ',');
                 std::getline(linestream, y_str, ',');
                 std::getline(linestream, file_path, ',');
-                float x = std::stof(x_str);
-                float y = std::stof(y_str);
+                if (index == "g1") {
 
-                SetPosition({ x, y });
+                    SetPosition({ 0, 0 });
+                }
+                if (index == "g2") {
+
+                    SetPosition({ 100, 100 });
+                }
+                else{ SetPosition({ 200, 200 }); }
                 AddGOComponent(new CS230::Sprite(file_path, this));
+
+                return true;
 
             }
         }
@@ -279,4 +288,5 @@ void Rock::MatchIndex(Polygon poly)
     }
 
     std::cerr << "Index not found in the file." << std::endl;
+    return false;
 }
