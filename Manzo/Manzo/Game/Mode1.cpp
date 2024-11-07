@@ -57,7 +57,6 @@ void Mode1::Load() {
     background = new Background();
     AddGSComponent(background);
 
-
     //// audio
     Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("assets/audios/basic_beat_100_5.wav", "sample");
     if (sample) {

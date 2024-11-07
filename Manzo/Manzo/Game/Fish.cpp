@@ -49,9 +49,8 @@ void Fish::ResolveCollision(GameObject* other_object)
 void Fish::Update(double dt) {
 	GameObject::Update(dt);
 
-	if (GetPosition().x - GetGOComponent<CS230::Sprite>()->GetFrameSize().x / 2 > Engine::window_width * 0.5f ||
-		GetPosition().y + GetGOComponent<CS230::Sprite>()->GetFrameSize().y / 2 < -Engine::window_height * 0.5f ||
-		GetPosition().y - GetGOComponent<CS230::Sprite>()->GetFrameSize().y / 2 > Engine::window_height * 0.5f)
+	//destroy outside world
+	if (GetPosition().x - GetGOComponent<CS230::Sprite>()->GetFrameSize().x / 2 > Engine::window_width * 0.5f)
 	{
 		Destroy();
 	}
@@ -106,4 +105,25 @@ void Fish::ReadFishCSV(const std::string& filename)
 		}
 		file.close();
 	}
+}
+
+BackgroundFish::BackgroundFish() : Fish(nullptr)
+{
+	ClearGOComponents();  //delete sprite added from fish class (change sprite from fish to background fish)
+
+	SetPosition({ -100,100 });
+	SetScale({ 1.0,1.0 });
+	SetVelocity({ 10,10 });
+
+	AddGOComponent(new CS230::Sprite("assets/images/BackgroundFish.spt", this));
+}
+
+void BackgroundFish::Update(double dt)
+{
+	Fish::Update(dt);
+}
+
+void BackgroundFish::Draw()
+{
+	Fish::Draw();
 }

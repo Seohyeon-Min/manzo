@@ -33,8 +33,19 @@ public:
 
 	bool collided = false;
 
+	void Update(double dt);
+	void Draw();
+
+private:
+	double swimming_range = 15.0;
+};
+
+class BackgroundFish : public Fish
+{
+public:
+	BackgroundFish();
+
 private:
 	void Update(double dt);
 	void Draw();
-	double swimming_range = 15.0;
 };
