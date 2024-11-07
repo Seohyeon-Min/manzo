@@ -31,16 +31,15 @@ public:
     bool CanCollideWith(GameObjectTypes) override;
     void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
     const vec2& GetPosition() const { return GameObject::GetPosition(); }
-
     //for fuel
     void FuelUpdate(double dt);
     void SetMaxFuel(double input);
-    void HitWithReef();
-    bool IsTouchingReef() { return isCollidingWithReef; }
-    bool IsFuelZero(){return FuelFlag;}
+    void HitWithReef(CS230::RectCollision* collision_edge);
+    bool IsTouchingReef();
+    bool IsFuelZero();
 
 private:
-    static constexpr double speed = 4000.f;
+    static constexpr double speed = 7000.f;
     static constexpr float deceleration = 0.80f;
     static constexpr double skidding_speed = 20.f;
     bool moving;
@@ -48,6 +47,7 @@ private:
     bool ready_to_move;
     bool move;
     bool clickable = true;
+    bool hit_with = false;
     vec2 force = {};
     vec2 destination;
     vec2 direction = {0,0};

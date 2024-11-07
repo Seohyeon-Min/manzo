@@ -11,7 +11,6 @@ Updated:    04/30/2024
 
 #include "GameObject.h"
 
-
 CS230::GameObject::GameObject(vec2 position) :
 	GameObject(position, 0, { 1, 1 }) {}
 

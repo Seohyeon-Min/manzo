@@ -3,6 +3,7 @@
 #include "../Engine/Camera.h"
 #include "../Engine/Input.h"
 #include <iostream>
+#include "../Engine/MapManager.h"
 
 Ship::Ship(vec2 start_position) :
     GameObject(start_position), moving(false), set_dest(false), ready_to_move(false), move(false)
@@ -26,7 +27,22 @@ void Ship::Update(double dt)
         if (move) {
             Move(dt);
         }
+        else {
+            if (hit_with) {
+                vec2 velocity = GetVelocity();  // ��ü�� �ӵ� ����
+                float velocity_magnitude = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
+                if(velocity_magnitude < 20.f) SetVelocity(direction * skidding_speed);
+                else SetVelocity(GetVelocity() * deceleration);
+                if (!beat->GetIsOnBeat()) {
+                    SetVelocity(direction * skidding_speed);
+                    hit_with = false;
+                    if (!clickable) { // wait for next beat
+                        clickable = true;
+                    }
+                }
+            }
 
+        }
         FuelUpdate(dt);
         if (isCollidingWithReef && !IsTouchingReef())
         {
@@ -76,7 +92,6 @@ void Ship::Move(double dt)
 {
     SetVelocity(force);
     force *= deceleration;
-    std::cout << force.x << std::endl;
     if (!beat->GetIsOnBeat()) {
         SetVelocity(direction * skidding_speed);
         if (!clickable) { // wait for next beat
@@ -85,6 +100,11 @@ void Ship::Move(double dt)
         move = false;
     }
 }
+
+vec2 GetPerpendicular(vec2 v) {
+    return { -v.y, v.x };
+}
+
 
 bool Ship::CanCollideWith(GameObjectTypes other_object)
 {
@@ -100,21 +120,62 @@ bool Ship::CanCollideWith(GameObjectTypes other_object)
 
 void Ship::ResolveCollision(GameObject* other_object)
 {
-    switch (other_object->Type()) {
-
-    case GameObjectTypes::Reef:
-        IsTouchingReef();
-        if (!isCollidingWithReef) {
-            HitWithReef();
-            isCollidingWithReef = true;
+    if (other_object->Type() == GameObjectTypes::Reef) {
+        auto* collision_edge = this->GetGOComponent<CS230::RectCollision>();
+        if (collision_edge == nullptr) {
+            // maybe an error?
         }
-        break;
+        HitWithReef(collision_edge);
     }
 }
 
+void Ship::HitWithReef(CS230::RectCollision* collision_edge) {
+    fuel -= HitDecFuel;
+
+    vec2 edge_1 = collision_edge->GetCollidingEdge().first;
+    vec2 edge_2 = collision_edge->GetCollidingEdge().second;
+
+    vec2 wall_dir = { edge_2.x - edge_1.x, edge_2.y - edge_1.y };
+    vec2 wall_perpendicular = GetPerpendicular(wall_dir);
+    vec2 normal = wall_perpendicular.Normalize();
+
+    vec2 velocity = GetVelocity(); 
+
+    // ���� ���� ���ǵ� ���
+    float incoming_speed = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
+
+    float dot_product_normal_velocity = velocity.x * normal.x + velocity.y * normal.y;
+    if (dot_product_normal_velocity > 0) {
+        normal = normal * -1.0f;
+    }
+
+    // �ݻ� ���� ���: R = V - 2 * (V �� N) * N
+    float dot_product = velocity.x * normal.x + velocity.y * normal.y;
+    vec2 reflection = {
+        velocity.x - 2 * dot_product * normal.x,
+        velocity.y - 2 * dot_product * normal.y
+    };
+
+    SetPosition(GetPosition() +  -GetVelocity() * 0.007f);
+    direction = reflection.Normalize();
+    if (incoming_speed > 3300.f)  incoming_speed = 3300.f;
+    if (incoming_speed < 150.f)  incoming_speed = 150.f;
+    // �ݻ� ���Ϳ� ���� ���� ���ǵ�� ���� ����� ����
+    SetVelocity(direction * incoming_speed * 0.75f);
+    SetPosition(GetPosition() + normal * 0.5f);
+
+    // ��ġ ����: ���� �������� ���� �Ÿ� ����
+    //float correction_distance = 0.5f;  // ���� �Ÿ� ���� (�۰� �����Ͽ� ����ġ ���� �̵� ����)
+    //vec2 corrected_position = GetPosition() + normal * correction_distance;
+
+    //// ��ġ ������ ����ġ�� ũ�� �ʵ��� ����
+    //SetPosition(corrected_position);
+
+    move = false;
+    hit_with = true;
+}
 
 //for fuel
-
 void Ship::FuelUpdate(double dt)
 {
 
@@ -159,8 +220,18 @@ void Ship::SetMaxFuel(double input)
     Maxfuel = input;
 }
 
-void Ship::HitWithReef()
+
+
+bool Ship::IsTouchingReef()
 {
-    fuel -= HitDecFuel;
-    std::cout << "Collision with Reef!" << std::endl;
+    if (isCollidingWithReef == true)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool Ship::IsFuelZero()
+{
+    return FuelFlag;
 }
