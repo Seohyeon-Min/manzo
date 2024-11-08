@@ -3,12 +3,9 @@
 #include "..\Engine\GameObjectManager.h"
 #include "..\Engine\Component.h"
 
-
-
-// 잔향을 저장할 구조체
 struct Trail {
-    vec2 position; // 잔향의 위치
-    float alpha;   // 투명도
+    vec2 position; 
+    float alpha; 
 };
 
 class Mouse : public CS230::Component {

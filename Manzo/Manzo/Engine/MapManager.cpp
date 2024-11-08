@@ -1,6 +1,8 @@
 #include "MapManager.h"
 #include "GameObjectManager.h"
 #include "vec2.h"
+#include "Collision.h"
+
 #include <cmath>
 #include <vector>
 #include <iostream>

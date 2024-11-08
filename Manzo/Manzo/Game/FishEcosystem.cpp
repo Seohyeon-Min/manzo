@@ -4,11 +4,13 @@
 FishGenerator::FishGenerator()
 {
     timer = new CS230::Timer(2.0);
+    bg_timer = new CS230::Timer(10.0);
 }
 
 void FishGenerator::GenerateFish(double dt)
 {
     timer->Update(dt);
+    bg_timer->Update(dt);
 
     if (timer->Remaining() == 0)
     {
@@ -16,11 +18,9 @@ void FishGenerator::GenerateFish(double dt)
         fishList.push_back(newFish);
         Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(newFish);
 
-        BackgroundFish* bgFish = new BackgroundFish();
-        Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(bgFish);
-
         timer->Reset();
 
+        //generate object fishes
         if (newFish->type == Fish::FishType::Fish3)
         {
             for (int i = 0; i < 4; i++)
@@ -48,9 +48,40 @@ void FishGenerator::GenerateFish(double dt)
             }
         }
     }
+
+    //generate background fish
+    if (bg_timer->Remaining() == 0)
+    {
+        // Create the leader fish with a random Y position
+        BackgroundFish* leaderFish = new BackgroundFish();
+        leaderFish->SetPosition({ -640 ,((float)rand() / RAND_MAX) * 2.0f * height - height });
+        Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(leaderFish);
+        backgroundFishList.push_back(leaderFish);
+
+        BackgroundFish* lastFollower = leaderFish;  // Initialize the last follower as the leader
+
+        // Create the follower fishes positioned directly behind the leader
+        for (int i = 1; i < 10; i++)
+        {
+            BackgroundFish* followerFish = new BackgroundFish();
+            followerFish->SetLeader(lastFollower);  // Set the leader for the follower
+            backgroundFishList.push_back(followerFish);
+            Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(followerFish);
+
+            // Position the follower fish behind the last one in the chain
+            vec2 leaderPos = lastFollower->GetPosition();
+            followerFish->SetPosition({ leaderPos.x - 30, leaderPos.y });
+
+            lastFollower = followerFish;  // Update the last follower
+        }
+
+
+        bg_timer->Reset();
+    }
 }
 
 FishGenerator::~FishGenerator()
 {
     fishList.clear();
+    backgroundFishList.clear();
 }

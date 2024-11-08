@@ -44,8 +44,18 @@ class BackgroundFish : public Fish
 {
 public:
 	BackgroundFish();
-
-private:
+	~BackgroundFish() { delete leaderFish; };
+	void SetLeader(BackgroundFish* leader) { leaderFish = leader; }
 	void Update(double dt);
 	void Draw();
+	bool CanCollideWith(GameObjectTypes) override;
+	void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
+
+private:
+	void AvoidReef(CS230::RectCollision* collision_edge);
+	BackgroundFish* leaderFish;
+
+	vec2 GetPerpendicular(vec2 v) {
+		return { -v.y, v.x };
+	}
 };

@@ -8,7 +8,7 @@
 
 #include "owner.h"
 
-//#include <SDL2/SDL_mouse.h>
+ //#include <SDL2/SDL_mouse.h>
 
 struct SDL_Window;
 typedef void* SDL_GLContext;
@@ -22,7 +22,7 @@ public:
 
     GLApp(const GLApp&) = delete;
     GLApp& operator=(const GLApp&) = delete;
-    GLApp(GLApp&&) noexcept        = delete;
+    GLApp(GLApp&&) noexcept = delete;
     GLApp& operator=(GLApp&&) noexcept = delete;
 
     void Update();
@@ -30,8 +30,8 @@ public:
 
 private:
     util::owner<IProgram*>     ptr_program = nullptr;
-    util::owner<SDL_Window*>   ptr_window  = nullptr;
-    util::owner<SDL_GLContext> gl_context  = nullptr;
+    util::owner<SDL_Window*>   ptr_window = nullptr;
+    util::owner<SDL_GLContext> gl_context = nullptr;
     //SDL_Cursor* cursor;
-    bool                       is_done     = false;
+    bool                       is_done = false;
 };
