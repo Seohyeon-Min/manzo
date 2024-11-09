@@ -1,6 +1,7 @@
 #pragma once
 #include "../Engine/GameObject.h"
 #include "GameObjectTypes.h"
+#include "../Engine/MapManager.h"
 
 class Fish : public CS230::GameObject
 {

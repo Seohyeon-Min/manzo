@@ -16,6 +16,7 @@ public:
 	std::string TypeName() override { return "Polygon"; }
 	void Update(double dt);
 	void Draw();
+
 private:
 	Polygon poly;
 };
@@ -26,6 +27,12 @@ namespace CS230 {
 
 		void ParseSVG(const std::string& filename);
 		void AddDrawCall();
+
+		std::vector<Rock> GetRock()
+		{
+			return objects;
+		}
+
 	private:
 
 		std::vector<Rock> objects;

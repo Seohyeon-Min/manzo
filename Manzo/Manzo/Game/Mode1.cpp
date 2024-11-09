@@ -73,6 +73,11 @@ void Mode1::Load() {
 
     GetGSComponent<Background>()->Add("assets/images/temp_back.png", 0.25f);
 
+    //testing fish
+    /*BackgroundFish* bg_fish = new BackgroundFish();
+    GetGSComponent<CS230::GameObjectManager>()->Add(bg_fish);
+    bg_fish->AddBackgroundFishes(bg_fish);*/
+
     // Mouse and Particle
     AddGSComponent(new CS230::ParticleManager<Particles::MouseFollow>());
     AddGSComponent(new Mouse());

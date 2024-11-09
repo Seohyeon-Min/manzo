@@ -112,6 +112,7 @@ BackgroundFish::BackgroundFish() : GameObject({start_position})
 {
 	ivec2 windowSize = { Engine::window_width, Engine::window_height };
 	start_position = { -640 ,((float)rand() / RAND_MAX) * 2.0f * windowSize.y - windowSize.y }; //outside of window
+	//start_position = { -500,100 };
 	SetPosition(start_position);
 	SetVelocity({30,0});
 
@@ -130,12 +131,14 @@ void BackgroundFish::Update(double dt) {
 	const float wanderJitter = 0.5f;
 	const float baseSpeed = 30.0f;
 	const float followWeight = 0.5f;  // Weight for following front fish
+	const float reefAvoidanceWeight = 3.0f;
 
 	vec2 alignment(0.0f, 0.0f);
 	vec2 cohesion(0.0f, 0.0f);
 	vec2 separation(0.0f, 0.0f);
 	vec2 wanderForce(0.0f, 0.0f);
 	vec2 followFront(0.0f, 0.0f);  // Vector for following the front fish
+	vec2 avoidReef(0.0f, 0.0f);
 
 	int neighborCount = 0;
 	float closestFrontDistance = std::numeric_limits<float>::max();  // Track closest front fish
@@ -172,6 +175,24 @@ void BackgroundFish::Update(double dt) {
 			neighborCount++;
 		}
 	}
+
+	auto rocks = Engine::GetGameStateManager().GetGSComponent<CS230::Map>()->GetRock();
+	for (auto& rock : rocks) {
+		vec2 toReef = rock.GetPosition() - GetPosition();
+		float distanceToReef = toReef.Length();
+
+		// 장애물이 너무 가까우면 회피 행동 시작
+		if (distanceToReef < separationDistance * 2.0f) {
+			vec2 avoidanceDirection = -toReef.Normalize();
+
+			vec2 avoidanceForce = avoidanceDirection * separationWeight * reefAvoidanceWeight;
+
+			vec2 newVelocity = GetVelocity() + avoidanceForce;
+
+			SetVelocity(newVelocity * baseSpeed);
+		}
+	}
+
 
 	if (neighborCount > 0) {
 		alignment = (alignment / (float)neighborCount).Normalize() * alignmentWeight;
