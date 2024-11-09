@@ -40,22 +40,23 @@ private:
 	double swimming_range = 15.0;
 };
 
-class BackgroundFish : public Fish
+class BackgroundFish : public CS230::GameObject
 {
 public:
 	BackgroundFish();
-	~BackgroundFish() { delete leaderFish; };
-	void SetLeader(BackgroundFish* leader) { leaderFish = leader; }
+	~BackgroundFish() { backgroundFishes.clear(); }
+	GameObjectTypes Type() override { return GameObjectTypes::BackgroundFish; }
+	std::string TypeName() override { return "Background Fish"; }
+
 	void Update(double dt);
 	void Draw();
-	bool CanCollideWith(GameObjectTypes) override;
-	void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
+
+	void AddBackgroundFishes(BackgroundFish* obj)
+	{
+		backgroundFishes.push_back(obj);
+	}
 
 private:
-	void AvoidReef(CS230::RectCollision* collision_edge);
-	BackgroundFish* leaderFish;
-
-	vec2 GetPerpendicular(vec2 v) {
-		return { -v.y, v.x };
-	}
+	vec2 start_position;
+	std::list<BackgroundFish*> backgroundFishes;
 };

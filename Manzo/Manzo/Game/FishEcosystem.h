@@ -10,7 +10,6 @@ public:
 	~FishGenerator();
 
 	std::vector<Fish*> fishList;
-	std::vector<BackgroundFish*> backgroundFishList;
 
 private:
 	CS230::Timer* timer;
