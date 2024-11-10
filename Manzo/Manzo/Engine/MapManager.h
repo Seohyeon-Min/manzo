@@ -17,6 +17,11 @@ public:
 	void Update(double dt);
 	void Draw();
 
+	const Polygon& GetPolygon() const 
+	{
+		return poly;
+	}
+
 private:
 	Polygon poly;
 };

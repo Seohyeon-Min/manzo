@@ -119,6 +119,74 @@ BackgroundFish::BackgroundFish() : GameObject({start_position})
 	AddGOComponent(new CS230::Sprite("assets/images/BackgroundFish.spt", this));
 }
 
+bool BackgroundFish::CanCollideWith(GameObjectTypes other_object)
+{
+	switch (other_object) {
+	case GameObjectTypes::Reef:
+		return true;
+		break;
+	}
+
+	return false;
+}
+
+void BackgroundFish::ResolveCollision(GameObject* other_object)
+{
+	if (other_object->Type() == GameObjectTypes::Reef) {
+		auto* collision_edge = this->GetGOComponent<CS230::RectCollision>();
+		if (collision_edge == nullptr) {
+			// maybe an error?
+		}
+		HitWithRock(collision_edge);
+	}
+}
+
+float BackgroundFish::PointToSegmentDistance(const vec2& point, const vec2& segmentStart, const vec2& segmentEnd) {
+	vec2 segmentDir = segmentEnd - segmentStart;
+	vec2 toPoint = point - segmentStart;
+
+	float segmentLengthSquared = magnitude_squared(segmentDir);
+	if (segmentLengthSquared == 0.0f) {
+		return toPoint.Length();  // 선분의 길이가 0이면 점과 선분의 거리는 점과 점 사이의 거리
+	}
+
+	float projection = dot(toPoint, segmentDir) / segmentLengthSquared;
+	projection = std::clamp(projection, 0.0f, 1.0f);  // [0, 1] 범위로 클램프
+
+	vec2 closestPoint = segmentStart + projection * segmentDir;
+	return (point - closestPoint).Length();
+}
+
+void BackgroundFish::HitWithRock(CS230::RectCollision* collision_edge)
+{
+	vec2 edge_1 = collision_edge->GetCollidingEdge().first;
+	vec2 edge_2 = collision_edge->GetCollidingEdge().second;
+
+	vec2 wall_dir = { edge_2.x - edge_1.x, edge_2.y - edge_1.y };
+	vec2 wall_perpendicular = GetPerpendicular(wall_dir);
+	vec2 normal = wall_perpendicular.Normalize();
+
+	vec2 velocity = GetVelocity();
+
+	float incoming_speed = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
+
+	float dot_product_normal_velocity = velocity.x * normal.x + velocity.y * normal.y;
+	if (dot_product_normal_velocity > 0) {
+		normal = normal * -1.0f;
+	}
+
+	float dot_product = velocity.x * normal.x + velocity.y * normal.y;
+	vec2 reflection = {
+		velocity.x - 2 * dot_product * normal.x,
+		velocity.y - 2 * dot_product * normal.y
+	};
+
+	SetPosition(GetPosition() + -GetVelocity() * 0.007f);
+	direction = reflection.Normalize();
+	SetVelocity(direction * incoming_speed * 0.75f);
+	SetPosition(GetPosition() + normal * 0.5f);
+}
+
 void BackgroundFish::Update(double dt) {
 	GameObject::Update(dt);
 
@@ -176,19 +244,37 @@ void BackgroundFish::Update(double dt) {
 		}
 	}
 
+	//rock이 있는 내부를 map tile triangle rasterization bounding box마냥 개작은 사각형들로 쪼개서 
+	//내부는 1, 외부는 0 하고 0인 경로로만 이동하도록 하면 좋을 거 같은데
+	//약간 지뢰찾기 느낌?
+	
 	auto rocks = Engine::GetGameStateManager().GetGSComponent<CS230::Map>()->GetRock();
 	for (auto& rock : rocks) {
-		vec2 toReef = rock.GetPosition() - GetPosition();
-		float distanceToReef = toReef.Length();
+		auto polygon = rock.GetPolygon();  // 바위의 다각형 꼭짓점들 가져오기
+		float minDistanceToRock = std::numeric_limits<float>::max();
 
-		// 장애물이 너무 가까우면 회피 행동 시작
-		if (distanceToReef < separationDistance * 2.0f) {
-			vec2 avoidanceDirection = -toReef.Normalize();
+		// 물고기 중심과 바위 다각형 간의 최소 거리 계산
+		for (size_t i = 0; i < polygon.vertices.size(); ++i) {
+			vec2 p1 = polygon.vertices[i];
+			vec2 p2 = polygon.vertices[(i + 1) % polygon.vertices.size()];  // 인접한 두 꼭짓점
 
+			// 물고기 중심에서 현재 두 꼭짓점 사이의 최소 거리 계산
+			float dist = PointToSegmentDistance(GetPosition(), p1, p2);
+			minDistanceToRock = std::min(minDistanceToRock, dist);
+		}
+
+		// 바위와의 최소 거리가 일정 범위 이내일 경우 피하는 로직
+		if (minDistanceToRock < separationDistance * 2.0f) {
+			vec2 toRock = rock.GetPosition() - GetPosition();
+			vec2 avoidanceDirection = -toRock.Normalize();
+
+			// 피하는 힘을 적용하여 속도 계산
 			vec2 avoidanceForce = avoidanceDirection * separationWeight * reefAvoidanceWeight;
 
+			// 현재 속도에 피하는 힘을 더하여 새로운 속도 계산
 			vec2 newVelocity = GetVelocity() + avoidanceForce;
 
+			// 새로운 속도로 물고기의 속도 설정
 			SetVelocity(newVelocity * baseSpeed);
 		}
 	}
