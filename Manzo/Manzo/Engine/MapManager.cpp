@@ -232,26 +232,6 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                     }
                 }
 
-                //former code (add class into vector directly)
-                /*
-                if (rock_groups.empty()) {
-                    RockGroup* rockgroup = new RockGroup(poly.polyindex);     //make new group
-                    rockgroup->AddRock(poly);  //add poly into new group
-                    Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup);
-                    rock_groups.push_back(*rockgroup);
-                }
-                else {
-                    if (!(rock_groups.empty()) && rock_groups.back().GetIndex() != poly.polyindex) {
-                        RockGroup* rockgroup = new RockGroup(poly.polyindex);     //make new group
-                        rockgroup->AddRock(poly);  //add poly into new group
-                        Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup);
-                        rock_groups.push_back(*rockgroup);
-                    }
-                    else {   // index matches to former rock.
-                        rock_groups.back().AddRock(poly); //add poly into last rock
-                    }
-                }
-                */
                 
             }
             
@@ -267,9 +247,9 @@ void CS230::Map::ParseSVG(const std::string& filename) {
     for (auto& r_group : rock_groups) {
         r_group->MatchIndex();
         
-        std::cout <<"Group Position: " << r_group->GetPosition().x << "," << r_group->GetPosition().y<<"\n";
-        std::cout <<"Group Index : " << r_group->GetIndex()<<"\n";
-        std::cout <<"Group Rocks Size : " << r_group->GetRocks().size() <<"\n";
+        //std::cout <<"Group Position: " << r_group->GetPosition().x << "," << r_group->GetPosition().y<<"\n";
+        //std::cout <<"Group Index : " << r_group->GetIndex()<<"\n";
+        //std::cout <<"Group Rocks Size : " << r_group->GetRocks().size() <<"\n";
         
     }
     file.close();
