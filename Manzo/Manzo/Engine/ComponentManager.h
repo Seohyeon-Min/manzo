@@ -46,6 +46,7 @@ namespace CS230 {
         }
         void Clear() {
             for (Component* component : components) {
+                
                 delete component;
             }
             components.clear();

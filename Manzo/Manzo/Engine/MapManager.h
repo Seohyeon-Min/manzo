@@ -54,7 +54,8 @@ namespace CS230 {
 	private:
 
 		std::vector<Rock> objects;
-		std::vector<RockGroup> rock_groups;		//vector for groups
+		//std::vector<RockGroup> rock_groups;		//vector for groups
+		std::vector<std::shared_ptr<RockGroup>> rock_groups;
 
 	};
 
