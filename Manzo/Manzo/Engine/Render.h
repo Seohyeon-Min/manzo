@@ -9,7 +9,7 @@
 #include <unordered_map>
 #include <filesystem>
 #include <memory>
-
+#include <functional>
 //struct DrawSettings {
 //    bool enableBlending;
 //    GLenum drawMode;  // GL_TRIANGLES, GL_LINES µî
@@ -37,7 +37,8 @@ enum class DrawLayer {
     DrawBackground,
     DrawFirst,
     Draw,
-    DrawLast
+    DrawLast,
+    DrawUI
 };
 
 namespace CS230 {
@@ -45,6 +46,7 @@ namespace CS230 {
         GLTexture* texture;
         const mat3* transform;
         const GLShader* shader;
+        std::function<void(const GLShader*)> SetUniforms = nullptr;
     };
 
     struct LineDrawCall {
@@ -77,7 +79,7 @@ namespace CS230 {
 
     private:
         // Internal render method
-        void Draw(const DrawCall& draw_call);
+        void Draw(const DrawCall& draw_call, bool isUI = false);
         void DrawBackground(const DrawCall& draw_call);
         void DrawLine(LineDrawCall drawcall);
         void DrawLinePro(LineDrawCallPro drawcall);
@@ -90,6 +92,7 @@ namespace CS230 {
         std::vector<DrawCall> draw_first_calls;
         std::vector<DrawCall> draw_calls;
         std::vector<DrawCall> draw_late_calls;
+        std::vector<DrawCall> draw_ui_calls;
         std::vector<LineDrawCallPro> draw_line_calls;
         std::vector<LineDrawCall> draw_collision_calls;
 

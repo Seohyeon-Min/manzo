@@ -240,5 +240,8 @@
     <ClInclude Include="Engine\UI.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\UIManager.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

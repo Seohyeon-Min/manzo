@@ -14,6 +14,8 @@ Created:    March 8, 2023
 #include "../Engine/AudioManager.h"
 #include "../Engine/Particle.h"
 #include "../Engine/MapManager.h"
+#include "../Engine/UI.h"
+
 
 #include "Particles.h"
 #include "Mouse.h"
@@ -44,6 +46,7 @@ void Mode1::Load() {
     AddGSComponent(new Beat());
     AddGSComponent(new AudioManager());
     AddGSComponent(new CS230::Map());
+
 
     //// ship
     ship_ptr = new Ship({ Engine::window_width / 2, Engine::window_height / 2 });
@@ -79,6 +82,13 @@ void Mode1::Load() {
     AddGSComponent(new Mouse());
     //Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::Mouse>>()->Emit(2, mouse_position, { 0, 0 }, { 0, 100 }, M_PI / 2);
 
+    // UI
+    AddGSComponent(new UIManager());
+    ui_manager = GetGSComponent<UIManager>();
+    std::shared_ptr<FuelUI> fuel_ui = std::make_shared<FuelUI>(ship_ptr);
+    ui_manager->AddUI(fuel_ui);
+
+    // Map
     GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/test.svg");
 }
 
@@ -106,6 +116,7 @@ void Mode1::Update(double dt) {
 void Mode1::Draw() {
     GetGSComponent<Background>()->Draw(*GetGSComponent<CS230::Cam>());
     GetGSComponent<CS230::GameObjectManager>()->DrawAll();
+    ui_manager->AddDrawCalls();
 }
 
 void Mode1::Unload() {

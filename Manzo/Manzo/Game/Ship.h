@@ -33,6 +33,7 @@ public:
     const vec2& GetPosition() const { return GameObject::GetPosition(); }
 
     //for fuel
+    float GetFuel() { return (float)fuel; }
     void FuelUpdate(double dt);
     void SetMaxFuel(double input);
     void HitWithReef();

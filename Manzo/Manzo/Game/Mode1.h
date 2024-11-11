@@ -12,6 +12,7 @@ Created:    March 8, 2023
 #include "../Engine/GameState.h"
 #include "../Engine/Sprite.h"
 #include "..\Engine\GameObjectManager.h"
+#include "../Engine/UIManager.h"
 //#include "../Engine/Fonts.h"
 #include "../Engine/Timer.h"
 #include "FishEcosystem.h"
@@ -38,5 +39,6 @@ private:
     FishGenerator* fishGenerator;
     Fish* fish;
     Background* background;
+    UIManager* ui_manager;
     CS230::Cam* camera;
 };
