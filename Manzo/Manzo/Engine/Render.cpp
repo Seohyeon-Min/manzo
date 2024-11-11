@@ -29,6 +29,10 @@ void CS230::Render::AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase
     {
         draw_background_calls.push_back(drawCall);
     }
+    else if (phase == DrawLayer::DrawUI)
+    {
+        draw_ui_calls.push_back(drawCall);
+    }
     else {
         draw_calls.push_back(drawCall); // Add to normal phase
     }
@@ -64,6 +68,11 @@ void CS230::Render::RenderAll() {
         Draw(draw_call);
     }
 
+    // Draw UI
+    for (const auto& draw_call : draw_ui_calls) {
+        Draw(draw_call);
+    }
+
     // Draw lines
     float line_width = 2.0f;
     for (const auto& draw_call : draw_line_calls) {
@@ -83,6 +92,7 @@ void CS230::Render::RenderAll() {
     draw_calls.clear();
     draw_late_calls.clear();
     draw_line_calls.clear();
+    draw_ui_calls.clear();
     draw_collision_calls.clear();
 }
 
@@ -99,6 +109,34 @@ namespace {
 // Draw an individual draw call (textured quad)
 // Converts world coordinates to normalized device coordinates (NDC)
 void CS230::Render::Draw(const DrawCall& draw_call) {
+    const GLShader* shader = draw_call.shader;
+    shader->Use(); // Use the specified shader
+
+    // Ensure the texture is valid, then use it and send it to the shader
+    if (draw_call.texture) {
+        draw_call.texture->UseForSlot(0);
+        shader->SendUniform("uTex2d", 0);
+    }
+    else {
+        throw std::runtime_error("no texture!"); // Error if no texture is assigned
+    }
+
+    vec2 texture_size = (vec2)draw_call.texture->GetSize();
+    mat3 model_to_world = *draw_call.transform * mat3::build_scale(texture_size); // Scale the model based on texture size
+
+    mat3 WORLD_TO_NDC = GetWorldtoNDC();
+
+    const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
+
+    shader->SendUniform("uModelToNDC", to_span(model_to_ndc)); // Send transformation matrix to shader
+    model.Use(); // Bind the model for drawing
+    GLDrawIndexed(model); // Draw the model
+
+    model.Use(false); // Unbind the model
+    shader->Use(false); // Unbind the shader
+}
+
+void CS230::Render::DrawUI(const DrawCall& draw_call) {
     const GLShader* shader = draw_call.shader;
     shader->Use(); // Use the specified shader
 
