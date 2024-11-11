@@ -212,9 +212,27 @@ void CS230::Map::ParseSVG(const std::string& filename) {
 
 
 
-                //sooooo dirty code
-                //making poly's group
-                
+                //making rock's group                
+                if (rock_groups.empty()) {
+                    auto rockgroup = std::make_shared<RockGroup>(poly.polyindex);   // make new group
+                    rockgroup->AddRock(poly);                                       //add poly into new group
+                    Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup.get());
+                    rock_groups.push_back(rockgroup);
+                }
+                else {
+                    if (rock_groups.back()->GetIndex() != poly.polyindex) {             // if poly has different index
+                        auto rockgroup = std::make_shared<RockGroup>(poly.polyindex);   // make new group
+                        rockgroup->AddRock(poly);                                       //add poly into new group
+                        Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup.get());
+
+                        rock_groups.push_back(rockgroup);
+                    }
+                    else {                                                              // if poly has same index
+                        rock_groups.back()->AddRock(poly);
+                    }
+                }
+
+                //former code (add class into vector directly)
                 /*
                 if (rock_groups.empty()) {
                     RockGroup* rockgroup = new RockGroup(poly.polyindex);     //make new group
@@ -235,35 +253,6 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 }
                 */
                 
-                if (rock_groups.empty()) {
-                    // 새로운 rockgroup을 생성하여 shared_ptr로 관리
-                    auto rockgroup = std::make_shared<RockGroup>(poly.polyindex); // 새로운 그룹 생성
-                    rockgroup->AddRock(poly); // 새로운 그룹에 poly 추가
-
-                    // GameObjectManager에 rockgroup 추가
-                    Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup.get());
-
-                    // rock_groups 벡터에 shared_ptr로 추가
-                    rock_groups.push_back(rockgroup);
-                }
-                else {
-                    // 벡터가 비어있지 않고 마지막 rockgroup의 인덱스가 현재 poly와 다를 경우
-                    if (rock_groups.back()->GetIndex() != poly.polyindex) {
-                        //rock_groups.back()->MatchIndex();
-                        auto rockgroup = std::make_shared<RockGroup>(poly.polyindex); // 새로운 그룹 생성
-                        rockgroup->AddRock(poly); // 새로운 그룹에 poly 추가
-
-                        // GameObjectManager에 rockgroup 추가
-                        Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup.get());
-
-                        // rock_groups 벡터에 shared_ptr로 추가
-                        rock_groups.push_back(rockgroup);
-                    }
-                    else { // 인덱스가 일치하는 경우 기존의 마지막 그룹에 poly 추가
-                        rock_groups.back()->AddRock(poly);
-                    }
-                }
-                
             }
             
             //std::cout << "vertex count : " << poly.vertexCount << std::endl;
@@ -277,13 +266,6 @@ void CS230::Map::ParseSVG(const std::string& filename) {
     }
     for (auto& r_group : rock_groups) {
         r_group->MatchIndex();
-       // r_group->Draw();       
-        //r_group.MatchIndex(); 
-        /*
-        std::cout <<"Group Position: " << r_group.GetPosition().x << "," << r_group.GetPosition().y<<"\n";
-        std::cout << "Group Index : " << r_group.GetIndex() << "\n";
-        std::cout << "Group Rocks Size : " << r_group.GetRocks().size() << "\n";
-        */
         
         std::cout <<"Group Position: " << r_group->GetPosition().x << "," << r_group->GetPosition().y<<"\n";
         std::cout <<"Group Index : " << r_group->GetIndex()<<"\n";
@@ -303,10 +285,6 @@ void CS230::Map::AddDrawCall()
     for (auto& rock_group : rock_groups) {
         rock_group->Draw();
     }
-    /*for (auto& rock_group : rock_groups) {
-        rock_group.Draw();
-    }
-    */
 }
 
 Rock::Rock(Polygon poly) :GameObject({ 0,0 }), poly(poly)
@@ -324,32 +302,7 @@ void Rock::Draw()
 }
 
 
-RockGroup::RockGroup(const std::string& index) :GameObject({ 0,0 }), index(index)
-{
-
-    std::ifstream file("assets/images/rock.csv");
-    std::string line, cell;
-    
-
-    if (file.is_open()) {
-        while (std::getline(file, line)) {
-            std::stringstream linestream(line);
-            std::string index, x_str, y_str, file_path;
-
-            std::getline(linestream, index, ',');
-            std::string polyind = (this->index).substr(0, 2);
-
-            if (index == polyind) {
-                std::getline(linestream, file_path, ',');
-                SetPosition(FindCenter());
-                AddGOComponent(new CS230::Sprite(file_path, this));
-
-
-            }
-        }
-
-    }
-}
+RockGroup::RockGroup(const std::string& index) :GameObject({ 0,0 }), index(index){}
 
 void RockGroup::Update(double dt)
 {
