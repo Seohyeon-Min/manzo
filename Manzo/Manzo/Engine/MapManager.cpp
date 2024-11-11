@@ -295,6 +295,7 @@ void RockGroup::Draw()
 {
     GameObject::Draw();
 }
+
 bool RockGroup::MatchIndex()
 {
     std::ifstream file("assets/images/rock.csv");
@@ -313,8 +314,6 @@ bool RockGroup::MatchIndex()
             std::string polyind = (this->index).substr(0, 2);
 
             if (index == polyind) {
-                std::getline(linestream, x_str, ',');
-                std::getline(linestream, y_str, ',');
                 std::getline(linestream, file_path, ',');
                 SetPosition(FindCenter());
                 AddGOComponent(new CS230::Sprite(file_path, this));
@@ -325,12 +324,11 @@ bool RockGroup::MatchIndex()
         }
 
     }
-
     std::cerr << "Index not found in the file." << std::endl;
     return false;
 }
 
-vec2 RockGroup::FindCenter() {
+vec2 RockGroup::FindCenter() {  // Calculate texture's position.
     vec2 center = {0, 0};
     for (auto& rock : rocks) {
         center.x += rock.FindCenter().x;
