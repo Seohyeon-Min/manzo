@@ -32,6 +32,7 @@ public:
     void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
     const vec2& GetPosition() const { return GameObject::GetPosition(); }
     //for fuel
+    float GetFuel() { return (float)fuel; }
     void FuelUpdate(double dt);
     void SetMaxFuel(double input);
     void HitWithReef(CS230::RectCollision* collision_edge);

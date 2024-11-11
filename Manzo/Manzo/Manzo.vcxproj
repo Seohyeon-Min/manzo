@@ -29,6 +29,7 @@
     <ClCompile Include="Engine\Sprite.cpp" />
     <ClCompile Include="Engine\TextureManager.cpp" />
     <ClCompile Include="Engine\Timer.cpp" />
+    <ClCompile Include="Engine\UI.cpp" />
     <ClCompile Include="Game\Background.cpp" />
     <ClCompile Include="Game\BeatSystem.cpp" />
     <ClCompile Include="Game\Fish.cpp" />
@@ -72,6 +73,8 @@
     <ClInclude Include="Engine\Sprite.h" />
     <ClInclude Include="Engine\TextureManager.h" />
     <ClInclude Include="Engine\Timer.h" />
+    <ClInclude Include="Engine\UI.h" />
+    <ClInclude Include="Engine\UIManager.h" />
     <ClInclude Include="Game\Background.h" />
     <ClInclude Include="Game\BeatSystem.h" />
     <ClInclude Include="Game\Fish.h" />

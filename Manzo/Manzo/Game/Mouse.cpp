@@ -14,7 +14,6 @@ Mouse::Mouse() {
 
 
 void Mouse::Update(double dt) {
-    //vec2 mouse_pos = {(float) Engine::GetInput().GetMousePos().mouseWorldSpaceX, (float)Engine::GetInput().GetMousePos().mouseWorldSpaceY };
     vec2 mouse_pos = Engine::GetInput().GetMousePosition();
     FollowMouse(mouse_pos);
 }

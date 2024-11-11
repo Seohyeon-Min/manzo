@@ -97,6 +97,9 @@
     <ClCompile Include="Engine\MapManager.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\UI.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h">
@@ -235,6 +238,12 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Rapidjson.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\UI.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\UIManager.h">
       <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
