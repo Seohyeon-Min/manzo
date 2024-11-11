@@ -9,6 +9,21 @@ struct [[nodiscard]] Polygon
 	int polycount;
 	std::string polyindex;
 
+	Math::rect FindBoundary() {
+		if (vertices.empty()) {
+			return Math::rect{};
+		}
+		vec2 minPoint = vertices[0];
+		vec2 maxPoint = vertices[0];
+		for (const auto& vertex : vertices) {
+			minPoint.x = std::min(minPoint.x, vertex.x);
+			minPoint.y = std::min(minPoint.y, vertex.y);
+			maxPoint.x = std::max(maxPoint.x, vertex.x);
+			maxPoint.y = std::max(maxPoint.y, vertex.y);
+		}
+		return Math::rect{ minPoint, maxPoint };
+	}
+
 	vec2 FindCenter() {
 		vec2 center;
 		for (vec2 vertice : vertices) {

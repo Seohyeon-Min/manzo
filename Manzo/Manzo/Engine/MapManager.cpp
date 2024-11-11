@@ -9,7 +9,7 @@
 #include <string>
 #include <regex>
 #include <cmath>
-
+#include <algorithm>
 #ifndef M_PI
 #define M_PI 3.14
 #endif
@@ -327,13 +327,26 @@ bool RockGroup::MatchIndex()
 }
 
 vec2 RockGroup::FindCenter() {  // Calculate texture's position.
-    vec2 center = {0, 0};
+    vec2 center = { 0, 0 };
+    vec2 minPoint = rocks[0].vertices[0];
+    vec2 maxPoint = rocks[0].vertices[0];
+
+    for (auto& rock : rocks) {
+        minPoint.x = std::min(minPoint.x, rock.FindBoundary().Left());
+        minPoint.y = std::min(minPoint.y, rock.FindBoundary().Bottom());
+        maxPoint.x = std::max(maxPoint.x, rock.FindBoundary().Right());
+        maxPoint.y = std::max(maxPoint.y, rock.FindBoundary().Top());
+    }
+    /*
+    
     for (auto& rock : rocks) {
         center.x += rock.FindCenter().x;
         center.y += rock.FindCenter().y;
     }
     float n = static_cast<float>(rocks.size());
     center /= n;
-
+    */
+    center.x = (minPoint.x + maxPoint.x) /2;
+    center.y = (minPoint.y + maxPoint.y) /2;
     return center;
 }
