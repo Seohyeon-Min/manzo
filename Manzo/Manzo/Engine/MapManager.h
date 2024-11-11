@@ -17,10 +17,34 @@ public:
 	std::string TypeName() override { return "Polygon"; }
 	void Update(double dt);
 	void Draw();
-	void MatchIndex(Polygon poly);
+	Polygon GetPoly() { return poly; }
 private:
 	Polygon poly;
 };
+
+
+class RockGroup : public CS230::GameObject //group of polys
+{
+public:
+	RockGroup(const std::string& index);
+	~RockGroup() {};
+	GameObjectTypes Type() override { return GameObjectTypes::Reef; }
+	std::string TypeName() override { return "Rock Group"; }
+	void Update(double dt);
+	void Draw();
+
+	void AddRock(Polygon poly) { rocks.push_back(poly); }
+	std::vector<Polygon> GetRocks() { return rocks; }
+	bool MatchIndex();
+	vec2 FindCenter();
+	std::string GetIndex() { return index; }
+	
+private:
+	mat3 matrix;
+	std::vector<Polygon> rocks;	//one group
+	std::string index = "";
+};
+
 
 namespace CS230 {
 	class Map : public CS230::Component {
@@ -31,6 +55,8 @@ namespace CS230 {
 	private:
 
 		std::vector<Rock> objects;
+		//std::vector<RockGroup> rock_groups;		//vector for groups
+		std::vector<std::shared_ptr<RockGroup>> rock_groups;
 
 	};
 

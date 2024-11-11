@@ -11,7 +11,7 @@
 #include <string>
 #include <regex>
 #include <cmath>
-
+#include <algorithm>
 #ifndef M_PI
 #define M_PI 3.14
 #endif
@@ -202,8 +202,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 Rock* rock = new Rock(poly);
                 Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rock);
                 rock->AddGOComponent(new MAP_SATCollision(poly, rock));
-                //rock->MatchIndex(poly);
-
+                
                 pathCountInGroup++;  
                 currentTag.clear();
                 std::cout << "-----------------------------" << std::endl;
@@ -212,8 +211,35 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 std::cout << rotateAngle << std::endl;
                 std::cout << "poly index : " << poly.polyindex << std::endl;
                 std::cout << "-----------------------------" << std::endl;
-            }
 
+
+
+                //making rock's group                
+                if (rock_groups.empty()) {
+                    auto rockgroup = std::make_shared<RockGroup>(poly.polyindex);   // make new group
+                    rockgroup->AddRock(poly);                                       //add poly into new group
+                    rockgroup->SetRotation(rotateAngle);
+                    //rockgroup->SetScale();
+                    Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup.get());
+                    rock_groups.push_back(rockgroup);
+                }
+                else {
+                    if (rock_groups.back()->GetIndex() != poly.polyindex) {             // if poly has different index
+                        auto rockgroup = std::make_shared<RockGroup>(poly.polyindex);   // make new group
+                        rockgroup->AddRock(poly);                                       //add poly into new group
+                        rockgroup->SetRotation(rotateAngle);
+                        Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup.get());
+
+                        rock_groups.push_back(rockgroup);
+                    }
+                    else {                                                              // if poly has same index
+                        rock_groups.back()->AddRock(poly);
+                    }
+                }
+
+                
+            }
+            
             //std::cout << "vertex count : " << poly.vertexCount << std::endl;
             //std::cout << "poly count : " << poly.polycount << std::endl;
             
@@ -223,9 +249,16 @@ void CS230::Map::ParseSVG(const std::string& filename) {
         }
         
     }
-
+    for (auto& r_group : rock_groups) {
+        r_group->MatchIndex();
+        
+        std::cout <<"Group Position: " << r_group->GetPosition().x << "," << r_group->GetPosition().y<<"\n";
+        //std::cout <<"Group Index : " << r_group->GetIndex()<<"\n";
+        //std::cout <<"Group Rocks Size : " << r_group->GetRocks().size() <<"\n";
+        
+    }
     file.close();
-    AddDrawCall();
+    //AddDrawCall();
 }
 
 
@@ -234,9 +267,12 @@ void CS230::Map::AddDrawCall()
     for (auto& object : objects) {
         object.Draw();
     }
+    for (auto& rock_group : rock_groups) {
+        rock_group->Draw();
+    }
 }
 
-Rock::Rock(Polygon poly) :GameObject({ 0,0 })
+Rock::Rock(Polygon poly) :GameObject({ 0,0 }), poly(poly)
 {
 }
 
@@ -250,35 +286,63 @@ void Rock::Draw()
     GameObject::Draw();
 }
 
-void Rock::MatchIndex(Polygon poly)
+
+RockGroup::RockGroup(const std::string& index) :GameObject({ 0,0 }), index(index){}
+
+void RockGroup::Update(double dt)
 {
-    std::ifstream file("assets/images/rock.csv");
+    CS230::GameObject::Update(dt);
+}
+
+void RockGroup::Draw()
+{
+    CS230::GameObject::Draw();
+}
+
+bool RockGroup::MatchIndex()
+{
+    std::ifstream file("assets/images/rock/rock.csv");
     std::string line, cell;
     if (!file.is_open()) {
         std::cerr << "Failed to Open CSV." << std::endl;
+        return false;
     }
-    
+
     if (file.is_open()) {
         while (std::getline(file, line)) {
             std::stringstream linestream(line);
             std::string index, x_str, y_str, file_path;
 
             std::getline(linestream, index, ',');
-            
-            if (index == poly.polyindex) {
-                std::getline(linestream, x_str, ',');
-                std::getline(linestream, y_str, ',');
-                std::getline(linestream, file_path, ',');
-                float x = std::stof(x_str);
-                float y = std::stof(y_str);
+            std::string polyind = (this->index).substr(0, 2);
 
-                SetPosition({ x, y });
+            if (index == polyind) {
+                std::getline(linestream, file_path, ',');
+                SetPosition(FindCenter());
                 AddGOComponent(new CS230::Sprite(file_path, this));
+
+                return true;
 
             }
         }
 
     }
-
     std::cerr << "Index not found in the file." << std::endl;
+    return false;
+}
+
+vec2 RockGroup::FindCenter() {  // Calculate texture's position.
+    vec2 center = { 0, 0 };
+    vec2 minPoint = rocks[0].vertices[0];
+    vec2 maxPoint = rocks[0].vertices[0];
+
+    for (auto& rock : rocks) {
+        minPoint.x = std::min(minPoint.x, rock.FindBoundary().Left());
+        minPoint.y = std::min(minPoint.y, rock.FindBoundary().Bottom());
+        maxPoint.x = std::max(maxPoint.x, rock.FindBoundary().Right());
+        maxPoint.y = std::max(maxPoint.y, rock.FindBoundary().Top());
+    }
+    center.x = (minPoint.x + maxPoint.x) /2;
+    center.y = (minPoint.y + maxPoint.y) /2;
+    return center;
 }
