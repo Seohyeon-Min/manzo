@@ -222,14 +222,15 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                     rock_groups.push_back(*rockgroup);
                     
                 }
+                
                 if (!rock_groups.empty() && rock_groups.back().GetIndex() != poly.polyindex) {
                     RockGroup* rockgroup = new RockGroup(poly.polyindex);     //make new group
                     Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup);
                     rockgroup->GetRocks().push_back(poly);  //add poly into new group
                     rock_groups.push_back(*rockgroup);
                 }
-                else{
-                    rock_groups.back().GetRocks().push_back(poly); //add poly into last group
+                else{   // index matches to former rock.
+                    rock_groups.back().GetRocks().push_back(poly); //add poly into last rock
                 }
             }
             
@@ -244,6 +245,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
     }
     for (RockGroup r_group : rock_groups) {
         r_group.MatchIndex();
+        std::cout <<"Group Position: " << r_group.GetPosition().x << "," << r_group.GetPosition().y<<"\n";
     }
     file.close();
     AddDrawCall();
