@@ -40,6 +40,7 @@ public:
 	std::string GetIndex() { return index; }
 	
 private:
+	mat3 matrix;
 	std::vector<Polygon> rocks;	//one group
 	std::string index = "";
 };
