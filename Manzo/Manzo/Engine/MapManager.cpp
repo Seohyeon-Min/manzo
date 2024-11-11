@@ -337,15 +337,6 @@ vec2 RockGroup::FindCenter() {  // Calculate texture's position.
         maxPoint.x = std::max(maxPoint.x, rock.FindBoundary().Right());
         maxPoint.y = std::max(maxPoint.y, rock.FindBoundary().Top());
     }
-    /*
-    
-    for (auto& rock : rocks) {
-        center.x += rock.FindCenter().x;
-        center.y += rock.FindCenter().y;
-    }
-    float n = static_cast<float>(rocks.size());
-    center /= n;
-    */
     center.x = (minPoint.x + maxPoint.x) /2;
     center.y = (minPoint.y + maxPoint.y) /2;
     return center;
