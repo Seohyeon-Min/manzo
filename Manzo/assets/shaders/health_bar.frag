@@ -11,7 +11,7 @@ void main() {
     vec2 texCoord = vec2(vTextureCoordinates.x, vTextureCoordinates.y);
     vec4 tex_color = texture(uTex2d, texCoord);
 
-    if (vTextureCoordinates.x > uFilled) {
+    if (vTextureCoordinates.x < 1.0f - uFilled) {
         discard; // Discard fragment outside the filled area
     }
 
