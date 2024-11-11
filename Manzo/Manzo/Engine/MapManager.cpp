@@ -247,7 +247,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
     for (auto& r_group : rock_groups) {
         r_group->MatchIndex();
         
-        //std::cout <<"Group Position: " << r_group->GetPosition().x << "," << r_group->GetPosition().y<<"\n";
+        std::cout <<"Group Position: " << r_group->GetPosition().x << "," << r_group->GetPosition().y<<"\n";
         //std::cout <<"Group Index : " << r_group->GetIndex()<<"\n";
         //std::cout <<"Group Rocks Size : " << r_group->GetRocks().size() <<"\n";
         
@@ -296,7 +296,7 @@ void RockGroup::Draw()
 
 bool RockGroup::MatchIndex()
 {
-    std::ifstream file("assets/images/rock.csv");
+    std::ifstream file("assets/images/rock/rock.csv");
     std::string line, cell;
     if (!file.is_open()) {
         std::cerr << "Failed to Open CSV." << std::endl;

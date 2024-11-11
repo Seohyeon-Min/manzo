@@ -13,7 +13,7 @@ public:
 
 private:
     static constexpr double BPM = 100;
-    double duration = 0;
+    double duration = 0; 
     double time_taken = 0;
     bool beat = false;
     bool is_on_beat = false;
