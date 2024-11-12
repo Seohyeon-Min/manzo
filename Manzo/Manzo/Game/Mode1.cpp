@@ -63,9 +63,9 @@ void Mode1::Load() {
 
     //// audio
     Mix_Music* sample = Engine::GetAudioManager().LoadMusic("assets/audios/basic_beat_100_5.wav", "sample");
-    if (sample) {
-        Engine::GetAudioManager().PlayMusic(sample, -1);
-    }
+    //if (sample) {
+    //    Engine::GetAudioManager().PlayMusic(sample, -1);
+    //}
 
     //// to generate fish
     fishGenerator = new FishGenerator();
