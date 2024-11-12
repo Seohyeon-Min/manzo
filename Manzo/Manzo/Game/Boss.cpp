@@ -33,6 +33,7 @@ void Boss::State_CutScene::Update(GameObject* object, double dt) {
 }
 void Boss::State_CutScene::CheckExit(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
+
 	if (Engine::GetInput().KeyDown(CS230::Input::Keys::R)&& boss->beat->GetBeat()) {
 		Mix_Music* e_music = Engine::GetAudioManager().LoadMusic(boss->mp3_file_name, "E_Music");
 		if (e_music) {
@@ -51,7 +52,7 @@ void Boss::Entry1::Update(GameObject* object, double dt) {
 	Boss* boss = static_cast<Boss*>(object);
 	std::cout << "Get Beat : " << boss->beat->GetBeat() << std::endl;
 	std::cout << "Delay Count : " << boss->beat->GetDelayCount() << std::endl;
-
+	std::cout << boss->beat->GetBarCount() << std::endl;
 	if ((boss->index)-1 < boss->parttern.size()) {
 		const auto& entryVec = boss->parttern[(boss->index) - 1]; 
 		for (const auto& entryData : entryVec) {
