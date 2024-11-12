@@ -36,7 +36,7 @@ CS230::Sprite& CS230::Sprite::operator=(Sprite&& temporary) noexcept {
 
 CS230::Sprite::~Sprite()
 {
-    for (auto& animation : animations) {
+    for (Animation* animation : animations) {
         delete animation;
     }
     animations.clear();
