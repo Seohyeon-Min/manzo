@@ -155,7 +155,7 @@ void Ship::HitWithReef(CS230::RectCollision* collision_edge) {
         velocity.y - 2 * dot_product * normal.y
     };
 
-    SetPosition(GetPosition() +  -GetVelocity() * 0.007f);
+    SetPosition(GetPosition() +  -GetVelocity() * 0.01f);
     direction = reflection.Normalize();
     if (incoming_speed > 3300.f)  incoming_speed = 3300.f;
     if (incoming_speed < 150.f)  incoming_speed = 150.f;
