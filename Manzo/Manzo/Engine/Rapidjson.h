@@ -3,14 +3,15 @@
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/filereadstream.h"
 
+#include "vec2.h"
+#include "Engine.h"
+#include "Polygon.h"
+
 #include <string>
 #include <array>
 #include <vector>
 #include <fstream>
 #include <iostream> 
-#include "vec2.h"
-#include "Engine.h"
-#include "Polygon.h"
 
 using namespace rapidjson;
 

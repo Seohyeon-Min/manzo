@@ -10,9 +10,10 @@ public:
     void Update(double dt);
     bool GetBeat() { return beat; }
     bool GetIsOnBeat() { return is_on_beat; }
+    void SetBPM(int set_BPM) { BPM = set_BPM; }
 
 private:
-    static constexpr double BPM = 100;
+    int BPM = 100;
     double duration = 0;
     double time_taken = 0;
     bool beat = false;

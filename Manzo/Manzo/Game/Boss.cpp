@@ -1,12 +1,10 @@
-#include "Boss.h"
 #include "../Engine/Rapidjson.h"
 #include "../Engine/AudioManager.h"
-
+#include "Boss.h"
 
 
 
 std::vector<std::string> BossJSONfileMap;
-
 
 Boss::Boss(vec2 start_position, BossType type) 
 	: GameObject(start_position)
@@ -14,9 +12,45 @@ Boss::Boss(vec2 start_position, BossType type)
 	ReadBossJSON(type);
 	AddGOComponent(new CS230::Sprite("assets/images/ship.spt", this));
 	SetVelocity({0,0});
+
+	// cutscean
 	
+	////////
+	current_state = &state_cutscene;
+	current_state->Enter(this);
+
+
 }
 
+void Boss::State_CutScene::Enter(GameObject* object) {
+	Boss* boss = static_cast<Boss*>(object);
+	Engine::GetAudioManager().StopMusic();
+	boss->beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
+	boss->beat->SetBPM(boss->bpm);
+}
+void Boss::State_CutScene::Update(GameObject* object, double dt) {
+	Boss* boss = static_cast<Boss*>(object);
+	if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Q)) {
+		boss->change_state(&boss->entry1);
+	}
+}
+void Boss::State_CutScene::CheckExit(GameObject* object) {
+	Boss* boss = static_cast<Boss*>(object);
+	Mix_Music* e_music = Engine::GetAudioManager().LoadMusic(boss->mp3_file_name, "E_Music");
+	if (e_music) {
+		Engine::GetAudioManager().PlayMusic(e_music, -1);
+	}
+}
+
+void Boss::Entry1::Enter(GameObject* object) {
+	Boss* boss = static_cast<Boss*>(object);
+}
+void Boss::Entry1::Update(GameObject* object, double dt) {
+	Boss* boss = static_cast<Boss*>(object);
+}
+void Boss::Entry1::CheckExit(GameObject* object) {
+	Boss* boss = static_cast<Boss*>(object);
+}
 
 void Boss::Update(double dt) {
 	GameObject::Update(dt);
@@ -39,10 +73,15 @@ void Boss::ReadBossJSON(BossType type)
 	index = ReadJson->GetIndex();
 	is_boss_fight = ReadJson->IsBossFight();
 	bpm = ReadJson->GetBPM();
-	mp3 = ReadJson->GetMp3();
+	mp3_file_name = ReadJson->GetMp3();
 	move_position = ReadJson->GetMovePosition();
 	parttern = ReadJson->GetParttern();
 	total_entry = ReadJson->GetTotalEntry();
+
+}
+
+void Boss::RunMusic()
+{
 
 }
 
@@ -59,7 +98,6 @@ bool Boss::CanCollideWith(GameObjectTypes other_object) {
 		return false;
 	}
 }
-
 
 void Boss::ResolveCollision(GameObject* other_object) {
 	switch (other_object->Type())

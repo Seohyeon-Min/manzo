@@ -44,7 +44,6 @@ void Mode1::Load() {
     // component
     AddGSComponent(new CS230::GameObjectManager());
     AddGSComponent(new Beat());
-    AddGSComponent(new AudioManager());
     AddGSComponent(new CS230::Map());
 
     //// ship
@@ -60,9 +59,9 @@ void Mode1::Load() {
     AddGSComponent(background);    
 
     //// audio
-    Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("assets/audios/basic_beat_100_5.wav", "sample");
+    Mix_Music* sample = Engine::GetAudioManager().LoadMusic("assets/audios/basic_beat_100_5.wav", "sample");
     if (sample) {
-        GetGSComponent<AudioManager>()->PlayMusic(sample, -1);
+        Engine::GetAudioManager().PlayMusic(sample, -1);
     }
 
     //// to generate fish
@@ -120,4 +119,5 @@ void Mode1::Unload() {
     GetGSComponent<Background>()->Unload();
 	//fishGenerator->DeleteFish();
 	ClearGSComponents();
+    Engine::GetAudioManager().StopMusic();
 }

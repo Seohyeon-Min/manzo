@@ -32,8 +32,6 @@ void Mode2::Load() {
 #endif
     // compenent
     AddGSComponent(new CS230::GameObjectManager());
-    AddGSComponent(new Beat());
-    AddGSComponent(new AudioManager());
     AddGSComponent(new Skillsys());
     //AddGSComponent(new Background());
     //GetGSComponent<Background>()->Add("assets/images/temp_back.png", 0.25);
@@ -55,10 +53,10 @@ void Mode2::Load() {
 
 
     //// audio
-    Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("assets/audios/basic_beat_100_4.wav", "sample");
-    if (sample) {
-        GetGSComponent<AudioManager>()->PlayMusic(sample, -1);
-    }
+    //Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("assets/audios/basic_beat_100_4.wav", "sample");
+    //if (sample) {
+    //    GetGSComponent<AudioManager>()->PlayMusic(sample, -1);
+    //}
 
     // skill
     Skill_ptr = GetGSComponent<Skillsys>();

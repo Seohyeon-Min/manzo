@@ -32,5 +32,4 @@ namespace CS230 {
 		std::vector<Rock> objects;
 
 	};
-
 }
