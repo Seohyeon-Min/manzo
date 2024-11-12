@@ -1,3 +1,4 @@
+
 #include "FishEcosystem.h"
 #include "../Engine/GameObjectManager.h"
 
@@ -25,9 +26,6 @@ void FishGenerator::GenerateFish(double dt)
 		{
 			for (int i = 0; i < 4; i++)
 			{
-				//linked list �������� ��������� �����ؾ� ���࿡ parent�� ������� �� next�� parent�� ������ �� ������
-				//tree������ �� ������ ���⵵?
-				//additionalFish�� ������ �� snake h.w �����ؼ� linked list�� �ƴϸ� tree�� �����
 				Fish* additionalFish = new Fish(newFish);
 
 				int formation_index = i + 1;
