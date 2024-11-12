@@ -236,33 +236,6 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                         rock_groups.back()->AddRock(poly);
                     }
                 }
-
-                /*
-                //making rock's group                
-                if (rock_groups.empty()) {
-                    auto rockgroup = std::make_shared<RockGroup>(poly.polyindex);   // make new group
-                    rockgroup->AddRock(poly);                                       //add poly into new group
-                    rockgroup->SetRotation(rotateAngle);
-                    //rockgroup->SetScale();
-
-                    Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup.get());
-                    rock_groups.push_back(rockgroup);
-                }
-                else {
-                    if (rock_groups.back()->GetIndex() != poly.polyindex) {             // if poly has different index
-                        auto rockgroup = std::make_shared<RockGroup>(poly.polyindex);   // make new group
-                        rockgroup->AddRock(poly);                                       //add poly into new group
-                        rockgroup->SetRotation(rotateAngle);
-                        //rockgroup->SetScale();
-
-                        Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup.get());
-                        rock_groups.push_back(rockgroup);
-                    }
-                    else {                                                              // if poly has same index
-                        rock_groups.back()->AddRock(poly);
-                    }
-                }*/
-
                 
             }
             
