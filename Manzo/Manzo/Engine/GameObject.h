@@ -113,4 +113,3 @@ namespace CS230 {
         friend class Sprite;
     };
 }
-

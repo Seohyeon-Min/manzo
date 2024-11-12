@@ -29,9 +29,9 @@ void Ship::Update(double dt)
         }
         else {
             if (hit_with) {
-                vec2 velocity = GetVelocity();  // ��ü�� �ӵ� ����
+                vec2 velocity = GetVelocity();
                 float velocity_magnitude = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
-                if(velocity_magnitude < 20.f) SetVelocity(direction * skidding_speed);
+                if (velocity_magnitude < 20.f) SetVelocity(direction * skidding_speed);
                 else SetVelocity(GetVelocity() * deceleration);
                 if (!beat->GetIsOnBeat()) {
                     SetVelocity(direction * skidding_speed);
@@ -92,7 +92,6 @@ void Ship::Move(double dt)
 {
     SetVelocity(force);
     force *= deceleration;
-    //std::cout << force.x << std::endl;
     if (!beat->GetIsOnBeat()) {
         SetVelocity(direction * skidding_speed);
         if (!clickable) { // wait for next beat
@@ -155,7 +154,7 @@ void Ship::HitWithReef(CS230::RectCollision* collision_edge) {
         velocity.y - 2 * dot_product * normal.y
     };
 
-    SetPosition(GetPosition() +  -GetVelocity() * 0.007f);
+    SetPosition(GetPosition() + -GetVelocity() * 0.007f);
     direction = reflection.Normalize();
     if (incoming_speed > 3300.f)  incoming_speed = 3300.f;
     if (incoming_speed < 150.f)  incoming_speed = 150.f;

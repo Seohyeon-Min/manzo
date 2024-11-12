@@ -121,9 +121,9 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
             {rectangle_1.Left(), rectangle_1.Top()}
         };
 
-        float min_distance = std::numeric_limits<float>::max();  // 최소 거리를 추적하기 위한 변수
-        int closest_index = -1;  // 가장 가까운 선분의 인덱스
-        bool is_colliding = true;  // 충돌 여부를 확인하는 변수
+        float min_distance = std::numeric_limits<float>::max(); 
+        int closest_index = -1; 
+        bool is_colliding = true; 
 
         for (int i = 0; i < other_poly.vertexCount; i++) {
             vec2 edge = { other_poly.vertices[(i + 1) % other_poly.vertexCount].x - other_poly.vertices[i].x,
@@ -137,17 +137,15 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
             ProjectPolygon(other_poly, axis, minB, maxB);
 
             if (maxA < minB || maxB < minA) {
-                is_colliding = false;  // 충돌하지 않는 경우
-                break;  // 루프를 종료하고 false 반환
+                is_colliding = false;  
+                break;  
             }
 
-            // 두 투영 간의 거리 계산
             float distance = std::min(std::abs(maxA - minB), std::abs(maxB - minA));
 
-            // 더 작은 거리를 찾으면 갱신
             if (distance < min_distance) {
                 min_distance = distance;
-                closest_index = i;  // 가장 가까운 선분의 인덱스를 저장
+                closest_index = i; 
             }
         }
 
@@ -155,11 +153,10 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
             return false;
         }
 
-        // 가장 가까운 선분 AB 저장
         if (closest_index != -1) {
             vec2 CollidingSide_1 = other_poly.vertices[closest_index];
             vec2 CollidingSide_2 = other_poly.vertices[(closest_index + 1) % other_poly.vertexCount];
-            colliding_edge = { CollidingSide_1, CollidingSide_2 };  // colliding_edge는 클래스 멤버 변수여야 함
+            colliding_edge = { CollidingSide_1, CollidingSide_2 }; 
         }
 
         return true;
@@ -207,10 +204,9 @@ bool CS230::MAP_SATCollision::IsCollidingWith(vec2 point) {
             return false;
         }
         else {
-            // 충돌이 발생한 축을 생성한 선분 저장
             vec2 point_1 = poly_1.vertices[i];
             vec2 point_2 = poly_1.vertices[(i + 1) % poly_1.vertexCount];
-            colliding_edge = { point_1 ,point_2 }; // 충돌에 기여한 선분 저장
+            colliding_edge = { point_1 ,point_2 }; 
         }
     }
 
@@ -245,10 +241,9 @@ bool CS230::MAP_SATCollision::IsCollidingWith(GameObject* other_object)
             return false;
         }
         else {
-            // 충돌이 발생한 축을 생성한 선분 저장
             vec2 point_1 = poly_1.vertices[i];
             vec2 point_2 = poly_1.vertices[(i + 1) % poly_1.vertexCount];
-            colliding_edge = { point_1 ,point_2 }; // 충돌에 기여한 선분 저장
+            colliding_edge = { point_1 ,point_2 }; 
         }
     }
 
@@ -269,10 +264,9 @@ bool CS230::MAP_SATCollision::IsCollidingWith(GameObject* other_object)
             return false;
         }
         else {
-            // 충돌이 발생한 축을 생성한 선분 저장
             vec2 point_1 = poly_1.vertices[i];
             vec2 point_2 = poly_1.vertices[(i + 1) % poly_1.vertexCount];
-            colliding_edge = { point_1 ,point_2 }; // 충돌에 기여한 선분 저장
+            colliding_edge = { point_1 ,point_2 };
         }
     }
 

@@ -61,7 +61,6 @@ void Mode1::Load() {
     background = new Background();
     AddGSComponent(background);
 
-
     //// audio
     Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("assets/audios/basic_beat_100_5.wav", "sample");
     if (sample) {
@@ -82,6 +81,11 @@ void Mode1::Load() {
     GetGSComponent<Background>()->Add("assets/images/sky_fourth.png", 0.6f);
     GetGSComponent<Background>()->Add("assets/images/sky_fifth.png", 0.7f);
 
+
+    //testing fish
+    /*BackgroundFish* bg_fish = new BackgroundFish();
+    GetGSComponent<CS230::GameObjectManager>()->Add(bg_fish);
+    bg_fish->AddBackgroundFishes(bg_fish);*/
 
     // Mouse and Particle
     AddGSComponent(new CS230::ParticleManager<Particles::MouseFollow>());

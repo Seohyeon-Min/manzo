@@ -51,6 +51,12 @@ namespace CS230 {
 	public:
 		void ParseSVG(const std::string& filename);
 		void AddDrawCall();
+
+		std::vector<Rock> GetRock()
+		{
+			return objects;
+		}
+
 	private:
 
 		std::vector<Rock> objects;

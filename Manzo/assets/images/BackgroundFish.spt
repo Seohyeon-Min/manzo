@@ -1,0 +1,4 @@
+assets/images/BackgroundFish.png
+HotSpot 5 5
+Anim assets/images/None.anm
+RectCollision -5 -5 5 5

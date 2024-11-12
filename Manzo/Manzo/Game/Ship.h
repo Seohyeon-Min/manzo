@@ -51,7 +51,7 @@ private:
     bool hit_with = false;
     vec2 force = {};
     vec2 destination;
-    vec2 direction = {0,0};
+    vec2 direction = { 0,0 };
     Beat* beat;
     Skillsys* skill;
 
