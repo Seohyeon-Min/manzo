@@ -18,7 +18,7 @@ const float WORLD_SIZE_MAX = (float)std::max(Engine::window_width, Engine::windo
 
 // Add a draw call to the corresponding vector based on the draw layer
 // Draw calls are grouped into first, normal, and late phases
-void CS230::Render::AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase) {
+void CS230::Render::AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase, DrawSettings setting) {
     if (phase == DrawLayer::DrawFirst) {
         draw_first_calls.push_back(drawCall); // Add to early phase
     }
@@ -108,17 +108,26 @@ namespace {
 
 // Draw an individual draw call (textured quad)
 // Converts world coordinates to normalized device coordinates (NDC)
-void CS230::Render::Draw(const DrawCall& draw_call, bool isUI) {
+void CS230::Render::Draw(const DrawCall& draw_call, DrawSettings settings, bool isUI) {
     const GLShader* shader = draw_call.shader;
     shader->Use(); // Use the specified shader
 
     // Ensure the texture is valid, then use it and send it to the shader
     if (draw_call.texture) {
+        //draw_call.texture->SetFiltering(GLTexture::Linear);
         draw_call.texture->UseForSlot(0);
         shader->SendUniform("uTex2d", 0);
     }
     else {
         throw std::runtime_error("no texture!"); // Error if no texture is assigned
+    }
+
+    if (settings.do_blending) {
+        glCheck(glEnable(GL_BLEND));
+        glCheck(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+    }
+    else {
+        glCheck(glDisable(GL_BLEND));
     }
 
     vec2 texture_size = (vec2)draw_call.texture->GetSize();
@@ -136,7 +145,7 @@ void CS230::Render::Draw(const DrawCall& draw_call, bool isUI) {
     if (draw_call.SetUniforms) {
         draw_call.SetUniforms(shader);
     }
-
+    
     model.Use(); // Bind the model for drawing
     GLDrawIndexed(model); // Draw the model
 

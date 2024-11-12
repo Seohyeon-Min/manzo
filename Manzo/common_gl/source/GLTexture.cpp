@@ -104,8 +104,8 @@ void GLTexture::UseForSlot([[maybe_unused]]unsigned int texture_unit) const noex
 
 void GLTexture::SetFiltering([[maybe_unused]] Filtering how_to_filter) noexcept
 {
-	GLenum min_filter = GL_NEAREST; // 기본값
-	GLenum mag_filter = GL_NEAREST; // 기본값
+	GLenum min_filter = GL_LINEAR; // 기본값
+	GLenum mag_filter = GL_LINEAR; // 기본값
 
 	switch (how_to_filter) {
 	case Filtering::NearestPixel:
