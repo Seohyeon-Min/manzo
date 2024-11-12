@@ -111,14 +111,25 @@ namespace {
 void CS230::Render::Draw(const DrawCall& draw_call, bool isUI) {
     const GLShader* shader = draw_call.shader;
     shader->Use(); // Use the specified shader
+    auto settings = draw_call.settings;
 
     // Ensure the texture is valid, then use it and send it to the shader
     if (draw_call.texture) {
+        //draw_call.texture->SetFiltering(GLTexture::Linear);
         draw_call.texture->UseForSlot(0);
         shader->SendUniform("uTex2d", 0);
     }
     else {
         throw std::runtime_error("no texture!"); // Error if no texture is assigned
+    }
+
+    if (settings.do_blending) {
+        glCheck(glEnable(GL_BLEND));
+        //glEnable(GL_MULTISAMPLE);//anti-alising
+        glCheck(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+    }
+    else {
+        glCheck(glDisable(GL_BLEND));
     }
 
     vec2 texture_size = (vec2)draw_call.texture->GetSize();
@@ -136,7 +147,7 @@ void CS230::Render::Draw(const DrawCall& draw_call, bool isUI) {
     if (draw_call.SetUniforms) {
         draw_call.SetUniforms(shader);
     }
-
+    
     model.Use(); // Bind the model for drawing
     GLDrawIndexed(model); // Draw the model
 

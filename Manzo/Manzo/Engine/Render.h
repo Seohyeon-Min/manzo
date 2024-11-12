@@ -4,6 +4,7 @@
 #include "GLTexture.h"
 #include "mat3.h"
 #include "color3.h"
+#include "DrawSetting.h"
 
 #include <vector>
 #include <unordered_map>
@@ -42,11 +43,13 @@ enum class DrawLayer {
 };
 
 namespace CS230 {
+
     struct DrawCall {
         GLTexture* texture;
         const mat3* transform;
         const GLShader* shader;
         std::function<void(const GLShader*)> SetUniforms = nullptr;
+         DrawSettings settings; // later, change it to pointer
     };
 
     struct LineDrawCall {
