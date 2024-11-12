@@ -91,8 +91,8 @@ void Mode1::Load() {
     // UI
     AddGSComponent(new UIManager());
     ui_manager = GetGSComponent<UIManager>();
-    std::shared_ptr<FuelUI> fuel_ui = std::make_shared<FuelUI>(ship_ptr);
-    ui_manager->AddUI(fuel_ui);
+
+    ui_manager->AddUI(std::make_unique<FuelUI>(ship_ptr));
 
     // Map
     GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/test.svg");
@@ -130,6 +130,7 @@ void Mode1::Unload() {
     ship_ptr = nullptr;
 	GetGSComponent<CS230::GameObjectManager>()->Unload();
     GetGSComponent<Background>()->Unload();
-	//fishGenerator->DeleteFish();
+    Engine::GetRender().ClearDrawCalls();
 	ClearGSComponents();
+	//fishGenerator->DeleteFish();
 }
