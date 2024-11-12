@@ -4,6 +4,7 @@
 #include "GLTexture.h"
 #include "mat3.h"
 #include "color3.h"
+#include "DrawSetting.h"
 
 #include <vector>
 #include <unordered_map>
@@ -43,24 +44,12 @@ enum class DrawLayer {
 
 namespace CS230 {
 
-    struct DrawSettings
-    {
-        int                   filtering_index = 0;
-        std::array<int, 2>    wrap_index = { 0, 0 };
-        float                 tex_coord_scale = 1.0f;
-        bool                  modulate_color = false;
-        bool                  apply_procedural_texture = false;
-        float                 procedural_tile_size = 8.0f;
-        bool                  use_texture = true;
-        bool                  do_blending = false;
-        bool                  animate_procedural_texture = false;
-    } settings;
-
     struct DrawCall {
         GLTexture* texture;
         const mat3* transform;
         const GLShader* shader;
         std::function<void(const GLShader*)> SetUniforms = nullptr;
+         DrawSettings settings; // later, change it to pointer
     };
 
     struct LineDrawCall {
@@ -83,7 +72,7 @@ namespace CS230 {
     public:
         Render() { CreatModel(); CreatLineModel(); };
 
-        void AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase = DrawLayer::Draw, DrawSettings setting = settings);
+        void AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase = DrawLayer::Draw);
         void AddDrawCall
         (vec2 start, vec2 end, color3 color, float width = 1.0f, float alpha = 255.0f, const GLShader* shader = nullptr, bool iscollision = true);
         void RenderAll();
@@ -94,7 +83,7 @@ namespace CS230 {
 
     private:
         // Internal render method
-        void Draw(const DrawCall& draw_call, DrawSettings setting = settings, bool isUI = false);
+        void Draw(const DrawCall& draw_call, bool isUI = false);
         void DrawBackground(const DrawCall& draw_call);
         void DrawLine(LineDrawCall drawcall);
         void DrawLinePro(LineDrawCallPro drawcall);

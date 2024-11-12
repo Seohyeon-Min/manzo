@@ -18,7 +18,7 @@ const float WORLD_SIZE_MAX = (float)std::max(Engine::window_width, Engine::windo
 
 // Add a draw call to the corresponding vector based on the draw layer
 // Draw calls are grouped into first, normal, and late phases
-void CS230::Render::AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase, DrawSettings setting) {
+void CS230::Render::AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase) {
     if (phase == DrawLayer::DrawFirst) {
         draw_first_calls.push_back(drawCall); // Add to early phase
     }
@@ -108,9 +108,10 @@ namespace {
 
 // Draw an individual draw call (textured quad)
 // Converts world coordinates to normalized device coordinates (NDC)
-void CS230::Render::Draw(const DrawCall& draw_call, DrawSettings settings, bool isUI) {
+void CS230::Render::Draw(const DrawCall& draw_call, bool isUI) {
     const GLShader* shader = draw_call.shader;
     shader->Use(); // Use the specified shader
+    auto settings = draw_call.settings;
 
     // Ensure the texture is valid, then use it and send it to the shader
     if (draw_call.texture) {
@@ -124,6 +125,7 @@ void CS230::Render::Draw(const DrawCall& draw_call, DrawSettings settings, bool 
 
     if (settings.do_blending) {
         glCheck(glEnable(GL_BLEND));
+        //glEnable(GL_MULTISAMPLE);//anti-alising
         glCheck(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     }
     else {

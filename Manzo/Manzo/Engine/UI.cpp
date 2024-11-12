@@ -1,4 +1,5 @@
 #include "UI.h"
+#include "DrawSetting.h"
 
 void FuelUI::SetFuelBarUniforms(const GLShader* shader) {
     shader->SendUniform("uFilled", normalized_fuel);
@@ -23,6 +24,8 @@ void FuelUI::Update(double dt)
 
 void FuelUI::AddDrawCall()
 {
+    DrawSettings settings;
+    settings.do_blending = true;
 
     draw_call = {
         background_texture,                       // Texture to draw
@@ -30,7 +33,8 @@ void FuelUI::AddDrawCall()
         Engine::GetShaderManager().GetShader("health_bar"), // Shader to use
         [this](const GLShader* shader) {
             this->SetFuelBarUniforms(shader);
-        }
+        }, 
+        settings
     };
 
     Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawUI);
@@ -41,7 +45,8 @@ void FuelUI::AddDrawCall()
         Engine::GetShaderManager().GetDefaultShader(), // Shader to use
         [this](const GLShader* shader) {
             this->SetFuelBarUniforms(shader);
-        }
+        },
+        settings
     };
 
     Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawUI);

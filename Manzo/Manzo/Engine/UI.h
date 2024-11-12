@@ -22,7 +22,7 @@ private:
     vec2 position;
     CS230::DrawCall draw_call;
     mat3 parallax_matrix;
-    float scale = 2.0f;
+    float scale = 0.34f;
     float y_padding = 24.f;
     float x_padding = 8.f;
     float normalized_fuel = 1.0f;

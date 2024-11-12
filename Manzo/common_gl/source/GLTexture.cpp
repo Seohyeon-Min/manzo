@@ -124,7 +124,7 @@ void GLTexture::SetFiltering([[maybe_unused]] Filtering how_to_filter) noexcept
 
 void GLTexture::SetWrapping([[maybe_unused]] Wrapping how_to_wrap, [[maybe_unused]] Coordinate coord) noexcept
 {
-	GLenum wrap_mode = GL_CLAMP_TO_BORDER; // 기본값
+	GLenum wrap_mode = GL_CLAMP_TO_EDGE; // 기본값
 
 	switch (how_to_wrap) {
 	case Wrapping::ClampToEdge:
