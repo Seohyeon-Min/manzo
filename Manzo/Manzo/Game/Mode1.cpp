@@ -69,8 +69,8 @@ void Mode1::Load() {
     }
 
     //// to generate fish
-    //fishGenerator = new FishGenerator();
-    //Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
+    fishGenerator = new FishGenerator();
+    Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
 
 
     //GetGSComponent<Background>()->Add("assets/images/sky_first.png", 0.3f);
@@ -102,7 +102,7 @@ void Mode1::Update(double dt) {
     //camera postion update
     camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
 
-	//fishGenerator->GenerateFish(dt);
+	fishGenerator->GenerateFish(dt);
 
     if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Q)) {
         Engine::GetGameStateManager().ClearNextGameState();
@@ -125,6 +125,9 @@ void Mode1::Draw() {
 void Mode1::Unload() {
 
     ship_ptr = nullptr;
+    fishGenerator->~FishGenerator();
+    delete fishGenerator;
+    fishGenerator = nullptr;
 	GetGSComponent<CS230::GameObjectManager>()->Unload();
     //GetGSComponent<Background>()->Unload();
     Engine::GetRender().ClearDrawCalls();

@@ -35,5 +35,7 @@ void FishGenerator::GenerateFish(double dt)
 
 FishGenerator::~FishGenerator()
 {
+    delete timer;
+    timer = nullptr;
     fishList.clear();
 }
