@@ -26,6 +26,9 @@ void FishGenerator::GenerateFish(double dt)
 		{
 			for (int i = 0; i < 4; i++)
 			{
+				//linked list 느낌으로 물고기들을 생성해야 만약에 parent가 사라지면 그 next를 parent로 설정할 수 있을듯
+				//tree구조가 더 나을거 같기도?
+				//additionalFish를 생성할 때 snake h.w 참고해서 linked list나 아니면 tree로 만들기
 				Fish* additionalFish = new Fish(newFish);
 
 				int formation_index = i + 1;
