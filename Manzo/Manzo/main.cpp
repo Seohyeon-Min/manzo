@@ -17,13 +17,13 @@ int main() {
         GLApp OpenGLAPPlication("Manzo");
         Engine& engine = Engine::Instance();
 
+        Mode2 mode2;
+        engine.GetGameStateManager().AddGameState(mode2);
 
         Mode1 mode1;
         engine.GetGameStateManager().AddGameState(mode1);
 
 
-        Mode2 mode2;
-        engine.GetGameStateManager().AddGameState(mode2);
 
         SDL_GL_SetSwapInterval(1);
 
