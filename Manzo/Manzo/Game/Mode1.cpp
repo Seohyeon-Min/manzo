@@ -55,7 +55,7 @@ void Mode1::Load() {
     //// camera
     camera = new CS230::Cam();
     AddGSComponent(camera);
-    camera->SetLimit({{0,0},{1920,1080}});
+    camera->SetLimit({{0,0},{640,1080}});
 
     //// background
     background = new Background();
