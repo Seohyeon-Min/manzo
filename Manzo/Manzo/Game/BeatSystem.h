@@ -12,6 +12,7 @@ public:
     bool GetIsOnBeat() { return is_on_beat; }
     void SetBPM(int set_BPM) { BPM = set_BPM; duration = 60.0 / BPM; }
     int GetBarCount() { return bar_count; }
+    int GetDelayCount() { return delay_count; }
 
 private:
     int BPM = 100;
