@@ -12,7 +12,7 @@ Updated:    03/14/2024
 #pragma once
 
 enum class States {
-    Mode2,
     Mode1,
+    Mode2,
     Splash
 };

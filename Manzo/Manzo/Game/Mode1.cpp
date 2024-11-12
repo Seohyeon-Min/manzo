@@ -73,11 +73,11 @@ void Mode1::Load() {
     Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
 
 
-    GetGSComponent<Background>()->Add("assets/images/background/sky_first.png", 0.3f);
-    GetGSComponent<Background>()->Add("assets/images/background/sky_second.png", 0.4f);
-    GetGSComponent<Background>()->Add("assets/images/background/sky_third.png", 0.5f);
-    GetGSComponent<Background>()->Add("assets/images/background/sky_fourth.png", 0.6f);
-    GetGSComponent<Background>()->Add("assets/images/background/sky_fifth.png", 0.7f);
+    GetGSComponent<Background>()->Add("assets/images/background/bg1.png", 0.3f);
+    GetGSComponent<Background>()->Add("assets/images/background/bg2.png", 0.4f);
+    GetGSComponent<Background>()->Add("assets/images/background/bg3.png", 0.5f);
+    GetGSComponent<Background>()->Add("assets/images/background/bg4.png", 0.6f);
+    GetGSComponent<Background>()->Add("assets/images/background/bg5.png", 0.7f);
 
 
     // Mouse and Particle
