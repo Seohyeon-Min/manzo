@@ -35,7 +35,7 @@ public:
 	bool collided = false;
 
 	void Update(double dt);
-	void Draw();
+	void Draw(DrawLayer drawlayer)override;
 
 private:
 	double swimming_range = 15.0;
@@ -52,7 +52,7 @@ public:
 	void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
 
 	void Update(double dt);
-	void Draw();
+	void Draw(DrawLayer drawlayer)override;
 
 	void AddBackgroundFishes(BackgroundFish* obj)
 	{

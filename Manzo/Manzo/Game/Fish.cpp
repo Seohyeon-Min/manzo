@@ -63,9 +63,9 @@ void Fish::Update(double dt) {
 	}
 }
 
-void Fish::Draw()
+void Fish::Draw(DrawLayer drawlayer)
 {
-	CS230::GameObject::Draw(DrawLayer::DrawFirst);
+	CS230::GameObject::Draw(DrawLayer::DrawLast);
 }
 
 void Fish::ReadFishCSV(const std::string& filename)
@@ -314,7 +314,7 @@ void BackgroundFish::Update(double dt) {
 	}
 }
 
-void BackgroundFish::Draw()
+void BackgroundFish::Draw(DrawLayer drawlayer)
 {
-	GameObject::Draw(DrawLayer::DrawFirst);
+	GameObject::Draw(DrawLayer::DrawLast);
 }
