@@ -19,6 +19,11 @@ void Background::Add(const std::filesystem::path& texture_path, float speed)
 
 void Background::Unload()
 {
+    for (ParallaxLayer& background : backgrounds) {
+        delete background.texture;
+        delete &background.matrix;
+    }
+
     backgrounds.clear();
 }
 
