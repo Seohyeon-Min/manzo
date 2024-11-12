@@ -20,6 +20,7 @@ Created:    March 8, 2023
 
 class Reef;
 class Ship;
+class Boss;
 
 class Mode1 : public CS230::GameState {
 public:
@@ -38,5 +39,6 @@ private:
     FishGenerator* fishGenerator;
     Fish* fish;
     Background* background;
+    Boss* boss_ptr;
     CS230::Cam* camera;
 };

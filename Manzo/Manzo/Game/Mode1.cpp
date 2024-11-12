@@ -26,6 +26,7 @@ Created:    March 8, 2023
 #include "Fish.h"
 #include "Reef.h"
 #include "Skill.h"
+#include "Boss.h"
 
 #include <iostream>
 
@@ -56,8 +57,7 @@ void Mode1::Load() {
 
     //// background
     background = new Background();
-    AddGSComponent(background);
-
+    AddGSComponent(background);    
 
     //// audio
     Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("assets/audios/basic_beat_100_5.wav", "sample");
@@ -79,10 +79,8 @@ void Mode1::Load() {
     AddGSComponent(new CS230::ParticleManager<Particles::MouseFollow>());
     AddGSComponent(new Mouse());
     //Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::Mouse>>()->Emit(2, mouse_position, { 0, 0 }, { 0, 100 }, M_PI / 2);
-    
-    //parser test/////////////////////////////////////////////////////////////////// you can get rid of them
-    
-    //////////////////////////////////////////////////////////////////////////////////////////////
+    Boss::LoadBossfile();
+   
 }
 
 void Mode1::Update(double dt) {
@@ -105,36 +103,8 @@ void Mode1::Update(double dt) {
 
     }
     if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::E)) {
-        CS230::JsonParser* parser = new CS230::JsonParser("assets/jsons/boss_e.json");
-        AddGSComponent(parser);
-        std::cout << "Boss name: " << parser->GetBossName() << std::endl;
-        std::cout << "Index: " << parser->GetIndex() << std::endl;
-        std::cout << "Is Boss Fight: " << std::boolalpha << parser->IsBossFight() << std::endl;
-        std::cout << "BPM: " << parser->GetBPM() << std::endl;
-        std::cout << "Mp3: " << parser->GetMp3() << std::endl;
-
-        std::cout << "Move Position: ";
-        for (auto& pos : parser->GetMovePosition()) {
-            std::cout << pos << " ";
-        }
-        std::cout << std::endl;
-
-        std::cout << "Parttern:" << std::endl;
-        for (const auto& entryVec : parser->GetParttern()) {
-            for (const auto& entry : entryVec) {
-                std::cout << "Isnotelong: " << entry.Isnotelong << ", "
-                    << "Position: (" << entry.position.x << ", " << entry.position.y << "), "
-                    << "Delay: " << entry.delay << std::endl;
-            }
-            std::cout << "---- End of Entry ----" << std::endl;
-        }
-
-        std::cout << "Total Entry: ";
-        for (const auto& entry : parser->GetTotalEntry()) {
-            std::cout << entry << " ";
-        }
-        std::cout << std::endl;
-        
+        boss_ptr = new Boss({ 0,0 }, Boss::BossType::e);
+        GetGSComponent<CS230::GameObjectManager>()->Add(boss_ptr);
     }
 }
 
