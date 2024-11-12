@@ -26,18 +26,19 @@ void Boss::State_CutScene::Enter(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
 	Engine::GetAudioManager().StopMusic();
 	boss->beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
-	boss->beat->SetBPM(boss->bpm);
+	
 }
 void Boss::State_CutScene::Update(GameObject* object, double dt) {
 	Boss* boss = static_cast<Boss*>(object);
 }
 void Boss::State_CutScene::CheckExit(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
-	if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::R)) {
+	if (Engine::GetInput().KeyDown(CS230::Input::Keys::R)&& boss->beat->GetBeat()) {
 		Mix_Music* e_music = Engine::GetAudioManager().LoadMusic(boss->mp3_file_name, "E_Music");
 		if (e_music) {
 			Engine::GetAudioManager().PlayMusic(e_music, -1);
 		}
+		boss->beat->SetBPM(boss->bpm);
 		boss->change_state(&boss->entry1);
 	}
 }
@@ -45,19 +46,27 @@ void Boss::State_CutScene::CheckExit(GameObject* object) {
 void Boss::Entry1::Enter(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
 }
+
 void Boss::Entry1::Update(GameObject* object, double dt) {
 	Boss* boss = static_cast<Boss*>(object);
+	std::cout << "Get Beat : " << boss->beat->GetBeat() << std::endl;
+	std::cout << "Delay Count : " << boss->beat->GetDelayCount() << std::endl;
+
+	if ((boss->index)-1 < boss->parttern.size()) {
+		const auto& entryVec = boss->parttern[(boss->index) - 1]; 
+		for (const auto& entryData : entryVec) {
+			if (entryData.delay == boss->beat->GetDelayCount()) {
+				boss->current_position = entryData.position;
+				std::cout << "Position updated to: (" << entryData.position.x << ", " << entryData.position.y << ")" << std::endl;
+			}
+		}
+
+	}
 }
 void Boss::Entry1::CheckExit(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
 }
 
-void Boss::Update(double dt) {
-	GameObject::Update(dt);
-	if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
-
-	}
-}
 
 void Boss::LoadBossfile() {
 	BossJSONfileMap.push_back("assets/jsons/boss_e.json");

@@ -17,7 +17,7 @@ public:
 	Boss(vec2 start_position, BossType type);
 	GameObjectTypes Type() override { return GameObjectTypes::Boss; }
 	std::string TypeName() override { return "Boss"; }
-	void Update(double dt) override;
+	//void Update(double dt) override;
 	void Draw() override;
 	bool CanCollideWith(GameObjectTypes) override;
 	void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
@@ -57,5 +57,6 @@ private:
 	std::vector<int> total_entry;
 	int Boss_damage;
 	std::vector<int> Boss_procedural;
+	vec2 current_position;
 };
 
