@@ -3,7 +3,7 @@
     "Index" : 1,
     "Isbossfight" : false,
     "BPM" : 100,
-    "Mp3" : "file road here",
+    "Mp3" : "assets/audios/e_temp_morse_1.wav",
     "Position" : [0,0],
     "Total entry" : [1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4],
     "Parttern" : [
