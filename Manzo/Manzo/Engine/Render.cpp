@@ -154,6 +154,16 @@ void CS230::Render::RenderBackgrounds()
     draw_background_calls.clear();
 }
 
+void CS230::Render::ClearDrawCalls()
+{
+    draw_first_calls.clear();
+    draw_calls.clear();
+    draw_late_calls.clear();
+    draw_line_calls.clear();
+    draw_ui_calls.clear();
+    draw_collision_calls.clear();
+}
+
 
 void CS230::Render::DrawBackground(const DrawCall& draw_call)
 {

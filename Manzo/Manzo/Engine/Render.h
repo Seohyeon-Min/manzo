@@ -76,6 +76,7 @@ namespace CS230 {
         void CreatModel();
         void CreatLineModel();
         void RenderBackgrounds();
+        void ClearDrawCalls();
 
     private:
         // Internal render method
