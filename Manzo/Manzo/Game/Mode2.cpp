@@ -35,8 +35,6 @@ void Mode2::Load() {
     AddGSComponent(new Beat());
     AddGSComponent(new AudioManager());
     AddGSComponent(new Skillsys());
-    //AddGSComponent(new Background());
-    //GetGSComponent<Background>()->Add("assets/images/temp_back.png", 0.25);
 
     //// ship
     ship_ptr = new Ship({ 0, -250 });
@@ -49,9 +47,9 @@ void Mode2::Load() {
 
 
     //// background
-    background = new Background();
+    /*background = new Background();
     AddGSComponent(background);
-    GetGSComponent<Background>()->Add("assets/images/temp_back2.png", 0.25f);
+    GetGSComponent<Background>()->Add("assets/images/temp_back2.png", 0.25f);*/
 
 
     //// audio
@@ -86,14 +84,15 @@ void Mode2::Update(double dt) {
 }
 
 void Mode2::Draw() {
-    GetGSComponent<Background>()->Draw(*GetGSComponent<CS230::Cam>());
+    //GetGSComponent<Background>()->Draw(*GetGSComponent<CS230::Cam>());
 
     GetGSComponent<CS230::GameObjectManager>()->DrawAll();
 }
 
 void Mode2::Unload() {
     ship_ptr = nullptr;
+    Skill_ptr = nullptr;
     GetGSComponent<CS230::GameObjectManager>()->Unload();
-    GetGSComponent<Background>()->Unload();
+    //GetGSComponent<Background>()->Unload();
     ClearGSComponents();
 }

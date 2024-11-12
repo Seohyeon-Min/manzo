@@ -289,9 +289,6 @@ void Rock::Draw()
 
 
 RockGroup::RockGroup(const std::string& index) :GameObject({ 0,0 }), index(index){}
-RockGroup::~RockGroup() {
-
-}
 
 void RockGroup::Update(double dt)
 {
