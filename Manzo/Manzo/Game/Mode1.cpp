@@ -71,15 +71,12 @@ void Mode1::Load() {
     fishGenerator = new FishGenerator();
     Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
 
-    //// reef
-    reef = new Reef({ -400,200 });
-    GetGSComponent<CS230::GameObjectManager>()->Add(reef);
 
-    GetGSComponent<Background>()->Add("assets/images/sky_first.png", 0.3f);
-    GetGSComponent<Background>()->Add("assets/images/sky_second.png", 0.4f);
-    GetGSComponent<Background>()->Add("assets/images/sky_third.png", 0.5f);
-    GetGSComponent<Background>()->Add("assets/images/sky_fourth.png", 0.6f);
-    GetGSComponent<Background>()->Add("assets/images/sky_fifth.png", 0.7f);
+    GetGSComponent<Background>()->Add("assets/images/background/bg1.png", 0.3f);
+    GetGSComponent<Background>()->Add("assets/images/background/bg2.png", 0.4f);
+    GetGSComponent<Background>()->Add("assets/images/background/bg3.png", 0.5f);
+    GetGSComponent<Background>()->Add("assets/images/background/bg4.png", 0.6f);
+    GetGSComponent<Background>()->Add("assets/images/background/bg5.png", 0.7f);
 
 
     //testing fish
@@ -124,7 +121,7 @@ void Mode1::Update(double dt) {
 
 void Mode1::Draw() {
     GetGSComponent<Background>()->Draw(*GetGSComponent<CS230::Cam>());
-    //GetGSComponent<CS230::Map>()->AddDrawCall();
+    GetGSComponent<CS230::Map>()->AddDrawCall();
     GetGSComponent<CS230::GameObjectManager>()->DrawAll();
     ui_manager->AddDrawCalls();
 }
@@ -132,6 +129,9 @@ void Mode1::Draw() {
 void Mode1::Unload() {
 
     ship_ptr = nullptr;
+    fishGenerator->~FishGenerator();
+    delete fishGenerator;
+    fishGenerator = nullptr;
 	GetGSComponent<CS230::GameObjectManager>()->Unload();
     GetGSComponent<Background>()->Unload();
     Engine::GetRender().ClearDrawCalls();

@@ -25,9 +25,9 @@ void FishGenerator::GenerateFish(double dt)
 		{
 			for (int i = 0; i < 4; i++)
 			{
-				//linked list ´À³¦À¸·Î ¹°°í±âµéÀ» »ý¼ºÇØ¾ß ¸¸¾à¿¡ parent°¡ »ç¶óÁö¸é ±× next¸¦ parent·Î ¼³Á¤ÇÒ ¼ö ÀÖÀ»µí
-				//tree±¸Á¶°¡ ´õ ³ªÀ»°Å °°±âµµ?
-				//additionalFish¸¦ »ý¼ºÇÒ ¶§ snake h.w Âü°íÇØ¼­ linked list³ª ¾Æ´Ï¸é tree·Î ¸¸µé±â
+				//linked list ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½ï¿½ï¿½à¿¡ parentï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ nextï¿½ï¿½ parentï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+				//treeï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½âµµ?
+				//additionalFishï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ snake h.w ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ linked listï¿½ï¿½ ï¿½Æ´Ï¸ï¿½ treeï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
 				Fish* additionalFish = new Fish(newFish);
 
 				int formation_index = i + 1;
@@ -66,5 +66,7 @@ void FishGenerator::GenerateFish(double dt)
 
 FishGenerator::~FishGenerator()
 {
-	fishList.clear();
+    delete timer;
+    timer = nullptr;
+    fishList.clear();
 }

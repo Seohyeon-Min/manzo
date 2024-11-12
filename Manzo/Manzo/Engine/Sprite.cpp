@@ -36,6 +36,10 @@ CS230::Sprite& CS230::Sprite::operator=(Sprite&& temporary) noexcept {
 
 CS230::Sprite::~Sprite()
 {
+    for (Animation* animation : animations) {
+        delete animation;
+    }
+    animations.clear();
 }
 
 void CS230::Sprite::Load(const std::filesystem::path& sprite_file, GameObject* object) {

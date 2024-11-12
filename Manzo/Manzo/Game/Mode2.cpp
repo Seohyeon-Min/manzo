@@ -35,8 +35,6 @@ void Mode2::Load() {
     AddGSComponent(new Beat());
     AddGSComponent(new AudioManager());
     AddGSComponent(new Skillsys());
-    //AddGSComponent(new Background());
-    //GetGSComponent<Background>()->Add("assets/images/temp_back.png", 0.25);
 
     //// ship
     ship_ptr = new Ship({ 0, -250 });
@@ -92,8 +90,10 @@ void Mode2::Draw() {
 }
 
 void Mode2::Unload() {
-    ship_ptr = nullptr;
     GetGSComponent<CS230::GameObjectManager>()->Unload();
     GetGSComponent<Background>()->Unload();
     ClearGSComponents();
+    ship_ptr = nullptr;
+    Skill_ptr = nullptr;
+    background = nullptr;
 }

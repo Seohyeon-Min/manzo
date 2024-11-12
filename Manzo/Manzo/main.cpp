@@ -21,7 +21,6 @@ int main() {
         Mode1 mode1;
         engine.GetGameStateManager().AddGameState(mode1);
 
-
         Mode2 mode2;
         engine.GetGameStateManager().AddGameState(mode2);
 

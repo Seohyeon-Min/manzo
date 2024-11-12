@@ -27,7 +27,9 @@ class RockGroup : public CS230::GameObject //group of polys
 {
 public:
 	RockGroup(const std::string& index);
-	~RockGroup();
+	~RockGroup() {
+		rocks.clear();
+	}
 	GameObjectTypes Type() override { return GameObjectTypes::Reef; }
 	std::string TypeName() override { return "Rock Group"; }
 	void Update(double dt);
@@ -49,6 +51,10 @@ private:
 namespace CS230 {
 	class Map : public CS230::Component {
 	public:
+		~Map() {
+			objects.clear();
+			rock_groups.clear();
+		}
 		void ParseSVG(const std::string& filename);
 		void AddDrawCall();
 
@@ -60,7 +66,8 @@ namespace CS230 {
 	private:
 
 		std::vector<Rock> objects;
-		std::list<RockGroup*> rock_groups;		//vector for groups
+		std::vector<RockGroup*> rock_groups;		//vector for groups
+		//std::list<RockGroup*> rock_groups;		//vector for groups
 		//std::vector<std::shared_ptr<RockGroup>> rock_groups;
 
 	};
