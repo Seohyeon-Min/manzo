@@ -58,14 +58,14 @@ void Ship::SetDest()
 
     if (set_dest) { // if clicked the destination
         if (!beat->GetIsOnBeat() && !ready_to_move && !move) { // wait for next beat
-            //std::cout << "ready_to_move" << std::endl;
             ready_to_move = true;
         }
     }
 
     if (ready_to_move && beat->GetBeat()) { // move when its on next beat
-        initialPosition = GetPosition();
-        //std::cout << "move" << std::endl;
+        direction = { destination.x - (GetPosition().x), destination.y - (GetPosition().y) };
+        direction = direction.Normalize();
+        force = { (direction * speed) };
         move = true;
         set_dest = false;
         ready_to_move = false;
@@ -73,47 +73,16 @@ void Ship::SetDest()
 }
 
 void Ship::Move(double dt)
-{ // there is a bug that if destination is too short, ship doesn't move any more
-
-    double distanceMoved_SQUARED = (double)pow(GetPosition().x - initialPosition.x, 2) + pow(GetPosition().y - initialPosition.y, 2);
-
-
-    vec2 direction = { destination.x - (GetPosition().x),
-                         destination.y - (GetPosition().y) };
-    //vec2 direction = { destination.x - (GetPosition().x - (float)Engine::GetGameStateManager().GetGSComponent<CS230::Camera>()->GetPosition().x),
-                //			 destination.y - (GetPosition().y - (float)Engine::GetGameStateManager().GetGSComponent<CS230::Camera>()->GetPosition().y)};
-    float magnitude = (float)sqrt(direction.x * direction.x + direction.y * direction.y);
-
-    if (magnitude != 0) {
-        direction.x /= magnitude;
-        direction.y /= magnitude;
-    }
-
-
-    if (distanceMoved_SQUARED >= totalDistanceToMove_SQUARED) { // stop
-
-        SetVelocity({ 0, 0 });
-        currentSpeed = initialSpeed;
-        if (beat->GetIsOnBeat() && !clickable) { // wait for next beat
-            //std::cout << "clickable" << std::endl;
+{
+    SetVelocity(force);
+    force *= deceleration;
+    std::cout << force.x << std::endl;
+    if (!beat->GetIsOnBeat()) {
+        SetVelocity(direction * skidding_speed);
+        if (!clickable) { // wait for next beat
             clickable = true;
         }
-        if (beat->GetBeat()) {
-            //std::cout << "move_false" << std::endl;
-            move = false;
-        }
-
-
-    }
-    else {
-        SetVelocity({ direction.x * float(initialSpeed), direction.y * float(initialSpeed) }); //move if left
-        if (currentSpeed > 0) {
-            currentSpeed -= (float)(deceleration);
-            if (currentSpeed < 0)
-            {
-                currentSpeed = 0;
-            }
-        }
+        move = false;
     }
 }
 
@@ -189,20 +158,9 @@ void Ship::SetMaxFuel(double input)
 {
     Maxfuel = input;
 }
+
 void Ship::HitWithReef()
 {
     fuel -= HitDecFuel;
     std::cout << "Collision with Reef!" << std::endl;
-}
-bool Ship::IsTouchingReef()
-{
-    if (isCollidingWithReef == true)
-    {
-        return true;
-    }
-    return false;
-}
-bool Ship::IsFuelZero()
-{
-    return FuelFlag;
 }

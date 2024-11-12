@@ -22,8 +22,6 @@ Fish::Fish(Fish* parent) : CS230::GameObject({ 0, 0 }) {
 	{
 		index = 2;
 		type = parent->type;
-		SetVelocity(parent->GetPosition());
-		SetPosition(parent->GetPosition());
 	}
 
 	AddGOComponent(new CS230::Sprite(fishBook[index].filePath, this));

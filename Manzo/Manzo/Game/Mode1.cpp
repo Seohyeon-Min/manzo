@@ -15,6 +15,8 @@ Created:    March 8, 2023
 #include "../Engine/Particle.h"
 #include "../Engine/MapManager.h"
 #include "../Engine/Rapidjson.h"
+#include "../Engine/UI.h"
+
 
 #include "Particles.h"
 #include "Mouse.h"
@@ -45,6 +47,7 @@ void Mode1::Load() {
     AddGSComponent(new CS230::GameObjectManager());
     AddGSComponent(new Beat());
     AddGSComponent(new CS230::Map());
+
 
     //// ship
     ship_ptr = new Ship({ Engine::window_width / 2, Engine::window_height / 2 });
@@ -80,6 +83,15 @@ void Mode1::Load() {
     //Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::Mouse>>()->Emit(2, mouse_position, { 0, 0 }, { 0, 100 }, M_PI / 2);
     Boss::LoadBossfile();
    
+
+    // UI
+    AddGSComponent(new UIManager());
+    ui_manager = GetGSComponent<UIManager>();
+
+    ui_manager->AddUI(std::make_unique<FuelUI>(ship_ptr));
+
+    // Map
+    GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/test.svg");
 }
 
 void Mode1::Update(double dt) {
@@ -110,6 +122,7 @@ void Mode1::Update(double dt) {
 void Mode1::Draw() {
     GetGSComponent<Background>()->Draw(*GetGSComponent<CS230::Cam>());
     GetGSComponent<CS230::GameObjectManager>()->DrawAll();
+    ui_manager->AddDrawCalls();
 }
 
 void Mode1::Unload() {
@@ -117,7 +130,8 @@ void Mode1::Unload() {
     ship_ptr = nullptr;
 	GetGSComponent<CS230::GameObjectManager>()->Unload();
     GetGSComponent<Background>()->Unload();
-	//fishGenerator->DeleteFish();
+    Engine::GetRender().ClearDrawCalls();
 	ClearGSComponents();
     Engine::GetAudioManager().StopMusic();
+	//fishGenerator->DeleteFish();
 }
