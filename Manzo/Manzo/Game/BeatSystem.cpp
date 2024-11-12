@@ -48,3 +48,17 @@ void Beat::Update(double dt)
 			is_on_beat = false;
 	}
 }
+
+void Beat::SetBPM(int set_BPM)
+{
+	BPM = set_BPM; 
+	duration = 60.0 / BPM; 
+	delay_duration = duration / 4;
+	current_delay_duration = 0;
+	time_taken = 0;
+	bar_count = 0;
+	beat_count = 0;
+	delay_count = 0;
+	beat = false;
+	is_on_beat = false;
+}
