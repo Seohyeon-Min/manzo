@@ -9,3 +9,12 @@ struct [[nodiscard]] Polygon
 	int polycount;
 	std::string polyindex;
 };
+
+
+struct [[nodiscard]] EntryData {
+	float Isnotelong;
+	vec2 position;
+	float delay;
+
+
+};

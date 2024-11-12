@@ -13,7 +13,10 @@
 
 using namespace rapidjson;
 
+
 namespace CS230 {
+
+
     class JsonParser : public CS230::Component {
     public:
         JsonParser(std::string path);
@@ -25,7 +28,8 @@ namespace CS230 {
         inline int GetBPM() { return bpm; }
         inline std::string GetMp3() { return mp3; }
         inline std::array<int, 2> GetMovePosition() { return move_position; }
-        inline std::vector<std::vector<std::vector<float>>> GetParttern() { return parttern; }
+        inline std::vector<std::vector<EntryData>> GetParttern() { return parttern; }
+        inline std::vector<int> GetTotalEntry() { return total_entry; }
 
     private:
         Document document;
@@ -36,12 +40,13 @@ namespace CS230 {
         int bpm;
         std::string mp3;
         std::array<int, 2> move_position;
-        std::vector<std::vector<std::vector<float>>> parttern;
+        std::vector<std::vector<EntryData>> parttern;
+        std::vector<int> total_entry;
     };
 
     JsonParser::JsonParser(std::string path)
         : boss_name(""), index(0), is_boss_fight(false), bpm(0), mp3(""),
-        move_position({ 0, 0 }), parttern() {
+        move_position({ 0, 0 }), parttern(), total_entry() {
 
         FILE* fptr = nullptr;
         errno_t err = fopen_s(&fptr, path.c_str(), "rb");
@@ -84,21 +89,28 @@ namespace CS230 {
             }
         }
 
+        if (document.HasMember("Total entry") && document["Total entry"].IsArray()) {
+            const auto& totalEntryArray = document["Total entry"].GetArray();
+            for (const auto& entry : totalEntryArray) {
+                if (entry.IsInt()) {
+                    total_entry.push_back(entry.GetInt());
+                }
+            }
+        }
+
         if (document.HasMember("Parttern") && document["Parttern"].IsArray()) {
             const auto& partternArray = document["Parttern"].GetArray();
             for (const auto& entry : partternArray) {
                 if (entry.IsObject() && entry.HasMember("entry") && entry["entry"].IsArray()) {
-                    std::vector<std::vector<float>> entryVec;
+                    std::vector<EntryData> entryVec;
                     const auto& entryList = entry["entry"].GetArray();
                     for (const auto& pointsArray : entryList) {
-                        if (pointsArray.IsArray()) {
-                            std::vector<float> beat_belay;
-                            for (const auto& point : pointsArray.GetArray()) {
-                                if (point.IsNumber()) {
-                                    beat_belay.push_back(point.GetFloat());
-                                }
-                            }
-                            entryVec.push_back(beat_belay);
+                        if (pointsArray.IsArray() && pointsArray.Size() == 4) {
+                            EntryData entryData;
+                            entryData.Isnotelong = pointsArray[0].GetFloat();
+                            entryData.position = vec2(pointsArray[1].GetFloat(), pointsArray[2].GetFloat());
+                            entryData.delay = pointsArray[3].GetFloat();
+                            entryVec.push_back(entryData);
                         }
                     }
                     parttern.push_back(entryVec);
