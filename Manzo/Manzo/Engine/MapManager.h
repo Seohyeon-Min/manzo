@@ -17,7 +17,7 @@ public:
 	std::string TypeName() override { return "Polygon"; }
 	void Update(double dt);
 	void Draw();
-	Polygon GetPoly() { return poly; }
+	const Polygon& GetPolygon() { return poly; }
 private:
 	Polygon poly;
 };

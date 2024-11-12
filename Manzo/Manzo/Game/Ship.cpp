@@ -52,7 +52,7 @@ void Ship::Update(double dt)
 }
 
 
-void Ship::Draw()
+void Ship::Draw(DrawLayer drawlayer)
 {
     CS230::GameObject::Draw();
 }

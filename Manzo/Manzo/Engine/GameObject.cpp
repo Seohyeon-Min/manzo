@@ -11,6 +11,8 @@ Updated:    04/30/2024
 
 #include "GameObject.h"
 
+#include <optional> 
+
 CS230::GameObject::GameObject(vec2 position) :
 	GameObject(position, 0, { 1, 1 }) {}
 
@@ -40,19 +42,26 @@ void CS230::GameObject::change_state(State* new_state) {
 }
 
 
-void CS230::GameObject::Draw() {
+void CS230::GameObject::Draw(DrawLayer drawlayer) {
 	Sprite* sprite = GetGOComponent<Sprite>();
 	if (sprite != nullptr) {
 		if (shader == nullptr) {
 			shader = Engine::GetShaderManager().GetDefaultShader();
 		}
-		Engine::GetRender().AddDrawCall(
-			{
+
+		DrawCall draw_call = {
 			sprite->GetTexture(),
 			&GetMatrix(),
-			shader,
-			}
-			);
+			shader
+		};
+
+		// DrawLayer가 기본값이 아니면 `AddDrawCall`에 추가
+		if (drawlayer != DrawLayer::Draw) {
+			Engine::GetRender().AddDrawCall(draw_call, drawlayer);
+		}
+		else {
+			Engine::GetRender().AddDrawCall(draw_call);  // basic layer
+		}
 	}
 	if (Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>() != nullptr && Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>()->Enabled()) {
 		Collision* collision = GetGOComponent<Collision>();

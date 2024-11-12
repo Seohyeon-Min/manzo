@@ -26,7 +26,7 @@ namespace CS230 {
         Particle(const std::filesystem::path& sprite_file);
         void Start(vec2 position, vec2 velocity, double max_life);
         void Update(double dt) override;
-        void Draw() override;
+        void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
         bool Alive() {
             return  life > 0;
         }

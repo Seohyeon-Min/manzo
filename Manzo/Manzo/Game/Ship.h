@@ -24,7 +24,7 @@ public:
     GameObjectTypes Type() override { return GameObjectTypes::Ship; }
     std::string TypeName() override { return "Ship:Dal"; }
     void Update(double dt) override;
-    void Draw() override;
+    void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
     void Move(double dt);
     void SetDest();
     bool IsShipMoving() { return move; }
