@@ -54,9 +54,10 @@ void Mode1::Load() {
     GetGSComponent<CS230::GameObjectManager>()->Add(ship_ptr);
 
     //// camera
+    Math::rect Boundary({ -640,-370 }, { 640,360 });
     camera = new CS230::Cam();
     AddGSComponent(camera);
-    camera->SetLimit({{0,0},{1920,1080}});
+    camera->SetLimit(Boundary);
 
     //// background
     background = new Background();
@@ -73,11 +74,16 @@ void Mode1::Load() {
     Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
 
 
+    GetGSComponent<Background>()->Add("assets/images/background/temp_background.png", 0.0f);
     GetGSComponent<Background>()->Add("assets/images/background/bg1.png", 0.3f);
     GetGSComponent<Background>()->Add("assets/images/background/bg2.png", 0.4f);
     GetGSComponent<Background>()->Add("assets/images/background/bg3.png", 0.5f);
     GetGSComponent<Background>()->Add("assets/images/background/bg4.png", 0.6f);
     GetGSComponent<Background>()->Add("assets/images/background/bg5.png", 0.7f);
+    /*
+    GetGSComponent<Background>()->Add("assets/images/background/bg_rock4.png", 0.4f);
+    GetGSComponent<Background>()->Add("assets/images/background/bg_rock2.png", 0.5f);
+    GetGSComponent<Background>()->Add("assets/images/background/bg_rock1.png", 0.7f);*/
 
 
     //testing fish
@@ -99,7 +105,7 @@ void Mode1::Load() {
     ui_manager->AddUI(std::make_unique<Mouse>());
 
     // Map
-    GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/test.svg");
+    GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/test2.svg");
 }
 
 void Mode1::Update(double dt) {
