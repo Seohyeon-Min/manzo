@@ -19,6 +19,7 @@ Created:    March 8, 2023
 #include "GLApp.h"
 #include "Render.h"
 #include "ShaderManager.h"
+#include "AudioManager.h"
 
 #include <chrono>
 #include <time.h>
@@ -54,6 +55,9 @@ public:
         return Instance().shadermanager;
     }
 
+    static AudioManager& GetAudioManager() {
+        return Instance().audiomanager;
+    }
     //static CS230::Font& GetFont(int index) {
     //    return Instance().fonts[index];
     //}
@@ -90,5 +94,6 @@ private:
     CS230::TextureManager texturemanager;
     CS230::Render render;
     ShaderManager shadermanager;
+    AudioManager audiomanager;
 
 };

@@ -24,3 +24,12 @@ struct [[nodiscard]] Polygon
 		return Math::rect{ minPoint, maxPoint };
 	}
 };
+
+
+struct [[nodiscard]] EntryData {
+	float Isnotelong;
+	vec2 position;
+	float delay;
+
+
+};

@@ -6,7 +6,7 @@
 #include "Component.h"
 #include <iostream>
 
-class AudioManager : public CS230::Component {
+class AudioManager {
 public:
     AudioManager();
     ~AudioManager();

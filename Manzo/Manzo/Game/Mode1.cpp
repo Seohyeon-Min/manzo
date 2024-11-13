@@ -14,6 +14,7 @@ Created:    March 8, 2023
 #include "../Engine/AudioManager.h"
 #include "../Engine/Particle.h"
 #include "../Engine/MapManager.h"
+#include "../Engine/Rapidjson.h"
 #include "../Engine/UI.h"
 
 
@@ -27,6 +28,7 @@ Created:    March 8, 2023
 #include "Fish.h"
 #include "Reef.h"
 #include "Skill.h"
+#include "Boss.h"
 
 #include <iostream>
 
@@ -44,7 +46,6 @@ void Mode1::Load() {
     // component
     AddGSComponent(new CS230::GameObjectManager());
     AddGSComponent(new Beat());
-    AddGSComponent(new AudioManager());
     AddGSComponent(new CS230::Map());
 
 
@@ -59,13 +60,13 @@ void Mode1::Load() {
 
     //// background
     background = new Background();
-    AddGSComponent(background);
+    AddGSComponent(background);    
 
     //// audio
-    Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("assets/audios/basic_beat_100_5.wav", "sample");
-    if (sample) {
-        GetGSComponent<AudioManager>()->PlayMusic(sample, -1);
-    }
+    Mix_Music* sample = Engine::GetAudioManager().LoadMusic("assets/audios/basic_beat_100_5.wav", "sample");
+    //if (sample) {
+    //    Engine::GetAudioManager().PlayMusic(sample, -1);
+    //}
 
     //// to generate fish
     fishGenerator = new FishGenerator();
@@ -88,6 +89,8 @@ void Mode1::Load() {
     AddGSComponent(new CS230::ParticleManager<Particles::MouseFollow>());
     //AddGSComponent(new Mouse());
     //Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::Mouse>>()->Emit(2, mouse_position, { 0, 0 }, { 0, 100 }, M_PI / 2);
+    Boss::LoadBossfile();
+   
 
     // UI
     AddGSComponent(new UIManager());
@@ -117,6 +120,10 @@ void Mode1::Update(double dt) {
         Engine::GetGameStateManager().ReloadState();
 
     }
+    if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::E)) {
+        boss_ptr = new Boss({ 0,0 }, Boss::BossType::e);
+        GetGSComponent<CS230::GameObjectManager>()->Add(boss_ptr);
+    }
 }
 
 void Mode1::Draw() {
@@ -137,5 +144,6 @@ void Mode1::Unload() {
     GetGSComponent<Background>()->Unload();
     Engine::GetRender().ClearDrawCalls();
 	ClearGSComponents();
+    Engine::GetAudioManager().StopMusic();
 	//fishGenerator->DeleteFish();
 }
