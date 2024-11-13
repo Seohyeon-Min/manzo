@@ -5,6 +5,8 @@
 #include "Game/Splash.h"
 #include "Game/Mode1.h"
 #include "Game/Mode2.h"
+#include "Game/GameOver.h"
+#include "Game/Clear.h"
 
 util::owner<IProgram*> create_program(int viewport_width, int viewport_height)
 {
@@ -23,6 +25,12 @@ int main() {
 
         Mode2 mode2;
         engine.GetGameStateManager().AddGameState(mode2);
+
+        GameOver gameover;
+        engine.GetGameStateManager().AddGameState(gameover);
+
+        Clear clear;
+        engine.GetGameStateManager().AddGameState(clear);
 
         SDL_GL_SetSwapInterval(1);
 

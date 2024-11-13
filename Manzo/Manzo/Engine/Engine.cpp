@@ -144,3 +144,18 @@ bool Engine::HasGameEnded() {
     }
     return false;
 }
+
+void Engine::SetTmpPtr(void* ptr)
+{
+    tmp_ptr = ptr;
+}
+void* Engine::GetTmpPtr()
+{
+    return tmp_ptr;
+}
+
+void Engine::UnloadTmpPtr()
+{
+    delete tmp_ptr;
+    tmp_ptr = nullptr;
+}

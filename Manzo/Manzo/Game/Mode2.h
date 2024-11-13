@@ -37,7 +37,7 @@ private:
     double swimming_range = 15.0;
     Ship* ship_ptr;
     Background* background;
-    Skillsys* Skill_ptr;
+    Skillsys* skill_ptr;
 
     float y_limit = 15.0f;
     float frequency = 0.9f;

@@ -106,6 +106,19 @@ void Mode1::Load() {
 
     // Map
     GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/test2.svg");
+
+    // Skill
+    if (!Engine::Instance().GetTmpPtr())
+    {
+        Engine::Instance().SetTmpPtr(new Skillsys);
+        skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
+        skill_ptr->SetShipPtr(ship_ptr);
+    }
+    else
+    {
+        skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
+        skill_ptr->SetShipPtr(ship_ptr);
+    }
 }
 
 void Mode1::Update(double dt) {
@@ -116,11 +129,20 @@ void Mode1::Update(double dt) {
     camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
 
 	fishGenerator->GenerateFish(dt);
+    skill_ptr->Update();
 
-    if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Q)) {
+    if (ship_ptr->IsShipUnder() && Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Q)) {
         Engine::GetGameStateManager().ClearNextGameState();
         Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
+    }
 
+    /*if (ship_ptr->) {                                                                  ** 여기!! 돈 따오는 로직만 넣어주세요!!! **
+            Engine::GetGameStateManager().ClearNextGameState();
+            Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Clear));
+    }*/
+    if (ship_ptr->IsFuelZero()) {
+        Engine::GetGameStateManager().ClearNextGameState();
+        Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::GameOver));
     }
     if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::W)) {
         Engine::GetGameStateManager().ReloadState();

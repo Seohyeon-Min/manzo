@@ -18,10 +18,13 @@ Created:    March 8, 2023
 #include "FishEcosystem.h"
 #include "../Engine/Camera.h"
 #include "Background.h"
+#include "Skill.h"
 
 class Reef;
 class Ship;
 class Boss;
+
+class Skillsys;
 
 class Mode1 : public CS230::GameState {
 public:
@@ -43,4 +46,6 @@ private:
     Boss* boss_ptr;
     UIManager* ui_manager;
     CS230::Cam* camera;
+    Skillsys* skill_ptr;
+    Skillsys::Skill_Net* Net_ptr;
 };

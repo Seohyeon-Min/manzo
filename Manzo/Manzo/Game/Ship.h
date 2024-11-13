@@ -38,6 +38,7 @@ public:
     void HitWithReef(CS230::RectCollision* collision_edge);
     bool IsTouchingReef();
     bool IsFuelZero();
+    bool IsShipUnder();
 
 private:
     static constexpr double speed = 7000.f;

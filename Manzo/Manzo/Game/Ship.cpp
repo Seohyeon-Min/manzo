@@ -232,4 +232,14 @@ bool Ship::IsFuelZero()
     return FuelFlag;
     fuel -= HitDecFuel;
     //std::cout << "Collision with Reef!" << std::endl;
+
+}
+
+bool Ship::IsShipUnder()
+{
+    if (this->GetPosition().y > 180)
+    {
+        return true;
+    }
+    return false;
 }
