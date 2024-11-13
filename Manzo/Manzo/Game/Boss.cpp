@@ -135,24 +135,31 @@ void Boss::InitializeStates() {
 	stateMap.push_back(&entry4);
 }
 void Boss::Update(double dt) {
-	GameObject::Update(dt); 
+	GameObject::Update(dt);
 
 	if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
 		if (GameObject::current_state->GetName() != Boss::state_cutscene.GetName()) {
 			int barCount = beat->GetBarCount();
-			std::cout << total_entry[barCount] - 1 << std::endl;
-
+			std::cout << barCount<< std::endl;
+			if(barCount <14){
 			if (barCount < total_entry.size() && total_entry[barCount] - 1 < stateMap.size()) {
 				change_state(stateMap[total_entry[barCount] - 1]);
 			}
+			else  {
+				
+				std::cerr << "Invalid barCount or index out of range: " << barCount << std::endl;
+			}
+			}
 			else {
-				// std::cerr << "Invalid barCount or index out of range: " << barCount << std::endl;
+				Destroy();
+				Engine::GetAudioManager().StopMusic();
 			}
 		}
 	}
-	
+
 	Move(dt);
 }
+
 
 vec2 Lerp(const vec2& start, const vec2& end, float t) {
 	return start + t * (end - start);  
