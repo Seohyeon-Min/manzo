@@ -19,6 +19,7 @@ public:
 	std::string TypeName() override { return "Boss"; }
 	void Update(double dt) override;
 	void Draw() override;
+	void Move(double dt);
 	bool CanCollideWith(GameObjectTypes) override;
 	void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
 	static void LoadBossfile();
@@ -84,5 +85,6 @@ private:
 	int Boss_damage;
 	std::vector<int> Boss_procedural;
 	vec2 current_position;
+	float speed = 400;
 };
 

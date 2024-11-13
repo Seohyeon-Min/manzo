@@ -135,19 +135,49 @@ void Boss::InitializeStates() {
 	stateMap.push_back(&entry4);
 }
 void Boss::Update(double dt) {
-	GameObject::Update(dt);
+	GameObject::Update(dt); 
+
 	if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
-			if(GameObject::current_state->GetName() != Boss::state_cutscene.GetName()){
-			int barCount = beat->GetBarCount()-1;
-			if (barCount < total_entry.size() && total_entry[barCount] < stateMap.size()) {
-				change_state(stateMap[total_entry[barCount]]);
+		if (GameObject::current_state->GetName() != Boss::state_cutscene.GetName()) {
+			int barCount = beat->GetBarCount();
+			std::cout << total_entry[barCount] - 1 << std::endl;
+
+			if (barCount < total_entry.size() && total_entry[barCount] - 1 < stateMap.size()) {
+				change_state(stateMap[total_entry[barCount] - 1]);
 			}
 			else {
-				//std::cerr << "Invalid barCount or index out of range: " << barCount << std::endl;
+				// std::cerr << "Invalid barCount or index out of range: " << barCount << std::endl;
 			}
 		}
 	}
+	
+	Move(dt);
 }
+
+vec2 Lerp(const vec2& start, const vec2& end, float t) {
+	return start + t * (end - start);  
+}
+
+void Boss::Move(double dt) {
+	vec2 direction = current_position - GetPosition();
+	direction = direction.Normalize(); 
+
+	vec2 force = direction * speed;
+
+	static float lerp_factor = 0.0f;  
+	lerp_factor += (float)dt * 0.5f;  
+	lerp_factor = std::min(lerp_factor, 1.0f); 
+
+	vec2 lerped_position = Lerp(GetPosition(), current_position, lerp_factor);
+
+	SetVelocity((lerped_position - GetPosition()) / (float)dt);  
+
+	if ((current_position - GetPosition()).Length() < 10.0f) {
+		lerp_factor = 0.0f; 
+	}
+}
+
+
 
 void Boss::LoadBossfile() {
 	BossJSONfileMap.push_back("assets/jsons/boss_e.json");
@@ -174,6 +204,7 @@ void Boss::RunMusic()
 {
 
 }
+
 
 void Boss::Draw() 
 {
