@@ -206,7 +206,7 @@ void Boss::RunMusic()
 }
 
 
-void Boss::Draw() 
+void Boss::Draw(DrawLayer drawlayer)
 {
 	CS230::GameObject::Draw();
 }

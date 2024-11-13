@@ -18,7 +18,7 @@ public:
 	GameObjectTypes Type() override { return GameObjectTypes::Boss; }
 	std::string TypeName() override { return "Boss"; }
 	void Update(double dt) override;
-	void Draw() override;
+	void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
 	void Move(double dt);
 	bool CanCollideWith(GameObjectTypes) override;
 	void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
