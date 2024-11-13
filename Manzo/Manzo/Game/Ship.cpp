@@ -22,6 +22,7 @@ void Ship::Update(double dt)
 
     if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
         SetDest();
+        std::cout << "x: " << this->GetPosition().x << "y: " << this->GetPosition().y << std::endl;
 
         if (move) {
             Move(dt);
@@ -142,6 +143,15 @@ void Ship::ResolveCollision(GameObject* other_object)
         }
         break;
     }
+}
+
+bool Ship::IsShipUnder()
+{
+    if (this->GetPosition().y > 180)
+    {
+        return true;
+    }
+    return false;
 }
 
 

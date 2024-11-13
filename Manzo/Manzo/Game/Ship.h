@@ -31,6 +31,7 @@ public:
     bool CanCollideWith(GameObjectTypes) override;
     void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
     const vec2& GetPosition() const { return GameObject::GetPosition(); }
+    bool IsShipUnder();
 
     //for fuel
     void FuelUpdate(double dt);
@@ -59,9 +60,9 @@ private:
     bool isCollidingWithReef;
     bool FuelFlag = false;
     double fuel;
-    double Maxfuel = 500;
+    double Maxfuel = 1000;
     double baseDecfuel = 2;
-    double MoveDecfuel = 0.5;
+    double MoveDecfuel = 0.3;
     double HitDecFuel = 50;
     double fuelcounter = 0;
 };

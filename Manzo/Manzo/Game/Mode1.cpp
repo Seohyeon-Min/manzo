@@ -101,7 +101,7 @@ void Mode1::Update(double dt) {
 	fishGenerator->GenerateFish(dt);
     skill_ptr -> Update();
 
-    if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Q)) {
+    if (ship_ptr->IsShipUnder() && Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Q)) {
         Engine::GetGameStateManager().ClearNextGameState();
         Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
 
@@ -109,6 +109,17 @@ void Mode1::Update(double dt) {
     if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::W)) {
         Engine::GetGameStateManager().ReloadState();
 
+    }
+    /*if () {                                                                  ** 여기!! 돈 따오는 로직만 넣어주세요!!! **
+        Engine::GetGameStateManager().ClearNextGameState();
+        Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Clear));
+
+    }*/
+
+    if (ship_ptr->IsFuelZero())
+    {
+        Engine::GetGameStateManager().ClearNextGameState();
+        Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::GameOver));
     }
 }
 
