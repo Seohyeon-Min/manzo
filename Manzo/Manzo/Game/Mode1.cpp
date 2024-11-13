@@ -86,14 +86,14 @@ void Mode1::Load() {
 
     // Mouse and Particle
     AddGSComponent(new CS230::ParticleManager<Particles::MouseFollow>());
-    AddGSComponent(new Mouse());
+    //AddGSComponent(new Mouse());
     //Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::Mouse>>()->Emit(2, mouse_position, { 0, 0 }, { 0, 100 }, M_PI / 2);
 
     // UI
     AddGSComponent(new UIManager());
     ui_manager = GetGSComponent<UIManager>();
-
     ui_manager->AddUI(std::make_unique<FuelUI>(ship_ptr));
+    ui_manager->AddUI(std::make_unique<Mouse>());
 
     // Map
     GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/test.svg");
@@ -121,6 +121,7 @@ void Mode1::Update(double dt) {
 
 void Mode1::Draw() {
     GetGSComponent<Background>()->Draw(*GetGSComponent<CS230::Cam>());
+    //GetGSComponent<Mouse>()->AddDrawCall();
     GetGSComponent<CS230::Map>()->AddDrawCall();
     GetGSComponent<CS230::GameObjectManager>()->DrawAll();
     ui_manager->AddDrawCalls();
