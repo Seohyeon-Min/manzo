@@ -26,6 +26,7 @@ void Ship::Update(double dt)
 
         if (move) {
             Move(dt);
+            
         }
         else {
             if (hit_with) {
