@@ -50,13 +50,15 @@ void Boss::Entry1::Enter(GameObject* object) {
 
 void Boss::Entry1::Update(GameObject* object, double dt) {
 	Boss* boss = static_cast<Boss*>(object);
-	std::cout << "Get Beat : " << boss->beat->GetBeat() << std::endl;
-	std::cout << "Delay Count : " << boss->beat->GetDelayCount() << std::endl;
-	std::cout << boss->beat->GetBarCount() << std::endl;
+	//std::cout << "Get Beat : " << boss->beat->GetBeat() << std::endl;
+	//std::cout << "Delay Count : " << boss->beat->GetDelayCount() << std::endl;
+	//std::cout << boss->beat->GetBarCount() << std::endl;
 	if ((boss->index)-1 < boss->parttern.size()) {
-		const auto& entryVec = boss->parttern[(boss->index) - 1]; 
+		const auto& entryVec = boss->parttern[(boss->index)-1]; 
 		for (const auto& entryData : entryVec) {
-			if (entryData.delay == boss->beat->GetDelayCount()) {
+			if (entryData.delay+1 == boss->beat->GetDelayCount()) {
+				//std::cout << "entrydedt delay : " << entryData.delay << std::endl;
+				//std::cout << "boss delay : " << boss->beat->GetDelayCount() << std::endl;
 				boss->current_position = entryData.position;
 				std::cout << "Position updated to: (" << entryData.position.x << ", " << entryData.position.y << ")" << std::endl;
 			}
