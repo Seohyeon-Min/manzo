@@ -54,6 +54,7 @@ private:
     vec2 direction = { 0,0 };
     Beat* beat;
     Skillsys* skill;
+    Math::rect limit;
 
     //for fuel
 

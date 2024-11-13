@@ -13,7 +13,7 @@ Fish::Fish(Fish* parent) : CS230::GameObject({ 0, 0 }) {
 
 	if (parent == nullptr) {
 		ivec2 windowSize = { Engine::window_width, Engine::window_height };
-		start_position = { -640 ,((float)rand() / RAND_MAX) * 2.0f * windowSize.y - windowSize.y }; //outside of window
+		start_position = { -1280 ,((float)rand() / RAND_MAX) * 2.0f * windowSize.y - windowSize.y }; //outside of window
 		SetPosition(start_position);
 		SetVelocity(fishBook[index].velocity);
 		SetScale(fishBook[index].scale);
@@ -51,7 +51,7 @@ void Fish::Update(double dt) {
 	GameObject::Update(dt);
 
 	//destroy outside world
-	if (GetPosition().x - GetGOComponent<CS230::Sprite>()->GetFrameSize().x / 2 > Engine::window_width * 0.5f)
+	if (GetPosition().x - GetGOComponent<CS230::Sprite>()->GetFrameSize().x / 2 > Engine::window_width)
 	{
 		Destroy();
 	}
@@ -111,7 +111,7 @@ void Fish::ReadFishCSV(const std::string& filename)
 BackgroundFish::BackgroundFish() : GameObject({start_position})
 {
 	ivec2 windowSize = { Engine::window_width, Engine::window_height };
-	start_position = { -640 ,((float)rand() / RAND_MAX) * 2.0f * windowSize.y - windowSize.y }; //outside of window
+	start_position = { -1280 ,((float)rand() / RAND_MAX) * 2.0f * windowSize.y - windowSize.y }; //outside of window
 	//start_position = { -500,100 };
 	SetPosition(start_position);
 	SetVelocity({30,0});
