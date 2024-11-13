@@ -13,6 +13,9 @@ Created:    March 8, 2023
 #include "../Engine/ShowCollision.h"
 #include "../Engine/AudioManager.h"
 #include "../Engine/Particle.h"
+#include "../Engine/MapManager.h"
+#include "../Engine/UI.h"
+
 
 #include "Particles.h"
 #include "Mouse.h"
@@ -43,13 +46,15 @@ void Mode1::Load() {
     AddGSComponent(new Beat());
     AddGSComponent(new AudioManager());
 
+
     //// ship
-    ship_ptr = new Ship({ Engine::window_width/2, Engine::window_height / 2 });
+    ship_ptr = new Ship({ 0, 0 });
     GetGSComponent<CS230::GameObjectManager>()->Add(ship_ptr);
 
     //// camera
     camera = new CS230::Cam();
     AddGSComponent(camera);
+    camera->SetLimit({{0,0},{1920,1080}});
 
     //// background
     background = new Background();
@@ -65,15 +70,22 @@ void Mode1::Load() {
     fishGenerator = new FishGenerator();
     Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
 
-    //// reef
-    reef = new Reef({ -400,200 });
-    GetGSComponent<CS230::GameObjectManager>()->Add(reef);
 
-    GetGSComponent<Background>()->Add("assets/images/temp_back.png", 0.25f);
+    GetGSComponent<Background>()->Add("assets/images/background/bg1.png", 0.3f);
+    GetGSComponent<Background>()->Add("assets/images/background/bg2.png", 0.4f);
+    GetGSComponent<Background>()->Add("assets/images/background/bg3.png", 0.5f);
+    GetGSComponent<Background>()->Add("assets/images/background/bg4.png", 0.6f);
+    GetGSComponent<Background>()->Add("assets/images/background/bg5.png", 0.7f);
+
+
+    //testing fish
+    /*BackgroundFish* bg_fish = new BackgroundFish();
+    GetGSComponent<CS230::GameObjectManager>()->Add(bg_fish);
+    bg_fish->AddBackgroundFishes(bg_fish);*/
 
     // Mouse and Particle
     AddGSComponent(new CS230::ParticleManager<Particles::MouseFollow>());
-    AddGSComponent(new Mouse());
+    //AddGSComponent(new Mouse());
     //Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::Mouse>>()->Emit(2, mouse_position, { 0, 0 }, { 0, 100 }, M_PI / 2);
 
     // Skill
@@ -88,6 +100,14 @@ void Mode1::Load() {
         skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
         skill_ptr->SetShipPtr(ship_ptr);
     }
+    // UI
+    AddGSComponent(new UIManager());
+    ui_manager = GetGSComponent<UIManager>();
+    ui_manager->AddUI(std::make_unique<FuelUI>(ship_ptr));
+    ui_manager->AddUI(std::make_unique<Mouse>());
+
+    // Map
+    GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/test.svg");
 }
 
 void Mode1::Update(double dt) {
@@ -95,7 +115,6 @@ void Mode1::Update(double dt) {
     GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
 
     //camera postion update
-    camera->SetPosition(ship_ptr->GetPosition());
     camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
 
 	fishGenerator->GenerateFish(dt);
@@ -110,7 +129,7 @@ void Mode1::Update(double dt) {
         Engine::GetGameStateManager().ReloadState();
 
     }
-    /*if () {                                                                  ** ¿©±â!! µ· µû¿À´Â ·ÎÁ÷¸¸ ³Ö¾îÁÖ¼¼¿ä!!! **
+    /*if () {                                                                  ** ï¿½ï¿½ï¿½ï¿½!! ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½!!! **
         Engine::GetGameStateManager().ClearNextGameState();
         Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Clear));
 
@@ -126,14 +145,21 @@ void Mode1::Update(double dt) {
 void Mode1::Draw() {
 
     GetGSComponent<Background>()->Draw(*GetGSComponent<CS230::Cam>());
+    //GetGSComponent<Mouse>()->AddDrawCall();
+    GetGSComponent<CS230::Map>()->AddDrawCall();
     GetGSComponent<CS230::GameObjectManager>()->DrawAll();
+    ui_manager->AddDrawCalls();
 }
 
 void Mode1::Unload() {
 
     ship_ptr = nullptr;
+    fishGenerator->~FishGenerator();
+    delete fishGenerator;
+    fishGenerator = nullptr;
 	GetGSComponent<CS230::GameObjectManager>()->Unload();
     GetGSComponent<Background>()->Unload();
-	//fishGenerator->DeleteFish();
+    Engine::GetRender().ClearDrawCalls();
 	ClearGSComponents();
+	//fishGenerator->DeleteFish();
 }

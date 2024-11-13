@@ -24,7 +24,7 @@ public:
     GameObjectTypes Type() override { return GameObjectTypes::Ship; }
     std::string TypeName() override { return "Ship:Dal"; }
     void Update(double dt) override;
-    void Draw() override;
+    void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
     void Move(double dt);
     void SetDest();
     bool IsShipMoving() { return move; }
@@ -34,24 +34,26 @@ public:
     bool IsShipUnder();
 
     //for fuel
+    float GetFuel() { return (float)fuel; }
     void FuelUpdate(double dt);
     void SetMaxFuel(double input);
-    void HitWithReef();
+    void HitWithReef(CS230::RectCollision* collision_edge);
     bool IsTouchingReef();
     bool IsFuelZero();
 
 private:
-    static constexpr double initialSpeed = 1200.f;
-    static constexpr float deceleration = 100.0f;
-    static constexpr float totalDistanceToMove_SQUARED = 20000.0f;
-    float currentSpeed = initialSpeed;
+    static constexpr double speed = 7000.f;
+    static constexpr float deceleration = 0.80f;
+    static constexpr double skidding_speed = 20.f;
     bool moving;
     bool set_dest;
     bool ready_to_move;
     bool move;
     bool clickable = true;
+    bool hit_with = false;
+    vec2 force = {};
     vec2 destination;
-    vec2 initialPosition;
+    vec2 direction = { 0,0 };
     Beat* beat;
     Skillsys* skill;
 

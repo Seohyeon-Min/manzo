@@ -9,16 +9,16 @@ class IProgram
 {
 public:
     constexpr IProgram() noexcept = default;
-    virtual ~IProgram() noexcept  = default;
+    virtual ~IProgram() noexcept = default;
 
-    constexpr IProgram(const IProgram&) noexcept  = default;
-    constexpr IProgram(IProgram&&) noexcept       = default;
+    constexpr IProgram(const IProgram&) noexcept = default;
+    constexpr IProgram(IProgram&&) noexcept = default;
     IProgram& operator=(const IProgram&) noexcept = default;
-    IProgram& operator=(IProgram&&) noexcept      = default;
+    IProgram& operator=(IProgram&&) noexcept = default;
 
-    virtual void Update()                                                    = 0;
+    virtual void Update() = 0;
     //virtual void Draw()                                                      = 0;
-    virtual void ImGuiDraw()                                                 = 0;
+    virtual void ImGuiDraw() = 0;
     virtual void HandleEvent(SDL_Window& sdl_window, const SDL_Event& event) = 0;
 };
 

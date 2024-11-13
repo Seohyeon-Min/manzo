@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -28,6 +28,7 @@
     <ClCompile Include="Engine\Sprite.cpp" />
     <ClCompile Include="Engine\TextureManager.cpp" />
     <ClCompile Include="Engine\Timer.cpp" />
+    <ClCompile Include="Engine\UI.cpp" />
     <ClCompile Include="Game\Background.cpp" />
     <ClCompile Include="Game\BeatSystem.cpp" />
     <ClCompile Include="Game\Clear.cpp" />
@@ -55,6 +56,7 @@
     <ClInclude Include="Engine\Collision.h" />
     <ClInclude Include="Engine\Component.h" />
     <ClInclude Include="Engine\ComponentManager.h" />
+    <ClInclude Include="Engine\DrawSetting.h" />
     <ClInclude Include="Engine\Engine.h" />
     <ClInclude Include="Engine\GameObject.h" />
     <ClInclude Include="Engine\GameObjectManager.h" />
@@ -63,6 +65,8 @@
     <ClInclude Include="Engine\Input.h" />
     <ClInclude Include="Engine\logger.h" />
     <ClInclude Include="Engine\Particle.h" />
+    <ClInclude Include="Engine\Polygon.h" />
+    <ClInclude Include="Engine\Rapidjson.h" />
     <ClInclude Include="Engine\Rect.h" />
     <ClInclude Include="Engine\Render.h" />
     <ClInclude Include="Engine\ShaderManager.h" />
@@ -70,6 +74,8 @@
     <ClInclude Include="Engine\Sprite.h" />
     <ClInclude Include="Engine\TextureManager.h" />
     <ClInclude Include="Engine\Timer.h" />
+    <ClInclude Include="Engine\UI.h" />
+    <ClInclude Include="Engine\UIManager.h" />
     <ClInclude Include="Game\Background.h" />
     <ClInclude Include="Game\BeatSystem.h" />
     <ClInclude Include="Game\Clear.h" />
@@ -137,6 +143,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)common_gl\include;$(SolutionDir)external\include;$(SolutionDir)external\include\backends;$(SolutionDir)external\include\rapidjson;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -152,7 +159,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)common_gl\include;$(SolutionDir)external\include;$(SolutionDir)external\include\backends;$(SolutionDir)external\include\rapidjson;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

@@ -44,9 +44,29 @@ namespace CS230 {
         void Draw();
         bool IsCollidingWith(GameObject* other_object) override;
         bool IsCollidingWith(vec2 point) override;
-        Math::rect WorldBoundary();
+        Math::rect WorldBoundary_rect();
+        std::pair<vec2, vec2> GetCollidingEdge() { return colliding_edge; }
+
     private:
         GameObject* object;
         Math::irect boundary;
+        std::pair<vec2, vec2> colliding_edge{};
+    };
+
+    class MAP_SATCollision : public Collision {
+    public:
+        MAP_SATCollision(Polygon boundary, GameObject* object);
+        void Draw() override;
+        CollisionShape Shape() override {
+            return CollisionShape::Poly;
+        }
+        bool IsCollidingWith(GameObject* other_object) override;
+        bool IsCollidingWith(vec2 point) override;
+        Polygon WorldBoundary_poly();
+        std::pair<vec2, vec2> GetCollidingEdge() { return colliding_edge; }
+    private:
+        GameObject* object;
+        Polygon boundary;
+        std::pair<vec2, vec2> colliding_edge{};
     };
 }

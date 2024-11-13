@@ -9,19 +9,33 @@
 
 
 
-Mouse::Mouse() {
+Mouse::Mouse() : mouse_cursor(nullptr),
+mouse_position({ 0, 0 }),
+trails(trail_length, { vec2(0, 0), 1.0f }) {
+    mouse_cursor = Engine::GetTextureManager().Load("assets/images/mouse.png");
+    mouse_cursor->SetFiltering(GLTexture::Linear);
 }
 
 
 void Mouse::Update(double dt) {
-    //vec2 mouse_pos = {(float) Engine::GetInput().GetMousePos().mouseWorldSpaceX, (float)Engine::GetInput().GetMousePos().mouseWorldSpaceY };
-    vec2 mouse_pos = Engine::GetInput().GetMousePosition();
-    FollowMouse(mouse_pos);
+    mouse_position = Engine::GetInput().GetMousePosition();
+    FollowMouse(mouse_position);
+    if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT)) {
+        scale = scale_big;
+    }
+
+    if (scale <= basic_scale) scale = basic_scale;
+    else scale -= (float)dt * scale_decrease_factor;
+}
+
+void Mouse::AddDrawCall()
+{
+    DrawLaserCurve();
+    DrawMouseCursor();
 }
 
 void Mouse::FollowMouse(const vec2& mouse_position) {
     UpdateTrail(mouse_position);
-    DrawLaserCurve();
 }
 
 
@@ -49,4 +63,23 @@ void Mouse::DrawLaserCurve() {
             previous_point = current_point;
         }
     }
+}
+
+void Mouse::DrawMouseCursor()
+{
+    DrawSettings settings;
+    settings.is_UI = true;
+    settings.do_blending = true;
+
+    pos_matrix = mat3::build_translation({ mouse_position.x - Engine::window_width / 2 , mouse_position.y - Engine::window_height / 2 }) * mat3::build_scale(scale);
+
+    draw_call = {
+        mouse_cursor,                       // Texture to draw
+        &pos_matrix,                          // Transformation matrix
+        Engine::GetShaderManager().GetDefaultShader(), // Shader to use
+        nullptr,
+        settings
+    };
+
+    Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawUI);
 }

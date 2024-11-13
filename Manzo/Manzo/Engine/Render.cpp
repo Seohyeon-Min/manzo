@@ -1,4 +1,4 @@
-#include "Render.h"
+ #include "Render.h"
 #include "GLTexture.h"
 #include "GLShader.h"
 #include "Engine.h"
@@ -28,6 +28,10 @@ void CS230::Render::AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase
     else if (phase == DrawLayer::DrawBackground)
     {
         draw_background_calls.push_back(drawCall);
+    }
+    else if (phase == DrawLayer::DrawUI)
+    {
+        draw_ui_calls.push_back(drawCall);
     }
     else {
         draw_calls.push_back(drawCall); // Add to normal phase
@@ -64,6 +68,11 @@ void CS230::Render::RenderAll() {
         Draw(draw_call);
     }
 
+    // Draw UI
+    for (const auto& draw_call : draw_ui_calls) {
+        Draw(draw_call);
+    }
+
     // Draw lines
     float line_width = 2.0f;
     for (const auto& draw_call : draw_line_calls) {
@@ -83,6 +92,7 @@ void CS230::Render::RenderAll() {
     draw_calls.clear();
     draw_late_calls.clear();
     draw_line_calls.clear();
+    draw_ui_calls.clear();
     draw_collision_calls.clear();
 }
 
@@ -101,9 +111,11 @@ namespace {
 void CS230::Render::Draw(const DrawCall& draw_call) {
     const GLShader* shader = draw_call.shader;
     shader->Use(); // Use the specified shader
+    auto settings = draw_call.settings;
 
     // Ensure the texture is valid, then use it and send it to the shader
     if (draw_call.texture) {
+        //draw_call.texture->SetFiltering(GLTexture::Linear);
         draw_call.texture->UseForSlot(0);
         shader->SendUniform("uTex2d", 0);
     }
@@ -111,20 +123,38 @@ void CS230::Render::Draw(const DrawCall& draw_call) {
         throw std::runtime_error("no texture!"); // Error if no texture is assigned
     }
 
+    if (settings.do_blending) {
+        glCheck(glEnable(GL_BLEND));
+        //glEnable(GL_MULTISAMPLE);//anti-alising
+        glCheck(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+    }
+    else {
+        glCheck(glDisable(GL_BLEND));
+    }
+
     vec2 texture_size = (vec2)draw_call.texture->GetSize();
     mat3 model_to_world = *draw_call.transform * mat3::build_scale(texture_size); // Scale the model based on texture size
 
-    mat3 WORLD_TO_NDC = GetWorldtoNDC();
+    mat3 WORLD_TO_NDC = settings.is_UI
+        ? mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height)
+        : GetWorldtoNDC();
 
     const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
 
     shader->SendUniform("uModelToNDC", to_span(model_to_ndc)); // Send transformation matrix to shader
+
+    //if there is a uniform, add
+    if (draw_call.SetUniforms) {
+        draw_call.SetUniforms(shader);
+    }
+    
     model.Use(); // Bind the model for drawing
     GLDrawIndexed(model); // Draw the model
 
     model.Use(false); // Unbind the model
     shader->Use(false); // Unbind the shader
 }
+
 
 void CS230::Render::RenderBackgrounds()
 {
@@ -133,6 +163,16 @@ void CS230::Render::RenderBackgrounds()
     }
 
     draw_background_calls.clear();
+}
+
+void CS230::Render::ClearDrawCalls()
+{
+    draw_first_calls.clear();
+    draw_calls.clear();
+    draw_late_calls.clear();
+    draw_line_calls.clear();
+    draw_ui_calls.clear();
+    draw_collision_calls.clear();
 }
 
 

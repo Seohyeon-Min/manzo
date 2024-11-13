@@ -7,10 +7,12 @@ class FishGenerator
 public:
 	FishGenerator();
 	void GenerateFish(double dt);
-	//void DeleteFish();
+	~FishGenerator();
 
 	std::vector<Fish*> fishList;
 
 private:
 	CS230::Timer* timer;
+	CS230::Timer* bg_timer;
+	float height = Engine::window_height;
 };

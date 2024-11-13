@@ -100,6 +100,9 @@
     <ClCompile Include="Game\Clear.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\UI.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h">
@@ -180,9 +183,6 @@
     <ClInclude Include="Game\GameObjectTypes.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Gravity.h">
-      <Filter>Game</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Mode1.h">
       <Filter>Game</Filter>
     </ClInclude>
@@ -239,6 +239,18 @@
     </ClInclude>
     <ClInclude Include="Game\Clear.h">
       <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Rapidjson.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\UI.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\UIManager.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\DrawSetting.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

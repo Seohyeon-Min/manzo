@@ -12,9 +12,10 @@ Created:    March 8, 2023
 
 enum class GameObjectTypes {
     Ship,
-    Particle,
-    Count,
     Reef,
     Fish,
     Net
+    BackgroundFish,
+    Particle,
+    Count
 };

@@ -12,6 +12,7 @@ Created:    March 8, 2023
 #include "../Engine/GameState.h"
 #include "../Engine/Sprite.h"
 #include "..\Engine\GameObjectManager.h"
+#include "../Engine/UIManager.h"
 //#include "../Engine/Fonts.h"
 #include "../Engine/Timer.h"
 #include "FishEcosystem.h"
@@ -42,7 +43,6 @@ private:
     Fish* fish;
     Skillsys* skill_ptr;
     Background* background;
+    UIManager* ui_manager;
     CS230::Cam* camera;
-
-    int money = 0;
 };
