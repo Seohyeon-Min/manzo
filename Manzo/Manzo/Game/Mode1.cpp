@@ -101,7 +101,7 @@ void Mode1::Load() {
     ui_manager->AddUI(std::make_unique<FuelUI>(ship_ptr));
 
     // Map
-    GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/test.svg");
+    GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/test2.svg");
 }
 
 void Mode1::Update(double dt) {
