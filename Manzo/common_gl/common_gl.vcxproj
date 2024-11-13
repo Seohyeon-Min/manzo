@@ -110,7 +110,6 @@
     <ClInclude Include="include\not_null.h" />
     <ClInclude Include="include\owner.h" />
     <ClInclude Include="include\Random.h" />
-    <ClInclude Include="include\to_span.h" />
     <ClInclude Include="include\vec2.h" />
     <ClInclude Include="include\vec3.h" />
   </ItemGroup>

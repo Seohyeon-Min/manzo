@@ -119,8 +119,5 @@
     <ClInclude Include="include\CameraView.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="include\to_span.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

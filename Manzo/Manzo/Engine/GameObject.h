@@ -37,7 +37,7 @@ namespace CS230 {
         virtual bool CanCollideWith(GameObjectTypes other_object_type);
         virtual void ResolveCollision([[maybe_unused]] GameObject* other_object) { };
         virtual void Update(double dt);
-        virtual void Draw(DrawLayer drawlayer = DrawLayer::Draw);
+        virtual void Draw();
         virtual void Destroy() { destroy = true; }
         virtual bool Destroyed() { return destroy; }
 
@@ -45,7 +45,6 @@ namespace CS230 {
         const vec2& GetPosition() const;
         const vec2& GetVelocity() const;
         const vec2& GetScale() const;
-        //const MAP_SATCollision& GetSATCollision() const;
         double GetRotation() const;
         //void SetModel(GLVertexArray* model) { draw_call.model = model; }
 
@@ -113,3 +112,4 @@ namespace CS230 {
         friend class Sprite;
     };
 }
+

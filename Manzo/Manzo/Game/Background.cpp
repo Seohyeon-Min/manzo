@@ -10,7 +10,6 @@ Updated:    March 29, 2023
 */
 
 #include "Background.h"
-#include <iostream>
 
 void Background::Add(const std::filesystem::path& texture_path, float speed)
 {
@@ -29,13 +28,11 @@ void Background::Draw(const CS230::Cam& camera)
     for (ParallaxLayer& background : backgrounds) {
 
         // Build the translation matrix with parallax effect
-        //background.matrix = mat3::build_translation({ (0 - cameraPos.x) * background.speed, (0 - cameraPos.y) * background.speed });
-        //background.matrix = mat3::build_translation({ 0 + cameraPos.x, 0 + cameraPos.y });
-        background.matrix = mat3::build_translation({ (0 + cameraPos.x) * background.speed, (0 + cameraPos.y) * background.speed });
-        //std::cout << parallax_matrix;
-        CS230::DrawCall draw_call = {
+        mat3 parallax_matrix = mat3::build_translation({ (0 - cameraPos.x) * background.speed, (0 - cameraPos.y) * background.speed });
+
+        draw_call = {
             background.texture,                       // Texture to draw
-            &background.matrix,                          // Transformation matrix
+            &parallax_matrix,                          // Transformation matrix
             Engine::GetShaderManager().GetDefaultShader() // Shader to use
         };
 
@@ -46,5 +43,5 @@ void Background::Draw(const CS230::Cam& camera)
 
 ivec2 Background::GetSize()
 {
-    return backgrounds[backgrounds.size() - 1].texture->GetSize();
+    return backgrounds[backgrounds.size() - 1].texture->GetSize();;
 }

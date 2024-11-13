@@ -12,10 +12,16 @@ Created:    March 8, 2023
 
 enum class GameObjectTypes {
     Ship,
+    Particle,
+    Count,
     Reef,
     Fish,
+<<<<<<< HEAD
     Net,
     BackgroundFish,
     Particle,
     Count
+=======
+    Net
+>>>>>>> parent of 37d3a71 (Merge remote-tracking branch 'origin/UI' into Module2)
 };

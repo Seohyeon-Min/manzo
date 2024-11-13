@@ -4,13 +4,12 @@
 #include "GLTexture.h"
 #include "mat3.h"
 #include "color3.h"
-#include "DrawSetting.h"
 
 #include <vector>
 #include <unordered_map>
 #include <filesystem>
 #include <memory>
-#include <functional>
+
 //struct DrawSettings {
 //    bool enableBlending;
 //    GLenum drawMode;  // GL_TRIANGLES, GL_LINES µî
@@ -38,18 +37,14 @@ enum class DrawLayer {
     DrawBackground,
     DrawFirst,
     Draw,
-    DrawLast,
-    DrawUI
+    DrawLast
 };
 
 namespace CS230 {
-
     struct DrawCall {
         GLTexture* texture;
         const mat3* transform;
         const GLShader* shader;
-        std::function<void(const GLShader*)> SetUniforms = nullptr;
-         DrawSettings settings; // later, change it to pointer
     };
 
     struct LineDrawCall {
@@ -79,7 +74,6 @@ namespace CS230 {
         void CreatModel();
         void CreatLineModel();
         void RenderBackgrounds();
-        void ClearDrawCalls();
 
     private:
         // Internal render method
@@ -96,7 +90,6 @@ namespace CS230 {
         std::vector<DrawCall> draw_first_calls;
         std::vector<DrawCall> draw_calls;
         std::vector<DrawCall> draw_late_calls;
-        std::vector<DrawCall> draw_ui_calls;
         std::vector<LineDrawCallPro> draw_line_calls;
         std::vector<LineDrawCall> draw_collision_calls;
 

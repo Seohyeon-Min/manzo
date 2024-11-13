@@ -32,32 +32,19 @@ struct [[nodiscard]] vec2
         return std::sqrt(x * x + y * y);
     }
 
-    vec2 Clamp(float max) const {
-        float length = Length();
-        if (length > max) {
-            return { Normalize().x * max, Normalize().y * max };
-        }
-        return *this;
-    }
-
     vec2 Normalize() const {
         float length = Length();
         if (length == 0) {
-            return { 0,0 };
+            return {0,0};
         }
         return vec2(x / length, y / length);
     }
+    //vec2(const ivec2& iv) : x(static_cast<float>(iv.x)), y(static_cast<float>(iv.y)) {}
+        // °ö¼À ¿¬»êÀÚ ¿À¹ö·Îµå (½ºÄ®¶ó °ö)
 
+    // ½ºÄ®¶ó °ö¼ÀÀ» À§ÇÑ ÇÁ·»µå ÇÔ¼ö
     friend vec2 operator*(float scalar, const vec2& vec) {
         return vec2(scalar * vec.x, scalar * vec.y);
-    }
-
-    bool operator==(const vec2& other) const {
-        return x == other.x && y == other.y;
-    }
-
-    bool operator!=(const vec2& other) const {
-        return !(*this == other);
     }
 };
 
