@@ -3,13 +3,14 @@
 #include "Boss.h"
 
 
-
+std::vector<CS230::GameObject::State*> stateMap;
 std::vector<std::string> BossJSONfileMap;
 
 Boss::Boss(vec2 start_position, BossType type) 
 	: GameObject(start_position)
 {
 	ReadBossJSON(type);
+	InitializeStates();
 	AddGOComponent(new CS230::Sprite("assets/images/ship.spt", this));
 	SetVelocity({0,0});
 
@@ -43,33 +44,110 @@ void Boss::State_CutScene::CheckExit(GameObject* object) {
 		boss->change_state(&boss->entry1);
 	}
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////////
 void Boss::Entry1::Enter(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
 }
-
 void Boss::Entry1::Update(GameObject* object, double dt) {
 	Boss* boss = static_cast<Boss*>(object);
-	//std::cout << "Get Beat : " << boss->beat->GetBeat() << std::endl;
-	//std::cout << "Delay Count : " << boss->beat->GetDelayCount() << std::endl;
-	//std::cout << boss->beat->GetBarCount() << std::endl;
-	if ((boss->index)-1 < boss->parttern.size()) {
-		const auto& entryVec = boss->parttern[(boss->index)-1]; 
+	int targetEntryNum = 1; 
+	if (targetEntryNum - 1 < boss->parttern.size()) {
+		const auto& entryVec = boss->parttern[targetEntryNum - 1]; 
 		for (const auto& entryData : entryVec) {
-			if (entryData.delay+1 == boss->beat->GetDelayCount()) {
-				//std::cout << "entrydedt delay : " << entryData.delay << std::endl;
-				//std::cout << "boss delay : " << boss->beat->GetDelayCount() << std::endl;
+			if (entryData.delay + 1 == boss->beat->GetDelayCount()) {
 				boss->current_position = entryData.position;
 				std::cout << "Position updated to: (" << entryData.position.x << ", " << entryData.position.y << ")" << std::endl;
 			}
 		}
-
 	}
 }
 void Boss::Entry1::CheckExit(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
 }
+/// /////////////////////////////////////////////////////////////////////////////////////////
+void Boss::Entry2::Enter(GameObject* object) {
+	Boss* boss = static_cast<Boss*>(object);
+}
+void Boss::Entry2::Update(GameObject* object, double dt) {
+	Boss* boss = static_cast<Boss*>(object);
+	int targetEntryNum = 2;
+	if (targetEntryNum - 1 < boss->parttern.size()) {
+		const auto& entryVec = boss->parttern[targetEntryNum - 1];
+		for (const auto& entryData : entryVec) {
+			if (entryData.delay + 1 == boss->beat->GetDelayCount()) {
+				boss->current_position = entryData.position;
+				std::cout << "Position updated to: (" << entryData.position.x << ", " << entryData.position.y << ")" << std::endl;
+			}
+		}
+	}
+}
+void Boss::Entry2::CheckExit(GameObject* object) {
+	Boss* boss = static_cast<Boss*>(object);
+}
+////////////////////////////////////////////////////////////////////////////////////////////
+void Boss::Entry3::Enter(GameObject* object) {
+	Boss* boss = static_cast<Boss*>(object);
+}
+void Boss::Entry3::Update(GameObject* object, double dt) {
+	Boss* boss = static_cast<Boss*>(object);
+	int targetEntryNum = 3;
+	if (targetEntryNum - 1 < boss->parttern.size()) {
+		const auto& entryVec = boss->parttern[targetEntryNum - 1];
+		for (const auto& entryData : entryVec) {
+			if (entryData.delay + 1 == boss->beat->GetDelayCount()) {
+				boss->current_position = entryData.position;
+				std::cout << "Position updated to: (" << entryData.position.x << ", " << entryData.position.y << ")" << std::endl;
+			}
+		}
+	}
+}
+void Boss::Entry3::CheckExit(GameObject* object) {
+	Boss* boss = static_cast<Boss*>(object);
+}
+////////////////////////////////////////////////////////////////////////////////////////////
+void Boss::Entry4::Enter(GameObject* object) {
+	Boss* boss = static_cast<Boss*>(object);
+}
+void Boss::Entry4::Update(GameObject* object, double dt) {
+	Boss* boss = static_cast<Boss*>(object);
+	int targetEntryNum = 4;
+	if (targetEntryNum - 1 < boss->parttern.size()) {
+		const auto& entryVec = boss->parttern[targetEntryNum - 1];
+		for (const auto& entryData : entryVec) {
+			if (entryData.delay + 1 == boss->beat->GetDelayCount()) {
+				boss->current_position = entryData.position;
+				std::cout << "Position updated to: (" << entryData.position.x << ", " << entryData.position.y << ")" << std::endl;
+			}
+		}
+	}
+}
+void Boss::Entry4::CheckExit(GameObject* object) {
+	Boss* boss = static_cast<Boss*>(object);
+}
+////////////////////////////////////////////////////////////////////////////////////////////
 
+
+
+void Boss::InitializeStates() {
+	stateMap.push_back(&entry1);
+	stateMap.push_back(&entry2);
+	stateMap.push_back(&entry3);
+	stateMap.push_back(&entry4);
+}
+void Boss::Update(double dt) {
+	GameObject::Update(dt);
+	if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
+			if(GameObject::current_state->GetName() != Boss::state_cutscene.GetName()){
+			int barCount = beat->GetBarCount()-1;
+			if (barCount < total_entry.size() && total_entry[barCount] < stateMap.size()) {
+				change_state(stateMap[total_entry[barCount]]);
+			}
+			else {
+				//std::cerr << "Invalid barCount or index out of range: " << barCount << std::endl;
+			}
+		}
+	}
+}
 
 void Boss::LoadBossfile() {
 	BossJSONfileMap.push_back("assets/jsons/boss_e.json");
