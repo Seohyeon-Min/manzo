@@ -29,7 +29,7 @@ void Ship::Update(double dt)
         }
         else {
             if (hit_with) {
-                vec2 velocity = GetVelocity();  // ��ü�� �ӵ� ����
+                vec2 velocity = GetVelocity(); 
                 float velocity_magnitude = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
                 if(velocity_magnitude < 20.f) SetVelocity(direction * skidding_speed);
                 else SetVelocity(GetVelocity() * deceleration);
@@ -130,6 +130,9 @@ void Ship::ResolveCollision(GameObject* other_object)
     }
 }
 
+float Dot(const vec2& vec1, const vec2& vec2) {
+    return vec1.x * vec2.x + vec1.y * vec2.y;
+}
 void Ship::HitWithReef(CS230::RectCollision* collision_edge) {
     fuel -= HitDecFuel;
 
@@ -140,9 +143,14 @@ void Ship::HitWithReef(CS230::RectCollision* collision_edge) {
     vec2 wall_perpendicular = GetPerpendicular(wall_dir);
     vec2 normal = wall_perpendicular.Normalize();
 
-    vec2 velocity = GetVelocity(); 
+    vec2 velocity = GetVelocity();
 
     float incoming_speed = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
+
+    float dampingFactor = (incoming_speed > 1000.f) ? 0.1f : 0.55f;
+
+    incoming_speed = std::min(incoming_speed, 1000.f);
+    if (incoming_speed < 150.f) incoming_speed = 150.f;
 
     float dot_product_normal_velocity = velocity.x * normal.x + velocity.y * normal.y;
     if (dot_product_normal_velocity > 0) {
@@ -155,20 +163,30 @@ void Ship::HitWithReef(CS230::RectCollision* collision_edge) {
         velocity.y - 2 * dot_product * normal.y
     };
 
-    SetPosition(GetPosition() +  -GetVelocity() * 0.01f);
     direction = reflection.Normalize();
-    if (incoming_speed > 3300.f)  incoming_speed = 3300.f;
-    if (incoming_speed < 150.f)  incoming_speed = 150.f;
-    SetVelocity(direction * incoming_speed * 0.75f);
-    SetPosition(GetPosition() + normal * 0.5f);
-
-    //float correction_distance = 0.5f;
-    //vec2 corrected_position = GetPosition() + normal * correction_distance;
-    //SetPosition(corrected_position);
+    vec2 collision_point = GetPosition();
+    SetVelocity({});
+    AdjustPositionToCollisionEdge( edge_1, edge_2);
 
     move = false;
     hit_with = true;
 }
+
+
+void Ship::AdjustPositionToCollisionEdge(const vec2& edge_start, const vec2& edge_end) {
+
+    vec2 edge_direction = edge_end - edge_start;
+
+    vec2 to_current = GetPosition() - edge_start;
+
+    float projection_length = Dot(to_current, edge_direction) / Dot(edge_direction, edge_direction);
+    vec2 projection_vector = edge_direction * projection_length;
+
+    vec2 perpendicular_vector = to_current - projection_vector;
+
+    SetPosition(GetPosition() - perpendicular_vector);
+}
+
 
 //for fuel
 void Ship::FuelUpdate(double dt)

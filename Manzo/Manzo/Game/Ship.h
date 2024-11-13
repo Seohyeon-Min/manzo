@@ -40,6 +40,7 @@ public:
     bool IsFuelZero();
 
 private:
+    void AdjustPositionToCollisionEdge(const vec2& edge_start, const vec2& edge_end);
     static constexpr double speed = 7000.f;
     static constexpr float deceleration = 0.80f;
     static constexpr double skidding_speed = 20.f;

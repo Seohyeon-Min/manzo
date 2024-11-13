@@ -173,25 +173,28 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
             }
         }
 
-        // 가장 가까운 꼭짓점에 연결된 두 개의 선분 가져오기
-        if (closest_index != -1) {
+        // colliding_edge 설정
+        if (isCornerCollision && closest_index != -1) {
+            // 코너 충돌인 경우, 가장 가까운 꼭짓점에 연결된 두 선분의 중간 벡터를 사용하여 colliding_edge 설정
             vec2 CollidingVertex = other_poly.vertices[closest_index];
             vec2 CollidingSide_1 = other_poly.vertices[(closest_index + 1) % other_poly.vertexCount];
             vec2 CollidingSide_2 = other_poly.vertices[(closest_index - 1 + other_poly.vertexCount) % other_poly.vertexCount];
 
-            if (isCornerCollision) {
-                // 코너 충돌인 경우, 두 선분의 중간 기울기로 colliding_edge 설정
-                vec2 direction1 = CollidingSide_1 - CollidingVertex;
-                vec2 direction2 = CollidingSide_2 - CollidingVertex;
-                vec2 midpoint_direction = NormalizeVector2(direction1 + direction2) * 0.5f;
+            // 두 선분의 중간 방향 벡터 계산
+            vec2 direction1 = CollidingSide_1 - CollidingVertex;
+            vec2 direction2 = CollidingSide_2 - CollidingVertex;
+            vec2 midpoint_direction = NormalizeVector2(direction1 + direction2);
 
-                colliding_edge = { CollidingVertex, CollidingVertex + midpoint_direction };
-                std::cout << "It's Corner" << std::endl;
-            }
-            else {
-                // 코너 충돌이 아닌 경우, 가장 가까운 선분만 colliding_edge로 설정
-                colliding_edge = { CollidingVertex, CollidingSide_1 };
-            }
+            // colliding_edge를 중간 방향으로 설정
+            colliding_edge = { CollidingVertex, CollidingVertex + midpoint_direction };
+            std::cout << "It's Corner" << std::endl;
+        }
+        else if (!isCornerCollision && closest_index != -1) {
+            // 코너 충돌이 아닌 경우, 가장 가까운 선분을 colliding_edge로 설정
+            vec2 CollidingSide_1 = other_poly.vertices[closest_index];
+            vec2 CollidingSide_2 = other_poly.vertices[(closest_index + 1) % other_poly.vertexCount];
+
+            colliding_edge = { CollidingSide_1, CollidingSide_2 };
         }
 
         return true;
