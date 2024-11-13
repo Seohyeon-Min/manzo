@@ -11,6 +11,8 @@ Updated:    04/30/2024
 
 #include "GameObject.h"
 
+#include <optional> 
+
 CS230::GameObject::GameObject(vec2 position) :
 	GameObject(position, 0, { 1, 1 }) {}
 
@@ -40,26 +42,33 @@ void CS230::GameObject::change_state(State* new_state) {
 }
 
 
-void CS230::GameObject::Draw() {
-    Sprite* sprite = GetGOComponent<Sprite>();
-    if (sprite != nullptr) {
-        if (shader == nullptr) {
-            shader = Engine::GetShaderManager().GetDefaultShader();
-        }
-        Engine::GetRender().AddDrawCall(
-            {
-            sprite->GetTexture(),
-            &GetMatrix(),
-            shader,
-            }
-        );
-    }
-    if (Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>() != nullptr && Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>()->Enabled()) {
-        Collision* collision = GetGOComponent<Collision>();
-        if (collision != nullptr) {
-            collision->Draw();
-        }
-    }
+void CS230::GameObject::Draw(DrawLayer drawlayer) {
+	Sprite* sprite = GetGOComponent<Sprite>();
+	if (sprite != nullptr) {
+		if (shader == nullptr) {
+			shader = Engine::GetShaderManager().GetDefaultShader();
+		}
+
+		DrawCall draw_call = {
+			sprite->GetTexture(),
+			&GetMatrix(),
+			shader
+		};
+
+		// DrawLayer가 기본값이 아니면 `AddDrawCall`에 추가
+		if (drawlayer != DrawLayer::Draw) {
+			Engine::GetRender().AddDrawCall(draw_call, drawlayer);
+		}
+		else {
+			Engine::GetRender().AddDrawCall(draw_call);  // basic layer
+		}
+	}
+	if (Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>() != nullptr && Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>()->Enabled()) {
+		Collision* collision = GetGOComponent<Collision>();
+		if (collision != nullptr) {
+			collision->Draw();
+		}
+	}
 }
 
 bool CS230::GameObject::IsCollidingWith(GameObject* other_object) {
@@ -77,14 +86,14 @@ bool CS230::GameObject::CanCollideWith([[maybe_unused]] GameObjectTypes other_ob
 }
 
 const mat3& CS230::GameObject::GetMatrix() {
-    if (matrix_outdated) {
-        object_matrix = 
-            mat3::build_translation(position) *
-            mat3::build_rotation((float)rotation) *
-            mat3::build_scale( scale.x, scale.y);
-        matrix_outdated = false;
-    }
-    return object_matrix;
+	if (matrix_outdated) {
+		object_matrix =
+			mat3::build_translation(position) *
+			mat3::build_rotation((float)rotation) *
+			mat3::build_scale(scale.x, scale.y);
+		matrix_outdated = false;
+	}
+	return object_matrix;
 }
 
 const vec2& CS230::GameObject::GetPosition() const

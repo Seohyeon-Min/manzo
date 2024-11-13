@@ -31,7 +31,7 @@ void CS230::Particle::Update(double dt)
 		GameObject::Update(dt);
 }
 
-void CS230::Particle::Draw()
+void CS230::Particle::Draw(DrawLayer drawlayer)
 {
 	if(Alive())
 		GameObject::Draw();

@@ -37,7 +37,7 @@ namespace CS230 {
         virtual bool CanCollideWith(GameObjectTypes other_object_type);
         virtual void ResolveCollision([[maybe_unused]] GameObject* other_object) { };
         virtual void Update(double dt);
-        virtual void Draw();
+        virtual void Draw(DrawLayer drawlayer = DrawLayer::Draw);
         virtual void Destroy() { destroy = true; }
         virtual bool Destroyed() { return destroy; }
 
@@ -113,4 +113,3 @@ namespace CS230 {
         friend class Sprite;
     };
 }
-

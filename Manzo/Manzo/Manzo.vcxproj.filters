@@ -246,5 +246,8 @@
     <ClInclude Include="Engine\UIManager.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\DrawSetting.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

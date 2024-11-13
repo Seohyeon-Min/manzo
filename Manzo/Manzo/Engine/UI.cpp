@@ -1,4 +1,5 @@
 #include "UI.h"
+#include "DrawSetting.h"
 
 void FuelUI::SetFuelBarUniforms(const GLShader* shader) {
     shader->SendUniform("uFilled", normalized_fuel);
@@ -8,6 +9,8 @@ FuelUI::FuelUI(Ship* ship) : ship(ship)
 {
 	background_texture = Engine::GetTextureManager().Load("assets/images/ui_full.png");
 	foreground_texture = Engine::GetTextureManager().Load("assets/images/ui.png");
+    background_texture->SetFiltering(GLTexture::Linear);
+    foreground_texture->SetFiltering(GLTexture::Linear);
 	position = ship->GetPosition();
     Engine::GetShaderManager().LoadShader("health_bar", "assets/shaders/default.vert", "assets/shaders/health_bar.frag");
 }
@@ -21,13 +24,17 @@ void FuelUI::Update(double dt)
 
 void FuelUI::AddDrawCall()
 {
+   DrawSettings settings;
+    settings.do_blending = true;
+
     draw_call = {
         background_texture,                       // Texture to draw
         &parallax_matrix,                          // Transformation matrix
         Engine::GetShaderManager().GetShader("health_bar"), // Shader to use
         [this](const GLShader* shader) {
             this->SetFuelBarUniforms(shader);
-        }
+        }, 
+        settings
     };
 
     Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawUI);
@@ -38,7 +45,8 @@ void FuelUI::AddDrawCall()
         Engine::GetShaderManager().GetDefaultShader(), // Shader to use
         [this](const GLShader* shader) {
             this->SetFuelBarUniforms(shader);
-        }
+        },
+        settings
     };
 
     Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawUI);

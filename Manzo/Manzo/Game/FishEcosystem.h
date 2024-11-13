@@ -13,4 +13,6 @@ public:
 
 private:
 	CS230::Timer* timer;
+	CS230::Timer* bg_timer;
+	float height = Engine::window_height;
 };

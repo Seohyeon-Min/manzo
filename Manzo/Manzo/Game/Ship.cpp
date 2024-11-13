@@ -31,7 +31,7 @@ void Ship::Update(double dt)
             if (hit_with) {
                 vec2 velocity = GetVelocity(); 
                 float velocity_magnitude = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
-                if(velocity_magnitude < 20.f) SetVelocity(direction * skidding_speed);
+                if (velocity_magnitude < 20.f) SetVelocity(direction * skidding_speed);
                 else SetVelocity(GetVelocity() * deceleration);
                 if (!beat->GetIsOnBeat()) {
                     SetVelocity(direction * skidding_speed);
@@ -52,9 +52,9 @@ void Ship::Update(double dt)
 }
 
 
-void Ship::Draw()
+void Ship::Draw(DrawLayer drawlayer)
 {
-    CS230::GameObject::Draw();
+    CS230::GameObject::Draw(DrawLayer::DrawLast);
 }
 
 void Ship::SetDest()
@@ -92,7 +92,6 @@ void Ship::Move(double dt)
 {
     SetVelocity(force);
     force *= deceleration;
-    //std::cout << force.x << std::endl;
     if (!beat->GetIsOnBeat()) {
         SetVelocity(direction * skidding_speed);
         if (!clickable) { // wait for next beat
