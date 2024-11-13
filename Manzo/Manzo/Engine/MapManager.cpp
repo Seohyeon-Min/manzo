@@ -254,8 +254,8 @@ void CS230::Map::ParseSVG(const std::string& filename) {
         r_group->MatchIndex();
         
         std::cout <<"Group Position: " << r_group->GetPosition().x << "," << r_group->GetPosition().y<<"\n";
-        //std::cout <<"Group Index : " << r_group->GetIndex()<<"\n";
-        //std::cout <<"Group Rocks Size : " << r_group->GetRocks().size() <<"\n";
+        std::cout <<"Group Index : " << r_group->GetIndex()<<"\n";
+        std::cout <<"Group Rocks Size : " << r_group->GetRocks().size() <<"\n";
         
     }
     file.close();
