@@ -13,7 +13,8 @@ Updated:    03/14/2024
 
 enum class States {
     Mode1,
-
     Mode2,
+    GameOver,
+    Clear,
     Splash
 };

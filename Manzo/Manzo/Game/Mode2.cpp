@@ -34,8 +34,8 @@ void Mode2::Load() {
     AddGSComponent(new CS230::GameObjectManager());
     AddGSComponent(new Beat());
     AddGSComponent(new AudioManager());
-    //AddGSComponent(new Background());
-    //GetGSComponent<Background>()->Add("assets/images/temp_back.png", 0.25);
+    AddGSComponent(new Background());
+    GetGSComponent<Background>()->Add("assets/images/temp_back.png", 0.25);
 
     //// ship
     ship_ptr = new Ship({ 0, -100 });
@@ -83,6 +83,10 @@ void Mode2::Update(double dt) {
     }
     if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::W)) {
         Engine::GetGameStateManager().ReloadState();
+    }
+    
+    if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::E)) {
+        Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::GameOver));
 
     }
 }

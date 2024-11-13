@@ -30,8 +30,10 @@
     <ClCompile Include="Engine\Timer.cpp" />
     <ClCompile Include="Game\Background.cpp" />
     <ClCompile Include="Game\BeatSystem.cpp" />
+    <ClCompile Include="Game\Clear.cpp" />
     <ClCompile Include="Game\Fish.cpp" />
     <ClCompile Include="Game\FishEcosystem.cpp" />
+    <ClCompile Include="Game\GameOver.cpp" />
     <ClCompile Include="Game\Mode1.cpp" />
     <ClCompile Include="Game\Mode2.cpp" />
     <ClCompile Include="Game\Mouse.cpp" />
@@ -70,9 +72,11 @@
     <ClInclude Include="Engine\Timer.h" />
     <ClInclude Include="Game\Background.h" />
     <ClInclude Include="Game\BeatSystem.h" />
+    <ClInclude Include="Game\Clear.h" />
     <ClInclude Include="Game\Fish.h" />
     <ClInclude Include="Game\FishEcosystem.h" />
     <ClInclude Include="Game\GameObjectTypes.h" />
+    <ClInclude Include="Game\GameOver.h" />
     <ClInclude Include="Game\Gravity.h" />
     <ClInclude Include="Game\Mode1.h" />
     <ClInclude Include="Game\Mode2.h" />

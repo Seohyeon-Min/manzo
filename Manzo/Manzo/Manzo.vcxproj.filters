@@ -94,6 +94,12 @@
     <ClCompile Include="Game\Mouse.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Game\GameOver.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Clear.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h">
@@ -226,6 +232,12 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Game\Mouse.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameOver.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Clear.h">
       <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>

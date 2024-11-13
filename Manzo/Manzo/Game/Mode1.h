@@ -23,7 +23,7 @@ Created:    March 8, 2023
 class Reef;
 class Ship;
 class Skillsys;
-class Skillsys::Skill_Net;
+
 class Mode1 : public CS230::GameState {
 public:
     Mode1();

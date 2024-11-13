@@ -154,3 +154,9 @@ void* Engine::GetTmpPtr()
 {
     return tmp_ptr;
 }
+
+void Engine::UnloadTmpPtr()
+{
+    delete tmp_ptr;
+    tmp_ptr = nullptr;
+}

@@ -67,6 +67,7 @@ public:
     void ImGuiDraw() override;
     void SetTmpPtr(void* tmp);
     void* GetTmpPtr();
+    void UnloadTmpPtr();
 
     static constexpr int window_width = 1280;
     static constexpr int window_height = 720;
