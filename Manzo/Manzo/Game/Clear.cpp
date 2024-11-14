@@ -10,7 +10,7 @@ void Clear::Load()
 	AddGSComponent(background);
 	camera = new CS230::Cam();
 	AddGSComponent(camera);
-	GetGSComponent<Background>()->Add("assets/images/temp_back.png", 0.25f); //need change asset
+	GetGSComponent<Background>()->Add("assets/images/Digipen.png", 0.25f); //need change asset
 }
 
 void Clear::Update(double dt)

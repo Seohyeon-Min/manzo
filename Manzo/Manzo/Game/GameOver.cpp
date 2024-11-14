@@ -4,6 +4,7 @@ GameOver::GameOver()
 }
 void GameOver::Load()
 {
+	time = 0;
 	background = new Background();
 	AddGSComponent(background);
 	camera = new CS230::Cam();

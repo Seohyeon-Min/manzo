@@ -136,10 +136,10 @@ void Mode1::Update(double dt) {
         Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
     }
 
-    /*if (ship_ptr->) {                                                                  ** 여기!! 돈 따오는 로직만 넣어주세요!!! **
+    if (Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() >= 5) {
             Engine::GetGameStateManager().ClearNextGameState();
             Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Clear));
-    }*/
+    }
     if (ship_ptr->IsFuelZero()) {
         Engine::GetGameStateManager().ClearNextGameState();
         Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::GameOver));

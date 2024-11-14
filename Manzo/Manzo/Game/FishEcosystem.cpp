@@ -45,6 +45,7 @@ void FishGenerator::GenerateFish(double dt)
 				Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(additionalFish);
 			}
 		}
+
 	}
 
 

@@ -19,6 +19,7 @@ Created:    March 8, 2023
 #include "../Engine/Camera.h"
 #include "Background.h"
 #include "Skill.h"
+#include "Fish.h"
 
 class Reef;
 class Ship;
