@@ -9,7 +9,7 @@ void GameOver::Load()
 	AddGSComponent(background);
 	camera = new CS230::Cam();
 	AddGSComponent(camera);
-	GetGSComponent<Background>()->Add("assets/images/temp_back.png", 0.25f);
+	GetGSComponent<Background>()->Add("assets/images/background/temp_back.png", 0.25f);
 }
 void GameOver::Update(double dt)
 {
