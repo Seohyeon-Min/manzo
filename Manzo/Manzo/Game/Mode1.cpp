@@ -136,11 +136,13 @@ void Mode1::Update(double dt) {
         Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
     }
 
-    if (Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() >= 5) {
+    if (Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() >= 5
+        || Engine::GetInput().KeyJustPressed(CS230::Input::Keys::N)) {
             Engine::GetGameStateManager().ClearNextGameState();
             Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Clear));
     }
-    if (ship_ptr->IsFuelZero()) {
+    if (ship_ptr->IsFuelZero()
+        || Engine::GetInput().KeyJustPressed(CS230::Input::Keys::M)) {
         Engine::GetGameStateManager().ClearNextGameState();
         Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::GameOver));
     }

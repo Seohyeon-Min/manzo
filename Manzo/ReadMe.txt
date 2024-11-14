@@ -70,6 +70,8 @@ Play:
   + KEY_NUM1 : Print out ‘picked Net’
   + KEY_NUM2 : Print out ‘picked Light’
   + KEY_NUM3 : Print out ‘picked Empty’
+  + KEY_M : Game Clear
+  + KEY_N : Game Over
 
 * Gameplay Instruction
  Avoid reefs and eat fish by moving the ship with 'MOUSE_LEFT_BUTTON' in sync with the incoming beat. (For Milestone 1, collision detection is only shown and does not affect gameplay.)

@@ -6,16 +6,20 @@ Clear::Clear()
 
 void Clear::Load()
 {
-	background = new Background();
-	AddGSComponent(background);
+	//camera
 	camera = new CS230::Cam();
 	AddGSComponent(camera);
-	GetGSComponent<Background>()->Add("assets/images/Digipen.png", 0.25f); //need change asset
+
+	//background
+	background = new Background();
+	AddGSComponent(background);
+	GetGSComponent<Background>()->Add("assets/images/background/clear.png", 0.25f); //need change asset
 }
 
 void Clear::Update(double dt)
 {
 	UpdateGSComponents(dt);
+	GetGSComponent<CS230::Cam>()->Update(dt, { 0,0 }, false);
 	time += dt;
 	if (time > 5)
 	{
