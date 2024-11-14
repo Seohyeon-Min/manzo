@@ -134,68 +134,64 @@ void Ship::ResolveCollision(GameObject* other_object)
 float Dot(const vec2& vec1, const vec2& vec2) {
     return vec1.x * vec2.x + vec1.y * vec2.y;
 }
+
 void Ship::HitWithReef(CS230::RectCollision* collision_edge) {
     fuel -= HitDecFuel;
 
-    // �浹�ϴ� ���� �� �� (���۰� ��)
+    // Two points of the colliding wall (start and end)
     vec2 edge_1 = collision_edge->GetCollidingEdge().first;
     vec2 edge_2 = collision_edge->GetCollidingEdge().second;
 
-    // ���� ����� ���� ���
+    // Calculate wall direction and normal
     vec2 wall_dir = { edge_2.x - edge_1.x, edge_2.y - edge_1.y };
     vec2 wall_perpendicular = GetPerpendicular(wall_dir);
     vec2 normal = wall_perpendicular.Normalize();
 
-    // ���� ��ü�� �ӵ��� ��ġ
+    // Current velocity and position of the ship
     vec2 velocity = GetVelocity();
     vec2 ship_position = GetPosition();
 
-    // TOI ����� ���� ������
-    float toi = 1.0f;  // �浹 �ð� ���� (0 ~ 1), �⺻������ ��ü �̵�
+    // Variables for TOI calculation
+    float toi = 1.0f;  // Time of impact (0 ~ 1), default to full movement
     bool isApproaching = false;
 
-    // ���� ���Ϳ� ��ü�� �̵� ���͸� ���� TOI ���
+    // TOI calculation using wall vector and ship movement vector
     vec2 relative_position = ship_position - edge_1;
     float wall_length_squared = wall_dir.x * wall_dir.x + wall_dir.y * wall_dir.y;
     float t = (relative_position.x * wall_dir.x + relative_position.y * wall_dir.y) / wall_length_squared;
 
     if (t >= 0.0f && t <= 1.0f) {
-        // �浹 ������ �� ���ο� �ִ� ��쿡�� TOI�� ����մϴ�.
+        // Only calculate TOI if the collision point is within the wall segment
         vec2 closest_point = edge_1 + wall_dir * t;
-        vec2 relative_velocity = velocity - vec2{ 0.0f, 0.0f };  // ������� �ӵ� (���� ������ ������ ����)
+        vec2 relative_velocity = velocity - vec2{ 0.0f, 0.0f };  // Relative velocity (assuming wall is stationary)
 
-        // ���� ���Ϳ� �ӵ��� ������ ���� �浹 ���� ���� Ȯ��
+        // Check if the ship is approaching by using the dot product with the normal vector
         float relative_speed_along_normal = Dot(relative_velocity, normal);
         if (relative_speed_along_normal < 0) {
-            // ���� ���� ��쿡�� �浹 ���� ���
+            // Calculate time of impact only if approaching
             float distance_to_collision = Dot(closest_point - ship_position, normal);
             toi = distance_to_collision / -relative_speed_along_normal;
-            toi = std::clamp(toi, 0.0f, 1.0f);  // toi�� 0�� 1 ���̷� Ŭ����
+            toi = std::clamp(toi, 0.0f, 1.0f);  // Clamp toi between 0 and 1
             isApproaching = true;
         }
     }
 
-    // �浹�� ����Ǵ� ���, TOI �������� �̵���ŵ�ϴ�.
+    // If a collision is expected, move to the TOI point
     if (isApproaching && toi < 1.0f) {
-        // �浹�ϱ� ���������� �̵�
+        // Move only up to just before the collision point
         SetPosition(ship_position + velocity * toi);
     }
     else {
-        // �浹�� ������� �ʰų� �̹� �浹�� ��쿡�� ���� ��ġ���� ���� �̵�
-        SetPosition(ship_position + -velocity * 0.007f);
+        // If no collision is expected or already collided, adjust the position slightly
+        SetPosition(ship_position + -velocity * 0.02f);
     }
 
-    // �ݻ� ��� (�浹 ���� ó��)
+    // Reflection calculation (after collision)
     float incoming_speed = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
-
-    float dampingFactor = (incoming_speed > 1000.f) ? 0.1f : 0.55f;
-
-    incoming_speed = std::min(incoming_speed, 1000.f);
-    if (incoming_speed < 150.f) incoming_speed = 150.f;
 
     float dot_product_normal_velocity = velocity.x * normal.x + velocity.y * normal.y;
     if (dot_product_normal_velocity > 0) {
-        normal = normal * -1.0f;  // ���� ����
+        normal = normal * -1.0f;  // Reverse the normal
     }
 
     float dot_product = velocity.x * normal.x + velocity.y * normal.y;
@@ -206,31 +202,16 @@ void Ship::HitWithReef(CS230::RectCollision* collision_edge) {
 
     direction = reflection.Normalize();
 
-    // �ӵ� ����
+    // Adjust speed
     if (incoming_speed > 3300.f) incoming_speed = 3300.f;
     if (incoming_speed < 150.f) incoming_speed = 150.f;
 
-    // �ݻ� �ӵ� ���� �� ��ġ ����
+    // Set reflection speed and adjust position
     SetVelocity(direction * incoming_speed * 0.75f);
-    SetPosition(GetPosition() + normal * 0.5f);  // �浹 �� �ణ ������ �������� ����
+    SetPosition(GetPosition() + normal * 0.5f);  // Adjust slightly to move away from the wall after collision
 
     move = false;
     hit_with = true;
-}
-
-
-void Ship::AdjustPositionToCollisionEdge(const vec2& edge_start, const vec2& edge_end) {
-
-    vec2 edge_direction = edge_end - edge_start;
-
-    vec2 to_current = GetPosition() - edge_start;
-
-    float projection_length = Dot(to_current, edge_direction) / Dot(edge_direction, edge_direction);
-    vec2 projection_vector = edge_direction * projection_length;
-
-    vec2 perpendicular_vector = to_current - projection_vector;
-
-    SetPosition(GetPosition() - perpendicular_vector);
 }
 
 
