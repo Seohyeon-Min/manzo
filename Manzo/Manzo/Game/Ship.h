@@ -13,6 +13,7 @@ Created:    June 13, 2024
 #include "GameObjectTypes.h"
 #include "..\Engine\Timer.h"
 #include "..\Game\Skill.h"
+#include "../Engine/Rect.h"
 
 class Beat;
 

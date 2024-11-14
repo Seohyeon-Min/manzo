@@ -54,7 +54,7 @@ void Mode1::Load() {
     GetGSComponent<CS230::GameObjectManager>()->Add(ship_ptr);
 
     //// camera
-    Math::rect Boundary({ -640,-370 }, { 640,360 });
+    Math::rect Boundary({ -640,-360 }, { 640,360 });
     camera = new CS230::Cam();
     AddGSComponent(camera);
     camera->SetLimit(Boundary);
