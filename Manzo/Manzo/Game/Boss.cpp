@@ -12,7 +12,7 @@ Boss::Boss(vec2 start_position, BossType type)
 	ReadBossJSON(type);
 	InitializeStates();
 	AddGOComponent(new CS230::Sprite("assets/images/ship.spt", this));
-	SetVelocity({0,0});
+	SetVelocity({start_position});
 
 	// cutscean
 	
@@ -201,7 +201,7 @@ void Boss::ReadBossJSON(BossType type)
 	is_boss_fight = ReadJson->IsBossFight();
 	bpm = ReadJson->GetBPM();
 	mp3_file_name = ReadJson->GetMp3();
-	move_position = ReadJson->GetMovePosition();
+	position = ReadJson->GetMovePosition();
 	parttern = ReadJson->GetParttern();
 	total_entry = ReadJson->GetTotalEntry();
 

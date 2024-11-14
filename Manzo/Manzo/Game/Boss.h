@@ -79,7 +79,7 @@ private:
 	bool is_boss_fight;
 	int bpm;
 	std::string mp3_file_name;
-	std::array<int, 2> move_position;
+	std::array<int, 2> position;
 	std::vector<std::vector<EntryData>> parttern;
 	std::vector<int> total_entry;
 	int Boss_damage;

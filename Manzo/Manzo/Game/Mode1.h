@@ -49,4 +49,6 @@ private:
     CS230::Cam* camera;
     Skillsys* skill_ptr;
     Skillsys::Skill_Net* Net_ptr;
+
+    bool Isboss = false;
 };
