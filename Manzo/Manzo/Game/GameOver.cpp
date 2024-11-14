@@ -30,4 +30,5 @@ void GameOver::Unload()
 	GetGSComponent<Background>()->Unload();
 	ClearGSComponents();
 	Engine::Instance().UnloadTmpPtr();
+	Engine::GetGameStateManager().GetGSComponent<Fish>()->ClearMoney();
 }
