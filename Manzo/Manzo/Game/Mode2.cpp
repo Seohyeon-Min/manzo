@@ -46,7 +46,7 @@ void Mode2::Load() {
     //// background
     background = new Background();
     AddGSComponent(background);
-    GetGSComponent<Background>()->Add("assets/images/temp_back2.png", 0.25f);
+    background->Add("assets/images/background/temp_back2.png", 0.25f);
 
 
     //// audio
