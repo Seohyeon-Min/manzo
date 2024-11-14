@@ -131,23 +131,67 @@ void Ship::ResolveCollision(GameObject* other_object)
     }
 }
 
+float Dot(const vec2& vec1, const vec2& vec2) {
+    return vec1.x * vec2.x + vec1.y * vec2.y;
+}
+
 void Ship::HitWithReef(CS230::RectCollision* collision_edge) {
     fuel -= HitDecFuel;
 
+    // 충돌하는 벽의 두 점 (시작과 끝)
     vec2 edge_1 = collision_edge->GetCollidingEdge().first;
     vec2 edge_2 = collision_edge->GetCollidingEdge().second;
 
+    // 벽의 방향과 법선 계산
     vec2 wall_dir = { edge_2.x - edge_1.x, edge_2.y - edge_1.y };
     vec2 wall_perpendicular = GetPerpendicular(wall_dir);
     vec2 normal = wall_perpendicular.Normalize();
 
-    vec2 velocity = GetVelocity(); 
+    // 현재 선체의 속도와 위치
+    vec2 velocity = GetVelocity();
+    vec2 ship_position = GetPosition();
 
+    // TOI 계산을 위한 변수들
+    float toi = 1.0f;  // 충돌 시간 비율 (0 ~ 1), 기본적으로 전체 이동
+    bool isApproaching = false;
+
+    // 벽의 벡터와 선체의 이동 벡터를 통해 TOI 계산
+    vec2 relative_position = ship_position - edge_1;
+    float wall_length_squared = wall_dir.x * wall_dir.x + wall_dir.y * wall_dir.y;
+    float t = (relative_position.x * wall_dir.x + relative_position.y * wall_dir.y) / wall_length_squared;
+
+    if (t >= 0.0f && t <= 1.0f) {
+        // 충돌 지점이 벽 내부에 있는 경우에만 TOI를 계산합니다.
+        vec2 closest_point = edge_1 + wall_dir * t;
+        vec2 relative_velocity = velocity - vec2{ 0.0f, 0.0f };  // 상대적인 속도 (벽은 고정된 것으로 가정)
+
+        // 법선 벡터와 속도의 내적을 통해 충돌 접근 여부 확인
+        float relative_speed_along_normal = Dot(relative_velocity, normal);
+        if (relative_speed_along_normal < 0) {
+            // 접근 중인 경우에만 충돌 시점 계산
+            float distance_to_collision = Dot(closest_point - ship_position, normal);
+            toi = distance_to_collision / -relative_speed_along_normal;
+            toi = std::clamp(toi, 0.0f, 1.0f);  // toi를 0과 1 사이로 클램프
+            isApproaching = true;
+        }
+    }
+
+    // 충돌이 예상되는 경우, TOI 지점으로 이동시킵니다.
+    if (isApproaching && toi < 1.0f) {
+        // 충돌하기 직전까지만 이동
+        SetPosition(ship_position + velocity * toi);
+    }
+    else {
+        // 충돌이 예상되지 않거나 이미 충돌한 경우에는 기존 위치에서 보정 이동
+        SetPosition(ship_position + -velocity * 0.007f);
+    }
+
+    // 반사 계산 (충돌 이후 처리)
     float incoming_speed = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
 
     float dot_product_normal_velocity = velocity.x * normal.x + velocity.y * normal.y;
     if (dot_product_normal_velocity > 0) {
-        normal = normal * -1.0f;
+        normal = normal * -1.0f;  // 법선 반전
     }
 
     float dot_product = velocity.x * normal.x + velocity.y * normal.y;
@@ -156,16 +200,15 @@ void Ship::HitWithReef(CS230::RectCollision* collision_edge) {
         velocity.y - 2 * dot_product * normal.y
     };
 
-    SetPosition(GetPosition() + -GetVelocity() * 0.007f);
     direction = reflection.Normalize();
-    if (incoming_speed > 3300.f)  incoming_speed = 3300.f;
-    if (incoming_speed < 150.f)  incoming_speed = 150.f;
-    SetVelocity(direction * incoming_speed * 0.75f);
-    SetPosition(GetPosition() + normal * 0.5f);
 
-    //float correction_distance = 0.5f;
-    //vec2 corrected_position = GetPosition() + normal * correction_distance;
-    //SetPosition(corrected_position);
+    // 속도 조정
+    if (incoming_speed > 3300.f) incoming_speed = 3300.f;
+    if (incoming_speed < 150.f) incoming_speed = 150.f;
+
+    // 반사 속도 설정 및 위치 보정
+    SetVelocity(direction * incoming_speed * 0.75f);
+    SetPosition(GetPosition() + normal * 0.5f);  // 충돌 후 약간 벽에서 떨어지게 보정
 
     move = false;
     hit_with = true;
