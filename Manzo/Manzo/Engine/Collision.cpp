@@ -92,6 +92,7 @@ void CS230::RectCollision::Draw() {
     Engine::GetRender().AddDrawCall(top_left, bottom_left, GREEN);
 }
 
+
 bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
     Collision* other_collider = other_object->GetGOComponent<Collision>();
     Math::rect rectangle_1 = WorldBoundary_rect();
@@ -153,10 +154,42 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
             return false;
         }
 
-        if (closest_index != -1) {
+        float expanded_left = rectangle_1.Left() - 15;
+        float expanded_right = rectangle_1.Right() + 15;
+        float expanded_bottom = rectangle_1.Bottom() - 15;
+        float expanded_top = rectangle_1.Top() + 15;
+
+        bool isCornerCollision = false;
+        for (const vec2& poly_vertex : other_poly.vertices) {
+            bool within_x_bounds = (poly_vertex.x >= expanded_left && poly_vertex.x <= expanded_right);
+            bool within_y_bounds = (poly_vertex.y >= expanded_bottom && poly_vertex.y <= expanded_top);
+
+            if (within_x_bounds && within_y_bounds) {
+                isCornerCollision = true;
+                break;
+            }
+        }
+
+        if (isCornerCollision && closest_index != -1) {
+
+            vec2 CollidingVertex = other_poly.vertices[closest_index];
+            vec2 CollidingSide_1 = other_poly.vertices[(closest_index + 1) % other_poly.vertexCount];
+            vec2 CollidingSide_2 = other_poly.vertices[(closest_index - 1 + other_poly.vertexCount) % other_poly.vertexCount];
+
+
+            vec2 direction1 = CollidingSide_1 - CollidingVertex;
+            vec2 direction2 = CollidingSide_2 - CollidingVertex;
+            vec2 midpoint_direction = NormalizeVector2(direction1 + direction2);
+
+
+            colliding_edge = { CollidingVertex, CollidingVertex + midpoint_direction };
+            std::cout << "It's Corner" << std::endl;
+        }
+        else if (!isCornerCollision && closest_index != -1) {
             vec2 CollidingSide_1 = other_poly.vertices[closest_index];
             vec2 CollidingSide_2 = other_poly.vertices[(closest_index + 1) % other_poly.vertexCount];
-            colliding_edge = { CollidingSide_1, CollidingSide_2 }; 
+
+            colliding_edge = { CollidingSide_1, CollidingSide_2 };
         }
 
         return true;
@@ -164,6 +197,7 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
 
     return false;
 }
+
 
 
 

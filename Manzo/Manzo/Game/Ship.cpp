@@ -30,7 +30,7 @@ void Ship::Update(double dt)
         }
         else {
             if (hit_with) {
-                vec2 velocity = GetVelocity();
+                vec2 velocity = GetVelocity(); 
                 float velocity_magnitude = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
                 if (velocity_magnitude < 20.f) SetVelocity(direction * skidding_speed);
                 else SetVelocity(GetVelocity() * deceleration);
@@ -134,64 +134,68 @@ void Ship::ResolveCollision(GameObject* other_object)
 float Dot(const vec2& vec1, const vec2& vec2) {
     return vec1.x * vec2.x + vec1.y * vec2.y;
 }
-
 void Ship::HitWithReef(CS230::RectCollision* collision_edge) {
     fuel -= HitDecFuel;
 
-    // Ãæµ¹ÇÏ´Â º®ÀÇ µÎ Á¡ (½ÃÀÛ°ú ³¡)
+    // ï¿½æµ¹ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ (ï¿½ï¿½ï¿½Û°ï¿½ ï¿½ï¿½)
     vec2 edge_1 = collision_edge->GetCollidingEdge().first;
     vec2 edge_2 = collision_edge->GetCollidingEdge().second;
 
-    // º®ÀÇ ¹æÇâ°ú ¹ý¼± °è»ê
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
     vec2 wall_dir = { edge_2.x - edge_1.x, edge_2.y - edge_1.y };
     vec2 wall_perpendicular = GetPerpendicular(wall_dir);
     vec2 normal = wall_perpendicular.Normalize();
 
-    // ÇöÀç ¼±Ã¼ÀÇ ¼Óµµ¿Í À§Ä¡
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½Óµï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡
     vec2 velocity = GetVelocity();
     vec2 ship_position = GetPosition();
 
-    // TOI °è»êÀ» À§ÇÑ º¯¼öµé
-    float toi = 1.0f;  // Ãæµ¹ ½Ã°£ ºñÀ² (0 ~ 1), ±âº»ÀûÀ¸·Î ÀüÃ¼ ÀÌµ¿
+    // TOI ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    float toi = 1.0f;  // ï¿½æµ¹ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½ (0 ~ 1), ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ ï¿½Ìµï¿½
     bool isApproaching = false;
 
-    // º®ÀÇ º¤ÅÍ¿Í ¼±Ã¼ÀÇ ÀÌµ¿ º¤ÅÍ¸¦ ÅëÇØ TOI °è»ê
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í¿ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ TOI ï¿½ï¿½ï¿½
     vec2 relative_position = ship_position - edge_1;
     float wall_length_squared = wall_dir.x * wall_dir.x + wall_dir.y * wall_dir.y;
     float t = (relative_position.x * wall_dir.x + relative_position.y * wall_dir.y) / wall_length_squared;
 
     if (t >= 0.0f && t <= 1.0f) {
-        // Ãæµ¹ ÁöÁ¡ÀÌ º® ³»ºÎ¿¡ ÀÖ´Â °æ¿ì¿¡¸¸ TOI¸¦ °è»êÇÕ´Ï´Ù.
+        // ï¿½æµ¹ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ TOIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
         vec2 closest_point = edge_1 + wall_dir * t;
-        vec2 relative_velocity = velocity - vec2{ 0.0f, 0.0f };  // »ó´ëÀûÀÎ ¼Óµµ (º®Àº °íÁ¤µÈ °ÍÀ¸·Î °¡Á¤)
+        vec2 relative_velocity = velocity - vec2{ 0.0f, 0.0f };  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Óµï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 
-        // ¹ý¼± º¤ÅÍ¿Í ¼ÓµµÀÇ ³»ÀûÀ» ÅëÇØ Ãæµ¹ Á¢±Ù ¿©ºÎ È®ÀÎ
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í¿ï¿½ ï¿½Óµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½æµ¹ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
         float relative_speed_along_normal = Dot(relative_velocity, normal);
         if (relative_speed_along_normal < 0) {
-            // Á¢±Ù ÁßÀÎ °æ¿ì¿¡¸¸ Ãæµ¹ ½ÃÁ¡ °è»ê
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ ï¿½æµ¹ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
             float distance_to_collision = Dot(closest_point - ship_position, normal);
             toi = distance_to_collision / -relative_speed_along_normal;
-            toi = std::clamp(toi, 0.0f, 1.0f);  // toi¸¦ 0°ú 1 »çÀÌ·Î Å¬·¥ÇÁ
+            toi = std::clamp(toi, 0.0f, 1.0f);  // toiï¿½ï¿½ 0ï¿½ï¿½ 1 ï¿½ï¿½ï¿½Ì·ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½
             isApproaching = true;
         }
     }
 
-    // Ãæµ¹ÀÌ ¿¹»óµÇ´Â °æ¿ì, TOI ÁöÁ¡À¸·Î ÀÌµ¿½ÃÅµ´Ï´Ù.
+    // ï¿½æµ¹ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½, TOI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½Åµï¿½Ï´ï¿½.
     if (isApproaching && toi < 1.0f) {
-        // Ãæµ¹ÇÏ±â Á÷Àü±îÁö¸¸ ÀÌµ¿
+        // ï¿½æµ¹ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
         SetPosition(ship_position + velocity * toi);
     }
     else {
-        // Ãæµ¹ÀÌ ¿¹»óµÇÁö ¾Ê°Å³ª ÀÌ¹Ì Ãæµ¹ÇÑ °æ¿ì¿¡´Â ±âÁ¸ À§Ä¡¿¡¼­ º¸Á¤ ÀÌµ¿
+        // ï¿½æµ¹ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°Å³ï¿½ ï¿½Ì¹ï¿½ ï¿½æµ¹ï¿½ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
         SetPosition(ship_position + -velocity * 0.007f);
     }
 
-    // ¹Ý»ç °è»ê (Ãæµ¹ ÀÌÈÄ Ã³¸®)
+    // ï¿½Ý»ï¿½ ï¿½ï¿½ï¿½ (ï¿½æµ¹ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½)
     float incoming_speed = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
+
+    float dampingFactor = (incoming_speed > 1000.f) ? 0.1f : 0.55f;
+
+    incoming_speed = std::min(incoming_speed, 1000.f);
+    if (incoming_speed < 150.f) incoming_speed = 150.f;
 
     float dot_product_normal_velocity = velocity.x * normal.x + velocity.y * normal.y;
     if (dot_product_normal_velocity > 0) {
-        normal = normal * -1.0f;  // ¹ý¼± ¹ÝÀü
+        normal = normal * -1.0f;  // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     }
 
     float dot_product = velocity.x * normal.x + velocity.y * normal.y;
@@ -202,17 +206,33 @@ void Ship::HitWithReef(CS230::RectCollision* collision_edge) {
 
     direction = reflection.Normalize();
 
-    // ¼Óµµ Á¶Á¤
+    // ï¿½Óµï¿½ ï¿½ï¿½ï¿½ï¿½
     if (incoming_speed > 3300.f) incoming_speed = 3300.f;
     if (incoming_speed < 150.f) incoming_speed = 150.f;
 
-    // ¹Ý»ç ¼Óµµ ¼³Á¤ ¹× À§Ä¡ º¸Á¤
+    // ï¿½Ý»ï¿½ ï¿½Óµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½
     SetVelocity(direction * incoming_speed * 0.75f);
-    SetPosition(GetPosition() + normal * 0.5f);  // Ãæµ¹ ÈÄ ¾à°£ º®¿¡¼­ ¶³¾îÁö°Ô º¸Á¤
+    SetPosition(GetPosition() + normal * 0.5f);  // ï¿½æµ¹ ï¿½ï¿½ ï¿½à°£ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
     move = false;
     hit_with = true;
 }
+
+
+void Ship::AdjustPositionToCollisionEdge(const vec2& edge_start, const vec2& edge_end) {
+
+    vec2 edge_direction = edge_end - edge_start;
+
+    vec2 to_current = GetPosition() - edge_start;
+
+    float projection_length = Dot(to_current, edge_direction) / Dot(edge_direction, edge_direction);
+    vec2 projection_vector = edge_direction * projection_length;
+
+    vec2 perpendicular_vector = to_current - projection_vector;
+
+    SetPosition(GetPosition() - perpendicular_vector);
+}
+
 
 //for fuel
 void Ship::FuelUpdate(double dt)
