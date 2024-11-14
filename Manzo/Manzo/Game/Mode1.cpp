@@ -64,7 +64,7 @@ void Mode1::Load() {
     AddGSComponent(background);    
 
     //// audio
-    Mix_Music* sample = Engine::GetAudioManager().LoadMusic("assets/audios/basic_beat_100_5.wav", "sample");
+    Mix_Music* sample = Engine::GetAudioManager().LoadMusic("assets/audios/back_temp.wav", "sample");
     if (sample) {
         Engine::GetAudioManager().PlayMusic(sample, -1);
     }
