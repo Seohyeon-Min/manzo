@@ -1,19 +1,27 @@
 #include "GameOver.h"
+#include "Background.h"
 GameOver::GameOver()
 {
 }
 void GameOver::Load()
 {
 	time = 0;
-	background = new Background();
-	AddGSComponent(background);
+
+	//camera
 	camera = new CS230::Cam();
 	AddGSComponent(camera);
-	GetGSComponent<Background>()->Add("assets/images/background/temp_back.png", 0.25f);
+
+	//background
+	background = new Background();
+	AddGSComponent(background);
+	GetGSComponent<Background>()->Add("assets/images/background/gameover.png", 0.0f);
 }
 void GameOver::Update(double dt)
 {
 	UpdateGSComponents(dt);
+	GetGSComponent<CS230::Cam>()->Update(dt, {0,0}, false);
+
+
 	time += dt;
 	if (time > 5)
 	{
@@ -21,9 +29,10 @@ void GameOver::Update(double dt)
 		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
 	}
 }
+
 void GameOver::Draw()
 {
-	GetGSComponent<Background>()->Draw(*GetGSComponent<CS230::Cam>());
+	background->Draw(*GetGSComponent<CS230::Cam>());
 }
 void GameOver::Unload()
 {
