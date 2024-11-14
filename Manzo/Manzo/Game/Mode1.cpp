@@ -136,8 +136,7 @@ void Mode1::Update(double dt) {
         Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
     }
 
-    if (Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() >= 5
-        || Engine::GetInput().KeyJustPressed(CS230::Input::Keys::N)) {
+    if (Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() >= 20) {
             Engine::GetGameStateManager().ClearNextGameState();
             Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Clear));
     }

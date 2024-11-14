@@ -62,7 +62,7 @@ private:
     bool isCollidingWithReef;
     bool FuelFlag = false;
     double fuel;
-    double Maxfuel = 500;
+    double Maxfuel = 1000;
     double baseDecfuel = 2;
     double MoveDecfuel = 0.5;
     double HitDecFuel = 50;
