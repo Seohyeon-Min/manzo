@@ -6,6 +6,8 @@
 #include "Background.h"
 #include "Skill.h"
 #include "States.h"
+#include "Fish.h"
+
 class GameOver : public CS230::GameState {
 public:
     GameOver();

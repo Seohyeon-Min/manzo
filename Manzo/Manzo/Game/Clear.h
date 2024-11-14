@@ -6,6 +6,7 @@
 #include "Background.h"
 #include "Skill.h"
 #include "States.h"
+#include "Fish.h"
 
 
 class Clear : public CS230::GameState {
