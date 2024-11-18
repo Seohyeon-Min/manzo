@@ -24,7 +24,7 @@ void FuelUI::Update(double dt)
 
 void FuelUI::AddDrawCall()
 {
-    DrawSettings settings;
+   DrawSettings settings;
     settings.do_blending = true;
 
     draw_call = {

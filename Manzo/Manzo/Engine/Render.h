@@ -83,7 +83,7 @@ namespace CS230 {
 
     private:
         // Internal render method
-        void Draw(const DrawCall& draw_call, bool isUI = false);
+        void Draw(const DrawCall& draw_call);
         void DrawBackground(const DrawCall& draw_call);
         void DrawLine(LineDrawCall drawcall);
         void DrawLinePro(LineDrawCallPro drawcall);

@@ -71,5 +71,4 @@ namespace CS230 {
 		//std::vector<std::shared_ptr<RockGroup>> rock_groups;
 
 	};
-
 }

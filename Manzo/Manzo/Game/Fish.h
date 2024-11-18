@@ -1,4 +1,6 @@
-#pragma once
+#ifndef FISH_H
+#define FISH_H
+
 #include "../Engine/GameObject.h"
 #include "GameObjectTypes.h"
 #include "../Engine/MapManager.h"
@@ -13,6 +15,8 @@ public:
 	bool CanCollideWith(GameObjectTypes) override;
 	void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
 	static void ReadFishCSV(const std::string& filename);
+	int GetMoney() { return money; }
+	void ClearMoney() { money = 0; }
 
 	vec2 start_position = { 0,0 };
 
@@ -35,10 +39,11 @@ public:
 	bool collided = false;
 
 	void Update(double dt);
-	void Draw(DrawLayer drawlayer)override;
+	void Draw();
 
 private:
 	double swimming_range = 15.0;
+	static int money;
 };
 
 class BackgroundFish : public CS230::GameObject
@@ -52,7 +57,7 @@ public:
 	void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
 
 	void Update(double dt);
-	void Draw(DrawLayer drawlayer)override;
+	void Draw();
 
 	void AddBackgroundFishes(BackgroundFish* obj)
 	{
@@ -72,3 +77,5 @@ private:
 	}
 
 };
+
+#endif

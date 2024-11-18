@@ -5,9 +5,11 @@
 #include <iostream>
 #include "..\Game\Ship.h"
 #include "../Engine/Component.h"
+#include "..\Engine\GameObjectManager.h"
 
+class Ship;
 
-class Skillsys : public CS230::Component //skill system
+class Skillsys //skill system
 {
 
 public:
@@ -24,23 +26,64 @@ public:
 		SOMETHING_WITH_A_G
 	};
 
-	Skillsys() : skillslots(3, Empty) {}
+	enum state
+	{
+		Set,
+		Active,
+	};
 
-	void Update([[maybe_unused]]double dt);
+	Skillsys() : skillslots(3, Empty) { is_active_skill = false; }
+
+	void Update();
 	void setskill(int slot, Skill_list skill);
 	void skillprint();
 	void ClearSkill();
+	void SetShipPtr(Ship* ptr);
+	Ship* GetShipPtr();
+	std::vector<Skill_list> GetSkill() { return skillslots; };
 
 	void Active_skill(Skill_list skill);
-	void Skill_Net();
-	void Skill_Light();
+	void SkillNet();
+	void SkillLight();
+
+	//Class for each skill
+	class Skill_Net : public CS230::GameObject // Net
+	{
+
+	public:
+
+		Skill_Net(vec2 position, Skillsys* skillsys);
+		GameObjectTypes Type() override { return GameObjectTypes::Net; }
+		std::string TypeName() override { return "Net"; }
+		bool CanCollideWith(GameObjectTypes) override;
+		//void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
+		void SetShipPtr(Ship* ptr) { ship_ptr = ptr; }
+		void Update(double [[maybe_unused]] dt);
+
+		const vec2& GetPosition() const { return GameObject::GetPosition(); }
+
+	private:
+
+		void Draw();
+		Ship* ship_ptr = nullptr;
+
+
+	};
 
 private:
 	std::vector<Skill_list> skillslots;
 	bool is_slot_selected = false;
 	bool Ready_to_set = false;
+	bool is_active_skill = false;
 	int Selected_slot = NULL;
+	bool Check_ship_ptr = false;
 	Skill_list Selected_skill = Empty;
+	Ship* Ship_ptr = nullptr;
+	Skill_Net* skill_net;
+
+
+
+	//For Skill
 
 
 };

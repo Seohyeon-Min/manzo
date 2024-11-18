@@ -19,6 +19,7 @@ Created:    March 8, 2023
 #include "GLApp.h"
 #include "Render.h"
 #include "ShaderManager.h"
+#include "AudioManager.h"
 
 #include <chrono>
 #include <time.h>
@@ -54,6 +55,9 @@ public:
         return Instance().shadermanager;
     }
 
+    static AudioManager& GetAudioManager() {
+        return Instance().audiomanager;
+    }
     //static CS230::Font& GetFont(int index) {
     //    return Instance().fonts[index];
     //}
@@ -65,6 +69,9 @@ public:
     bool HasGameEnded();
     void HandleEvent(SDL_Window& sdl_window, const SDL_Event& event);
     void ImGuiDraw() override;
+    void SetTmpPtr(void* tmp);
+    void* GetTmpPtr();
+    void UnloadTmpPtr();
 
     static constexpr int window_width = 1280;
     static constexpr int window_height = 720;
@@ -82,6 +89,7 @@ private:
     static constexpr int FPSTargetFrames = static_cast<int>(FPSDuration * TargetFPS);
     double dt;
     double FPS;
+    void* tmp_ptr = nullptr;
 
     //std::vector<CS230::Font> fonts;
     CS230::Logger logger;
@@ -90,5 +98,6 @@ private:
     CS230::TextureManager texturemanager;
     CS230::Render render;
     ShaderManager shadermanager;
+    AudioManager audiomanager;
 
 };

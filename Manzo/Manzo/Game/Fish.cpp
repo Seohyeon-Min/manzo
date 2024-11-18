@@ -6,6 +6,8 @@
 std::mt19937 dre;
 std::vector<Fish::FishDex> Fish::fishBook;
 
+int Fish::money = 0;
+
 Fish::Fish(Fish* parent) : CS230::GameObject({ 0, 0 }) {
 
 	std::uniform_int_distribution<int> fishIndex(0, static_cast<int>(fishBook.size() - 1));
@@ -13,7 +15,7 @@ Fish::Fish(Fish* parent) : CS230::GameObject({ 0, 0 }) {
 
 	if (parent == nullptr) {
 		ivec2 windowSize = { Engine::window_width, Engine::window_height };
-		start_position = { -1280 ,((float)rand() / RAND_MAX) * 2.0f * windowSize.y - windowSize.y }; //outside of window
+		start_position = { -640 ,((float)rand() / RAND_MAX) * 2.0f * windowSize.y - windowSize.y }; //outside of window
 		SetPosition(start_position);
 		SetVelocity(fishBook[index].velocity);
 		SetScale(fishBook[index].scale);
@@ -32,6 +34,7 @@ bool Fish::CanCollideWith(GameObjectTypes other_object)
 {
 	switch (other_object) {
 	case GameObjectTypes::Ship:
+	case GameObjectTypes::Net:
 		return true;
 		break;
 	}
@@ -42,16 +45,19 @@ void Fish::ResolveCollision(GameObject* other_object)
 {
 	switch (other_object->Type()) {
 	case GameObjectTypes::Ship:
+	case GameObjectTypes::Net:
 		this->Destroy();
+		money++;
 		break;
 	}
 }
 
 void Fish::Update(double dt) {
+
 	GameObject::Update(dt);
 
 	//destroy outside world
-	if (GetPosition().x - GetGOComponent<CS230::Sprite>()->GetFrameSize().x / 2 > Engine::window_width)
+	if (GetPosition().x - GetGOComponent<CS230::Sprite>()->GetFrameSize().x / 2 > Engine::window_width * 0.5f)
 	{
 		Destroy();
 	}
@@ -61,11 +67,12 @@ void Fish::Update(double dt) {
 	{
 		SetVelocity({ GetVelocity().x, -GetVelocity().y });
 	}
+
 }
 
-void Fish::Draw(DrawLayer drawlayer)
+void Fish::Draw()
 {
-	CS230::GameObject::Draw(DrawLayer::DrawLast);
+	CS230::GameObject::Draw();
 }
 
 void Fish::ReadFishCSV(const std::string& filename)
@@ -108,13 +115,13 @@ void Fish::ReadFishCSV(const std::string& filename)
 	}
 }
 
-BackgroundFish::BackgroundFish() : GameObject({start_position})
+BackgroundFish::BackgroundFish() : GameObject({ start_position })
 {
 	ivec2 windowSize = { Engine::window_width, Engine::window_height };
-	start_position = { -1280 ,((float)rand() / RAND_MAX) * 2.0f * windowSize.y - windowSize.y }; //outside of window
+	start_position = { -640 ,((float)rand() / RAND_MAX) * 2.0f * windowSize.y - windowSize.y }; //outside of window
 	//start_position = { -500,100 };
 	SetPosition(start_position);
-	SetVelocity({30,0});
+	SetVelocity({ 30,0 });
 
 	AddGOComponent(new CS230::Sprite("assets/images/BackgroundFish.spt", this));
 }
@@ -247,7 +254,7 @@ void BackgroundFish::Update(double dt) {
 	//rock이 있는 내부를 map tile triangle rasterization bounding box마냥 개작은 사각형들로 쪼개서 
 	//내부는 1, 외부는 0 하고 0인 경로로만 이동하도록 하면 좋을 거 같은데
 	//약간 지뢰찾기 느낌?
-	
+
 	auto rocks = Engine::GetGameStateManager().GetGSComponent<CS230::Map>()->GetRock();
 	for (auto& rock : rocks) {
 		auto polygon = rock.GetPolygon();  // 바위의 다각형 꼭짓점들 가져오기
@@ -314,7 +321,7 @@ void BackgroundFish::Update(double dt) {
 	}
 }
 
-void BackgroundFish::Draw(DrawLayer drawlayer)
+void BackgroundFish::Draw()
 {
-	GameObject::Draw(DrawLayer::DrawLast);
+	GameObject::Draw();
 }

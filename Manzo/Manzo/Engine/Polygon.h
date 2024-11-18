@@ -1,5 +1,6 @@
 #pragma once
 #include "vec2.h"
+#include "Rect.h"
 #include <vector>
 
 struct [[nodiscard]] Polygon
@@ -23,4 +24,13 @@ struct [[nodiscard]] Polygon
 		}
 		return Math::rect{ minPoint, maxPoint };
 	}
+};
+
+
+struct [[nodiscard]] EntryData {
+	float Isnotelong;
+	vec2 position;
+	float delay;
+
+
 };

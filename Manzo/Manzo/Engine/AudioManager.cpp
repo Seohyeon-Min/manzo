@@ -83,7 +83,7 @@ double AudioManager::GetCurrentMusicTime() {
         return Mix_GetMusicPosition(nullptr);  // 현재 음악의 재생 위치를 반환합니다.
     }
     else {
-        std::cerr << "No music is currently playing." << std::endl;
+        //std::cerr << "No music is currently playing." << std::endl;
         return 0;
     }
 }

@@ -32,9 +32,6 @@ void Mode2::Load() {
 #endif
     // compenent
     AddGSComponent(new CS230::GameObjectManager());
-    AddGSComponent(new Beat());
-    AddGSComponent(new AudioManager());
-    AddGSComponent(new Skillsys());
 
     //// ship
     ship_ptr = new Ship({ 0, -250 });
@@ -49,25 +46,34 @@ void Mode2::Load() {
     //// background
     background = new Background();
     AddGSComponent(background);
-    GetGSComponent<Background>()->Add("assets/images/temp_back2.png", 0.25f);
+    background->Add("assets/images/background/temp_back2.png", 0.25f);
 
 
     //// audio
-    Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("assets/audios/basic_beat_100_4.wav", "sample");
-    if (sample) {
-        GetGSComponent<AudioManager>()->PlayMusic(sample, -1);
-    }
+    //Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("assets/audios/basic_beat_100_4.wav", "sample");
+    //if (sample) {
+    //    GetGSComponent<AudioManager>()->PlayMusic(sample, -1);
+    //}
 
     // skill
-    Skill_ptr = GetGSComponent<Skillsys>();
+    if (!Engine::Instance().GetTmpPtr())
+    {
+        Engine::Instance().SetTmpPtr(new Skillsys);
+        skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
+        skill_ptr->SetShipPtr(ship_ptr);
+    }
+    else
+    {
+        skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
+        skill_ptr->SetShipPtr(ship_ptr);
+    }
 }
 
 void Mode2::Update(double dt) {
     UpdateGSComponents(dt);
     GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
     GetGSComponent<CS230::Cam>()->Update(dt, ship_ptr->GetPosition(), false);
-    Skill_ptr->Update(dt);
-    GetGSComponent<Skillsys>()->Update(dt);
+    skill_ptr->Update();
 
     //float moving~
     time += float(dt);
@@ -94,6 +100,6 @@ void Mode2::Unload() {
     GetGSComponent<Background>()->Unload();
     ClearGSComponents();
     ship_ptr = nullptr;
-    Skill_ptr = nullptr;
+    skill_ptr = nullptr;
     background = nullptr;
 }

@@ -108,7 +108,7 @@ namespace {
 
 // Draw an individual draw call (textured quad)
 // Converts world coordinates to normalized device coordinates (NDC)
-void CS230::Render::Draw(const DrawCall& draw_call, bool isUI) {
+void CS230::Render::Draw(const DrawCall& draw_call) {
     const GLShader* shader = draw_call.shader;
     shader->Use(); // Use the specified shader
     auto settings = draw_call.settings;
@@ -135,7 +135,7 @@ void CS230::Render::Draw(const DrawCall& draw_call, bool isUI) {
     vec2 texture_size = (vec2)draw_call.texture->GetSize();
     mat3 model_to_world = *draw_call.transform * mat3::build_scale(texture_size); // Scale the model based on texture size
 
-    mat3 WORLD_TO_NDC = isUI
+    mat3 WORLD_TO_NDC = settings.is_UI
         ? mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height)
         : GetWorldtoNDC();
 

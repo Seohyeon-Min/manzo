@@ -13,6 +13,7 @@ Created:    June 13, 2024
 #include "GameObjectTypes.h"
 #include "..\Engine\Timer.h"
 #include "..\Game\Skill.h"
+#include "../Engine/Rect.h"
 
 class Beat;
 
@@ -38,9 +39,10 @@ public:
     void HitWithReef(CS230::RectCollision* collision_edge);
     bool IsTouchingReef();
     bool IsFuelZero();
+    bool IsShipUnder();
 
 private:
-    static constexpr double speed = 7000.f;
+    static constexpr double speed = 6000.f;
     static constexpr float deceleration = 0.80f;
     static constexpr double skidding_speed = 20.f;
     bool moving;
@@ -61,7 +63,7 @@ private:
     bool isCollidingWithReef;
     bool FuelFlag = false;
     double fuel;
-    double Maxfuel = 500;
+    double Maxfuel = 1000;
     double baseDecfuel = 2;
     double MoveDecfuel = 0.5;
     double HitDecFuel = 50;
