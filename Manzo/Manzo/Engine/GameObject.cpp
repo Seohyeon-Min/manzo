@@ -31,9 +31,6 @@ void CS230::GameObject::Update(double dt) {
 	current_state->Update(this, dt);
 	UpdateGOComponents(dt);
 	current_state->CheckExit(this);
-	//if (velocity.x != 0 || velocity.y != 0) {
-	//	UpdatePosition(velocity * (float)dt);
-	//}
 }
 
 void CS230::GameObject::FixedUpdate(double fixed_dt)

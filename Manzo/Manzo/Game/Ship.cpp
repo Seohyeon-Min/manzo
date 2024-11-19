@@ -40,16 +40,24 @@ void Ship::Update(double dt)
         SetVelocity({ GetVelocity().x, 0 });
     }
 
+
+    std::cout << "Update\n";
+}
+
+void Ship::FixedUpdate(double fixed_dt)
+{
+    GameObject::FixedUpdate(fixed_dt);
+    std::cout << "Fixed\n";
     if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
         SetDest();
 
         if (move) {
-            Move(dt);
-            
+            Move(fixed_dt);
+
         }
         else {
             if (hit_with) {
-                vec2 velocity = GetVelocity(); 
+                vec2 velocity = GetVelocity();
                 float velocity_magnitude = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
                 if (velocity_magnitude < 20.f) SetVelocity(direction * skidding_speed);
                 else SetVelocity(GetVelocity() * deceleration);
@@ -63,7 +71,7 @@ void Ship::Update(double dt)
             }
 
         }
-        FuelUpdate(dt);
+        FuelUpdate(fixed_dt);
         if (isCollidingWithReef && !IsTouchingReef())
         {
             isCollidingWithReef = false;
@@ -111,7 +119,10 @@ void Ship::SetDest()
 void Ship::Move(double dt)
 {
     SetVelocity(force);
-    force *= deceleration;
+    float base_dt = 1.0f / 240.f;  // 기준 시간 (60FPS 기준)
+    float adjusted_deceleration = (float)pow(deceleration, dt / base_dt);  // 비례 보정
+    force *= adjusted_deceleration;
+
     //std::cout << force.x << std::endl;
     if (!beat->GetIsOnBeat()) {
         SetVelocity(direction * skidding_speed);

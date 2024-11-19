@@ -25,6 +25,7 @@ public:
     GameObjectTypes Type() override { return GameObjectTypes::Ship; }
     std::string TypeName() override { return "Ship:Dal"; }
     void Update(double dt) override;
+    void FixedUpdate(double fixed_dt) override;
     void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
     void Move(double dt);
     void SetDest();
@@ -43,7 +44,7 @@ public:
 
 private:
     static constexpr double speed = 6000.f;
-    static constexpr float deceleration = 0.80f;
+    static constexpr float deceleration = 0.88f;
     static constexpr double skidding_speed = 20.f;
     bool moving;
     bool set_dest;

@@ -124,11 +124,11 @@ void Mode1::Load() {
 void Mode1::Update(double dt) {
     UpdateGSComponents(dt);
     GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
-    std::cout << "update: " << dt << std::endl;
+    //std::cout << "update: " << dt << std::endl;
     //camera postion update
     camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
 
-	fishGenerator->GenerateFish(dt);
+	//fishGenerator->GenerateFish(dt);
     skill_ptr->Update();
 
     if (ship_ptr->IsShipUnder() && Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Q)) {
@@ -149,7 +149,7 @@ void Mode1::Update(double dt) {
 
 void Mode1::FixedUpdate(double dt)
 {
-    std::cout << "fixedupdate: " << dt << std::endl;
+    //std::cout << "fixedupdate: " << dt << std::endl;
     GetGSComponent<CS230::GameObjectManager>()->FixedUpdateAll(dt);
 }
 

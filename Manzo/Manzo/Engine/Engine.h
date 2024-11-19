@@ -75,6 +75,7 @@ public:
 
     static constexpr int window_width = 1280;
     static constexpr int window_height = 720;
+    static constexpr double TargetFPS = 240;
 
 private:
     Engine();
@@ -84,7 +85,6 @@ private:
 
     int frame_count = 0;
 
-    static constexpr double TargetFPS = 240.0;
     static constexpr int FPSDuration = 5;
     static constexpr int FPSTargetFrames = static_cast<int>(FPSDuration * TargetFPS);
     double dt;

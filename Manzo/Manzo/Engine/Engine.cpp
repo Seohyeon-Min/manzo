@@ -38,13 +38,14 @@ void Engine::Stop() {
     logger.LogEvent("Engine Stopped");
 }
 
+
 void Engine::Update() {
     using namespace std::chrono;
 
     // 현재 시간 계산
     system_clock::time_point now = system_clock::now();
     dt = duration<double>(now - last_tick).count();
-    last_tick = now;
+    last_tick = now;  // 한 번만 갱신
 
     // 누적 시간 갱신
     accumulator += dt;
@@ -59,11 +60,10 @@ void Engine::Update() {
     }
 
     // VariableUpdate 호출
-    logger.LogVerbose("Engine Update");
-    input.Update();
     gamestatemanager.Update(dt);
+    input.Update();
 
-    // FPS 계산 (선택적)
+    // FPS 계산
     frame_count++;
     if (frame_count >= FPSTargetFrames) {
         double actual_time = duration<double>(now - last_test).count();
