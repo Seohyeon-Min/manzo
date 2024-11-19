@@ -14,12 +14,12 @@ Created:    March 8, 2023
 #include "GameStateManager.h"
 #include "Input.h"
 #include "TextureManager.h"
-//#include "Font.h"
 #include "IProgram.h"
 #include "GLApp.h"
 #include "Render.h"
 #include "ShaderManager.h"
 #include "AudioManager.h"
+#include "FontManager.h"
 
 #include <chrono>
 #include <time.h>
@@ -58,9 +58,10 @@ public:
     static AudioManager& GetAudioManager() {
         return Instance().audiomanager;
     }
-    //static CS230::Font& GetFont(int index) {
-    //    return Instance().fonts[index];
-    //}
+
+    static FontManager& GetFontManager() {
+        return Instance().fontmanager;
+    }
 
     //void AddFont(const std::filesystem::path& file_name);
     void Start(std::string window_title);
@@ -99,5 +100,5 @@ private:
     CS230::Render render;
     ShaderManager shadermanager;
     AudioManager audiomanager;
-
+    FontManager fontmanager;
 };

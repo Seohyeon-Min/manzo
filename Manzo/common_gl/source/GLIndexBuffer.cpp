@@ -85,6 +85,20 @@ GLIndexBuffer& GLIndexBuffer::operator=(GLIndexBuffer&& temp) noexcept
     return *this;
 }
 
+void GLIndexBuffer::CreateIndexBuffer(const unsigned int* indices, unsigned int count)
+{
+    m_count = count;
+
+    // Generate a new buffer ID for the index buffer
+    glGenBuffers(1, &indices_handle);
+
+    // Bind the buffer to the GL_ELEMENT_ARRAY_BUFFER target
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_handle);
+
+    // Copy the index data to the buffer
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+}
+
 /******************************************************************************
 * @brief    Binds or unbinds the index buffer based on the bind parameter.
 * @param    bind If true, bind the buffer; otherwise unbind it.

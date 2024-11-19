@@ -16,6 +16,8 @@
     <ClCompile Include="Engine\Camera.cpp" />
     <ClCompile Include="Engine\Collision.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
+    <ClCompile Include="Engine\Font.cpp" />
+    <ClCompile Include="Engine\FontManager.cpp" />
     <ClCompile Include="Engine\GameObject.cpp" />
     <ClCompile Include="Engine\GameObjectManager.cpp" />
     <ClCompile Include="Engine\GameStateManager.cpp" />
@@ -61,6 +63,8 @@
     <ClInclude Include="Engine\ComponentManager.h" />
     <ClInclude Include="Engine\DrawSetting.h" />
     <ClInclude Include="Engine\Engine.h" />
+    <ClInclude Include="Engine\Font.h" />
+    <ClInclude Include="Engine\FontManager.h" />
     <ClInclude Include="Engine\GameObject.h" />
     <ClInclude Include="Engine\GameObjectManager.h" />
     <ClInclude Include="Engine\GameState.h" />
@@ -146,12 +150,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)common_gl\include;$(SolutionDir)external\include;$(SolutionDir)external\include\backends;$(SolutionDir)external\include\rapidjson;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\ASUS\Desktop\2-2\manzo\Manzo\external\include\glm;C:\Users\ASUS\Desktop\2-2\manzo\Manzo\external\include\freetype\config;C:\Users\ASUS\Desktop\2-2\manzo\Manzo\external\include\freetype;$(ProjectDir)include;$(SolutionDir)common_gl\include;$(SolutionDir)external\include;$(SolutionDir)external\include\backends;$(SolutionDir)external\include\rapidjson;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)external\lib;C:\raylib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Opengl32.lib;glew32.lib;imgui.lib;SDL2.lib;SDL2_mixer.lib;freetype.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -162,7 +167,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)common_gl\include;$(SolutionDir)external\include;$(SolutionDir)external\include\backends;$(SolutionDir)external\include\rapidjson;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\ASUS\Desktop\2-2\manzo\Manzo\external\include\glm;C:\Users\ASUS\Desktop\2-2\manzo\Manzo\external\include\freetype\config;C:\Users\ASUS\Desktop\2-2\manzo\Manzo\external\include\freetype;$(ProjectDir)include;$(SolutionDir)common_gl\include;$(SolutionDir)external\include;$(SolutionDir)external\include\backends;$(SolutionDir)external\include\rapidjson;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -170,6 +175,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)external\lib;C:\raylib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Opengl32.lib;glew32.lib;imgui.lib;SDL2.lib;SDL2_mixer.lib;freetype.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -46,6 +46,8 @@ public:
         send_buffer_data_to_gpu(buffer_data.data(), static_cast<GLsizei>(buffer_data.size_bytes()), starting_offset);
     }
 
+    void CreateVertexBuffer(const void* data, unsigned int size);
+
     [[nodiscard]] GLHandle GetHandle() const noexcept
     {
         return buffer_handle;
