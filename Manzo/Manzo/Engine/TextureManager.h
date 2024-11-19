@@ -24,6 +24,3 @@ namespace CS230 {
         std::vector<const GLShader*> shaders;
     };
 }
-
-
-

@@ -51,8 +51,9 @@ void Engine::Update() {
 
         gamestatemanager.Update(dt);
         input.Update();
+        std::cout << "update" << std::endl;
     }
-
+    std::cout << "update loop loop" << std::endl;
     if (frame_count >= FPSTargetFrames) {
         double actual_time = std::chrono::duration<double>(now - last_test).count();
         FPS = frame_count / actual_time;

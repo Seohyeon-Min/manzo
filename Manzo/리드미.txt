@@ -1,7 +1,32 @@
-<Summary>
-* Name of game : MANZO
 
-* Version : Milestone_1.ver
+* Name of game : 만조
+
+* Version : 마일2
+
+
+* 조작법
+  + MOUSE_BUTTON_LEFT : 박자에맞춰서 누르면 움직임. 싱크 좀 이상하니까 여러번 누르셈
+  + Q : Load next game state : 집감, 해수면에서만 갈 수 있으니까 위로 올라가서 누르셈
+  + W : 재시작
+  + E : 보스 생성
+  + R : 보스전 시작 (꾹누르셈)
+-------------------------------------집에서만 쓸 수 있는 키----------------------------------------
+  + A : 스킬1번 등록 준비
+  + S : 스킬2번 등록 준비
+  + D : 스킬3번 등록 준비
+  + Z : 현재 스킬 출력함
+  + 1번키 : 스킬 '어망(NET)' 을 등록함 
+  + 2번키 : 스킬 'Light' 을 등록함, 미개발
+  + 3번키 : 스킬 '' 을 등록함, 미개발
+  + M : Game Clear
+  + N : Game Over
+
+* Gameplay Instruction
+ 박자에맞춰 누르셈
+
+* Expected final goal/result/boss
+ 아직 미완임. 플테용 임시 목표는 물고기 20마리 잡는거임. 돌이랑 많이 부딪히면 죽음
+
 
 * Developers, team, authors
   + Seohyun Min : Producer
@@ -57,29 +82,6 @@ Play:
   + Delta Time : Delta time depends on engine's chrono time 
   + Device, Camera, World Coordinate for mouse points
   + Is On Beat : If this section set on true, then if you click the mouse left button when this section is set true, you can move
-
-* Instruction of Keys & Buttons
-  + MOUSE_BUTTON_LEFT : main keys for moving the ship just to click (double click is fine)
-  + KEY_TAB : Hide or Show the collision lines when you run at debug mode
-  + KEY_Q : Load next game state (change mode from sea into player's house) 
-  + KEY_W : Reload the game state
-  + E : creat the boss
-  + R : start the boss fight, hold a key for a short time
-  + KEY_A : Print out ‘pick slot 1’ 
-  + KEY_S : Print out ‘pick slot 2’
-  + KEY_D : Print out ‘pick slot 3’
-  + KEY_Z : Print out skill
-  + KEY_NUM1 : Print out ‘picked Net’
-  + KEY_NUM2 : Print out ‘picked Light’
-  + KEY_NUM3 : Print out ‘picked Empty’
-  + KEY_M : Game Clear
-  + KEY_N : Game Over
-
-* Gameplay Instruction
- Avoid reefs and eat fish by moving the ship with 'MOUSE_LEFT_BUTTON' in sync with the incoming beat. (For Milestone 1, collision detection is only shown and does not affect gameplay.)
-
-* Expected final goal/result/boss
- We don’t have final goal/result/boss at this time, just if you(ship) collided with fish, it will disappear. Also fish will disappear if it goes outside of spawn window.
 
 <FAQ/Common Mistakes>
  There is an issue when attempting to stop the program. If you run the .exe file, you should exit using the console window. If you're running it from a solution file, use either the console window or the stop button to close the program.
