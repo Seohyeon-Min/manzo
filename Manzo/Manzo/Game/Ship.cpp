@@ -39,15 +39,11 @@ void Ship::Update(double dt)
         UpdatePosition({ 0, Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y + 360 - collider->WorldBoundary_rect().Top()});
         SetVelocity({ GetVelocity().x, 0 });
     }
-
-
-    std::cout << "Update\n";
 }
 
 void Ship::FixedUpdate(double fixed_dt)
 {
     GameObject::FixedUpdate(fixed_dt);
-    std::cout << "Fixed\n";
     if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
         SetDest();
 
