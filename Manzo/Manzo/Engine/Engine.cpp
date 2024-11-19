@@ -39,30 +39,41 @@ void Engine::Stop() {
 }
 
 void Engine::Update() {
+    using namespace std::chrono;
 
-    std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-    dt = std::chrono::duration<double>(now - last_tick).count();
+    // 현재 시간 계산
+    system_clock::time_point now = system_clock::now();
+    dt = duration<double>(now - last_tick).count();
+    last_tick = now;
 
-    if (dt > (1 / TargetFPS))
-    {
-        frame_count++;
-        logger.LogVerbose("Engine Update");
-        last_tick = now;
+    // 누적 시간 갱신
+    accumulator += dt;
 
-        gamestatemanager.Update(dt);
-        input.Update();
-        std::cout << "update" << std::endl;
+    // FixedUpdate 호출
+    // 고정 업데이트
+    const double fixed_delta_time = 1.0 / TargetFPS;
+    while (accumulator >= fixed_delta_time) {
+        gamestatemanager.Update(fixed_delta_time);
+        accumulator -= fixed_delta_time;
     }
-    std::cout << "update loop loop" << std::endl;
+
+    // VariableUpdate 호출
+    // 가변 업데이트
+    logger.LogVerbose("Engine Update");
+    input.Update();
+    gamestatemanager.Update(dt);
+
+    // FPS 계산 (선택적)
+    frame_count++;
     if (frame_count >= FPSTargetFrames) {
-        double actual_time = std::chrono::duration<double>(now - last_test).count();
+        double actual_time = duration<double>(now - last_test).count();
         FPS = frame_count / actual_time;
         logger.LogDebug("FPS: " + std::to_string(FPS));
         frame_count = 0;
         last_test = now;
     }
-
 }
+
 
 void Engine::HandleEvent(SDL_Window& sdl_window, const SDL_Event& event)
 {
