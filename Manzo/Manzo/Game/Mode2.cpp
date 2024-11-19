@@ -89,6 +89,11 @@ void Mode2::Update(double dt) {
     }
 }
 
+void Mode2::FixedUpdate(double dt)
+{
+
+}
+
 void Mode2::Draw() {
     GetGSComponent<Background>()->Draw(*GetGSComponent<CS230::Cam>());
 

@@ -89,6 +89,7 @@ private:
     static constexpr int FPSTargetFrames = static_cast<int>(FPSDuration * TargetFPS);
     double dt;
     double FPS;
+    double accumulator;
     void* tmp_ptr = nullptr;
 
     //std::vector<CS230::Font> fonts;

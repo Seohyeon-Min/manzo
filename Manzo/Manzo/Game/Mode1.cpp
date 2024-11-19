@@ -124,7 +124,7 @@ void Mode1::Load() {
 void Mode1::Update(double dt) {
     UpdateGSComponents(dt);
     GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
-
+    std::cout << "update: " << dt << std::endl;
     //camera postion update
     camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
 
@@ -154,6 +154,12 @@ void Mode1::Update(double dt) {
         GetGSComponent<CS230::GameObjectManager>()->Add(boss_ptr);
         Isboss = true;
     }
+}
+
+void Mode1::FixedUpdate(double dt)
+{
+    std::cout << "fixedupdate: " << dt << std::endl;
+    GetGSComponent<CS230::GameObjectManager>()->FixedUpdateAll(dt);
 }
 
 void Mode1::Draw() {

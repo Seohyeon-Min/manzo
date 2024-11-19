@@ -20,8 +20,8 @@ namespace CS230 {
     public:
         void Add(GameObject* object);
         void Unload();
-
         void UpdateAll(double dt);
+        void FixedUpdateAll(double dt);
         void DrawAll();
         void CollisionTest();
     private:
