@@ -47,19 +47,18 @@ void Engine::Update() {
     last_tick = now;
 
     // 누적 시간 갱신
-
     accumulator += dt;
-    // FixedUpdate 호출
-    // 고정 업데이트
     const double fixed_delta_time = 1.0 / TargetFPS;
+
+    // FixedUpdate 호출
     if (!gamestatemanager.IsNull()) {
         while (accumulator >= fixed_delta_time) {
             gamestatemanager.FixedUpdate(fixed_delta_time);
             accumulator -= fixed_delta_time;
         }
     }
+
     // VariableUpdate 호출
-    // 가변 업데이트
     logger.LogVerbose("Engine Update");
     input.Update();
     gamestatemanager.Update(dt);
@@ -74,6 +73,7 @@ void Engine::Update() {
         last_test = now;
     }
 }
+
 
 
 void Engine::HandleEvent(SDL_Window& sdl_window, const SDL_Event& event)
