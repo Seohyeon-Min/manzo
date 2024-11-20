@@ -43,7 +43,7 @@ public:
     bool IsShipUnder();
 
 private:
-    static constexpr double speed = 6000.f;
+    static constexpr double speed = 6500.f;
     static constexpr float deceleration = 0.88f;
     static constexpr double skidding_speed = 20.f;
     bool moving;

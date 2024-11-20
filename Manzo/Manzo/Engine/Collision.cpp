@@ -93,27 +93,27 @@ void CS230::RectCollision::Draw() {
 }
 
 float ComputeCollisionTime(Math::rect obj, vec2 segment_start, vec2 segment_end) {
-    // t_entry: 충돌 시작 시간, t_exit: 충돌 종료 시간
+                                                                    // t_entry: 충돌 시작 시간, t_exit: 충돌 종료 시간
     float t_entry = 0.0f;
-    float t_exit = 1.0f; // 선분의 끝까지 충돌 없음
+    float t_exit = 1.0f;                                            // 선분의 끝까지 충돌 없음
 
-    vec2 inv_dir = 1.0f / (segment_end - segment_start);  // 선분의 이동 방향의 역수
+    vec2 inv_dir = 1.0f / (segment_end - segment_start);            // 선분의 이동 방향의 역수
 
-    vec2 t1 = (obj.point_1 - segment_start) * inv_dir;  // 사각형 최소점에서의 교차 시간
-    vec2 t2 = (obj.point_2 - segment_start) * inv_dir;  // 사각형 최대점에서의 교차 시간
+    vec2 t1 = (obj.point_1 - segment_start) * inv_dir;              // 사각형 최소점에서의 교차 시간
+    vec2 t2 = (obj.point_2 - segment_start) * inv_dir;              // 사각형 최대점에서의 교차 시간
 
     vec2 t_min = vec2(std::min(t1.x, t2.x), std::min(t1.y, t2.y));  // 각 축에서 진입 시간
     vec2 t_max = vec2(std::max(t1.x, t2.x), std::max(t1.y, t2.y));  // 각 축에서 나가는 시간
 
-    t_entry = std::max(t_min.x, t_min.y);  // 모든 축의 진입 시간 중 가장 큰 값
-    t_exit = std::min(t_max.x, t_max.y);   // 모든 축의 나가는 시간 중 가장 작은 값
+    t_entry = std::max(t_min.x, t_min.y);                           // 모든 축의 진입 시간 중 가장 큰 값
+    t_exit = std::min(t_max.x, t_max.y);                            // 모든 축의 나가는 시간 중 가장 작은 값
 
-    // 충돌 조건 검사
+                                                                    // 충돌 조건 검사
     if (t_entry > t_exit || t_exit < 0.0f || t_entry > 1.0f) {
-        return -1.0f;  // 충돌 없음
+        return -1.0f;                                               // 충돌 없음
     }
 
-    return t_entry;  // 충돌 시간 반환
+    return t_entry;                                                 // 충돌 시간 반환
 }
 
 bool CheckSegmentSegmentCollision(vec2 s1_start, vec2 s1_end, vec2 s2_start, vec2 s2_end) {
@@ -213,33 +213,34 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
         float expanded_bottom = rectangle_1.Bottom() - 15;
         float expanded_top = rectangle_1.Top() + 15;
 
-        bool isCornerCollision = false;
-        for (const vec2& poly_vertex : other_poly.vertices) {
-            bool within_x_bounds = (poly_vertex.x >= expanded_left && poly_vertex.x <= expanded_right);
-            bool within_y_bounds = (poly_vertex.y >= expanded_bottom && poly_vertex.y <= expanded_top);
+        //bool isCornerCollision = false;
+        //for (const vec2& poly_vertex : other_poly.vertices) {
+        //    bool within_x_bounds = (poly_vertex.x >= expanded_left && poly_vertex.x <= expanded_right);
+        //    bool within_y_bounds = (poly_vertex.y >= expanded_bottom && poly_vertex.y <= expanded_top);
 
-            if (within_x_bounds && within_y_bounds) {
-                isCornerCollision = true;
-                break;
-            }
-        }
+        //    if (within_x_bounds && within_y_bounds) {
+        //        isCornerCollision = true;
+        //        break;
+        //    }
+        //}
 
-        if (isCornerCollision && closest_index != -1) {
+        //if (isCornerCollision && closest_index != -1) {
 
-            vec2 CollidingVertex = other_poly.vertices[closest_index];
-            vec2 CollidingSide_1 = other_poly.vertices[(closest_index + 1) % other_poly.vertexCount];
-            vec2 CollidingSide_2 = other_poly.vertices[(closest_index - 1 + other_poly.vertexCount) % other_poly.vertexCount];
-
-
-            vec2 direction1 = CollidingSide_1 - CollidingVertex;
-            vec2 direction2 = CollidingSide_2 - CollidingVertex;
-            vec2 midpoint_direction = NormalizeVector2(direction1 + direction2);
+        //    vec2 CollidingVertex = other_poly.vertices[closest_index];
+        //    vec2 CollidingSide_1 = other_poly.vertices[(closest_index + 1) % other_poly.vertexCount];
+        //    vec2 CollidingSide_2 = other_poly.vertices[(closest_index - 1 + other_poly.vertexCount) % other_poly.vertexCount];
 
 
-            colliding_edge = { CollidingVertex, CollidingVertex + midpoint_direction };
-            std::cout << "It's Corner" << std::endl;
-        }
-        else if (!isCornerCollision && closest_index != -1) {
+        //    vec2 direction1 = CollidingSide_1 - CollidingVertex;
+        //    vec2 direction2 = CollidingSide_2 - CollidingVertex;
+        //    vec2 midpoint_direction = NormalizeVector2(direction1 + direction2);
+
+
+        //    colliding_edge = { CollidingVertex, CollidingVertex + midpoint_direction };
+        //    //std::cout << "It's Corner" << std::endl;
+        //}
+        //else if (!isCornerCollision && closest_index != -1) 
+        {
             vec2 CollidingSide_1 = other_poly.vertices[closest_index];
             vec2 CollidingSide_2 = other_poly.vertices[(closest_index + 1) % other_poly.vertexCount];
 
