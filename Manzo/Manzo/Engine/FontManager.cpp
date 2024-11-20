@@ -32,8 +32,12 @@ void FontManager::PrintText(const char* text, vec2 location, float angle, float 
 	std::span<float, 3> color_span(color_data);
 	shader->SendUniform("text_color", color_span);
 
-	all_labels.add_text(text, location, angle, size);
-	all_labels.set_buffers();
+	if (!added)
+	{
+		all_labels.add_text(text, location, angle, size);
+		all_labels.set_buffers();
+		added = true;
+	}
 
 	all_labels.paint_text();
 }
