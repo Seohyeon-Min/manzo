@@ -7,6 +7,11 @@ FontManager::FontManager()
 {
 }
 
+FontManager::~FontManager()
+{
+	text_list.clear();
+}
+
 void FontManager::AddFontType(const char* file_path)
 {
 	if (!file_path)
@@ -29,14 +34,14 @@ void FontManager::PrintText(const char* text, vec2 location, float angle, float 
 	shader->SendUniform("u_Texture", 0);
 
 	std::array<float, 3> color_data = { color.x, color.y, color.z };
-	std::span<float, 3> color_span(color_data);
-	shader->SendUniform("text_color", color_span);
+	shader->SendUniform("text_color", std::span(color_data));
 
-	if (!added)
+	auto it = std::find(text_list.begin(), text_list.end(), text);
+	if (it == text_list.end()) // Text not found
 	{
 		all_labels.add_text(text, location, angle, size);
 		all_labels.set_buffers();
-		added = true;
+		text_list.push_back(text);
 	}
 
 	all_labels.paint_text();
