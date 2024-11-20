@@ -118,6 +118,78 @@ vec2 GetPerpendicular(vec2 v) {
     return { -v.y, v.x };
 }
 
+vec2 CatmullRomSpline(const vec2& p0, const vec2& p1, const vec2& p2, const vec2& p3, float t) {
+    float t2 = t * t;
+    float t3 = t2 * t;
+
+    return 0.5f * ((2.0f * p1) +
+        (-p0 + p2) * t +
+        (2.0f * p0 - 5.0f * p1 + 4.0f * p2 - p3) * t2 +
+        (-p0 + 3.0f * p1 - 3.0f * p2 + p3) * t3);
+}
+
+std::vector<vec2> GenerateSplinePoints(const std::vector<vec2>& points, int resolution) {
+    std::vector<vec2> spline_points;
+
+    if (points.size() < 4) {
+        return spline_points; // 최소한 4개의 점이 필요
+    }
+
+    // Catmull-Rom 스플라인 생성
+    for (int i = 0; i < resolution; ++i) {
+        float t = i / static_cast<float>(resolution - 1); // 0 ~ 1로 정규화
+        vec2 point = CatmullRomSpline(points[0], points[1], points[2], points[3], t);
+        spline_points.push_back(point);
+    }
+
+    return spline_points;
+}
+
+std::vector<vec2> FindClosestPoints(const Polygon& polygon, const vec2& pos, int num_points) {
+    std::vector<std::pair<float, vec2>> distances;
+
+    // 각 점과의 거리 계산
+    for (const auto& vertex : polygon.vertices) {
+        float distance = (vertex - pos).Length();
+        distances.push_back({ distance, vertex });
+    }
+
+    // 거리 순으로 정렬
+    std::sort(distances.begin(), distances.end(),
+        [](const std::pair<float, vec2>& a, const std::pair<float, vec2>& b) {
+            return a.first < b.first;
+        });
+
+    // 가장 가까운 점 num_points개 선택
+    std::vector<vec2> closest_points;
+    for (int i = 0; i < num_points && i < distances.size(); ++i) {
+        closest_points.push_back(distances[i].second);
+    }
+
+    return closest_points;
+}
+
+vec2 FindClosestPointOnSpline(const std::vector<vec2>& spline_points, const vec2& position) {
+    float min_distance = std::numeric_limits<float>::max();
+    vec2 closest_point;
+
+    for (const auto& point : spline_points) {
+        float distance = (point - position).Length();
+        if (distance < min_distance) {
+            min_distance = distance;
+            closest_point = point;
+        }
+    }
+
+    return closest_point;
+}
+
+vec2 ComputeNormalAtPoint(const vec2& p0, const vec2& p1) {
+    vec2 tangent = p1 - p0;
+    vec2 normal = { -tangent.y, tangent.x }; // 접선에 수직
+    float length = normal.Length();
+    return { normal.x / length, normal.y / length }; // 정규화
+}
 
 bool Ship::CanCollideWith(GameObjectTypes other_object)
 {
@@ -132,15 +204,38 @@ bool Ship::CanCollideWith(GameObjectTypes other_object)
     return false;
 }
 
+vec2 ComputeCollisionNormal(const Polygon& polygon, const vec2& pos, int resolution = 20) {
+    // 1. 가장 가까운 4개의 점 찾기
+    std::vector<vec2> closest_points = FindClosestPoints(polygon, pos, 4);
+
+    // 2. 스플라인 생성
+    std::vector<vec2> spline_points = GenerateSplinePoints(closest_points, resolution);
+
+    // 3. 스플라인 위에서 EntryData의 위치와 가장 가까운 점 찾기
+    vec2 closest_point_on_spline = FindClosestPointOnSpline(spline_points, pos);
+
+    // 4. 충돌 지점에서 법선 벡터 계산
+    size_t closest_index = std::find(spline_points.begin(), spline_points.end(), closest_point_on_spline) - spline_points.begin();
+    vec2 tangent_point1 = spline_points[std::max(0, static_cast<int>(closest_index) - 1)];
+    vec2 tangent_point2 = spline_points[std::min(static_cast<int>(spline_points.size() - 1), static_cast<int>(closest_index) + 1)];
+    vec2 normal = ComputeNormalAtPoint(tangent_point1, tangent_point2);
+
+    return normal;
+}
+
 void Ship::ResolveCollision(GameObject* other_object)
 {
     if (!hit_with) {
         if (other_object->Type() == GameObjectTypes::Reef) {
+            Polygon poly = other_object->GetGOComponent<CS230::MAP_SATCollision>()->WorldBoundary_poly();
+            vec2 normal = ComputeCollisionNormal(poly, GetPosition());
+
             auto* collision_edge = this->GetGOComponent<CS230::RectCollision>();
             if (collision_edge == nullptr) {
                 // maybe an error?
             }
-            HitWithReef(collision_edge);
+
+            HitWithReef(normal);
         }
     }
 }
@@ -150,19 +245,9 @@ float Dot(const vec2& vec1, const vec2& vec2) {
 }
 
 
-void Ship::HitWithReef(CS230::RectCollision* collision_edge) {
+void Ship::HitWithReef(vec2 normal) {
     fuel -= HitDecFuel;
     
-    // Two points of the colliding wall (start and end)
-    vec2 edge_1 = collision_edge->GetCollidingEdge().first;
-    vec2 edge_2 = collision_edge->GetCollidingEdge().second;
-    float t1 = collision_edge->GetT();
-
-
-    // Calculate wall direction and normal
-    vec2 wall_dir = { edge_2.x - edge_1.x, edge_2.y - edge_1.y };
-    vec2 wall_perpendicular = GetPerpendicular(wall_dir);
-    vec2 normal = wall_perpendicular.Normalize();
 
     vec2 velocity = GetVelocity();
     float dot_product = velocity.x * normal.x + velocity.y * normal.y;
@@ -177,8 +262,8 @@ void Ship::HitWithReef(CS230::RectCollision* collision_edge) {
 
     // Set reflection speed and adjust position
     float incoming_speed = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
-    //SetVelocity(direction * incoming_speed * 0.75f);
-    SetVelocity({});
+    SetVelocity(direction * incoming_speed * 0.75f);
+    //SetVelocity({});
     //SetPosition(GetPosition() + normal * 0.5f);  // Adjust slightly to move away from the wall after collision
 
     move = false;

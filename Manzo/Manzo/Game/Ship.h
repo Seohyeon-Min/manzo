@@ -37,7 +37,7 @@ public:
     float GetFuel() { return (float)fuel; }
     void FuelUpdate(double dt);
     void SetMaxFuel(double input);
-    void HitWithReef(CS230::RectCollision* collision_edge);
+    void HitWithReef(vec2 normal);
     bool IsTouchingReef();
     bool IsFuelZero();
     bool IsShipUnder();
