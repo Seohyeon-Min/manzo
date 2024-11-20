@@ -28,30 +28,23 @@ Engine::Engine() :
     std::srand(seed);
     logger.LogEvent("Random seed :" + std::to_string(seed));
     logger.LogEvent("Engine Started");
-    //window.Start(window_title);
-    //Start other services
     last_test = last_tick;
 }
 
 void Engine::Stop() {
-    //Stop all services
     logger.LogEvent("Engine Stopped");
 }
-
 
 void Engine::Update() {
     using namespace std::chrono;
 
-    // 현재 시간 계산
     system_clock::time_point now = system_clock::now();
     dt = duration<double>(now - last_tick).count();
-    last_tick = now;  // 한 번만 갱신
+    last_tick = now;
 
-    // 누적 시간 갱신
     accumulator += dt;
     const double fixed_delta_time = 1.0 / TargetFPS;
 
-    // FixedUpdate 호출
     if (!gamestatemanager.IsNull()) {
         while (accumulator >= fixed_delta_time) {
             gamestatemanager.FixedUpdate(fixed_delta_time);
@@ -59,11 +52,9 @@ void Engine::Update() {
         }
     }
 
-    // VariableUpdate 호출
     gamestatemanager.Update(dt);
     input.Update();
 
-    // FPS 계산
     frame_count++;
     if (frame_count >= FPSTargetFrames) {
         double actual_time = duration<double>(now - last_test).count();
@@ -75,15 +66,12 @@ void Engine::Update() {
 }
 
 
-
-void Engine::HandleEvent(SDL_Window& sdl_window, const SDL_Event& event)
-{
+void Engine::HandleEvent(SDL_Window& sdl_window, const SDL_Event& event){
     switch (event.type)
     {
     case SDL_QUIT << '\n':
         break;
     case SDL_MOUSEMOTION:
-        // make sure we only save mouse positions for the main window and not some ImGui window
         if (event.motion.windowID == SDL_GetWindowID(&sdl_window))
         {
             // get the mouse device positions from event.motion.x/event.motion.y
@@ -93,25 +81,7 @@ void Engine::HandleEvent(SDL_Window& sdl_window, const SDL_Event& event)
         }
         break;
     }
-
 }
-
-//void Engine::compute_mouse_coordinates() noexcept
-//{
-//    // Use camera view BuildWindowDeviceToCamera to convert to camera space
-//    mat3 device_mouse = mat3::build_translation({ (float)environment.mouseX,(float)environment.mouseY });
-//
-//    //mat3 cam_mouse = caminfo.camera_view.BuildWindowDeviceToCamera() * device_mouse;
-//    //// save to environment.mouseCamSpaceX/environment.mouseCamSpaceY
-//    //environment.mouseCamSpaceX = cam_mouse.column2.x;
-//    //environment.mouseCamSpaceY = cam_mouse.column2.y;
-//
-//    //// Use camera BuildCameraToWorld to convert to world space
-//    //mat3 world_mouse = device_mouse * caminfo.camera.BuildCameraToWorld();
-//    //// save to environment.mouseWorldSpaceX/environment.mouseWorldSpaceY
-//    //environment.mouseWorldSpaceX = world_mouse.column2.x;
-//    //environment.mouseWorldSpaceY = world_mouse.column2.y;
-//}
 
 void Engine::ImGuiDraw()
 {
