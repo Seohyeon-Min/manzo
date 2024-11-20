@@ -161,12 +161,15 @@ float Dot(const vec2& vec1, const vec2& vec2) {
     return vec1.x * vec2.x + vec1.y * vec2.y;
 }
 
+
 void Ship::HitWithReef(CS230::RectCollision* collision_edge) {
     fuel -= HitDecFuel;
 
     // Two points of the colliding wall (start and end)
     vec2 edge_1 = collision_edge->GetCollidingEdge().first;
     vec2 edge_2 = collision_edge->GetCollidingEdge().second;
+    float t1 = collision_edge->GetT();
+
 
     // Calculate wall direction and normal
     vec2 wall_dir = { edge_2.x - edge_1.x, edge_2.y - edge_1.y };
@@ -185,6 +188,7 @@ void Ship::HitWithReef(CS230::RectCollision* collision_edge) {
     vec2 relative_position = ship_position - edge_1;
     float wall_length_squared = wall_dir.x * wall_dir.x + wall_dir.y * wall_dir.y;
     float t = (relative_position.x * wall_dir.x + relative_position.y * wall_dir.y) / wall_length_squared;
+    std::cout << "t1 :\t" << t <<  "   t: " << t << std::endl;
 
     if (t >= 0.0f && t <= 1.0f) {
         // Only calculate TOI if the collision point is within the wall segment

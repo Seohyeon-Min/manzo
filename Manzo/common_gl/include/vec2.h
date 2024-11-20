@@ -59,6 +59,10 @@ struct [[nodiscard]] vec2
     bool operator!=(const vec2& other) const {
         return !(*this == other);
     }
+
+    friend vec2 operator/(float scalar, const vec2& vec) {
+        return vec2(scalar / vec.x, scalar / vec.y);
+    }
 };
 
 constexpr vec2& operator+=(vec2& v, const vec2& adding_vector) noexcept;

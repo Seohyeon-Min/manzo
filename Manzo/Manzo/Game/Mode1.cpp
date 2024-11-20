@@ -150,7 +150,9 @@ void Mode1::Update(double dt) {
 void Mode1::FixedUpdate(double dt)
 {
     //std::cout << "fixedupdate: " << dt << std::endl;
-    GetGSComponent<CS230::GameObjectManager>()->FixedUpdateAll(dt);
+    if (GetGSComponent<CS230::GameObjectManager>()) {
+        GetGSComponent<CS230::GameObjectManager>()->FixedUpdateAll(dt);
+    }
 }
 
 void Mode1::Draw() {
