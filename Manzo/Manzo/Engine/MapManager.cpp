@@ -363,3 +363,17 @@ void RockGroup::SetPoints() {
         }
    }
 }
+
+void RockGroup::ResolveCollision(GameObject* other_object)
+{
+    if (other_object->Type() == GameObjectTypes::Ship) {
+        auto* collision_edge = this->GetGOComponent<CS230::RectCollision>();
+        if (collision_edge == nullptr) {
+            // maybe an error?
+        }
+        for (auto& rock : this->GetRocks()) {
+            rock->GetGOComponent<CS230::MAP_SATCollision>();
+        }
+        
+    }
+}

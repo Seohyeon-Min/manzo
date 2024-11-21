@@ -42,6 +42,7 @@ public:
 	std::string TypeName() override { return "Rock Group"; }
 	void Update(double dt);
 	void Draw();
+	void ResolveCollision(GameObject* other_object);
 
 	void AddRock(Polygon poly) { rocks.push_back(poly); }
 	std::vector<Polygon> GetRocks() { return rocks; }
