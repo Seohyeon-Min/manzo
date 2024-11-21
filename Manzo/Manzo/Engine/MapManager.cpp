@@ -323,7 +323,7 @@ bool RockGroup::MatchIndex()
             std::string index, x_str, y_str, file_path;
 
             std::getline(linestream, index, ',');
-            std::string polyind = (this->index).substr(0, 2);
+            std::string polyind = (this->index).substr(0, 4);
 
             if (index == polyind) {
                 std::getline(linestream, file_path, ',');
@@ -342,7 +342,7 @@ bool RockGroup::MatchIndex()
 
 vec2 RockGroup::FindCenter() {  // Calculate texture's position.
     vec2 center = { 0, 0 };
-    vec2 minPoint = rocks[0].vertices[0];
+    vec2 minPoint = rocks[0].vertices[1];
     vec2 maxPoint = rocks[0].vertices[0];
 
     for (auto& rock : rocks) {

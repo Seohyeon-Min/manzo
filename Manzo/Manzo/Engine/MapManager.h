@@ -38,7 +38,7 @@ public:
 	~RockGroup() {
 		rocks.clear();
 	}
-	GameObjectTypes Type() override { return GameObjectTypes::Reef; }
+	GameObjectTypes Type() override { return GameObjectTypes::ReefBoundary; }
 	std::string TypeName() override { return "Rock Group"; }
 	void Update(double dt);
 	void Draw();

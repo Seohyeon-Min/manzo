@@ -18,6 +18,7 @@ Created:    March 8, 2023
 #include <iostream>
 #include <array>
 #define GREEN color3(0,255,0)
+#define RED color3(255, 0, 0)
 
 /// /////////////////////////////////////////////////////////////////////////////////////
 vec2 GetPerpendicular(const vec2& v) {
@@ -314,11 +315,11 @@ void CS230::MAP_SATCollision::Draw() {
     for (int j = 1; j < boundary.vertexCount; ++j) {
         Engine::GetRender().AddDrawCall(vec2{ boundary.vertices[j - 1].x, boundary.vertices[j - 1].y },
             vec2{ boundary.vertices[j].x, boundary.vertices[j].y },
-            GREEN);
+            RED);
     }
     Engine::GetRender().AddDrawCall(vec2{ boundary.vertices.back().x, boundary.vertices.back().y },
         vec2{ boundary.vertices.front().x, boundary.vertices.front().y },
-        GREEN);
+        RED);
 
 
 }
