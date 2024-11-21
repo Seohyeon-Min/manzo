@@ -35,7 +35,7 @@ void font_atlas::create_atlas(const char* file_path)
 		ch_atlas.clear();
 
 		// set the font size
-		FT_Set_Pixel_Sizes(face, 0, 128);
+		FT_Set_Pixel_Sizes(face, 0, 200);
 
 		// Below line keep the unpack alignment otherwise fonts will be skewed
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);

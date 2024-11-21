@@ -152,8 +152,7 @@ void Mode1::Draw() {
     GetGSComponent<CS230::GameObjectManager>()->DrawAll();
     ui_manager->AddDrawCalls();
 
-    Engine::GetFontManager().PrintText("123ABC!?@", { 0.f,0.f }, 0.0f, 0.0005f, { 1.0f,1.0f,1.0f });
-    Engine::GetFontManager().PrintText("HI~~", { 0.5f,0.5f }, 0.0f, 0.0005f, { 0.0f,0.0f,0.0f });
+    Engine::GetFontManager().PrintText("HI", { 0.f,0.f }, 0.0f, 0.001f, { 1.0f,1.0f,1.0f });
 }
 
 void Mode1::Unload() {
