@@ -16,6 +16,29 @@ Ship::Ship(vec2 start_position) :
     SetVelocity({ 0,0 });
 }
 
+
+void Ship::State_Set_Dest::Enter(GameObject* object) {
+    Ship* ship = static_cast<Ship*>(object);
+}
+void Ship::State_Set_Dest::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) { }
+void Ship::State_Set_Dest::CheckExit(GameObject* object) {
+}
+
+void Ship::State_Ready_to_Move::Enter(GameObject* object) {
+    Ship* ship = static_cast<Ship*>(object);
+}
+void Ship::State_Ready_to_Move::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) { }
+void Ship::State_Ready_to_Move::CheckExit(GameObject* object) {
+}
+
+void Ship::State_Move::Enter(GameObject* object) {
+    Ship* ship = static_cast<Ship*>(object);
+}
+void Ship::State_Move::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) { }
+void Ship::State_Move::CheckExit(GameObject* object) {
+}
+
+
 void Ship::Update(double dt)
 {
     std::cout << (!hit_with ? "can collide" : "no") << std::endl;
@@ -69,6 +92,7 @@ void Ship::Draw(DrawLayer drawlayer)
 void Ship::SetDest()
 {
     if (clickable && !set_dest) {
+        hit_with = false;
         if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT) && beat->GetIsOnBeat()) {
             // Get mouse position relative to the center of the screen
             vec2 window = { Engine::window_width / 2, Engine::window_height / 2 };
@@ -118,34 +142,35 @@ vec2 GetPerpendicular(vec2 v) {
     return { -v.y, v.x };
 }
 
-vec2 CatmullRomSpline(const vec2& p0, const vec2& p1, const vec2& p2, const vec2& p3, float t) {
+vec2 LagrangeInterpolation(const vec2& p0, const vec2& p1, const vec2& p2, float t) {
     float t2 = t * t;
-    float t3 = t2 * t;
 
-    return 0.5f * ((2.0f * p1) +
-        (-p0 + p2) * t +
-        (2.0f * p0 - 5.0f * p1 + 4.0f * p2 - p3) * t2 +
-        (-p0 + 3.0f * p1 - 3.0f * p2 + p3) * t3);
+    // Lagrange 다항식 계산
+    float l0 = (t - 1.0f) * (t - 2.0f) / 2.0f;  // 첫 번째 점의 가중치
+    float l1 = -t * (t - 2.0f);                // 두 번째 점의 가중치
+    float l2 = t * (t - 1.0f) / 2.0f;          // 세 번째 점의 가중치
+
+    return l0 * p0 + l1 * p1 + l2 * p2;
 }
 
 std::vector<vec2> GenerateSplinePoints(const std::vector<vec2>& points, int resolution) {
     std::vector<vec2> spline_points;
 
-    if (points.size() < 4) {
-        return spline_points; // 최소한 4개의 점이 필요
+    if (points.size() < 3) {
+        return spline_points; // 최소한 3개의 점이 필요
     }
 
-    // Catmull-Rom 스플라인 생성
+    // Lagrange 보간법을 사용해 스플라인 생성
     for (int i = 0; i < resolution; ++i) {
         float t = i / static_cast<float>(resolution - 1); // 0 ~ 1로 정규화
-        vec2 point = CatmullRomSpline(points[0], points[1], points[2], points[3], t);
+        vec2 point = LagrangeInterpolation(points[0], points[1], points[2], t);
         spline_points.push_back(point);
     }
 
     return spline_points;
 }
 
-std::vector<vec2> FindClosestPoints(const Polygon& polygon, const vec2& pos, int num_points) {
+std::vector<vec2> FindClosestPoints(const Polygon& polygon, const vec2& pos, int num_points = 3) {
     std::vector<std::pair<float, vec2>> distances;
 
     // 각 점과의 거리 계산
@@ -205,13 +230,13 @@ bool Ship::CanCollideWith(GameObjectTypes other_object)
 }
 
 vec2 ComputeCollisionNormal(const Polygon& polygon, const vec2& pos, int resolution = 20) {
-    // 1. 가장 가까운 4개의 점 찾기
-    std::vector<vec2> closest_points = FindClosestPoints(polygon, pos, 4);
+    // 1. 가장 가까운 3개의 점 찾기
+    std::vector<vec2> closest_points = FindClosestPoints(polygon, pos, 3);
 
     // 2. 스플라인 생성
     std::vector<vec2> spline_points = GenerateSplinePoints(closest_points, resolution);
 
-    // 3. 스플라인 위에서 EntryData의 위치와 가장 가까운 점 찾기
+    // 3. 스플라인 위에서 pos와 가장 가까운 점 찾기
     vec2 closest_point_on_spline = FindClosestPointOnSpline(spline_points, pos);
 
     // 4. 충돌 지점에서 법선 벡터 계산

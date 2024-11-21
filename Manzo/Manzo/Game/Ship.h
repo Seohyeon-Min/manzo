@@ -69,4 +69,43 @@ private:
     double MoveDecfuel = 0.5;
     double HitDecFuel = 50;
     double fuelcounter = 0;
+
+    //
+
+    class State_Idle : public State {
+    public:
+        virtual void Enter(GameObject* object) override;
+        virtual void Update(GameObject* object, double dt) override;
+        virtual void CheckExit(GameObject* object) override;
+        std::string GetName() override { return "Combination attack - lightheavy"; }
+    };
+
+    class State_Set_Dest : public State {
+    public:
+        virtual void Enter(GameObject* object) override;
+        virtual void Update(GameObject* object, double dt) override;
+        virtual void CheckExit(GameObject* object) override;
+        std::string GetName() override { return "Combination attack - lightheavy"; }
+    };
+
+    class State_Ready_to_Move : public State {
+    public:
+        virtual void Enter(GameObject* object) override;
+        virtual void Update(GameObject* object, double dt) override;
+        virtual void CheckExit(GameObject* object) override;
+        std::string GetName() override { return "Combination attack - lightlight"; }
+    };
+
+    class State_Move : public State {
+    public:
+        virtual void Enter(GameObject* object) override;
+        virtual void Update(GameObject* object, double dt) override;
+        virtual void CheckExit(GameObject* object) override;
+        std::string GetName() override { return "Combination attack - lightheavy"; }
+    };
+
+    State_Idle state_idle;
+    State_Set_Dest state_set_dest;
+    State_Ready_to_Move state_ready_to_move;
+    State_Move state_move;
 };
