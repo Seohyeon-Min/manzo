@@ -215,7 +215,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
 
                 if (rock_groups.empty()) {
                     RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new group
-                    rockgroup->AddRock(poly);                                       //add poly into new group
+                    rockgroup->AddRock(rock);                                       //add poly into new group
                     rockgroup->SetRotation(rotateAngle);
                     //rockgroup->SetScale();
 
@@ -226,7 +226,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 else {
                     if (rock_groups.back()->GetIndex() != poly.polyindex) {             // if poly has different index
                         RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new group
-                        rockgroup->AddRock(poly);                                       //add poly into new group
+                        rockgroup->AddRock(rock);                                       //add poly into new group
                         rockgroup->SetRotation(rotateAngle);
                         //rockgroup->SetScale();
 
@@ -236,7 +236,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                         rock_groups.push_back(rockgroup);
                     }
                     else {                                                              // if poly has same index
-                        rock_groups.back()->AddRock(poly);
+                        rock_groups.back()->AddRock(rock);
                     }
                 }
                 rock->GetRockGroup();
@@ -282,6 +282,7 @@ void CS230::Map::AddDrawCall()
 
 Rock::Rock(Polygon poly) :GameObject({ 0,0 }), poly(poly)
 {
+    this->SetCenter();  //set rock position
 }
 
 void Rock::Update(double dt)
@@ -294,6 +295,17 @@ void Rock::Draw()
     GameObject::Draw();
 }
 
+void Rock::SetCenter() {
+    vec2 center = { 0, 0 };
+    std::vector<vec2> vertices = this->GetPolygon().vertices;
+    for (vec2 vertice : vertices) {
+        center.x += vertice.x;
+        center.y += vertice.y;
+    }
+    center.x /= vertices.size();
+    center.y /= vertices.size();
+    SetPosition(center);
+}
 
 RockGroup::RockGroup(const std::string& index) :GameObject({ 0,0 }), index(index)
 {}
@@ -342,14 +354,15 @@ bool RockGroup::MatchIndex()
 
 vec2 RockGroup::FindCenter() {  // Calculate texture's position.
     vec2 center = { 0, 0 };
-    vec2 minPoint = rocks[0].vertices[1];
-    vec2 maxPoint = rocks[0].vertices[0];
+    vec2 minPoint = rocks[0]->GetPolygon().vertices[1];
+    vec2 maxPoint = rocks[0]->GetPolygon().vertices[0];
 
     for (auto& rock : rocks) {
-        minPoint.x = std::min(minPoint.x, rock.FindBoundary().Left());
-        minPoint.y = std::min(minPoint.y, rock.FindBoundary().Bottom());
-        maxPoint.x = std::max(maxPoint.x, rock.FindBoundary().Right());
-        maxPoint.y = std::max(maxPoint.y, rock.FindBoundary().Top());
+        Polygon poly = rock->GetPolygon();
+        minPoint.x = std::min(minPoint.x, poly.FindBoundary().Left());
+        minPoint.y = std::min(minPoint.y, poly.FindBoundary().Bottom());
+        maxPoint.x = std::max(maxPoint.x, poly.FindBoundary().Right());
+        maxPoint.y = std::max(maxPoint.y, poly.FindBoundary().Top());
     }
     center.x = (minPoint.x + maxPoint.x) /2;
     center.y = (minPoint.y + maxPoint.y) /2;
@@ -358,10 +371,22 @@ vec2 RockGroup::FindCenter() {  // Calculate texture's position.
 
 void RockGroup::SetPoints() {
     for (auto& rock : rocks) {
-        for (int i = 0; i < rock.vertexCount; i++) {
-            points.push_back(rock.vertices[i]);
+        Polygon poly = rock->GetPolygon();
+        for (int i = 0; i < poly.vertexCount; i++) {
+            points.push_back(poly.vertices[i]);
         }
    }
+}
+
+bool RockGroup::CanCollideWith(GameObjectTypes other_object)
+{
+    switch (other_object) {
+    case GameObjectTypes::Ship:
+        return true;
+        break;
+    }
+
+    return false;
 }
 
 void RockGroup::ResolveCollision(GameObject* other_object)
@@ -372,7 +397,8 @@ void RockGroup::ResolveCollision(GameObject* other_object)
             // maybe an error?
         }
         for (auto& rock : this->GetRocks()) {
-            rock->GetGOComponent<CS230::MAP_SATCollision>();
+            rock->SetVelocity({-20, 0});
+            other_object->SetVelocity({0, 0});
         }
         
     }
