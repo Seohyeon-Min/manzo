@@ -219,6 +219,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                     rockgroup->SetRotation(rotateAngle);
                     //rockgroup->SetScale();
 
+                    rock->SetRockGroup(rockgroup);
                     Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup);
                     rock_groups.push_back(rockgroup);
                 }
@@ -229,6 +230,8 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                         rockgroup->SetRotation(rotateAngle);
                         //rockgroup->SetScale();
 
+                        rock->SetRockGroup(rockgroup);
+                        
                         Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup);
                         rock_groups.push_back(rockgroup);
                     }
@@ -236,6 +239,8 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                         rock_groups.back()->AddRock(poly);
                     }
                 }
+                rock->GetRockGroup();
+
                 
             }
             
@@ -252,12 +257,14 @@ void CS230::Map::ParseSVG(const std::string& filename) {
     
     for (auto& r_group : rock_groups) {
         r_group->MatchIndex();
+        r_group->SetPoints();
         
-        std::cout <<"Group Position: " << r_group->GetPosition().x << "," << r_group->GetPosition().y<<"\n";
+        /*std::cout <<"Group Position: " << r_group->GetPosition().x << "," << r_group->GetPosition().y<<"\n";
         std::cout <<"Group Index : " << r_group->GetIndex()<<"\n";
-        std::cout <<"Group Rocks Size : " << r_group->GetRocks().size() <<"\n";
-        
+        std::cout <<"Group Rocks Size : " << r_group->GetRocks().size() <<"\n";*/
+        //std::cout <<"How Many Points? : " << r_group->GetPoints().size() <<"\n";
     }
+    
     file.close();
     //AddDrawCall();
 }
@@ -288,7 +295,8 @@ void Rock::Draw()
 }
 
 
-RockGroup::RockGroup(const std::string& index) :GameObject({ 0,0 }), index(index){}
+RockGroup::RockGroup(const std::string& index) :GameObject({ 0,0 }), index(index)
+{}
 
 void RockGroup::Update(double dt)
 {
@@ -346,4 +354,12 @@ vec2 RockGroup::FindCenter() {  // Calculate texture's position.
     center.x = (minPoint.x + maxPoint.x) /2;
     center.y = (minPoint.y + maxPoint.y) /2;
     return center;
+}
+
+void RockGroup::SetPoints() {
+    for (auto& rock : rocks) {
+        for (int i = 0; i < rock.vertexCount; i++) {
+            points.push_back(rock.vertices[i]);
+        }
+   }
 }
