@@ -30,11 +30,7 @@ void FontManager::PrintText(const char* text, vec2 location, float angle, float 
 	
 	shader->Use(true);
 
-	shader->SendUniform("zoomscale", 1.0f);
 	shader->SendUniform("u_Texture", 0);
-
-	/*std::array<float, 3> color_data = { color.x, color.y, color.z };
-	shader->SendUniform("text_color", std::span(color_data));*/
 
 	auto it = std::find(text_list.begin(), text_list.end(), text);
 	if (it == text_list.end()) // Text not found
