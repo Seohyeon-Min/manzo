@@ -160,7 +160,7 @@ void label_text_store::init(const char* file_path)
 	total_char_count = 0;
 }
 
-void label_text_store::add_text(const char* label, vec2 label_loc,	float label_angle, float font_size)
+void label_text_store::add_text(const char* label, vec2 label_loc,	float label_angle, float font_size, vec3 label_color)
 {
 	// Create a temporary element
 	label_text temp_label;
@@ -168,6 +168,7 @@ void label_text_store::add_text(const char* label, vec2 label_loc,	float label_a
 	temp_label.label_loc = label_loc;
 	temp_label.label_angle = label_angle;
 	temp_label.label_size = font_size;
+	temp_label.label_color = label_color;
 
 	// Reserve space for the new element
 	labels.reserve(labels.size() + 1);
@@ -181,37 +182,41 @@ void label_text_store::add_text(const char* label, vec2 label_loc,	float label_a
 
 void label_text_store::set_buffers()
 {
-
-	// Define the label vertices of the model (4 vertex (to form a triangle) 2 position, 2 origin, 2 texture coordinate, 1 char ID)
-	unsigned int label_vertex_count = 4 * 6 * total_char_count;
+	// 총 꼭짓점 개수 계산 (글자당 4개의 꼭짓점)
+	unsigned int label_vertex_count = total_char_count * 4 * 9; // (x, y, origin_x, origin_y, u, v, r, g, b)
 	float* label_vertices = new float[label_vertex_count];
 
-	// 6 indices to form a triangle
-	unsigned int label_indices_count = 6 * total_char_count;
+	// 총 인덱스 개수 계산 (글자당 6개의 인덱스)
+	unsigned int label_indices_count = total_char_count * 6;
 	unsigned int* label_indices = new unsigned int[label_indices_count];
 
 	unsigned int label_v_index = 0;
 	unsigned int label_i_index = 0;
 
+	// 버퍼 데이터 채우기
 	for (auto& lb : labels)
 	{
-		// Fill the buffers for every individual character
 		get_buffer(lb, label_vertices, label_v_index, label_indices, label_i_index);
 	}
 
-	// Create a layout
+	// 레이아웃 정의 (Position + Origin + Texture Coordinate + Color)
 	GLVertexBufferLayout label_layout;
-	label_layout.AddFloat(2);  // Position
-	label_layout.AddFloat(2);  // Origin
-	label_layout.AddFloat(2); // Texture coordinate
+	label_layout.AddFloat(2);  // Position (x, y)
+	label_layout.AddFloat(2);  // Origin (x, y)
+	label_layout.AddFloat(2);  // Texture Coordinate (u, v)
+	label_layout.AddFloat(3);  // Color (r, g, b)
 
+	// 버퍼 생성
 	unsigned int label_vertex_size = label_vertex_count * sizeof(float);
+	label_buffers.CreateBuffers(
+		(void*)label_vertices,
+		label_vertex_size,
+		(unsigned int*)label_indices,
+		label_indices_count,
+		label_layout
+	);
 
-	// Create the buffers
-	label_buffers.CreateBuffers((void*)label_vertices, label_vertex_size,
-		(unsigned int*)label_indices, label_indices_count, label_layout);
-
-	// Delete the dynamic array (From heap)
+	// 메모리 해제
 	delete[] label_vertices;
 	delete[] label_indices;
 }
@@ -232,10 +237,8 @@ void label_text_store::paint_text()
 }
 
 
-void label_text_store::get_buffer(label_text& lb,
-	float* vertices, unsigned int& vertex_index, unsigned int* indices, unsigned int& indices_index)
+void label_text_store::get_buffer(label_text& lb, float* vertices, unsigned int& vertex_index, unsigned int* indices, unsigned int& indices_index)
 {
-	// Store the x,y location
 	vec2 loc = lb.label_loc;
 	float x = loc.x;
 	float y = loc.y;
@@ -244,23 +247,20 @@ void label_text_store::get_buffer(label_text& lb,
 
 	for (int i = 0; lb.label[i] != '\0'; ++i)
 	{
-		// get the atlas information
 		char ch = lb.label[i];
-
 		Character ch_data = main_font.ch_atlas[ch];
 
 		float xpos = x + (ch_data.Bearing.x * scale);
 		float ypos = y - (ch_data.Size.y - ch_data.Bearing.y) * scale;
-
 		float w = ch_data.Size.x * scale;
 		float h = ch_data.Size.y * scale;
 
-		float margin = 0.00002f; // This value prevents the minor overlap with the next char when rendering
-
-		// Point 1
-		// Vertices [0,0] // 0th point
 		rotated_pt = rotate_pt(loc, vec2(xpos, ypos + h), lb.label_angle);
 
+		vec3 char_color = lb.label_color;
+		float margin = 0.00002f;
+
+		// Top-left
 		vertices[vertex_index + 0] = rotated_pt.x;
 		vertices[vertex_index + 1] = rotated_pt.y;
 
@@ -272,13 +272,13 @@ void label_text_store::get_buffer(label_text& lb,
 		vertices[vertex_index + 4] = ch_data.top_left.x + margin;
 		vertices[vertex_index + 5] = ch_data.top_left.y;
 
-		// Iterate
-		vertex_index = vertex_index + 6;
+		vertices[vertex_index + 6] = char_color.red;
+		vertices[vertex_index + 7] = char_color.green;
+		vertices[vertex_index + 8] = char_color.blue;
 
-		//__________________________________________________________________________________________
+		vertex_index = vertex_index + 9;
 
-		// Point 2
-		// Vertices [0,1] // 1th point
+		// Bottom-left
 		rotated_pt = rotate_pt(loc, vec2(xpos, ypos), lb.label_angle);
 
 		vertices[vertex_index + 0] = rotated_pt.x;
@@ -292,13 +292,13 @@ void label_text_store::get_buffer(label_text& lb,
 		vertices[vertex_index + 4] = ch_data.top_left.x + margin;
 		vertices[vertex_index + 5] = ch_data.bot_right.y;
 
-		// Iterate
-		vertex_index = vertex_index + 6;
+		vertices[vertex_index + 6] = char_color.red;
+		vertices[vertex_index + 7] = char_color.green;
+		vertices[vertex_index + 8] = char_color.blue;
 
-		//__________________________________________________________________________________________
+		vertex_index = vertex_index + 9;
 
-		// Point 3
-		// Vertices [1,1] // 2th point
+		// Bottom-right
 		rotated_pt = rotate_pt(loc, vec2(xpos + w, ypos), lb.label_angle);
 
 		vertices[vertex_index + 0] = rotated_pt.x;
@@ -312,13 +312,14 @@ void label_text_store::get_buffer(label_text& lb,
 		vertices[vertex_index + 4] = ch_data.bot_right.x - margin;
 		vertices[vertex_index + 5] = ch_data.bot_right.y;
 
+		vertices[vertex_index + 6] = char_color.red;
+		vertices[vertex_index + 7] = char_color.green;
+		vertices[vertex_index + 8] = char_color.blue;
+
 		// Iterate
-		vertex_index = vertex_index + 6;
+		vertex_index = vertex_index + 9;
 
-		//__________________________________________________________________________________________
-
-		// Point 4
-		// Vertices [1,0] // 3th point
+		// Top-right
 		rotated_pt = rotate_pt(loc, vec2(xpos + w, ypos + h), lb.label_angle);
 
 		vertices[vertex_index + 0] = rotated_pt.x;
@@ -332,33 +333,31 @@ void label_text_store::get_buffer(label_text& lb,
 		vertices[vertex_index + 4] = ch_data.bot_right.x - margin;
 		vertices[vertex_index + 5] = ch_data.top_left.y;
 
-		// Iterate
-		vertex_index = vertex_index + 6;
+		vertices[vertex_index + 6] = char_color.red;
+		vertices[vertex_index + 7] = char_color.green;
+		vertices[vertex_index + 8] = char_color.blue;
 
-		//__________________________________________________________________________________________
+		// Iterate
+		vertex_index = vertex_index + 9;
+
+		// Advance position
 		x += (ch_data.Advance >> 6) * scale;
 
-		//__________________________________________________________________________________________
+		// Define indices
+		unsigned int base_index = (indices_index / 6) * 4;
 
-
-		// Fix the index buffers
-		// Set the node indices
-		unsigned int t_id = ((indices_index / 6) * 4);
-
-		// Triangle 0,1,2
-		indices[indices_index + 0] = t_id + 0;
-		indices[indices_index + 1] = t_id + 1;
-		indices[indices_index + 2] = t_id + 2;
+		// Triangle 1
+		indices[indices_index + 0] = base_index + 0;
+		indices[indices_index + 1] = base_index + 1;
+		indices[indices_index + 2] = base_index + 2;
 
 		// Triangle 2,3,0
-		indices[indices_index + 3] = t_id + 2;
-		indices[indices_index + 4] = t_id + 3;
-		indices[indices_index + 5] = t_id + 0;
+		indices[indices_index + 3] = base_index + 2;
+		indices[indices_index + 4] = base_index + 3;
+		indices[indices_index + 5] = base_index + 0;
 
-		// Increment
 		indices_index = indices_index + 6;
 	}
-
 }
 
 

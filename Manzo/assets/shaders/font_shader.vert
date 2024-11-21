@@ -5,6 +5,7 @@ uniform float zoomscale;
 in vec2 position;
 in vec2 origin;
 in vec2 textureCoord;
+in vec3 color;
 
 out vec3 v_textureColor;
 out vec2 v_textureCoord;
@@ -31,5 +32,5 @@ void main()
 	v_textureCoord = textureCoord;
 	
 	// Pass the texture color to the fragment shader
-	v_textureColor = vec3(1.0f,1.0f,1.0f);
+	v_textureColor = color;
 }
