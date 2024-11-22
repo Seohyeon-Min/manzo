@@ -311,7 +311,7 @@ bool CS230::MAP_SATCollision::IsCollidingWith(GameObject* other_object)
 
 
 void CS230::MAP_SATCollision::Draw() {
-
+    Polygon boundary = WorldBoundary_poly();
     for (int j = 1; j < boundary.vertexCount; ++j) {
         Engine::GetRender().AddDrawCall(vec2{ boundary.vertices[j - 1].x, boundary.vertices[j - 1].y },
             vec2{ boundary.vertices[j].x, boundary.vertices[j].y },

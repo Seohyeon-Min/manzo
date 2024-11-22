@@ -239,7 +239,6 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                         rock_groups.back()->AddRock(rock);
                     }
                 }
-                rock->GetRockGroup();
 
                 
             }
@@ -397,7 +396,7 @@ void RockGroup::ResolveCollision(GameObject* other_object)
             // maybe an error?
         }
         for (auto& rock : this->GetRocks()) {
-            rock->SetVelocity({-20, 0});
+            rock->SetVelocity({-100, 0});
             other_object->SetVelocity({0, 0});
         }
         
