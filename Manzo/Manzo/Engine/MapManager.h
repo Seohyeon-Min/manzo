@@ -7,6 +7,7 @@
 #include "Polygon.h"
 
 #include <vector>
+class RockGroup;
 
 class Rock : public CS230::GameObject
 {
@@ -17,8 +18,15 @@ public:
 	std::string TypeName() override { return "Polygon"; }
 	void Update(double dt);
 	void Draw();
+
+	//polygon
 	const Polygon& GetPolygon() { return poly; }
+	
+	//group
+	void SetRockGroup(RockGroup* rockgroup) { this->rockgroup = rockgroup; }
+	RockGroup* GetRockGroup() { return rockgroup; }
 private:
+	RockGroup* rockgroup;
 	Polygon poly;
 };
 
@@ -40,11 +48,16 @@ public:
 	bool MatchIndex();
 	vec2 FindCenter();
 	std::string GetIndex() { return index; }
+
+	// Points
+	std::vector<vec2> GetPoints() { return points; }
+	void SetPoints();
 	
 private:
 	mat3 matrix;
 	std::vector<Polygon> rocks;	//one group
 	std::string index = "";
+	std::vector<vec2> points;	// All polygon's points
 };
 
 
@@ -67,8 +80,6 @@ namespace CS230 {
 
 		std::vector<Rock> objects;
 		std::vector<RockGroup*> rock_groups;		//vector for groups
-		//std::list<RockGroup*> rock_groups;		//vector for groups
-		//std::vector<std::shared_ptr<RockGroup>> rock_groups;
 
 	};
 }
