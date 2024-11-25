@@ -339,7 +339,7 @@ bool RockGroup::MatchIndex()
 
             if (index == polyind) {
                 std::getline(linestream, file_path, ',');
-                SetPosition(FindCenter());
+                SetPosition(FindCenterRect());
                 AddGOComponent(new CS230::Sprite(file_path, this));
 
                 return true;
@@ -352,9 +352,9 @@ bool RockGroup::MatchIndex()
     return false;
 }
 
-vec2 RockGroup::FindCenter() {  // Calculate texture's position.
+vec2 RockGroup::FindCenterRect() {  // Calculate texture's position.
     vec2 center = { 0, 0 };
-    vec2 minPoint = rocks[0]->GetPolygon().vertices[1];
+    vec2 minPoint = rocks[0]->GetPolygon().vertices[0];
     vec2 maxPoint = rocks[0]->GetPolygon().vertices[0];
 
     for (auto& rock : rocks) {
@@ -375,7 +375,7 @@ void RockGroup::RemoveDuplicatePoints(std::vector<vec2>& points, float tolerance
     for (const auto& point : points) {
         bool is_duplicate = false;
 
-        // ÀÌ¹Ì ÀúÀåµÈ °íÀ¯ Á¡µé°ú ºñ±³
+        // ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
         for (const auto& unique_point : unique_points) {
             if ((point - unique_point).Length() <= tolerance) {
                 is_duplicate = true;
@@ -383,16 +383,32 @@ void RockGroup::RemoveDuplicatePoints(std::vector<vec2>& points, float tolerance
             }
         }
 
-        // Áßº¹µÇÁö ¾ÊÀº Á¡¸¸ Ãß°¡
+        // ï¿½ßºï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½
         if (!is_duplicate) {
             unique_points.push_back(point);
         }
     }
 
-    // Áßº¹ Á¦°ÅµÈ °á°ú¸¦ ¿ø·¡ º¤ÅÍ¿¡ ¹Ý¿µ
+    // ï¿½ßºï¿½ ï¿½ï¿½ï¿½Åµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í¿ï¿½ ï¿½Ý¿ï¿½
     points = unique_points;
 }
 
+vec2 RockGroup::FindCenterPoly() {  // Calculate Polygon's position
+    vec2 center = { 0, 0 };
+    vec2 poly_center = { 0, 0 };
+
+    for (auto& rock : rocks) {
+        Polygon poly = rock->GetPolygon();
+        poly_center = poly.FindCenter();
+
+        center.x += poly_center.x;
+        center.y += poly_center.y;
+    }
+    center.x /= rocks.size();
+    center.y /= rocks.size();
+
+    return center;
+}
 void RockGroup::SetPoints() {
     for (auto& rock : rocks) {
         Polygon poly = rock->GetPolygon();
@@ -400,7 +416,7 @@ void RockGroup::SetPoints() {
             points.push_back(poly.vertices[i]);
         }
     }
-    RemoveDuplicatePoints(points, 5.f); // ¿ÀÂ÷ ¹üÀ§ 0.01f
+    RemoveDuplicatePoints(points, 5.f); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 0.01f
 }
 
 bool RockGroup::CanCollideWith(GameObjectTypes other_object)
