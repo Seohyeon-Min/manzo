@@ -237,6 +237,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                     }
                     else {                                                              // if poly has same index
                         rock_groups.back()->AddRock(rock);
+                        rock->SetRockGroup(rock_groups.back());
                     }
                 }
 
