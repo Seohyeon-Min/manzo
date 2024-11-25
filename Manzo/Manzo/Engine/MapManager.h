@@ -52,10 +52,12 @@ public:
 	std::vector<Rock*> GetRocks() { return rocks; }
 	bool MatchIndex();
 	vec2 FindCenter();
+
 	std::string GetIndex() { return index; }
 
 	// Points
 	std::vector<vec2> GetPoints() { return points; }
+	void RemoveDuplicatePoints(std::vector<vec2>& points, float tolerance);
 	void SetPoints();
 	
 private:

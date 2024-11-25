@@ -66,7 +66,7 @@ void Mode1::Load() {
     //// audio
     Mix_Music* sample = Engine::GetAudioManager().LoadMusic("assets/audios/back_temp.wav", "sample");
     if (sample) {
-        Engine::GetAudioManager().PlayMusic(sample, -1);
+        //Engine::GetAudioManager().PlayMusic(sample, -1);
     }
 
     //// to generate fish

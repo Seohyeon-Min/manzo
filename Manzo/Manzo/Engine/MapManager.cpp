@@ -369,13 +369,38 @@ vec2 RockGroup::FindCenter() {  // Calculate texture's position.
     return center;
 }
 
+void RockGroup::RemoveDuplicatePoints(std::vector<vec2>& points, float tolerance) {
+    std::vector<vec2> unique_points;
+
+    for (const auto& point : points) {
+        bool is_duplicate = false;
+
+        // 이미 저장된 고유 점들과 비교
+        for (const auto& unique_point : unique_points) {
+            if ((point - unique_point).Length() <= tolerance) {
+                is_duplicate = true;
+                break;
+            }
+        }
+
+        // 중복되지 않은 점만 추가
+        if (!is_duplicate) {
+            unique_points.push_back(point);
+        }
+    }
+
+    // 중복 제거된 결과를 원래 벡터에 반영
+    points = unique_points;
+}
+
 void RockGroup::SetPoints() {
     for (auto& rock : rocks) {
         Polygon poly = rock->GetPolygon();
         for (int i = 0; i < poly.vertexCount; i++) {
             points.push_back(poly.vertices[i]);
         }
-   }
+    }
+    RemoveDuplicatePoints(points, 5.f); // 오차 범위 0.01f
 }
 
 bool RockGroup::CanCollideWith(GameObjectTypes other_object)
