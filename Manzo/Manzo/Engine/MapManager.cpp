@@ -375,7 +375,6 @@ void RockGroup::RemoveDuplicatePoints(std::vector<vec2>& points, float tolerance
     for (const auto& point : points) {
         bool is_duplicate = false;
 
-        // �̹� ����� ���� ����� ��
         for (const auto& unique_point : unique_points) {
             if ((point - unique_point).Length() <= tolerance) {
                 is_duplicate = true;
@@ -383,13 +382,11 @@ void RockGroup::RemoveDuplicatePoints(std::vector<vec2>& points, float tolerance
             }
         }
 
-        // �ߺ����� ���� ���� �߰�
         if (!is_duplicate) {
             unique_points.push_back(point);
         }
     }
 
-    // �ߺ� ���ŵ� ����� ���� ���Ϳ� �ݿ�
     points = unique_points;
 }
 
@@ -416,7 +413,7 @@ void RockGroup::SetPoints() {
             points.push_back(poly.vertices[i]);
         }
     }
-    RemoveDuplicatePoints(points, 5.f); // ���� ���� 0.01f
+    RemoveDuplicatePoints(points, 5.f);
 }
 
 bool RockGroup::CanCollideWith(GameObjectTypes other_object)

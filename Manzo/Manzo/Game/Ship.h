@@ -49,6 +49,7 @@ private:
     vec2 force = {};
     vec2 destination;
     vec2 direction = { 0,0 };
+    vec2 normal;
     Beat* beat;
     Skillsys* skill;
     Math::rect limit;

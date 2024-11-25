@@ -101,7 +101,8 @@ std::vector<vec2> spline_points;
 
 void Ship::State_Hit::Enter(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
-
+    ship->SetVelocity({});
+    ship->HitWithReef(ship->normal);
 }
 void Ship::State_Hit::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) { 
     if (spline_points.size() > 2) {
@@ -303,43 +304,55 @@ void Ship::ResolveCollision(GameObject* other_object)
 {
     if (!hit_with) { // is it needful?
         if (other_object->Type() == GameObjectTypes::Reef) {
-            //SetVelocity({});
+            SetVelocity({});
+            hit_with = true;
+
             Rock* rock = static_cast<Rock*>(other_object);
             std::vector<vec2> points = rock->GetRockGroup()->GetPoints();
-            vec2 center = rock->GetRockGroup()->FindCenter();
+            vec2 center = rock->GetRockGroup()->FindCenterPoly();
 
-            vec2 normal = ComputeCollisionNormal(points, GetPosition(),center);
+            normal = ComputeCollisionNormal(points, GetPosition(),center);
 
             auto* collision_edge = this->GetGOComponent<CS230::RectCollision>();
             if (collision_edge == nullptr) {
                 // maybe an error?
             }
 
-            HitWithReef(normal);
+
         }
     }
 }
 
 void Ship::HitWithReef(vec2 normal) {
     fuel -= HitDecFuel;
+    if (fuel < 0.0f) {
+        fuel = 0.0f;
+    }
 
-    vec2 velocity = GetVelocity();
+    vec2 velocity = GetVelocity(); // 현재 속도를 먼저 저장
+
     float dot_product = velocity.x * normal.x + velocity.y * normal.y;
+
     vec2 reflection = {
         velocity.x - 2 * dot_product * normal.x,
         velocity.y - 2 * dot_product * normal.y
     };
 
-    direction = reflection.Normalize();
+    float incoming_speed = velocity.Length(); // 속도의 크기 계산
 
-    // Current velocity and position of the ship
+    // 반사 방향 설정
+    if (reflection.Length() > 0.0f) {
+        direction = reflection.Normalize();
+    }
+    else {
+        direction = { 1.0f, 0.0f }; // 기본 방향 설정
+    }
 
-    // Set reflection speed and adjust position
-    float incoming_speed = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
+    // 속도 설정
     SetVelocity(direction * incoming_speed * 0.75f);
 
     move = false;
-    hit_with = true;
+
 }
 
 //for fuel
