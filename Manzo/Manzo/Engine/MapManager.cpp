@@ -339,7 +339,7 @@ bool RockGroup::MatchIndex()
 
             if (index == polyind) {
                 std::getline(linestream, file_path, ',');
-                SetPosition(FindCenter());
+                SetPosition(FindCenterRect());
                 AddGOComponent(new CS230::Sprite(file_path, this));
 
                 return true;
@@ -352,9 +352,9 @@ bool RockGroup::MatchIndex()
     return false;
 }
 
-vec2 RockGroup::FindCenter() {  // Calculate texture's position.
+vec2 RockGroup::FindCenterRect() {  // Calculate texture's position.
     vec2 center = { 0, 0 };
-    vec2 minPoint = rocks[0]->GetPolygon().vertices[1];
+    vec2 minPoint = rocks[0]->GetPolygon().vertices[0];
     vec2 maxPoint = rocks[0]->GetPolygon().vertices[0];
 
     for (auto& rock : rocks) {
@@ -369,6 +369,22 @@ vec2 RockGroup::FindCenter() {  // Calculate texture's position.
     return center;
 }
 
+vec2 RockGroup::FindCenterPoly() {  // Calculate Polygon's position
+    vec2 center = { 0, 0 };
+    vec2 poly_center = { 0, 0 };
+
+    for (auto& rock : rocks) {
+        Polygon poly = rock->GetPolygon();
+        poly_center = poly.FindCenter();
+
+        center.x += poly_center.x;
+        center.y += poly_center.y;
+    }
+    center.x /= rocks.size();
+    center.y /= rocks.size();
+
+    return center;
+}
 void RockGroup::SetPoints() {
     for (auto& rock : rocks) {
         Polygon poly = rock->GetPolygon();

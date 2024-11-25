@@ -51,7 +51,8 @@ public:
 	void AddRock(Rock* rock) { rocks.push_back(rock); }
 	std::vector<Rock*> GetRocks() { return rocks; }
 	bool MatchIndex();
-	vec2 FindCenter();
+	vec2 FindCenterRect();
+	vec2 FindCenterPoly();
 	std::string GetIndex() { return index; }
 
 	// Points
