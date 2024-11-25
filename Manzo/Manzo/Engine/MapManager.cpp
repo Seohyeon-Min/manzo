@@ -225,7 +225,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 }
                 else {
                     if (rock_groups.back()->GetIndex() != poly.polyindex) {             // if poly has different index
-                        RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new group
+                        RockGroup* rockgroup = new RockGroup(poly.polyindex);           // make new group
                         rockgroup->AddRock(rock);                                       //add poly into new group
                         rockgroup->SetRotation(rotateAngle);
                         //rockgroup->SetScale();
