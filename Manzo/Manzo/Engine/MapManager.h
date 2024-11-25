@@ -19,6 +19,9 @@ public:
 	void Update(double dt);
 	void Draw();
 
+	//position
+	void SetCenter();
+
 	//polygon
 	const Polygon& GetPolygon() { return poly; }
 	
@@ -38,13 +41,15 @@ public:
 	~RockGroup() {
 		rocks.clear();
 	}
-	GameObjectTypes Type() override { return GameObjectTypes::Reef; }
+	GameObjectTypes Type() override { return GameObjectTypes::ReefBoundary; }
 	std::string TypeName() override { return "Rock Group"; }
+	bool CanCollideWith(GameObjectTypes) override;
 	void Update(double dt);
 	void Draw();
+	void ResolveCollision(GameObject* other_object);
 
-	void AddRock(Polygon poly) { rocks.push_back(poly); }
-	std::vector<Polygon> GetRocks() { return rocks; }
+	void AddRock(Rock* rock) { rocks.push_back(rock); }
+	std::vector<Rock*> GetRocks() { return rocks; }
 	bool MatchIndex();
 	vec2 FindCenter();
 	std::string GetIndex() { return index; }
@@ -55,7 +60,7 @@ public:
 	
 private:
 	mat3 matrix;
-	std::vector<Polygon> rocks;	//one group
+	std::vector<Rock*> rocks;	//one group
 	std::string index = "";
 	std::vector<vec2> points;	// All polygon's points
 };
