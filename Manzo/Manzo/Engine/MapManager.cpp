@@ -1,3 +1,13 @@
+/*
+Copyright (C) 2023 DigiPen Institute of Technology
+Reproduction or distribution of this file or its contents without
+prior written consent is prohibited
+File Name:  MapManager.cpp
+Project:    Manzo
+Author:     SeokWha Hong
+Created:    September 12, 2024
+*/
+
 #include "MapManager.h"
 #include "GameObjectManager.h"
 #include "vec2.h"
@@ -266,7 +276,6 @@ void CS230::Map::ParseSVG(const std::string& filename) {
     }
     
     file.close();
-    //AddDrawCall();
 }
 
 
@@ -280,142 +289,4 @@ void CS230::Map::AddDrawCall()
     }
 }
 
-Rock::Rock(Polygon poly) :GameObject({ 0,0 }), poly(poly)
-{
-    //this->SetCenter();  //set rock position
-}
 
-void Rock::Update(double dt)
-{
-    GameObject::Update(dt);
-}
-
-void Rock::Draw()
-{
-    GameObject::Draw();
-}
-
-void Rock::SetCenter() {
-    vec2 center = { 0, 0 };
-    std::vector<vec2> vertices = this->GetPolygon().vertices;
-    for (vec2 vertice : vertices) {
-        center.x += vertice.x;
-        center.y += vertice.y;
-    }
-    center.x /= vertices.size();
-    center.y /= vertices.size();
-    SetPosition(center);
-}
-
-RockGroup::RockGroup(const std::string& index) :GameObject({ 0,0 }), index(index)
-{}
-
-void RockGroup::Update(double dt)
-{
-    CS230::GameObject::Update(dt);
-}
-
-void RockGroup::Draw()
-{
-    CS230::GameObject::Draw();
-}
-
-bool RockGroup::MatchIndex()
-{
-    std::ifstream file("assets/images/rock/rock.csv");
-    std::string line, cell;
-    if (!file.is_open()) {
-        std::cerr << "Failed to Open CSV." << std::endl;
-        return false;
-    }
-
-    if (file.is_open()) {
-        while (std::getline(file, line)) {
-            std::stringstream linestream(line);
-            std::string index, x_str, y_str, file_path;
-
-            std::getline(linestream, index, ',');
-            std::string polyind = (this->index).substr(0, 4);
-
-            if (index == polyind) {
-                std::getline(linestream, file_path, ',');
-                SetPosition(FindCenterRect());
-                AddGOComponent(new CS230::Sprite(file_path, this));
-
-                return true;
-
-            }
-        }
-
-    }
-    std::cerr << "Index not found in the file." << std::endl;
-    return false;
-}
-
-vec2 RockGroup::FindCenterRect() {  // Calculate texture's position.
-    vec2 center = { 0, 0 };
-    vec2 minPoint = rocks[0]->GetPolygon().vertices[0];
-    vec2 maxPoint = rocks[0]->GetPolygon().vertices[0];
-
-    for (auto& rock : rocks) {
-        Polygon poly = rock->GetPolygon();
-        minPoint.x = std::min(minPoint.x, poly.FindBoundary().Left());
-        minPoint.y = std::min(minPoint.y, poly.FindBoundary().Bottom());
-        maxPoint.x = std::max(maxPoint.x, poly.FindBoundary().Right());
-        maxPoint.y = std::max(maxPoint.y, poly.FindBoundary().Top());
-    }
-    center.x = (minPoint.x + maxPoint.x) /2;
-    center.y = (minPoint.y + maxPoint.y) /2;
-    return center;
-}
-
-vec2 RockGroup::FindCenterPoly() {  // Calculate Polygon's position
-    vec2 center = { 0, 0 };
-    vec2 poly_center = { 0, 0 };
-
-    for (auto& rock : rocks) {
-        Polygon poly = rock->GetPolygon();
-        poly_center = poly.FindCenter();
-
-        center.x += poly_center.x;
-        center.y += poly_center.y;
-    }
-    center.x /= rocks.size();
-    center.y /= rocks.size();
-
-    return center;
-}
-void RockGroup::SetPoints() {
-    for (auto& rock : rocks) {
-        Polygon poly = rock->GetPolygon();
-        for (int i = 0; i < poly.vertexCount; i++) {
-            points.push_back(poly.vertices[i]);
-        }
-   }
-}
-
-bool RockGroup::CanCollideWith(GameObjectTypes other_object)
-{
-    switch (other_object) {
-    case GameObjectTypes::Ship:
-        return true;
-        break;
-    }
-
-    return false;
-}
-
-void RockGroup::ResolveCollision(GameObject* other_object)
-{
-    if (other_object->Type() == GameObjectTypes::Ship) {
-        auto* collision_edge = this->GetGOComponent<CS230::RectCollision>();
-        if (collision_edge == nullptr) {
-            // maybe an error?
-        }
-        for (auto& rock : this->GetRocks()) {
-            //rock->SetVelocity({-100, 0});
-            //other_object->SetVelocity({0, 0});
-        }
-        
-    }
-}

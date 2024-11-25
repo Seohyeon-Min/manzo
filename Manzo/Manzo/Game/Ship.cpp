@@ -1,5 +1,6 @@
 #include "Ship.h"
 #include "BeatSystem.h"
+#include "Rock.h"
 #include "../Engine/Camera.h"
 #include "../Engine/Input.h"
 #include <iostream>

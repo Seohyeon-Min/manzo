@@ -12,8 +12,9 @@ Created:    March 8, 2023
 
 enum class GameObjectTypes {
     Ship,
-    Reef,
-    ReefBoundary,
+    Rock,
+    RockBoundary,
+    RockPoint,
     Fish,
     Net,
     BackgroundFish,

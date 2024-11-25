@@ -1,71 +1,24 @@
+/*
+Copyright (C) 2023 DigiPen Institute of Technology
+Reproduction or distribution of this file or its contents without
+prior written consent is prohibited
+File Name:  MapManager.h
+Project:    Manzo
+Author:     SeokWha Hong
+Created:    September 12, 2024
+*/
+
 #pragma once
 
 #include "vec2.h"
 #include "Component.h"
 #include "GameObject.h"
-#include "..\Game\GameObjectTypes.h"
 #include "Polygon.h"
+#include "..\Game\GameObjectTypes.h"
+#include "..\Game\Rock.h"
+#include "..\Game\RockGroup.h"
 
 #include <vector>
-class RockGroup;
-
-class Rock : public CS230::GameObject
-{
-public:
-	Rock(Polygon poly);
-	~Rock(){};
-	GameObjectTypes Type() override { return GameObjectTypes::Reef; }
-	std::string TypeName() override { return "Polygon"; }
-	void Update(double dt);
-	void Draw();
-
-	//position
-	void SetCenter();
-
-	//polygon
-	const Polygon& GetPolygon() { return poly; }
-	
-	//group
-	void SetRockGroup(RockGroup* rockgroup) { this->rockgroup = rockgroup; }
-	RockGroup* GetRockGroup() { return rockgroup; }
-private:
-	RockGroup* rockgroup;
-	Polygon poly;
-};
-
-
-class RockGroup : public CS230::GameObject //group of polys
-{
-public:
-	RockGroup(const std::string& index);
-	~RockGroup() {
-		rocks.clear();
-	}
-	GameObjectTypes Type() override { return GameObjectTypes::ReefBoundary; }
-	std::string TypeName() override { return "Rock Group"; }
-	bool CanCollideWith(GameObjectTypes) override;
-	void Update(double dt);
-	void Draw();
-	void ResolveCollision(GameObject* other_object);
-
-	void AddRock(Rock* rock) { rocks.push_back(rock); }
-	std::vector<Rock*> GetRocks() { return rocks; }
-	bool MatchIndex();
-	vec2 FindCenterRect();
-	vec2 FindCenterPoly();
-	std::string GetIndex() { return index; }
-
-	// Points
-	std::vector<vec2> GetPoints() { return points; }
-	void SetPoints();
-	
-private:
-	mat3 matrix;
-	std::vector<Rock*> rocks;	//one group
-	std::string index = "";
-	std::vector<vec2> points;	// All polygon's points
-};
-
 
 namespace CS230 {
 	class Map : public CS230::Component {
@@ -83,7 +36,6 @@ namespace CS230 {
 		}
 
 	private:
-
 		std::vector<Rock> objects;
 		std::vector<RockGroup*> rock_groups;		//vector for groups
 
