@@ -1,5 +1,6 @@
 
 #include "FishEcosystem.h"
+#include "AI.h"
 #include "../Engine/GameObjectManager.h"
 
 FishGenerator::FishGenerator()
@@ -45,9 +46,7 @@ void FishGenerator::GenerateFish(double dt)
 				Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(additionalFish);
 			}
 		}
-
 	}
-
 
 	//generate background fish
 	if (bg_timer->Remaining() == 0)
