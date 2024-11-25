@@ -217,12 +217,14 @@ std::vector<vec2> FindClosestPoints(const Polygon& polygon, const vec2& pos, int
 vec2 FindClosestPointOnSpline(const std::vector<vec2>& spline_points, const vec2& position) {
     float min_distance = std::numeric_limits<float>::max();
     vec2 closest_point;
+    size_t closest_index = 0;
 
-    for (const auto& point : spline_points) {
-        float distance = (point - position).Length();
+    for (size_t i = 0; i < spline_points.size(); ++i) {
+        float distance = (spline_points[i] - position).Length();
         if (distance < min_distance) {
             min_distance = distance;
-            closest_point = point;
+            closest_point = spline_points[i];
+            closest_index = i;
         }
     }
 
@@ -231,22 +233,12 @@ vec2 FindClosestPointOnSpline(const std::vector<vec2>& spline_points, const vec2
 
 vec2 ComputeNormalAtPoint(const vec2& p0, const vec2& p1) {
     vec2 tangent = p1 - p0;
-    vec2 normal = { -tangent.y, tangent.x }; // 접선에 수직
+    vec2 normal = { -tangent.y, tangent.x }; // 접선에 수직인 벡터
     float length = normal.Length();
-    return { normal.x / length, normal.y / length }; // 정규화
-}
-
-bool Ship::CanCollideWith(GameObjectTypes other_object)
-{
-    switch (other_object) {
-    case GameObjectTypes::Fish:
-    case GameObjectTypes::Reef:
-        if (!hit_with) return true;
-        else return false;
-        break;
+    if (length > 0.0f) {
+        return { normal.x / length, normal.y / length }; // 정규화
     }
-
-    return false;
+    return { 0.0f, 0.0f }; // 잘못된 벡터 방지
 }
 
 vec2 ComputeCollisionNormal(const std::vector<vec2>& points, const vec2& pos, int resolution = 20) {
@@ -265,6 +257,19 @@ vec2 ComputeCollisionNormal(const std::vector<vec2>& points, const vec2& pos, in
     vec2 normal = ComputeNormalAtPoint(tangent_point1, tangent_point2);
 
     return normal;
+}
+
+bool Ship::CanCollideWith(GameObjectTypes other_object)
+{
+    switch (other_object) {
+    case GameObjectTypes::Fish:
+    case GameObjectTypes::Reef:
+        if (!hit_with) return true;
+        else return false;
+        break;
+    }
+
+    return false;
 }
 
 void Ship::ResolveCollision(GameObject* other_object)

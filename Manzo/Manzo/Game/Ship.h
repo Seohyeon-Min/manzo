@@ -71,7 +71,7 @@ private:
         virtual void Enter(GameObject* object) override;
         virtual void Update(GameObject* object, double dt) override;
         virtual void CheckExit(GameObject* object) override;
-        std::string GetName() override { return "Combination attack - lightheavy"; }
+        std::string GetName() override { return "State_Idle"; }
     };
 
     class State_Set_Dest : public State {
@@ -79,7 +79,7 @@ private:
         virtual void Enter(GameObject* object) override;
         virtual void Update(GameObject* object, double dt) override;
         virtual void CheckExit(GameObject* object) override;
-        std::string GetName() override { return "Combination attack - lightheavy"; }
+        std::string GetName() override { return "State_Set_Dest"; }
     };
 
     class State_Ready_to_Move : public State {
@@ -87,7 +87,7 @@ private:
         virtual void Enter(GameObject* object) override;
         virtual void Update(GameObject* object, double dt) override;
         virtual void CheckExit(GameObject* object) override;
-        std::string GetName() override { return "Combination attack - lightlight"; }
+        std::string GetName() override { return "State_Ready_to_Move"; }
     };
 
     class State_Move : public State {
@@ -96,7 +96,7 @@ private:
         virtual void Update(GameObject* object, double dt) override;
         virtual void FixedUpdate(GameObject* object, double fixed_dt) override;
         virtual void CheckExit(GameObject* object) override;
-        std::string GetName() override { return "Combination attack - lightheavy"; }
+        std::string GetName() override { return "State_Move"; }
     };
 
     class State_Hit : public State {
@@ -105,7 +105,7 @@ private:
         virtual void Update(GameObject* object, double dt) override;
         virtual void FixedUpdate(GameObject* object, double fixed_dt) override;
         virtual void CheckExit(GameObject* object) override;
-        std::string GetName() override { return "Combination attack - lightheavy"; }
+        std::string GetName() override { return "State_Hit"; }
     };
 
     State_Idle state_idle;
