@@ -281,7 +281,7 @@ void CS230::Map::AddDrawCall()
 
 Rock::Rock(Polygon poly) :GameObject({ 0,0 }), poly(poly)
 {
-    this->SetCenter();  //set rock position
+    //this->SetCenter();  //set rock position
 }
 
 void Rock::Update(double dt)
@@ -396,8 +396,8 @@ void RockGroup::ResolveCollision(GameObject* other_object)
             // maybe an error?
         }
         for (auto& rock : this->GetRocks()) {
-            rock->SetVelocity({-100, 0});
-            other_object->SetVelocity({0, 0});
+            //rock->SetVelocity({-100, 0});
+            //other_object->SetVelocity({0, 0});
         }
         
     }
