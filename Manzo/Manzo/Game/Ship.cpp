@@ -21,10 +21,17 @@ Ship::Ship(vec2 start_position) :
     }
 }
 
-void Ship::State_Idle::Enter(GameObject* object) {}
+void Ship::State_Idle::Enter(GameObject* object) {
+    Ship* ship = static_cast<Ship*>(object);
+    if(ship->direction != vec2{0,0})
+    ship->SetVelocity(ship->direction * skidding_speed);
+}
 void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {}
 void Ship::State_Idle::CheckExit(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
+    if (ship->hit_with) {
+        ship->change_state(&ship->state_hit);
+    }
     if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT) && ship->beat->GetIsOnBeat()) {
         // Get mouse position relative to the center of the screen
         vec2 window = { Engine::window_width / 2, Engine::window_height / 2 };
@@ -40,6 +47,9 @@ void Ship::State_Set_Dest::Enter(GameObject* object) { }
 void Ship::State_Set_Dest::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) { }
 void Ship::State_Set_Dest::CheckExit(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
+    if (ship->hit_with) {
+        ship->change_state(&ship->state_hit);
+    }
     if (!ship->beat->GetIsOnBeat() ) { // wait for next beat
         ship->change_state(&ship->state_ready_to_move);
     }
@@ -49,6 +59,9 @@ void Ship::State_Ready_to_Move::Enter(GameObject* object) {}
 void Ship::State_Ready_to_Move::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) { }
 void Ship::State_Ready_to_Move::CheckExit(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
+    if (ship->hit_with) {
+        ship->change_state(&ship->state_hit);
+    }
     if (ship->beat->GetBeat()) { // move when its on next beat
         ship->direction = { ship->destination.x - (ship->GetPosition().x), ship->destination.y - (ship->GetPosition().y) };
         ship->direction = ship->direction.Normalize();
@@ -72,12 +85,30 @@ void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_
 }
 void Ship::State_Move::CheckExit(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
+    if (ship->hit_with) {
+        ship->change_state(&ship->state_hit);
+    }
     if (!ship->beat->GetIsOnBeat()) {
-        ship->SetVelocity(ship->direction * skidding_speed);
         //if (!clickable) { // wait for next beat
         //    clickable = true;
         //}
         ship->move = false;
+        ship->change_state(&ship->state_idle);
+    }
+}
+
+void Ship::State_Hit::Enter(GameObject* object) {
+    Ship* ship = static_cast<Ship*>(object);
+
+}
+void Ship::State_Hit::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) { }
+void Ship::State_Hit::FixedUpdate(GameObject* object, double fixed_dt)
+{
+}
+void Ship::State_Hit::CheckExit(GameObject* object) {
+    Ship* ship = static_cast<Ship*>(object);
+    if (!ship->beat->GetIsOnBeat()) { // should be a timer?
+        ship->hit_with = false;
         ship->change_state(&ship->state_idle);
     }
 }
@@ -131,29 +162,29 @@ vec2 GetPerpendicular(vec2 v) {
     return { -v.y, v.x };
 }
 
-vec2 LagrangeInterpolation(const vec2& p0, const vec2& p1, const vec2& p2, float t) {
+vec2 CatmullRomSpline(const vec2& p0, const vec2& p1, const vec2& p2, const vec2& p3, float t) {
     float t2 = t * t;
+    float t3 = t2 * t;
 
-    // Lagrange 다항식 계산
-    float l0 = (t - 1.0f) * (t - 2.0f) / 2.0f;  // 첫 번째 점의 가중치
-    float l1 = -t * (t - 2.0f);                // 두 번째 점의 가중치
-    float l2 = t * (t - 1.0f) / 2.0f;          // 세 번째 점의 가중치
-
-    return l0 * p0 + l1 * p1 + l2 * p2;
+    return 0.5f * ((2.0f * p1) +
+        (-p0 + p2) * t +
+        (2.0f * p0 - 5.0f * p1 + 4.0f * p2 - p3) * t2 +
+        (-p0 + 3.0f * p1 - 3.0f * p2 + p3) * t3);
 }
 
 std::vector<vec2> GenerateSplinePoints(const std::vector<vec2>& points, int resolution) {
     std::vector<vec2> spline_points;
 
-    if (points.size() < 3) {
-        return spline_points; // 최소한 3개의 점이 필요
+    if (points.size() < 4) {
+        return spline_points; // Catmull-Rom 스플라인을 위해 최소 4개의 점이 필요
     }
 
-    // Lagrange 보간법을 사용해 스플라인 생성
-    for (int i = 0; i < resolution; ++i) {
-        float t = i / static_cast<float>(resolution - 1); // 0 ~ 1로 정규화
-        vec2 point = LagrangeInterpolation(points[0], points[1], points[2], t);
-        spline_points.push_back(point);
+    for (size_t i = 0; i < points.size() - 3; ++i) {
+        for (int j = 0; j < resolution; ++j) {
+            float t = j / static_cast<float>(resolution - 1);
+            vec2 point = CatmullRomSpline(points[i], points[i + 1], points[i + 2], points[i + 3], t);
+            spline_points.push_back(point);
+        }
     }
 
     return spline_points;
@@ -218,9 +249,8 @@ bool Ship::CanCollideWith(GameObjectTypes other_object)
     return false;
 }
 
-vec2 ComputeCollisionNormal(const Polygon& polygon, const vec2& pos, int resolution = 20) {
-    // 1. 가장 가까운 3개의 점 찾기
-    std::vector<vec2> closest_points = FindClosestPoints(polygon, pos, 3);
+vec2 ComputeCollisionNormal(const std::vector<vec2>& points, const vec2& pos, int resolution = 20) {
+    std::vector<vec2> closest_points = points;
 
     // 2. 스플라인 생성
     std::vector<vec2> spline_points = GenerateSplinePoints(closest_points, resolution);
@@ -239,10 +269,12 @@ vec2 ComputeCollisionNormal(const Polygon& polygon, const vec2& pos, int resolut
 
 void Ship::ResolveCollision(GameObject* other_object)
 {
-    if (!hit_with) {
+    if (!hit_with) { // is it needful?
         if (other_object->Type() == GameObjectTypes::Reef) {
-            Polygon poly = other_object->GetGOComponent<CS230::MAP_SATCollision>()->WorldBoundary_poly();
-            vec2 normal = ComputeCollisionNormal(poly, GetPosition());
+            Rock* rock = static_cast<Rock*>(other_object);
+            std::vector<vec2> points = rock->GetRockGroup()->GetPoints();
+
+            vec2 normal = ComputeCollisionNormal(points, GetPosition());
 
             auto* collision_edge = this->GetGOComponent<CS230::RectCollision>();
             if (collision_edge == nullptr) {

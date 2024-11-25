@@ -99,8 +99,18 @@ private:
         std::string GetName() override { return "Combination attack - lightheavy"; }
     };
 
+    class State_Hit : public State {
+    public:
+        virtual void Enter(GameObject* object) override;
+        virtual void Update(GameObject* object, double dt) override;
+        virtual void FixedUpdate(GameObject* object, double fixed_dt) override;
+        virtual void CheckExit(GameObject* object) override;
+        std::string GetName() override { return "Combination attack - lightheavy"; }
+    };
+
     State_Idle state_idle;
     State_Set_Dest state_set_dest;
     State_Ready_to_Move state_ready_to_move;
     State_Move state_move;
+    State_Hit state_hit;
 };
