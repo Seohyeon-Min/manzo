@@ -6,7 +6,7 @@
 #include "../Engine/MapManager.h"
 
 Ship::Ship(vec2 start_position) :
-    GameObject(start_position), moving(false), set_dest(false), ready_to_move(false), move(false)
+    GameObject(start_position), move(false)
 {
     AddGOComponent(new CS230::Sprite("assets/images/ship.spt", this));
     beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
@@ -14,28 +14,72 @@ Ship::Ship(vec2 start_position) :
     fuel = Maxfuel;
     FuelFlag = false;
     SetVelocity({ 0,0 });
+
+    if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
+        current_state = &state_idle;
+        current_state->Enter(this);
+    }
 }
 
-
-void Ship::State_Set_Dest::Enter(GameObject* object) {
+void Ship::State_Idle::Enter(GameObject* object) {}
+void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {}
+void Ship::State_Idle::CheckExit(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
+    if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT) && ship->beat->GetIsOnBeat()) {
+        // Get mouse position relative to the center of the screen
+        vec2 window = { Engine::window_width / 2, Engine::window_height / 2 };
+        vec2 mouse_pos = { (float)Engine::GetInput().GetMousePos().mouseWorldSpaceX, (float)Engine::GetInput().GetMousePos().mouseWorldSpaceY };
+        vec2 pos = mouse_pos - window;
+        ship->destination.x = pos.x;
+        ship->destination.y = pos.y;
+        ship->change_state(&ship->state_set_dest);
+    }
 }
+
+void Ship::State_Set_Dest::Enter(GameObject* object) { }
 void Ship::State_Set_Dest::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) { }
 void Ship::State_Set_Dest::CheckExit(GameObject* object) {
+    Ship* ship = static_cast<Ship*>(object);
+    if (!ship->beat->GetIsOnBeat() ) { // wait for next beat
+        ship->change_state(&ship->state_ready_to_move);
+    }
 }
 
-void Ship::State_Ready_to_Move::Enter(GameObject* object) {
-    Ship* ship = static_cast<Ship*>(object);
-}
+void Ship::State_Ready_to_Move::Enter(GameObject* object) {}
 void Ship::State_Ready_to_Move::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) { }
 void Ship::State_Ready_to_Move::CheckExit(GameObject* object) {
+    Ship* ship = static_cast<Ship*>(object);
+    if (ship->beat->GetBeat()) { // move when its on next beat
+        ship->direction = { ship->destination.x - (ship->GetPosition().x), ship->destination.y - (ship->GetPosition().y) };
+        ship->direction = ship->direction.Normalize();
+        ship->force = { (ship->direction * speed) };
+        ship->change_state(&ship->state_move);
+    }
 }
 
 void Ship::State_Move::Enter(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
+    ship->move = true;
 }
 void Ship::State_Move::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) { }
+void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_unused]] double fixed_dt) {
+    Ship* ship = static_cast<Ship*>(object);
+    ship->FuelUpdate(fixed_dt);
+    ship->SetVelocity(ship->force);
+    float base_dt = 1.0f / 240.f;  // 기준 시간 (60FPS 기준)
+    float adjusted_deceleration = (float)pow(deceleration, fixed_dt / base_dt);  // 비례 보정
+    ship->force *= adjusted_deceleration;
+}
 void Ship::State_Move::CheckExit(GameObject* object) {
+    Ship* ship = static_cast<Ship*>(object);
+    if (!ship->beat->GetIsOnBeat()) {
+        ship->SetVelocity(ship->direction * skidding_speed);
+        //if (!clickable) { // wait for next beat
+        //    clickable = true;
+        //}
+        ship->move = false;
+        ship->change_state(&ship->state_idle);
+    }
 }
 
 
@@ -63,19 +107,9 @@ void Ship::Update(double dt)
         UpdatePosition({ 0, Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y + 360 - collider->WorldBoundary_rect().Top()});
         SetVelocity({ GetVelocity().x, 0 });
     }
-}
 
-void Ship::FixedUpdate(double fixed_dt)
-{
-    GameObject::FixedUpdate(fixed_dt);
     if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
-        SetDest();
 
-        if (move) {
-            Move(fixed_dt);
-
-        }
-        FuelUpdate(fixed_dt);
         if (isCollidingWithReef && !IsTouchingReef())
         {
             isCollidingWithReef = false;
@@ -83,60 +117,15 @@ void Ship::FixedUpdate(double fixed_dt)
     }
 }
 
+void Ship::FixedUpdate(double fixed_dt) {
+    GameObject::FixedUpdate(fixed_dt);
+}
 
-void Ship::Draw(DrawLayer drawlayer)
-{
+
+void Ship::Draw(DrawLayer drawlayer) {
     CS230::GameObject::Draw(DrawLayer::DrawLast);
 }
 
-void Ship::SetDest()
-{
-    if (clickable && !set_dest) {
-        hit_with = false;
-        if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT) && beat->GetIsOnBeat()) {
-            // Get mouse position relative to the center of the screen
-            vec2 window = { Engine::window_width / 2, Engine::window_height / 2 };
-            vec2 mouse_pos = { (float)Engine::GetInput().GetMousePos().mouseWorldSpaceX, (float)Engine::GetInput().GetMousePos().mouseWorldSpaceY };
-            vec2 pos = mouse_pos - window;
-            destination.x = pos.x;
-            destination.y = pos.y;
-            clickable = false;
-            set_dest = true;
-        }
-    }
-
-    if (set_dest) { // if clicked the destination
-        if (!beat->GetIsOnBeat() && !ready_to_move && !move) { // wait for next beat
-            ready_to_move = true;
-        }
-    }
-
-    if (ready_to_move && beat->GetBeat()) { // move when its on next beat
-        direction = { destination.x - (GetPosition().x), destination.y - (GetPosition().y) };
-        direction = direction.Normalize();
-        force = { (direction * speed) };
-        move = true;
-        set_dest = false;
-        ready_to_move = false;
-    }
-}
-
-void Ship::Move(double dt)
-{
-    SetVelocity(force);
-    float base_dt = 1.0f / 240.f;  // 기준 시간 (60FPS 기준)
-    float adjusted_deceleration = (float)pow(deceleration, dt / base_dt);  // 비례 보정
-    force *= adjusted_deceleration;
-
-    //std::cout << force.x << std::endl;
-    if (!beat->GetIsOnBeat()) {
-        SetVelocity(direction * skidding_speed);
-        if (!clickable) { // wait for next beat
-            clickable = true;
-        }
-        move = false;
-    }
-}
 
 vec2 GetPerpendicular(vec2 v) {
     return { -v.y, v.x };

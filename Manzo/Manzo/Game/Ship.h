@@ -27,8 +27,6 @@ public:
     void Update(double dt) override;
     void FixedUpdate(double fixed_dt) override;
     void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
-    void Move(double dt);
-    void SetDest();
     bool IsShipMoving() { return move; }
     bool CanCollideWith(GameObjectTypes) override;
     void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
@@ -46,11 +44,7 @@ private:
     static constexpr double speed = 6500.f;
     static constexpr float deceleration = 0.88f;
     static constexpr double skidding_speed = 20.f;
-    bool moving;
-    bool set_dest;
-    bool ready_to_move;
     bool move;
-    bool clickable = true;
     bool hit_with = false;
     vec2 force = {};
     vec2 destination;
@@ -100,6 +94,7 @@ private:
     public:
         virtual void Enter(GameObject* object) override;
         virtual void Update(GameObject* object, double dt) override;
+        virtual void FixedUpdate(GameObject* object, double fixed_dt) override;
         virtual void CheckExit(GameObject* object) override;
         std::string GetName() override { return "Combination attack - lightheavy"; }
     };

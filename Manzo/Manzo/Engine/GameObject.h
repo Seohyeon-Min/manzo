@@ -54,6 +54,7 @@ namespace CS230 {
         public:
             virtual void Enter(GameObject* object) = 0;
             virtual void Update(GameObject* object, double dt) = 0;
+            virtual void FixedUpdate(GameObject* object, double dt) {};
             virtual void CheckExit(GameObject* object) = 0;
             virtual std::string GetName() = 0;
         };
@@ -107,6 +108,7 @@ namespace CS230 {
         public:
             void Enter(GameObject*) override {}
             void Update(GameObject*, double) override {}
+            void FixedUpdate(GameObject*, double) override {}
             void CheckExit(GameObject*) override {}
             std::string GetName() { return ""; }
         };

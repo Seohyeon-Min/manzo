@@ -126,7 +126,7 @@ void Mode1::Update(double dt) {
     GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
     //std::cout << "update: " << dt << std::endl;
     //camera postion update
-    camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
+    //camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
 
 	//fishGenerator->GenerateFish(dt);
     skill_ptr->Update();

@@ -35,6 +35,7 @@ void CS230::GameObject::Update(double dt) {
 
 void CS230::GameObject::FixedUpdate(double fixed_dt)
 {
+	current_state->FixedUpdate(this, fixed_dt);
 	if (velocity.x != 0 || velocity.y != 0) {
 		UpdatePosition(velocity * (float)fixed_dt);
 	}
