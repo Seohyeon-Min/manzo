@@ -27,13 +27,6 @@ int main() {
         Mode2 mode2;
         engine.GetGameStateManager().AddGameState(mode2);
 
-        GameOver gameover;
-        engine.GetGameStateManager().AddGameState(gameover);
-
-        Clear clear;
-        engine.GetGameStateManager().AddGameState(clear);
-
-
         SDL_GL_SetSwapInterval(1);
 
         while (!OpenGLAPPlication.IsDone() && !engine.HasGameEnded()) {

@@ -17,7 +17,6 @@ Created:    March 8, 2023
 #include "../Engine/Rapidjson.h"
 #include "../Engine/UI.h"
 
-
 #include "Particles.h"
 #include "Mouse.h"
 #include "States.h"
@@ -117,29 +116,27 @@ void Mode1::Update(double dt) {
 
 	fishGenerator->GenerateFish(dt);
     skill_ptr->Update();
-
     if (ship_ptr->IsShipUnder() && Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Q)) {
         Engine::GetGameStateManager().ClearNextGameState();
         Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
     }
 
-    if (Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() >= 20) {
-            Engine::GetGameStateManager().ClearNextGameState();
-            Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Clear));
-    }
-    if (ship_ptr->IsFuelZero()
-        || Engine::GetInput().KeyJustPressed(CS230::Input::Keys::M)) {
-        Engine::GetGameStateManager().ClearNextGameState();
-        Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::GameOver));
-    }
     if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::W)) {
         Engine::GetGameStateManager().ReloadState();
 
     }
-    if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::E)&&!Isboss) {
-        boss_ptr = new Boss({ 750,500}, Boss::BossType::e);
+    if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::E) && !Isboss) {
+        boss_ptr = new Boss({ 750,500 }, Boss::BossType::e);
         GetGSComponent<CS230::GameObjectManager>()->Add(boss_ptr);
         Isboss = true;
+    }
+}
+
+void Mode1::FixedUpdate(double dt)
+{
+    //std::cout << "fixedupdate: " << dt << std::endl;
+    if (GetGSComponent<CS230::GameObjectManager>()) {
+        GetGSComponent<CS230::GameObjectManager>()->FixedUpdateAll(dt);
     }
 }
 
@@ -149,9 +146,8 @@ void Mode1::Draw() {
     GetGSComponent<CS230::GameObjectManager>()->DrawAll();
     ui_manager->AddDrawCalls();
 
-
     // Draw Font
-    //Engine::GetFontManager().PrintText("HI", { 0.f,0.f }, 0.0f, 0.001f, { 1.0f,1.0f,1.0f });
+    Engine::GetFontManager().PrintText("HI", { 0.f,0.f }, 0.0f, 0.001f, { 1.0f,1.0f,1.0f });
 }
 
 void Mode1::Unload() {
@@ -165,5 +161,5 @@ void Mode1::Unload() {
     Engine::GetRender().ClearDrawCalls();
 	ClearGSComponents();
     Engine::GetAudioManager().StopMusic();
-	//fishGenerator->DeleteFish();
+    Engine::Instance().ResetSlowDownFactor();
 }

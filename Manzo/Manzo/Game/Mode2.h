@@ -25,6 +25,7 @@ public:
     Mode2();
     void Load() override;
     void Update(double dt) override;
+    void FixedUpdate(double dt) override;
     void Unload() override;
     void Draw() override;
 
@@ -38,6 +39,7 @@ private:
     Ship* ship_ptr;
     Background* background;
     Skillsys* skill_ptr;
+    UIManager* ui_manager;
 
     float y_limit = 15.0f;
     float frequency = 0.9f;

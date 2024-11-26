@@ -29,11 +29,16 @@ CS230::GameObject::GameObject(vec2 position, double rotation, vec2 scale) :
 
 void CS230::GameObject::Update(double dt) {
 	current_state->Update(this, dt);
-	if (velocity.x != 0 || velocity.y != 0) {
-		UpdatePosition(velocity * (float)dt);
-	}
 	UpdateGOComponents(dt);
 	current_state->CheckExit(this);
+}
+
+void CS230::GameObject::FixedUpdate(double fixed_dt)
+{
+	current_state->FixedUpdate(this, fixed_dt);
+	if (velocity.x != 0 || velocity.y != 0) {
+		UpdatePosition(velocity * (float)fixed_dt);
+	}
 }
 
 void CS230::GameObject::change_state(State* new_state) {
@@ -55,7 +60,6 @@ void CS230::GameObject::Draw(DrawLayer drawlayer) {
 			shader
 		};
 
-		// DrawLayer가 기본값이 아니면 `AddDrawCall`에 추가
 		if (drawlayer != DrawLayer::Draw) {
 			Engine::GetRender().AddDrawCall(draw_call, drawlayer);
 		}

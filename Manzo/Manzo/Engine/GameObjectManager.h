@@ -16,12 +16,12 @@ Created:    March 8, 2023
 namespace Math { class TransformationMatrix; }
 
 namespace CS230 {
-    class GameObjectManager : public Component{
+    class GameObjectManager : public Component {
     public:
         void Add(GameObject* object);
         void Unload();
-
         void UpdateAll(double dt);
+        void FixedUpdateAll(double dt);
         void DrawAll();
         void CollisionTest();
     private:

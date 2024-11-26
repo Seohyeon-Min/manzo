@@ -39,6 +39,13 @@ void CS230::GameObjectManager::UpdateAll(double dt)
 	}
 }
 
+void CS230::GameObjectManager::FixedUpdateAll(double dt)
+{
+	for (auto object : objects) {
+		object->FixedUpdate(dt);
+	}
+}
+
 void CS230::GameObjectManager::DrawAll()
 {
 	for (auto object : objects) {

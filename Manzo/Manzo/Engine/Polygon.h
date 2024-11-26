@@ -10,6 +10,17 @@ struct [[nodiscard]] Polygon
 	int polycount;
 	std::string polyindex;
 
+	vec2 FindCenter() {			// calculate center of polygon
+		vec2 center = { 0, 0 };
+		for (vec2& vertice : vertices) {
+			center.x += vertice.x;
+			center.y += vertice.y;
+		}
+		center.x /= vertexCount;
+		center.y /= vertexCount;
+		return center;
+	}
+
 	Math::rect FindBoundary() {
 		if (vertices.empty()) {
 			return Math::rect{};

@@ -6,7 +6,7 @@
 #include "../Engine/MapManager.h"
 
 Ship::Ship(vec2 start_position) :
-    GameObject(start_position), moving(false), set_dest(false), ready_to_move(false), move(false)
+    GameObject(start_position), move(false)
 {
     AddGOComponent(new CS230::Sprite("assets/images/ship.spt", this));
     beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
@@ -14,17 +14,137 @@ Ship::Ship(vec2 start_position) :
     fuel = Maxfuel;
     FuelFlag = false;
     SetVelocity({ 0,0 });
+
+    if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
+        current_state = &state_idle;
+        current_state->Enter(this);
+    }
 }
+
+void Ship::State_Idle::Enter(GameObject* object) {
+    Ship* ship = static_cast<Ship*>(object);
+    if (ship->direction != vec2{ 0,0 })
+        ship->SetVelocity(ship->direction * skidding_speed);
+}
+void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {}
+void Ship::State_Idle::CheckExit(GameObject* object) {
+    Ship* ship = static_cast<Ship*>(object);
+    if (ship->hit_with) {
+        ship->change_state(&ship->state_hit);
+    }
+    if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT) && ship->beat->GetIsOnBeat()) {
+        // Get mouse position relative to the center of the screen
+        vec2 window = { Engine::window_width / 2, Engine::window_height / 2 };
+        vec2 mouse_pos = { (float)Engine::GetInput().GetMousePos().mouseWorldSpaceX, (float)Engine::GetInput().GetMousePos().mouseWorldSpaceY };
+        vec2 pos = mouse_pos - window;
+        ship->destination.x = pos.x;
+        ship->destination.y = pos.y;
+        ship->change_state(&ship->state_set_dest);
+    }
+}
+
+void Ship::State_Set_Dest::Enter(GameObject* object) { }
+void Ship::State_Set_Dest::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) { }
+void Ship::State_Set_Dest::CheckExit(GameObject* object) {
+    Ship* ship = static_cast<Ship*>(object);
+    if (ship->hit_with) {
+        ship->change_state(&ship->state_hit);
+    }
+    if (!ship->beat->GetIsOnBeat()) { // wait for next beat
+        ship->change_state(&ship->state_ready_to_move);
+    }
+}
+
+void Ship::State_Ready_to_Move::Enter(GameObject* object) {}
+void Ship::State_Ready_to_Move::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) { }
+void Ship::State_Ready_to_Move::CheckExit(GameObject* object) {
+    Ship* ship = static_cast<Ship*>(object);
+    if (ship->hit_with) {
+        ship->change_state(&ship->state_hit);
+    }
+    if (ship->beat->GetBeat()) { // move when its on next beat
+        ship->direction = { ship->destination.x - (ship->GetPosition().x), ship->destination.y - (ship->GetPosition().y) };
+        ship->direction = ship->direction.Normalize();
+        ship->force = { (ship->direction * speed) };
+        ship->change_state(&ship->state_move);
+    }
+}
+
+void Ship::State_Move::Enter(GameObject* object) {
+    Ship* ship = static_cast<Ship*>(object);
+    ship->move = true;
+}
+void Ship::State_Move::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) { }
+void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_unused]] double fixed_dt) {
+    Ship* ship = static_cast<Ship*>(object);
+    ship->FuelUpdate(fixed_dt);
+    ship->SetVelocity(ship->force);
+    float base_dt = 1.0f / 240.f;
+    float adjusted_deceleration = (float)pow(deceleration, fixed_dt / base_dt); 
+    ship->force *= adjusted_deceleration;
+}
+void Ship::State_Move::CheckExit(GameObject* object) {
+    Ship* ship = static_cast<Ship*>(object);
+    if (ship->hit_with) {
+        ship->change_state(&ship->state_hit);
+    }
+    if (!ship->beat->GetIsOnBeat()) {
+        //if (!clickable) { // wait for next beat
+        //    clickable = true;
+        //}
+        ship->move = false;
+        ship->change_state(&ship->state_idle);
+    }
+}
+
+std::vector<vec2> spline_points;
+
+void Ship::State_Hit::Enter(GameObject* object) {
+    Ship* ship = static_cast<Ship*>(object);
+    float maxSpeed = speed;
+    float minFactor = 10; 
+    float maxFactor = 70; 
+
+    float incoming_speed = ship->GetVelocity().Length(); 
+    ship->slow_down_factor = minFactor + (incoming_speed / maxSpeed) * (maxFactor - minFactor);
+    Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
+    ship->HitWithReef(ship->normal);
+}
+void Ship::State_Hit::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
+    Ship* ship = static_cast<Ship*>(object);
+    Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
+    ship->slow_down_factor *= deceleration;
+    //Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
+    if (spline_points.size() > 2) {
+        for (size_t i = 0; i < spline_points.size() - 1; ++i) {
+            vec2 point_a = spline_points[i];
+            vec2 point_b = spline_points[i + 1];
+
+            Engine::GetRender().AddDrawCall(point_a, point_b, color3{ 0,255,0 });
+        }
+    }
+}
+void Ship::State_Hit::FixedUpdate(GameObject* object, double fixed_dt) {}
+void Ship::State_Hit::CheckExit(GameObject* object) {
+    Ship* ship = static_cast<Ship*>(object);
+    if (ship->slow_down_factor <= 1) { // should be a timer?
+        ship->hit_with = false;
+        ship->change_state(&ship->state_idle);
+        Engine::Instance().ResetSlowDownFactor();
+    }
+}
+
 
 void Ship::Update(double dt)
 {
+    std::cout << (!hit_with ? "can collide" : "no") << std::endl;
     //std::cout << (!set_dest && beat->GetIsOnBeat() && !move) << std::endl;
     GameObject::Update(dt);
     CS230::RectCollision* collider = GetGOComponent<CS230::RectCollision>();
 
     // World Boundary
     if (collider->WorldBoundary_rect().Left() < Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x - 640) {
-        UpdatePosition({ Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x - 640 - collider->WorldBoundary_rect().Left(), 0});
+        UpdatePosition({ Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x - 640 - collider->WorldBoundary_rect().Left(), 0 });
         SetVelocity({ 0, GetVelocity().y });
     }
     if (collider->WorldBoundary_rect().Right() > Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x + 640) {
@@ -36,34 +156,12 @@ void Ship::Update(double dt)
         SetVelocity({ GetVelocity().x, 0 });
     }
     if (collider->WorldBoundary_rect().Top() > Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y + 360) {
-        UpdatePosition({ 0, Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y + 360 - collider->WorldBoundary_rect().Top()});
+        UpdatePosition({ 0, Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y + 360 - collider->WorldBoundary_rect().Top() });
         SetVelocity({ GetVelocity().x, 0 });
     }
 
     if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
-        SetDest();
 
-        if (move) {
-            Move(dt);
-            
-        }
-        else {
-            if (hit_with) {
-                vec2 velocity = GetVelocity(); 
-                float velocity_magnitude = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
-                if (velocity_magnitude < 20.f) SetVelocity(direction * skidding_speed);
-                else SetVelocity(GetVelocity() * deceleration);
-                if (!beat->GetIsOnBeat()) {
-                    SetVelocity(direction * skidding_speed);
-                    hit_with = false;
-                    if (!clickable) { // wait for next beat
-                        clickable = true;
-                    }
-                }
-            }
-
-        }
-        FuelUpdate(dt);
         if (isCollidingWithReef && !IsTouchingReef())
         {
             isCollidingWithReef = false;
@@ -71,68 +169,133 @@ void Ship::Update(double dt)
     }
 }
 
+void Ship::FixedUpdate(double fixed_dt) {
+    GameObject::FixedUpdate(fixed_dt);
+}
 
-void Ship::Draw(DrawLayer drawlayer)
-{
+
+void Ship::Draw(DrawLayer drawlayer) {
     CS230::GameObject::Draw(DrawLayer::DrawLast);
 }
 
-void Ship::SetDest()
-{
-    if (clickable && !set_dest) {
-        if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT) && beat->GetIsOnBeat()) {
-            // Get mouse position relative to the center of the screen
-            vec2 window = { Engine::window_width / 2, Engine::window_height / 2 };
-            vec2 mouse_pos = { (float)Engine::GetInput().GetMousePos().mouseWorldSpaceX, (float)Engine::GetInput().GetMousePos().mouseWorldSpaceY };
-            vec2 pos = mouse_pos - window;
-            destination.x = pos.x;
-            destination.y = pos.y;
-            clickable = false;
-            set_dest = true;
-        }
-    }
-
-    if (set_dest) { // if clicked the destination
-        if (!beat->GetIsOnBeat() && !ready_to_move && !move) { // wait for next beat
-            ready_to_move = true;
-        }
-    }
-
-    if (ready_to_move && beat->GetBeat()) { // move when its on next beat
-        direction = { destination.x - (GetPosition().x), destination.y - (GetPosition().y) };
-        direction = direction.Normalize();
-        force = { (direction * speed) };
-        move = true;
-        set_dest = false;
-        ready_to_move = false;
-    }
-}
-
-void Ship::Move(double dt)
-{
-    SetVelocity(force);
-    force *= deceleration;
-    //std::cout << force.x << std::endl;
-    if (!beat->GetIsOnBeat()) {
-        SetVelocity(direction * skidding_speed);
-        if (!clickable) { // wait for next beat
-            clickable = true;
-        }
-        move = false;
-    }
-}
 
 vec2 GetPerpendicular(vec2 v) {
     return { -v.y, v.x };
 }
 
+vec2 CatmullRomSpline(const vec2& p0, const vec2& p1, const vec2& p2, const vec2& p3, float t) {
+    float t2 = t * t;
+    float t3 = t2 * t;
+
+    return 0.5f * ((2.0f * p1) +
+        (-p0 + p2) * t +
+        (2.0f * p0 - 5.0f * p1 + 4.0f * p2 - p3) * t2 +
+        (-p0 + 3.0f * p1 - 3.0f * p2 + p3) * t3);
+}
+
+std::vector<vec2> SortPointsCounterClockwise(const std::vector<vec2>& points, const vec2& center) {
+    std::vector<vec2> sorted_points = points;
+
+    std::sort(sorted_points.begin(), sorted_points.end(),
+        [&center](const vec2& a, const vec2& b) {
+            float angle_a = atan2(a.y - center.y, a.x - center.x);
+            float angle_b = atan2(b.y - center.y, b.x - center.x);
+            return angle_a > angle_b; 
+        });
+
+    return sorted_points;
+}
+
+std::vector<vec2> ExtendBoundaryPoints(const std::vector<vec2>& points) {
+    std::vector<vec2> extended_points = points;
+
+    if (points.size() > 3) {
+
+        extended_points.insert(extended_points.begin(), points.back());
+        extended_points.push_back(points.front());
+        extended_points.push_back(points[1]);
+    }
+
+    return extended_points;
+}
+
+std::vector<vec2> GenerateSplinePoints(const std::vector<vec2>& points, int resolution) {
+    std::vector<vec2> spline_points;
+
+    if (points.size() < 2) {
+        return spline_points;
+    }
+
+    std::vector<vec2> extended_points = ExtendBoundaryPoints(points);
+
+    for (size_t i = 0; i < extended_points.size() - 3; ++i) {
+        for (int j = 0; j < resolution; ++j) {
+            float t = j / static_cast<float>(resolution - 1);
+            vec2 point = CatmullRomSpline(extended_points[i], extended_points[i + 1], extended_points[i + 2], extended_points[i + 3], t);
+            spline_points.push_back(point);
+        }
+    }
+
+    return spline_points;
+}
+
+vec2 FindClosestPointOnSpline(const std::vector<vec2>& spline_points, const vec2& position) {
+    float min_distance = std::numeric_limits<float>::max();
+    vec2 closest_point;
+    size_t closest_index = 0;
+
+    for (size_t i = 0; i < spline_points.size(); ++i) {
+        float distance = (spline_points[i] - position).Length();
+        if (distance < min_distance) {
+            min_distance = distance;
+            closest_point = spline_points[i];
+            closest_index = i;
+        }
+    }
+
+    return closest_point;
+}
+
+vec2 ComputeNormalAtPoint(const vec2& p0, const vec2& p1) {
+    vec2 tangent = p1 - p0;
+    vec2 normal = { -tangent.y, tangent.x };
+    float length = normal.Length();
+    if (length > 0.0f) {
+        normal = { normal.x / length, normal.y / length }; 
+
+        if (normal.x < 0.0f) {
+            normal.x = -normal.x;
+            normal.y = -normal.y;
+        }
+
+        return normal;
+    }
+    return { 0.0f, 0.0f };
+}
+
+vec2 ComputeCollisionNormal(const std::vector<vec2>& points, const vec2& pos, const vec2& center, int resolution = 20) {
+    std::vector<vec2> closest_points = points;
+    std::vector<vec2> sorted_point = SortPointsCounterClockwise(closest_points, center);
+
+    spline_points = GenerateSplinePoints(sorted_point, resolution);
+
+    vec2 closest_point_on_spline = FindClosestPointOnSpline(spline_points, pos);
+
+    size_t closest_index = std::find(spline_points.begin(), spline_points.end(), closest_point_on_spline) - spline_points.begin();
+    vec2 tangent_point1 = spline_points[std::max(0, static_cast<int>(closest_index) - 1)];
+    vec2 tangent_point2 = spline_points[std::min(static_cast<int>(spline_points.size() - 1), static_cast<int>(closest_index) + 1)];
+    vec2 normal = ComputeNormalAtPoint(tangent_point1, tangent_point2);
+
+    return normal;
+}
 
 bool Ship::CanCollideWith(GameObjectTypes other_object)
 {
     switch (other_object) {
     case GameObjectTypes::Fish:
     case GameObjectTypes::Reef:
-        return true;
+        if (!hit_with) return true;
+        else return false;
         break;
     }
 
@@ -141,98 +304,55 @@ bool Ship::CanCollideWith(GameObjectTypes other_object)
 
 void Ship::ResolveCollision(GameObject* other_object)
 {
-    if (other_object->Type() == GameObjectTypes::Reef) {
-        auto* collision_edge = this->GetGOComponent<CS230::RectCollision>();
-        if (collision_edge == nullptr) {
-            // maybe an error?
+    if (!hit_with) { // is it needful?
+        if (other_object->Type() == GameObjectTypes::Reef) {
+
+            hit_with = true;
+
+            Rock* rock = static_cast<Rock*>(other_object);
+            std::vector<vec2> points = rock->GetRockGroup()->GetPoints();
+            vec2 center = rock->GetRockGroup()->FindCenterPoly();
+
+            normal = ComputeCollisionNormal(points, GetPosition(), center);
+
+            auto* collision_edge = this->GetGOComponent<CS230::RectCollision>();
+            if (collision_edge == nullptr) {
+                // maybe an error?
+            }
         }
-        HitWithReef(collision_edge);
     }
 }
 
-float Dot(const vec2& vec1, const vec2& vec2) {
-    return vec1.x * vec2.x + vec1.y * vec2.y;
-}
-
-void Ship::HitWithReef(CS230::RectCollision* collision_edge) {
+void Ship::HitWithReef(vec2 normal) {
     fuel -= HitDecFuel;
 
-    // Two points of the colliding wall (start and end)
-    vec2 edge_1 = collision_edge->GetCollidingEdge().first;
-    vec2 edge_2 = collision_edge->GetCollidingEdge().second;
-
-    // Calculate wall direction and normal
-    vec2 wall_dir = { edge_2.x - edge_1.x, edge_2.y - edge_1.y };
-    vec2 wall_perpendicular = GetPerpendicular(wall_dir);
-    vec2 normal = wall_perpendicular.Normalize();
-
-    // Current velocity and position of the ship
-    vec2 velocity = GetVelocity();
-    vec2 ship_position = GetPosition();
-
-    // Variables for TOI calculation
-    float toi = 1.0f;  // Time of impact (0 ~ 1), default to full movement
-    bool isApproaching = false;
-
-    // TOI calculation using wall vector and ship movement vector
-    vec2 relative_position = ship_position - edge_1;
-    float wall_length_squared = wall_dir.x * wall_dir.x + wall_dir.y * wall_dir.y;
-    float t = (relative_position.x * wall_dir.x + relative_position.y * wall_dir.y) / wall_length_squared;
-
-    if (t >= 0.0f && t <= 1.0f) {
-        // Only calculate TOI if the collision point is within the wall segment
-        vec2 closest_point = edge_1 + wall_dir * t;
-        vec2 relative_velocity = velocity - vec2{ 0.0f, 0.0f };  // Relative velocity (assuming wall is stationary)
-
-        // Check if the ship is approaching by using the dot product with the normal vector
-        float relative_speed_along_normal = Dot(relative_velocity, normal);
-        if (relative_speed_along_normal < 0) {
-            // Calculate time of impact only if approaching
-            float distance_to_collision = Dot(closest_point - ship_position, normal);
-            toi = distance_to_collision / -relative_speed_along_normal;
-            toi = std::clamp(toi, 0.0f, 1.0f);  // Clamp toi between 0 and 1
-            isApproaching = true;
-        }
+    if (fuel < 0.0f) {
+        fuel = 0.0f;
     }
 
-    // If a collision is expected, move to the TOI point
-    if (isApproaching && toi < 1.0f) {
-        // Move only up to just before the collision point
-        SetPosition(ship_position + velocity * toi);
-    }
-    else {
-        // If no collision is expected or already collided, adjust the position slightly
-        SetPosition(ship_position + -velocity * 0.02f);
-    }
-
-    // Reflection calculation (after collision)
-    float incoming_speed = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
-
-    float dot_product_normal_velocity = velocity.x * normal.x + velocity.y * normal.y;
-    if (dot_product_normal_velocity > 0) {
-        normal = normal * -1.0f;  // Reverse the normal
-    }
+    vec2 velocity = GetVelocity(); 
 
     float dot_product = velocity.x * normal.x + velocity.y * normal.y;
+
     vec2 reflection = {
         velocity.x - 2 * dot_product * normal.x,
         velocity.y - 2 * dot_product * normal.y
     };
 
-    direction = reflection.Normalize();
+    float incoming_speed = velocity.Length(); 
 
-    // Adjust speed
-    if (incoming_speed > 3300.f) incoming_speed = 3300.f;
-    if (incoming_speed < 150.f) incoming_speed = 150.f;
+    if (reflection.Length() > 0.0f) {
+        direction = reflection.Normalize();
+    }
+    else {
+        direction = { 1.0f, 0.0f }; 
+    }
 
-    // Set reflection speed and adjust position
     SetVelocity(direction * incoming_speed * 0.75f);
-    SetPosition(GetPosition() + normal * 0.5f);  // Adjust slightly to move away from the wall after collision
 
     move = false;
-    hit_with = true;
-}
 
+}
 
 //for fuel
 void Ship::FuelUpdate(double dt)

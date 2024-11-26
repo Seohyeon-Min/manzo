@@ -7,18 +7,29 @@
 #include "Polygon.h"
 
 #include <vector>
+class RockGroup;
 
 class Rock : public CS230::GameObject
 {
 public:
 	Rock(Polygon poly);
-	~Rock(){};
+	~Rock() {};
 	GameObjectTypes Type() override { return GameObjectTypes::Reef; }
 	std::string TypeName() override { return "Polygon"; }
 	void Update(double dt);
 	void Draw();
+
+	//position
+	void SetCenter();
+
+	//polygon
 	const Polygon& GetPolygon() { return poly; }
+
+	//group
+	void SetRockGroup(RockGroup* rockgroup) { this->rockgroup = rockgroup; }
+	RockGroup* GetRockGroup() { return rockgroup; }
 private:
+	RockGroup* rockgroup;
 	Polygon poly;
 };
 
@@ -30,21 +41,30 @@ public:
 	~RockGroup() {
 		rocks.clear();
 	}
-	GameObjectTypes Type() override { return GameObjectTypes::Reef; }
+	GameObjectTypes Type() override { return GameObjectTypes::ReefBoundary; }
 	std::string TypeName() override { return "Rock Group"; }
+	bool CanCollideWith(GameObjectTypes) override;
 	void Update(double dt);
 	void Draw();
+	void ResolveCollision(GameObject* other_object);
 
-	void AddRock(Polygon poly) { rocks.push_back(poly); }
-	std::vector<Polygon> GetRocks() { return rocks; }
+	void AddRock(Rock* rock) { rocks.push_back(rock); }
+	std::vector<Rock*> GetRocks() { return rocks; }
 	bool MatchIndex();
-	vec2 FindCenter();
+	vec2 FindCenterRect();
+	vec2 FindCenterPoly();
 	std::string GetIndex() { return index; }
-	
+
+	// Points
+	std::vector<vec2> GetPoints() { return points; }
+	void RemoveDuplicatePoints(std::vector<vec2>& points, float tolerance);
+	void SetPoints();
+
 private:
 	mat3 matrix;
-	std::vector<Polygon> rocks;	//one group
+	std::vector<Rock*> rocks;	//one group
 	std::string index = "";
+	std::vector<vec2> points;	// All polygon's points
 };
 
 
@@ -67,8 +87,6 @@ namespace CS230 {
 
 		std::vector<Rock> objects;
 		std::vector<RockGroup*> rock_groups;		//vector for groups
-		//std::list<RockGroup*> rock_groups;		//vector for groups
-		//std::vector<std::shared_ptr<RockGroup>> rock_groups;
 
 	};
 }

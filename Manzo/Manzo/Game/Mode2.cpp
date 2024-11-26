@@ -11,6 +11,7 @@ Created:    March 8, 2023
 #include "../Engine/Engine.h"
 #include "../Engine/ShowCollision.h"
 #include "../Engine/AudioManager.h"
+#include "../Engine/UIManager.h"
 #include <cmath>
 
 #include "States.h"
@@ -18,6 +19,7 @@ Created:    March 8, 2023
 #include "BeatSystem.h"
 #include "Ship.h"
 #include "Mode2.h"
+#include "Mouse.h"
 
 
 #include <iostream>     // for debug
@@ -67,6 +69,11 @@ void Mode2::Load() {
         skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
         skill_ptr->SetShipPtr(ship_ptr);
     }
+
+    // UI
+    AddGSComponent(new UIManager());
+    ui_manager = GetGSComponent<UIManager>();
+    ui_manager->AddUI(std::make_unique<Mouse>());
 }
 
 void Mode2::Update(double dt) {
@@ -89,10 +96,15 @@ void Mode2::Update(double dt) {
     }
 }
 
+void Mode2::FixedUpdate(double dt)
+{
+
+}
+
 void Mode2::Draw() {
     GetGSComponent<Background>()->Draw(*GetGSComponent<CS230::Cam>());
-
     GetGSComponent<CS230::GameObjectManager>()->DrawAll();
+    ui_manager->AddDrawCalls();
 }
 
 void Mode2::Unload() {

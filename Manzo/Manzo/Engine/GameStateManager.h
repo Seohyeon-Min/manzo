@@ -20,6 +20,7 @@ namespace CS230 {
         GameStateManager();
 
         void Update(double dt);
+        void FixedUpdate(double dt);
 
         void AddGameState(GameState& gamestate);
         void SetNextGameState(int index);

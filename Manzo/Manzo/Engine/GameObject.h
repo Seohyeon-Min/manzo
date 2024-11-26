@@ -37,6 +37,7 @@ namespace CS230 {
         virtual bool CanCollideWith(GameObjectTypes other_object_type);
         virtual void ResolveCollision([[maybe_unused]] GameObject* other_object) { };
         virtual void Update(double dt);
+        virtual void FixedUpdate(double fixed_dt);
         virtual void Draw(DrawLayer drawlayer = DrawLayer::Draw);
         virtual void Destroy() { destroy = true; }
         virtual bool Destroyed() { return destroy; }
@@ -53,6 +54,7 @@ namespace CS230 {
         public:
             virtual void Enter(GameObject* object) = 0;
             virtual void Update(GameObject* object, double dt) = 0;
+            virtual void FixedUpdate(GameObject* object, double dt) {};
             virtual void CheckExit(GameObject* object) = 0;
             virtual std::string GetName() = 0;
         };
@@ -106,6 +108,7 @@ namespace CS230 {
         public:
             void Enter(GameObject*) override {}
             void Update(GameObject*, double) override {}
+            void FixedUpdate(GameObject*, double) override {}
             void CheckExit(GameObject*) override {}
             std::string GetName() { return ""; }
         };
