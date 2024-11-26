@@ -77,7 +77,19 @@ void BackgroundFish::Update(double dt) {
 
     vec2 boidForce = alignment + cohesion + separation + wanderForce;
 
+    // Update velocity and position
     SetVelocity((GetVelocity() + boidForce).Normalize() * 30.0f);
+
+    // Screen boundary detection and flip logic
+    vec2 pos = GetPosition();
+    vec2 vel = GetVelocity();
+
+    // Check horizontal boundaries
+    if (pos.x <= -Engine::window_width || pos.x >= Engine::window_width) {
+        vel.x = -vel.x;  // Flip horizontal direction
+    }
+
+    SetVelocity(vel);
 }
 
 void BackgroundFish::Draw()

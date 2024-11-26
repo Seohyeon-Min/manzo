@@ -32,6 +32,8 @@ private:
 		return { -v.y, v.x };
 	}
 
+
+    ivec2 windowSize = { Engine::window_width, Engine::window_height };
 };
 
 class Quadtree {

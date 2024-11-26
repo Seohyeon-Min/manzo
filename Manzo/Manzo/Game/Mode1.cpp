@@ -106,9 +106,6 @@ void Mode1::Load() {
         skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
         skill_ptr->SetShipPtr(ship_ptr);
     }
-
-    // Font
-    //Engine::GetFontManager().PrintText("H", { 0.f,0.f }, 0.f, 0.0005f, { 1.0f,0.0f,0.0f });
 }
 
 void Mode1::Update(double dt) {
@@ -152,7 +149,9 @@ void Mode1::Draw() {
     GetGSComponent<CS230::GameObjectManager>()->DrawAll();
     ui_manager->AddDrawCalls();
 
-    Engine::GetFontManager().PrintText("HI", { 0.f,0.f }, 0.0f, 0.001f, { 1.0f,1.0f,1.0f });
+
+    // Draw Font
+    //Engine::GetFontManager().PrintText("HI", { 0.f,0.f }, 0.0f, 0.001f, { 1.0f,1.0f,1.0f });
 }
 
 void Mode1::Unload() {
