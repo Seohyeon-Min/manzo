@@ -75,6 +75,7 @@
     <ClInclude Include="Engine\MapManager.h" />
     <ClInclude Include="Engine\Particle.h" />
     <ClInclude Include="Engine\Polygon.h" />
+    <ClInclude Include="Engine\AABB.h" />
     <ClInclude Include="Engine\Rapidjson.h" />
     <ClInclude Include="Engine\Rect.h" />
     <ClInclude Include="Engine\Render.h" />

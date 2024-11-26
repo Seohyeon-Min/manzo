@@ -291,5 +291,8 @@
     <ClInclude Include="Game\AI.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\AABB.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
