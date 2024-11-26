@@ -117,7 +117,7 @@ void Ship::State_Hit::CheckExit(GameObject* object) {
 
 void Ship::Update(double dt)
 {
-    std::cout << (!hit_with ? "can collide" : "no") << std::endl;
+    //std::cout << (!hit_with ? "can collide" : "no") << std::endl;
     //std::cout << (!set_dest && beat->GetIsOnBeat() && !move) << std::endl;
     GameObject::Update(dt);
     CS230::RectCollision* collider = GetGOComponent<CS230::RectCollision>();

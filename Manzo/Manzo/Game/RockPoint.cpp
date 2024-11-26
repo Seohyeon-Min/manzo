@@ -24,3 +24,18 @@ void RockPoint::Draw()
 {
     CS230::GameObject::Draw();
 }
+
+//bool RockPoint::CanCollideWith(GameObjectTypes other_object)
+//{
+//    switch (other_object) {
+//    case GameObjectTypes::Rock:
+//        return true;
+//        break;
+//    }
+//
+//    return false;
+//}
+//
+//void RockPoint::ResolveCollision(GameObject* other_object)
+//{
+//}

@@ -26,6 +26,8 @@ public:
 	GameObjectTypes Type() override { return GameObjectTypes::RockPoint; }
 	std::string TypeName() override { return "Rock Point"; }
 	void Update(double dt);
-	void Draw(); 
+	void Draw(); /*
+	bool CanCollideWith(GameObjectTypes) override;
+	void ResolveCollision(GameObject* other_object);*/
 
 };
