@@ -14,7 +14,8 @@ Updated:    04/30/2024
 #include <optional> 
 
 CS230::GameObject::GameObject(vec2 position) :
-	GameObject(position, 0, { 1, 1 }) {}
+	GameObject(position, 0, { 1, 1 }) {
+}
 
 CS230::GameObject::GameObject(vec2 position, double rotation, vec2 scale) :
 	velocity({ 0,0 }),
@@ -51,7 +52,18 @@ void CS230::GameObject::Draw(DrawLayer drawlayer) {
 	Sprite* sprite = GetGOComponent<Sprite>();
 	if (sprite != nullptr) {
 		if (shader == nullptr) {
-			shader = Engine::GetShaderManager().GetDefaultShader();
+			//shader = Engine::GetShaderManager().GetDefaultShader();
+			if (IsPixelShaderApplicable(Type())) {
+				// 픽셀화 셰이더 적용
+				shader = Engine::GetShaderManager().GetShader("pixelate");
+				shader->SendUniform("uPixelSize", 0.05f);
+				//SetGlobalShader(pixelShader);
+			}
+			else {
+				// 기본 셰이더 적용
+				shader = Engine::GetShaderManager().GetDefaultShader();
+				//SetGlobalShader(defaultShader);
+			}
 		}
 
 		DrawCall draw_call = {

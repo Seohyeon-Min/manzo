@@ -37,6 +37,7 @@
     <ClCompile Include="Game\Clear.cpp" />
     <ClCompile Include="Game\Fish.cpp" />
     <ClCompile Include="Game\FishEcosystem.cpp" />
+    <ClCompile Include="Game\GameObjectTypes.cpp" />
     <ClCompile Include="Game\GameOver.cpp" />
     <ClCompile Include="Game\Mode1.cpp" />
     <ClCompile Include="Game\Mode2.cpp" />

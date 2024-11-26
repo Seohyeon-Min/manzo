@@ -73,6 +73,9 @@ void Mode1::Load() {
     fishGenerator = new FishGenerator();
     Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
 
+    //shader
+    Engine::GetShaderManager().LoadShader("pixelate", "assets/shaders/default.vert", "assets/shaders/pixelate.frag");
+
 
     background->Add("assets/images/background/temp_background.png", 0.0f);
     background->Add("assets/images/background/bg1.png", 0.3f);

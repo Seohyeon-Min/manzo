@@ -31,6 +31,9 @@ public:
         return instance;
     }
 
+    static ShaderManager& GetShaderManager() {
+        return Instance().shadermanager;
+    }
     static CS230::Logger& GetLogger() {
         return Instance().logger;
     }
@@ -51,9 +54,6 @@ public:
         return Instance().render;
     }
 
-    static ShaderManager& GetShaderManager() {
-        return Instance().shadermanager;
-    }
 
     static AudioManager& GetAudioManager() {
         return Instance().audiomanager;
