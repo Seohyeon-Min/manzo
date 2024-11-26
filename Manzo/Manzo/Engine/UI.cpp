@@ -19,7 +19,7 @@ void FuelUI::Update(double dt)
 {
     position = { ship->GetPosition().x + x_padding, ship->GetPosition().y - y_padding };
     parallax_matrix = mat3::build_translation(position) * mat3::build_scale(scale);
-    normalized_fuel = ship->GetFuel() / 500.0f; // 0 ~ 1로 정규화
+    normalized_fuel = ship->GetFuel() / ship->GetMaxFuel(); // 0 ~ 1로 정규화
 }
 
 void FuelUI::AddDrawCall()
