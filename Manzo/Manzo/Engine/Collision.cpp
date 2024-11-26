@@ -232,7 +232,8 @@ bool CS230::MAP_SATCollision::IsCollidingWith(GameObject* other_object)
     }
 
     Polygon poly_1 = WorldBoundary_poly();
-    Polygon poly_2 = dynamic_cast<MAP_SATCollision*>(other_collider)->WorldBoundary_poly();
+    //Polygon poly_2 = dynamic_cast<MAP_SATCollision*>(other_collider) -> WorldBoundary_poly();
+    Polygon poly_2 = dynamic_cast<MAP_SATCollision*>(other_collider) -> WorldBoundary_poly();
 
 
     for (int i = 0; i < poly_1.vertexCount; i++) {

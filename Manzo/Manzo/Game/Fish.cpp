@@ -129,7 +129,7 @@ BackgroundFish::BackgroundFish() : GameObject({ start_position })
 bool BackgroundFish::CanCollideWith(GameObjectTypes other_object)
 {
 	switch (other_object) {
-	case GameObjectTypes::Reef:
+	case GameObjectTypes::Rock:
 		return true;
 		break;
 	}
@@ -139,7 +139,7 @@ bool BackgroundFish::CanCollideWith(GameObjectTypes other_object)
 
 void BackgroundFish::ResolveCollision(GameObject* other_object)
 {
-	if (other_object->Type() == GameObjectTypes::Reef) {
+	if (other_object->Type() == GameObjectTypes::Rock) {
 		auto* collision_edge = this->GetGOComponent<CS230::RectCollision>();
 		if (collision_edge == nullptr) {
 			// maybe an error?

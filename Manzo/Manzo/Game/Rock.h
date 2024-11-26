@@ -28,7 +28,7 @@ public:
 	Rock(Polygon poly);
 	~Rock() {};
 	GameObjectTypes Type() override { return GameObjectTypes::Rock; }
-	std::string TypeName() override { return "Polygon"; }
+	std::string TypeName() override { return "Rock"; }
 	void Update(double dt);
 	void Draw();
 	bool CanCollideWith(GameObjectTypes) override;

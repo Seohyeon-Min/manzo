@@ -41,9 +41,9 @@
     <ClCompile Include="Game\Mode1.cpp" />
     <ClCompile Include="Game\Mode2.cpp" />
     <ClCompile Include="Game\Mouse.cpp" />
-    <ClCompile Include="Game\Reef.cpp" />
     <ClCompile Include="Game\Rock.cpp" />
     <ClCompile Include="Game\RockGroup.cpp" />
+    <ClCompile Include="Game\RockPoint.cpp" />
     <ClCompile Include="Game\Ship.cpp" />
     <ClCompile Include="Game\Skill.cpp" />
     <ClCompile Include="Game\Splash.cpp" />
@@ -94,9 +94,9 @@
     <ClInclude Include="Game\Mode2.h" />
     <ClInclude Include="Game\Mouse.h" />
     <ClInclude Include="Game\Particles.h" />
-    <ClInclude Include="Game\Reef.h" />
     <ClInclude Include="Game\Rock.h" />
     <ClInclude Include="Game\RockGroup.h" />
+    <ClInclude Include="Game\RockPoint.h" />
     <ClInclude Include="Game\Ship.h" />
     <ClInclude Include="Game\Skill.h" />
     <ClInclude Include="Game\Splash.h" />

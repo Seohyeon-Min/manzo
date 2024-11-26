@@ -28,7 +28,7 @@ public:
 		rocks.clear();
 	}
 	GameObjectTypes Type() override { return GameObjectTypes::RockBoundary; }
-	std::string TypeName() override { return "Rect"; }
+	std::string TypeName() override { return "Rock Boundary"; }
 	void Update(double dt);
 	void Draw();
 	bool CanCollideWith(GameObjectTypes) override;

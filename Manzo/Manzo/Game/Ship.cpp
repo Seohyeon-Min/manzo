@@ -264,7 +264,7 @@ bool Ship::CanCollideWith(GameObjectTypes other_object)
 {
     switch (other_object) {
     case GameObjectTypes::Fish:
-    case GameObjectTypes::Reef:
+    case GameObjectTypes::Rock:
         if (!hit_with) return true;
         else return false;
         break;
@@ -276,7 +276,7 @@ bool Ship::CanCollideWith(GameObjectTypes other_object)
 void Ship::ResolveCollision(GameObject* other_object)
 {
     if (!hit_with) { // is it needful?
-        if (other_object->Type() == GameObjectTypes::Reef) {
+        if (other_object->Type() == GameObjectTypes::Rock) {
             Rock* rock = static_cast<Rock*>(other_object);
             std::vector<vec2> points = rock->GetRockGroup()->GetPoints();
 

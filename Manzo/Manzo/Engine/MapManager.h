@@ -17,6 +17,7 @@ Created:    September 12, 2024
 #include "..\Game\GameObjectTypes.h"
 #include "..\Game\Rock.h"
 #include "..\Game\RockGroup.h"
+#include "..\Game\RockPoint.h"
 
 #include <vector>
 
@@ -36,8 +37,9 @@ namespace CS230 {
 		}
 
 	private:
+		//std::vector<RockPoint*> rock_points;
 		std::vector<Rock> objects;
-		std::vector<RockGroup*> rock_groups;		//vector for groups
+		std::vector<RockGroup*> rock_groups;
 
 	};
 }

@@ -222,7 +222,12 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 std::cout << "poly index : " << poly.polyindex << std::endl;
                 std::cout << "-----------------------------" << std::endl;
 
+                //RockPoint Test
+                RockPoint* rockpoint = new RockPoint();
+                rockpoint->SetPosition({ 0,0 });
+                Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockpoint);
 
+                // Making RockGroups
                 if (rock_groups.empty()) {
                     RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new group
                     rockgroup->AddRock(rock);                                       //add poly into new group

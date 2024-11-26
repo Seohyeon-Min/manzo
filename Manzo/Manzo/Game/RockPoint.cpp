@@ -11,7 +11,9 @@ Created:    November 25, 2024
 #include "RockPoint.h"
 
 RockPoint::RockPoint() :GameObject({ 0,0 })
-{}
+{
+    AddGOComponent(new CS230::Sprite("assets/images/rockpoint_temp.spt", this));
+}
 
 void RockPoint::Update(double dt)
 {

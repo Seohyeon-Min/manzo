@@ -1,4 +1,4 @@
 assets/images/rockpoint_temp.png
-FrameSize 30 30
 HotSpot 15 15
+Anim assets/images/None.anm
 RectCollision -15 -15 15 15

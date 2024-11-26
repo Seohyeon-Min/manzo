@@ -45,8 +45,7 @@ void Rock::ResolveCollision(GameObject* other_object)
             // maybe an error?
         }
 
-        //Pop Back
-        
+        this->SetVelocity({-1000, 0});
 
     }
 }

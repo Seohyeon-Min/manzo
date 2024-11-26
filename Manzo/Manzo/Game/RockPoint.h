@@ -21,9 +21,10 @@ Created:    November 25, 2024
 
 #include <vector>
 class RockPoint : public CS230::GameObject {
+public:
 	RockPoint();
 	GameObjectTypes Type() override { return GameObjectTypes::RockPoint; }
-	std::string TypeName() override { return "Rect"; }
+	std::string TypeName() override { return "Rock Point"; }
 	void Update(double dt);
 	void Draw(); 
 
