@@ -174,5 +174,6 @@ void Mode1::Unload() {
     Engine::GetRender().ClearDrawCalls();
 	ClearGSComponents();
     Engine::GetAudioManager().StopMusic();
+    Engine::Instance().ResetSlowDownFactor();
 	//fishGenerator->DeleteFish();
 }

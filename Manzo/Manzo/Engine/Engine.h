@@ -72,7 +72,8 @@ public:
     void SetTmpPtr(void* tmp);
     void* GetTmpPtr();
     void UnloadTmpPtr();
-
+    void SetSlowDownFactor(double slow_down) { slow_down_factor = slow_down; }
+    void ResetSlowDownFactor() { slow_down_factor = 1; }
     static constexpr int window_width = 1280;
     static constexpr int window_height = 720;
     static constexpr double TargetFPS = 240;
@@ -84,7 +85,7 @@ private:
     std::chrono::system_clock::time_point last_test;
 
     int frame_count = 0;
-
+    double slow_down_factor = 1;
     static constexpr int FPSDuration = 5;
     static constexpr int FPSTargetFrames = static_cast<int>(FPSDuration * TargetFPS);
     double dt;

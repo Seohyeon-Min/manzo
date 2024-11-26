@@ -44,6 +44,7 @@ private:
     static constexpr double speed = 6500.f;
     static constexpr float deceleration = 0.88f;
     static constexpr double skidding_speed = 20.f;
+    double slow_down_factor;
     bool move;
     bool hit_with = false;
     vec2 force = {};

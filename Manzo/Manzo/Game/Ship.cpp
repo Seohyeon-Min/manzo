@@ -101,10 +101,20 @@ std::vector<vec2> spline_points;
 
 void Ship::State_Hit::Enter(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
-    ship->SetVelocity({});
+    float maxSpeed = speed;
+    float minFactor = 10;  // 최소 감속 비율
+    float maxFactor = 70;  // 최대 감속 비율
+
+    float incoming_speed = ship->GetVelocity().Length(); // 속도의 크기 계산
+    ship->slow_down_factor = minFactor + (incoming_speed / maxSpeed) * (maxFactor - minFactor);
+    Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
     ship->HitWithReef(ship->normal);
 }
-void Ship::State_Hit::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) { 
+void Ship::State_Hit::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
+    Ship* ship = static_cast<Ship*>(object);
+    Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
+    ship->slow_down_factor *= deceleration;
+    //Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
     if (spline_points.size() > 2) {
         for (size_t i = 0; i < spline_points.size() - 1; ++i) {
             vec2 point_a = spline_points[i];
@@ -115,14 +125,13 @@ void Ship::State_Hit::Update([[maybe_unused]] GameObject* object, [[maybe_unused
         }
     }
 }
-void Ship::State_Hit::FixedUpdate(GameObject* object, double fixed_dt)
-{
-}
+void Ship::State_Hit::FixedUpdate(GameObject* object, double fixed_dt) {}
 void Ship::State_Hit::CheckExit(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
-    if (!ship->beat->GetIsOnBeat()) { // should be a timer?
+    if (ship->slow_down_factor <= 1) { // should be a timer?
         ship->hit_with = false;
         ship->change_state(&ship->state_idle);
+        Engine::Instance().ResetSlowDownFactor();
     }
 }
 
@@ -304,7 +313,7 @@ void Ship::ResolveCollision(GameObject* other_object)
 {
     if (!hit_with) { // is it needful?
         if (other_object->Type() == GameObjectTypes::Reef) {
-            SetVelocity({});
+
             hit_with = true;
 
             Rock* rock = static_cast<Rock*>(other_object);
@@ -317,14 +326,13 @@ void Ship::ResolveCollision(GameObject* other_object)
             if (collision_edge == nullptr) {
                 // maybe an error?
             }
-
-
         }
     }
 }
 
 void Ship::HitWithReef(vec2 normal) {
     fuel -= HitDecFuel;
+
     if (fuel < 0.0f) {
         fuel = 0.0f;
     }
