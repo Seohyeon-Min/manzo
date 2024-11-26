@@ -119,6 +119,8 @@ void Mode1::Load() {
         skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
         skill_ptr->SetShipPtr(ship_ptr);
     }
+
+    //Shop
 }
 
 void Mode1::Update(double dt) {

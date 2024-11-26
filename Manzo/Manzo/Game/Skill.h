@@ -6,8 +6,11 @@
 #include "..\Game\Ship.h"
 #include "../Engine/Component.h"
 #include "..\Engine\GameObjectManager.h"
+#include "Fish.h"
 
 class Ship;
+
+class Fish;
 
 class Skillsys //skill system
 {
@@ -41,10 +44,12 @@ public:
 	void SetShipPtr(Ship* ptr);
 	Ship* GetShipPtr();
 	std::vector<Skill_list> GetSkill() { return skillslots; };
+	void AddSkill(Skill_list input, int money);
 
 	void Active_skill(Skill_list skill);
 	void SkillNet();
 	void SkillLight();
+	void PrintInven();
 
 	//Class for each skill
 	class Skill_Net : public CS230::GameObject // Net
@@ -72,6 +77,7 @@ public:
 
 private:
 	std::vector<Skill_list> skillslots;
+	std::vector<Skill_list> inventory;
 	bool is_slot_selected = false;
 	bool Ready_to_set = false;
 	bool is_active_skill = false;

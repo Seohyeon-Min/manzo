@@ -43,6 +43,7 @@
     <ClCompile Include="Game\Mouse.cpp" />
     <ClCompile Include="Game\Reef.cpp" />
     <ClCompile Include="Game\Ship.cpp" />
+    <ClCompile Include="Game\Shop.cpp" />
     <ClCompile Include="Game\Skill.cpp" />
     <ClCompile Include="Game\Splash.cpp" />
     <ClCompile Include="main.cpp" />
@@ -94,6 +95,7 @@
     <ClInclude Include="Game\Particles.h" />
     <ClInclude Include="Game\Reef.h" />
     <ClInclude Include="Game\Ship.h" />
+    <ClInclude Include="Game\Shop.h" />
     <ClInclude Include="Game\Skill.h" />
     <ClInclude Include="Game\Splash.h" />
     <ClInclude Include="Game\States.h" />

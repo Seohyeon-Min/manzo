@@ -31,6 +31,15 @@ void Skillsys::SkillLight()
     return;
 }
 
+void Skillsys::PrintInven()
+{
+    for (auto i : inventory)
+    {
+        std::cout << inventory[i] << "  ";
+    }
+    std::cout << std::endl;
+}
+
 // Skillsystem
 
 void Skillsys::Update()
@@ -107,10 +116,22 @@ void Skillsys::Update()
 
         if (Ready_to_set)
         {
-            std::cout << "Skill changed" << std::endl;
+            bool IsinInven = false;
+            for (const auto& skill : inventory)
+            {
+                if (Selected_skill == skill)
+                {
+                    std::cout << "Skill changed" << std::endl;
+                    Ready_to_set = false;
+                    is_slot_selected = false;
+                    setskill(Selected_slot, Selected_skill);
+                    IsinInven = true;
+                    return;
+                }
+            }
+            std::cout << "It doesn't exist in inventory" << std::endl;
             Ready_to_set = false;
             is_slot_selected = false;
-            setskill(Selected_slot, Selected_skill);
         }
 
         if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Z))
@@ -183,6 +204,35 @@ void Skillsys::SetShipPtr(Ship* ptr)
 Ship* Skillsys::GetShipPtr()
 {
     return Ship_ptr;
+}
+void Skillsys::AddSkill(Skill_list input, int money)
+{
+    bool IsPurchase = false;
+
+    for (const auto& skill : inventory)
+    {
+        if (skill == input)
+        {
+            IsPurchase = true;
+            std::cout << "Already Purchased" << std::endl;
+            return;
+        }
+    }
+
+    if(!IsPurchase)
+    {
+        if (Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() >= money)
+        {
+            inventory.push_back(input);
+            Engine::GetGameStateManager().GetGSComponent<Fish>()->SetMoney(Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() - money);
+            std::cout << "Purchase" << std::endl;
+            std::cout << "Left money : " << Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() << std::endl;
+        }
+        else
+        {
+            std::cout << "Not enough money" << std::endl;
+        }
+    }
 };
 
 Skillsys::Skill_Net::Skill_Net(vec2 position, Skillsys* skillsys) : GameObject(position)

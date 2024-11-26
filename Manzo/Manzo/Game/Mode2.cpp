@@ -67,6 +67,10 @@ void Mode2::Load() {
         skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
         skill_ptr->SetShipPtr(ship_ptr);
     }
+
+    AddGSComponent(new Shop());
+
+    std::cout << "Left money : " << Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() << std::endl;
 }
 
 void Mode2::Update(double dt) {

@@ -20,6 +20,7 @@ Created:    March 8, 2023
 #include "Background.h"
 #include "Skill.h"
 #include "Fish.h"
+#include "Shop.h"
 
 class Reef;
 class Ship;

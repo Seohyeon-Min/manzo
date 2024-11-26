@@ -14,7 +14,10 @@ Created:    Sept 12, 2024
 #include "..\Engine\GameObjectManager.h"
 #include "../Engine/Timer.h"
 #include "Background.h"
+#include "Fish.h"
+#include "Shop.h"
 
+class Fish;
 
 class Ship;
 
