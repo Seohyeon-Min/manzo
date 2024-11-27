@@ -13,6 +13,8 @@ Ship::Ship(vec2 start_position) :
     skill = Engine::GetGameStateManager().GetGSComponent<Skillsys>();
     fuel = Maxfuel;
     FuelFlag = false;
+    HitTimer = new CS230::Timer(0.0);
+    AddGOComponent(HitTimer);
     SetVelocity({ 0,0 });
 
     if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
@@ -78,7 +80,7 @@ void Ship::State_Move::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
 void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_unused]] double fixed_dt) {
     Ship* ship = static_cast<Ship*>(object);
     ship->FuelUpdate(fixed_dt);
-    ship->SetVelocity(ship->force);
+    ship->SetVelocity(ship->force); // add an acceleration                   
     float base_dt = 1.0f / 240.f;
     float adjusted_deceleration = (float)pow(deceleration, fixed_dt / base_dt); 
     ship->force *= adjusted_deceleration;
@@ -103,17 +105,22 @@ void Ship::State_Hit::Enter(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
     float maxSpeed = speed;
     float minFactor = 10; 
-    float maxFactor = 70; 
+    float maxFactor = 150; 
 
+    // timer
     float incoming_speed = ship->GetVelocity().Length(); 
+    ship->HitTimer->Set(ship->HitTimerMax);
+
+    // slow down dt
     ship->slow_down_factor = minFactor + (incoming_speed / maxSpeed) * (maxFactor - minFactor);
-    Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
+    Engine::Instance().SetSlowDownFactor(1);
+
     ship->HitWithReef(ship->normal);
 }
 void Ship::State_Hit::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
     Ship* ship = static_cast<Ship*>(object);
-    Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
-    ship->slow_down_factor *= deceleration;
+    //Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
+    //ship->slow_down_factor *= deceleration;
     //Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
     if (spline_points.size() > 2) {
         for (size_t i = 0; i < spline_points.size() - 1; ++i) {
@@ -127,7 +134,7 @@ void Ship::State_Hit::Update([[maybe_unused]] GameObject* object, [[maybe_unused
 void Ship::State_Hit::FixedUpdate(GameObject* object, double fixed_dt) {}
 void Ship::State_Hit::CheckExit(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
-    if (ship->slow_down_factor <= 1) { // should be a timer?
+    if (ship->HitTimer->Remaining() == 0.0) {
         ship->hit_with = false;
         ship->change_state(&ship->state_idle);
         Engine::Instance().ResetSlowDownFactor();

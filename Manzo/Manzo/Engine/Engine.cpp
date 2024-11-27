@@ -40,12 +40,12 @@ void Engine::Update() {
 
     system_clock::time_point now = system_clock::now();
     dt = duration<double>(now - last_tick).count();
-    dt /= slow_down_factor;
+    dt *= slow_down_factor;
     last_tick = now;
 
     accumulator += dt;
     double fixed_delta_time = 1.0 / TargetFPS;
-    fixed_delta_time /= slow_down_factor;
+    fixed_delta_time *= slow_down_factor;
 
     if (!gamestatemanager.IsNull()) {
         while (accumulator >= fixed_delta_time) {

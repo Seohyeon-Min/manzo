@@ -48,6 +48,8 @@ private:
     double slow_down_factor;
     bool move;
     bool hit_with = false;
+    double HitTimerMax = 0.006;
+    CS230::Timer* HitTimer;
     vec2 force = {};
     vec2 destination;
     vec2 direction = { 0,0 };

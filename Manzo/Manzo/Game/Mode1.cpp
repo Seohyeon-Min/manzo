@@ -117,7 +117,7 @@ void Mode1::Update(double dt) {
     //camera postion update
     camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
 
-	//fishGenerator->GenerateFish(dt);
+	fishGenerator->GenerateFish(dt);
     skill_ptr->Update();
     if (ship_ptr->IsShipUnder() && Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Q)) {
         Engine::GetGameStateManager().ClearNextGameState();
@@ -150,7 +150,7 @@ void Mode1::Draw() {
     ui_manager->AddDrawCalls();
 
     // Draw Font
-     Engine::GetFontManager().PrintText("HI", { 0.f,0.f }, 0.0f, 0.001f, { 1.0f,1.0f,1.0f });
+     //Engine::GetFontManager().PrintText("HI", { 0.f,0.f }, 0.0f, 0.001f, { 1.0f,1.0f,1.0f });
 }
 
 void Mode1::Unload() {
