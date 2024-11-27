@@ -26,33 +26,6 @@ void Rock::Draw()
 }
 
 
-bool Rock::CanCollideWith(GameObjectTypes other_object)
-{
-    switch (other_object) {
-    case GameObjectTypes::RockPoint:
-        return true;
-        break;
-    }
-
-    return false;
-}
-
-void Rock::ResolveCollision(GameObject* other_object)
-{
-    if (other_object->Type() == GameObjectTypes::RockPoint) {
-        auto* collision_edge = this->GetGOComponent<CS230::MAP_SATCollision>();
-        if (collision_edge == nullptr) {
-            // maybe an error?
-        }
-
-        RockGroup* rockgroup = this->GetRockGroup();
-        for (auto& rock : rockgroup->GetRocks()) {
-            rock->PopBack({ -1, 0 }, 10);
-        }
-
-    }
-}
-
 void Rock::SetCenter() {
     vec2 center = { 0, 0 };
     std::vector<vec2> vertices = this->GetPolygon().vertices;
@@ -90,4 +63,29 @@ void Rock::PopBack(const vec2& direction, float length) {
 
     //SetVelocity(-velo); // return first location
 }
+bool Rock::CanCollideWith(GameObjectTypes other_object)
+{
+    switch (other_object) {
+    case GameObjectTypes::RockPoint:
+        return true;
+        break;
+    }
 
+    return false;
+}
+
+void Rock::ResolveCollision(GameObject* other_object)
+{
+    if (other_object->Type() == GameObjectTypes::RockPoint) {
+        auto* collision_edge = this->GetGOComponent<CS230::MAP_SATCollision>();
+        if (collision_edge == nullptr) {
+            // maybe an error?
+        }
+        vec2 point_position = other_object->GetPosition();
+        RockGroup* rockgroup = this->GetRockGroup();
+        for (auto& rock : rockgroup->GetRocks()) {
+            rock->PopBack({ -1, 0 }, 10);
+        }
+
+    }
+}

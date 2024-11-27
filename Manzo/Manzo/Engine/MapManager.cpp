@@ -61,6 +61,8 @@ void CS230::Map::ParseSVG(const std::string& filename) {
             
             int pathCountInGroup = 0;
             Polygon poly;
+
+
             //g id
             if (line.find("</g>") != std::string::npos) {
                 IsinGroup = false;
