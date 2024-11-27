@@ -16,6 +16,8 @@
     <ClCompile Include="Engine\Camera.cpp" />
     <ClCompile Include="Engine\Collision.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
+    <ClCompile Include="Engine\Font.cpp" />
+    <ClCompile Include="Engine\FontManager.cpp" />
     <ClCompile Include="Engine\GameObject.cpp" />
     <ClCompile Include="Engine\GameObjectManager.cpp" />
     <ClCompile Include="Engine\GameStateManager.cpp" />
@@ -31,6 +33,7 @@
     <ClCompile Include="Engine\TextureManager.cpp" />
     <ClCompile Include="Engine\Timer.cpp" />
     <ClCompile Include="Engine\UI.cpp" />
+    <ClCompile Include="Game\AI.cpp" />
     <ClCompile Include="Game\Background.cpp" />
     <ClCompile Include="Game\BeatSystem.cpp" />
     <ClCompile Include="Game\Boss.cpp" />
@@ -62,6 +65,8 @@
     <ClInclude Include="Engine\ComponentManager.h" />
     <ClInclude Include="Engine\DrawSetting.h" />
     <ClInclude Include="Engine\Engine.h" />
+    <ClInclude Include="Engine\Font.h" />
+    <ClInclude Include="Engine\FontManager.h" />
     <ClInclude Include="Engine\GameObject.h" />
     <ClInclude Include="Engine\GameObjectManager.h" />
     <ClInclude Include="Engine\GameState.h" />
@@ -71,6 +76,7 @@
     <ClInclude Include="Engine\MapManager.h" />
     <ClInclude Include="Engine\Particle.h" />
     <ClInclude Include="Engine\Polygon.h" />
+    <ClInclude Include="Engine\AABB.h" />
     <ClInclude Include="Engine\Rapidjson.h" />
     <ClInclude Include="Engine\Rect.h" />
     <ClInclude Include="Engine\Render.h" />
@@ -81,12 +87,14 @@
     <ClInclude Include="Engine\Timer.h" />
     <ClInclude Include="Engine\UI.h" />
     <ClInclude Include="Engine\UIManager.h" />
+    <ClInclude Include="Game\AI.h" />
     <ClInclude Include="Game\Background.h" />
     <ClInclude Include="Game\BeatSystem.h" />
     <ClInclude Include="Game\Boss.h" />
     <ClInclude Include="Game\Clear.h" />
     <ClInclude Include="Game\Fish.h" />
     <ClInclude Include="Game\FishEcosystem.h" />
+    <ClInclude Include="Game\Fonts.h" />
     <ClInclude Include="Game\GameObjectTypes.h" />
     <ClInclude Include="Game\GameOver.h" />
     <ClInclude Include="Game\Mode1.h" />
@@ -147,12 +155,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)common_gl\include;$(SolutionDir)external\include;$(SolutionDir)external\include\backends;$(SolutionDir)external\include\rapidjson;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\include\glm;$(SolutionDir)external\include\freetype\config;$(SolutionDir)external\include\freetype;$(ProjectDir)include;$(SolutionDir)common_gl\include;$(SolutionDir)external\include;$(SolutionDir)external\include\backends;$(SolutionDir)external\include\rapidjson;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)external\lib;C:\raylib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Opengl32.lib;glew32.lib;imgui.lib;SDL2.lib;SDL2_mixer.lib;freetype.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -163,7 +172,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)common_gl\include;$(SolutionDir)external\include;$(SolutionDir)external\include\backends;$(SolutionDir)external\include\rapidjson;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\include\glm;$(SolutionDir)external\include\freetype\config;$(SolutionDir)external\include\freetype;$(ProjectDir)include;$(SolutionDir)common_gl\include;$(SolutionDir)external\include;$(SolutionDir)external\include\backends;$(SolutionDir)external\include\rapidjson;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -171,6 +180,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)external\lib;C:\raylib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Opengl32.lib;glew32.lib;imgui.lib;SDL2.lib;SDL2_mixer.lib;freetype.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -71,7 +71,6 @@ void CS230::GameObject::Draw(DrawLayer drawlayer) {
 			shader
 		};
 
-		// DrawLayer가 기본값이 아니면 `AddDrawCall`에 추가
 		if (drawlayer != DrawLayer::Draw) {
 			Engine::GetRender().AddDrawCall(draw_call, drawlayer);
 		}

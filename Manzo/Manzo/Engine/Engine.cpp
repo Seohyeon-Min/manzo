@@ -68,7 +68,7 @@ void Engine::Update() {
 }
 
 
-void Engine::HandleEvent(SDL_Window& sdl_window, const SDL_Event& event){
+void Engine::HandleEvent(SDL_Window& sdl_window, const SDL_Event& event) {
     switch (event.type)
     {
     case SDL_QUIT << '\n':

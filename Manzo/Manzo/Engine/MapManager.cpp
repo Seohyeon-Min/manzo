@@ -41,14 +41,14 @@ void CS230::Map::ParseSVG(const std::string& filename) {
     bool IsinG = false;
     bool Istranslate = false;
     bool IsRotate = false;
-    bool IsinGroup = false; 
+    bool IsinGroup = false;
     std::string polyIndex;
 
     while (std::getline(file, line)) {
         currentTag += line;
-        
+
         if (line.find(">") != std::string::npos) {
-            
+
             int pathCountInGroup = 0;
             Polygon poly;
             //g id
@@ -60,22 +60,22 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 rotatetranslate = { 0, 0 };
                 Istranslate = false;
                 IsRotate = false;
-                currentTag.clear(); 
-                continue; 
+                currentTag.clear();
+                continue;
             }
 
             // g id
             if (std::regex_search(currentTag, match, gIdRegex)) {
                 IsinGroup = true;
-                polyIndex = match[1].str(); 
+                polyIndex = match[1].str();
             }
-            
+
 
             // transform
             if (std::regex_search(currentTag, match, transformRegex)) {
                 std::string transformStr = match[1].str();
                 std::cout << "" << std::endl;
-               
+
 
                 // rotate
                 if (std::regex_search(transformStr, match, rotateRegex)) {
@@ -86,7 +86,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                     rotatetranslate.x = std::stof(match[2].str());
                     rotatetranslate.y = std::stof(match[3].str());
 
-                   
+
                 }
                 // translat
                 else if (std::regex_search(transformStr, match, translateRegex)) {
@@ -97,12 +97,12 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                     Istranslate = true;
                     IsRotate = false;
                 }
-                
 
-               
+
+
             }
-            
-            
+
+
 
             // 
             std::string pathData;
@@ -162,9 +162,9 @@ void CS230::Map::ParseSVG(const std::string& filename) {
 
                     std::cout << x << "  |  " << y << std::endl;
                     vec2 vec = { x, -y };
-                    if(IsinGroup){
+                    if (IsinGroup) {
                         //rotate
-                        if(IsRotate){
+                        if (IsRotate) {
                             vec.x += rotatetranslate.x;
                             vec.y += rotatetranslate.y;
 
@@ -173,7 +173,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                             vec.x = rotatedX;
                             vec.y = rotatedY;
 
-                        
+
                         }
                         // translate
                         if (Istranslate) {
@@ -186,10 +186,10 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                     count++;
                 }
 
-                
-                
+
+
                 poly.vertices = positions;
-                poly.vertexCount = int(positions.size()); 
+                poly.vertexCount = int(positions.size());
                 poly.polycount = pathCountInGroup > 0 ? pathCountInGroup : 0;
                 if (polyIndex.empty() == true) {
                     polyIndex = "NULL";
@@ -202,8 +202,8 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 Rock* rock = new Rock(poly);
                 Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rock);
                 rock->AddGOComponent(new MAP_SATCollision(poly, rock));
-                
-                pathCountInGroup++;  
+
+                pathCountInGroup++;
                 currentTag.clear();
                 std::cout << "-----------------------------" << std::endl;
                 std::cout << rotatetranslate.x << rotatetranslate.y << std::endl;
@@ -231,7 +231,6 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                         //rockgroup->SetScale();
 
                         rock->SetRockGroup(rockgroup);
-                        
                         Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup);
                         rock_groups.push_back(rockgroup);
                     }
@@ -241,30 +240,27 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                     }
                 }
 
-                
             }
-            
+
             //std::cout << "vertex count : " << poly.vertexCount << std::endl;
             //std::cout << "poly count : " << poly.polycount << std::endl;
-            
+
 
             // Reset transforms for the next group
-            
+
         }
-        
+
     }
 
-    
+
     for (auto& r_group : rock_groups) {
         r_group->MatchIndex();
         r_group->SetPoints();
-        
         /*std::cout <<"Group Position: " << r_group->GetPosition().x << "," << r_group->GetPosition().y<<"\n";
         std::cout <<"Group Index : " << r_group->GetIndex()<<"\n";
         std::cout <<"Group Rocks Size : " << r_group->GetRocks().size() <<"\n";*/
         //std::cout <<"How Many Points? : " << r_group->GetPoints().size() <<"\n";
     }
-    
     file.close();
     //AddDrawCall();
 }
@@ -364,8 +360,8 @@ vec2 RockGroup::FindCenterRect() {  // Calculate texture's position.
         maxPoint.x = std::max(maxPoint.x, poly.FindBoundary().Right());
         maxPoint.y = std::max(maxPoint.y, poly.FindBoundary().Top());
     }
-    center.x = (minPoint.x + maxPoint.x) /2;
-    center.y = (minPoint.y + maxPoint.y) /2;
+    center.x = (minPoint.x + maxPoint.x) / 2;
+    center.y = (minPoint.y + maxPoint.y) / 2;
     return center;
 }
 
@@ -438,6 +434,6 @@ void RockGroup::ResolveCollision(GameObject* other_object)
             //rock->SetVelocity({-100, 0});
             //other_object->SetVelocity({0, 0});
         }
-        
+
     }
 }

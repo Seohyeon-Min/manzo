@@ -21,7 +21,7 @@ struct [[nodiscard]] Polygon
 		return center;
 	}
 
-	Math::rect FindBoundary() {	
+	Math::rect FindBoundary() {
 		if (vertices.empty()) {
 			return Math::rect{};
 		}

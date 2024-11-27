@@ -13,7 +13,7 @@ class Rock : public CS230::GameObject
 {
 public:
 	Rock(Polygon poly);
-	~Rock(){};
+	~Rock() {};
 	GameObjectTypes Type() override { return GameObjectTypes::Reef; }
 	std::string TypeName() override { return "Polygon"; }
 	void Update(double dt);
@@ -24,7 +24,6 @@ public:
 
 	//polygon
 	const Polygon& GetPolygon() { return poly; }
-	
 	//group
 	void SetRockGroup(RockGroup* rockgroup) { this->rockgroup = rockgroup; }
 	RockGroup* GetRockGroup() { return rockgroup; }
@@ -59,7 +58,6 @@ public:
 	std::vector<vec2> GetPoints() { return points; }
 	void RemoveDuplicatePoints(std::vector<vec2>& points, float tolerance);
 	void SetPoints();
-	
 private:
 	mat3 matrix;
 	std::vector<Rock*> rocks;	//one group

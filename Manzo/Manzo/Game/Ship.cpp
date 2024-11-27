@@ -23,8 +23,8 @@ Ship::Ship(vec2 start_position) :
 
 void Ship::State_Idle::Enter(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
-    if(ship->direction != vec2{0,0})
-    ship->SetVelocity(ship->direction * skidding_speed);
+    if (ship->direction != vec2{ 0,0 })
+        ship->SetVelocity(ship->direction * skidding_speed);
 }
 void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {}
 void Ship::State_Idle::CheckExit(GameObject* object) {
@@ -50,7 +50,7 @@ void Ship::State_Set_Dest::CheckExit(GameObject* object) {
     if (ship->hit_with) {
         ship->change_state(&ship->state_hit);
     }
-    if (!ship->beat->GetIsOnBeat() ) { // wait for next beat
+    if (!ship->beat->GetIsOnBeat()) { // wait for next beat
         ship->change_state(&ship->state_ready_to_move);
     }
 }
@@ -79,8 +79,8 @@ void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_
     Ship* ship = static_cast<Ship*>(object);
     ship->FuelUpdate(fixed_dt);
     ship->SetVelocity(ship->force);
-    float base_dt = 1.0f / 240.f;  // 기준 시간 (60FPS 기준)
-    float adjusted_deceleration = (float)pow(deceleration, fixed_dt / base_dt);  // 비례 보정
+    float base_dt = 1.0f / 240.f;
+    float adjusted_deceleration = (float)pow(deceleration, fixed_dt / base_dt); 
     ship->force *= adjusted_deceleration;
 }
 void Ship::State_Move::CheckExit(GameObject* object) {
@@ -102,10 +102,10 @@ std::vector<vec2> spline_points;
 void Ship::State_Hit::Enter(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
     float maxSpeed = speed;
-    float minFactor = 10;  // 최소 감속 비율
-    float maxFactor = 70;  // 최대 감속 비율
+    float minFactor = 10; 
+    float maxFactor = 70; 
 
-    float incoming_speed = ship->GetVelocity().Length(); // 속도의 크기 계산
+    float incoming_speed = ship->GetVelocity().Length(); 
     ship->slow_down_factor = minFactor + (incoming_speed / maxSpeed) * (maxFactor - minFactor);
     Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
     ship->HitWithReef(ship->normal);
@@ -120,7 +120,6 @@ void Ship::State_Hit::Update([[maybe_unused]] GameObject* object, [[maybe_unused
             vec2 point_a = spline_points[i];
             vec2 point_b = spline_points[i + 1];
 
-            // 각 점을 연결하여 선분으로 렌더링
             Engine::GetRender().AddDrawCall(point_a, point_b, color3{ 0,255,0 });
         }
     }
@@ -145,7 +144,7 @@ void Ship::Update(double dt)
 
     // World Boundary
     if (collider->WorldBoundary_rect().Left() < Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x - 640) {
-        UpdatePosition({ Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x - 640 - collider->WorldBoundary_rect().Left(), 0});
+        UpdatePosition({ Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x - 640 - collider->WorldBoundary_rect().Left(), 0 });
         SetVelocity({ 0, GetVelocity().y });
     }
     if (collider->WorldBoundary_rect().Right() > Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x + 640) {
@@ -157,7 +156,7 @@ void Ship::Update(double dt)
         SetVelocity({ GetVelocity().x, 0 });
     }
     if (collider->WorldBoundary_rect().Top() > Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y + 360) {
-        UpdatePosition({ 0, Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y + 360 - collider->WorldBoundary_rect().Top()});
+        UpdatePosition({ 0, Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y + 360 - collider->WorldBoundary_rect().Top() });
         SetVelocity({ GetVelocity().x, 0 });
     }
 
@@ -201,7 +200,7 @@ std::vector<vec2> SortPointsCounterClockwise(const std::vector<vec2>& points, co
         [&center](const vec2& a, const vec2& b) {
             float angle_a = atan2(a.y - center.y, a.x - center.x);
             float angle_b = atan2(b.y - center.y, b.x - center.x);
-            return angle_a > angle_b; // 반시계 방향 기준
+            return angle_a > angle_b; 
         });
 
     return sorted_points;
@@ -211,7 +210,6 @@ std::vector<vec2> ExtendBoundaryPoints(const std::vector<vec2>& points) {
     std::vector<vec2> extended_points = points;
 
     if (points.size() > 3) {
-        // 끝과 시작을 자연스럽게 연결하기 위해 추가 점 복제
 
         extended_points.insert(extended_points.begin(), points.back());
         extended_points.push_back(points.front());
@@ -225,10 +223,9 @@ std::vector<vec2> GenerateSplinePoints(const std::vector<vec2>& points, int reso
     std::vector<vec2> spline_points;
 
     if (points.size() < 2) {
-        return spline_points; // 최소한 2개의 점이 필요
+        return spline_points;
     }
 
-    // 경계 점 확장
     std::vector<vec2> extended_points = ExtendBoundaryPoints(points);
 
     for (size_t i = 0; i < extended_points.size() - 3; ++i) {
@@ -261,12 +258,11 @@ vec2 FindClosestPointOnSpline(const std::vector<vec2>& spline_points, const vec2
 
 vec2 ComputeNormalAtPoint(const vec2& p0, const vec2& p1) {
     vec2 tangent = p1 - p0;
-    vec2 normal = { -tangent.y, tangent.x }; // 접선에 수직인 벡터
+    vec2 normal = { -tangent.y, tangent.x };
     float length = normal.Length();
     if (length > 0.0f) {
-        normal = { normal.x / length, normal.y / length }; // 정규화
+        normal = { normal.x / length, normal.y / length }; 
 
-        // 부호가 음수라면 반전
         if (normal.x < 0.0f) {
             normal.x = -normal.x;
             normal.y = -normal.y;
@@ -274,20 +270,17 @@ vec2 ComputeNormalAtPoint(const vec2& p0, const vec2& p1) {
 
         return normal;
     }
-    return { 0.0f, 0.0f }; // 잘못된 벡터 방지
+    return { 0.0f, 0.0f };
 }
 
 vec2 ComputeCollisionNormal(const std::vector<vec2>& points, const vec2& pos, const vec2& center, int resolution = 20) {
     std::vector<vec2> closest_points = points;
     std::vector<vec2> sorted_point = SortPointsCounterClockwise(closest_points, center);
 
-    // 2. 스플라인 생성
-     spline_points = GenerateSplinePoints(sorted_point, resolution);
+    spline_points = GenerateSplinePoints(sorted_point, resolution);
 
-    // 3. 스플라인 위에서 pos와 가장 가까운 점 찾기
     vec2 closest_point_on_spline = FindClosestPointOnSpline(spline_points, pos);
 
-    // 4. 충돌 지점에서 법선 벡터 계산
     size_t closest_index = std::find(spline_points.begin(), spline_points.end(), closest_point_on_spline) - spline_points.begin();
     vec2 tangent_point1 = spline_points[std::max(0, static_cast<int>(closest_index) - 1)];
     vec2 tangent_point2 = spline_points[std::min(static_cast<int>(spline_points.size() - 1), static_cast<int>(closest_index) + 1)];
@@ -320,7 +313,7 @@ void Ship::ResolveCollision(GameObject* other_object)
             std::vector<vec2> points = rock->GetRockGroup()->GetPoints();
             vec2 center = rock->GetRockGroup()->FindCenterPoly();
 
-            normal = ComputeCollisionNormal(points, GetPosition(),center);
+            normal = ComputeCollisionNormal(points, GetPosition(), center);
 
             auto* collision_edge = this->GetGOComponent<CS230::RectCollision>();
             if (collision_edge == nullptr) {
@@ -337,7 +330,7 @@ void Ship::HitWithReef(vec2 normal) {
         fuel = 0.0f;
     }
 
-    vec2 velocity = GetVelocity(); // 현재 속도를 먼저 저장
+    vec2 velocity = GetVelocity(); 
 
     float dot_product = velocity.x * normal.x + velocity.y * normal.y;
 
@@ -346,17 +339,15 @@ void Ship::HitWithReef(vec2 normal) {
         velocity.y - 2 * dot_product * normal.y
     };
 
-    float incoming_speed = velocity.Length(); // 속도의 크기 계산
+    float incoming_speed = velocity.Length(); 
 
-    // 반사 방향 설정
     if (reflection.Length() > 0.0f) {
         direction = reflection.Normalize();
     }
     else {
-        direction = { 1.0f, 0.0f }; // 기본 방향 설정
+        direction = { 1.0f, 0.0f }; 
     }
 
-    // 속도 설정
     SetVelocity(direction * incoming_speed * 0.75f);
 
     move = false;
