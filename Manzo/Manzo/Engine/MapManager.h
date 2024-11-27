@@ -40,6 +40,7 @@ namespace CS230 {
 		//std::vector<RockPoint*> rock_points;
 		std::vector<Rock> objects;
 		std::vector<RockGroup*> rock_groups;
+		vec2 circle_position{ 0,0 };
 
 	};
 }
