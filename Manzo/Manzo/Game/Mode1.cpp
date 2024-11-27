@@ -43,6 +43,9 @@ void Mode1::Load() {
     AddGSComponent(new CS230::ShowCollision());
 #else
 #endif
+    //shader
+    Engine::GetShaderManager().LoadShader("pixelate", "assets/shaders/default.vert", "assets/shaders/pixelate.frag");
+
     // component
     AddGSComponent(new CS230::GameObjectManager());
     AddGSComponent(new Beat());
@@ -73,8 +76,6 @@ void Mode1::Load() {
     fishGenerator = new FishGenerator();
     Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
 
-    //shader
-    Engine::GetShaderManager().LoadShader("pixelate", "assets/shaders/default.vert", "assets/shaders/pixelate.frag");
 
 
     background->Add("assets/images/background/temp_background.png", 0.0f);

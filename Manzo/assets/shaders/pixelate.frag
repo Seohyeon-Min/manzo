@@ -12,12 +12,9 @@ void main() {
     vec2 pixelatedCoord = floor(texCoord / uPixelSize) * uPixelSize;
 
     vec4 tex_color = texture(uTex2d, pixelatedCoord);
-
-    if (vTextureCoordinates.x < 1.0f - uFilled) {
-        discard; // Discard fragment outside the filled area
-    }
-
+    
     if(tex_color.a <= 0)
         discard;
+
     fFragClr = tex_color;
 }

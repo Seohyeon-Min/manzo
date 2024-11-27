@@ -56,7 +56,6 @@ void CS230::GameObject::Draw(DrawLayer drawlayer) {
 			if (IsPixelShaderApplicable(Type())) {
 				// ÇÈ¼¿È­ ¼ÎÀÌ´õ Àû¿ë
 				shader = Engine::GetShaderManager().GetShader("pixelate");
-				shader->SendUniform("uPixelSize", 0.05f);
 				//SetGlobalShader(pixelShader);
 			}
 			else {
