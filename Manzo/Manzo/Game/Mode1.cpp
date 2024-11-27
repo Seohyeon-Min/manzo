@@ -147,7 +147,7 @@ void Mode1::Draw() {
     ui_manager->AddDrawCalls();
 
     // Draw Font
-    // Engine::GetFontManager().PrintText("HI", { 0.f,0.f }, 0.0f, 0.001f, { 1.0f,1.0f,1.0f });
+     Engine::GetFontManager().PrintText("HI", { 0.f,0.f }, 0.0f, 0.001f, { 1.0f,1.0f,1.0f });
 }
 
 void Mode1::Unload() {
