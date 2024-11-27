@@ -268,6 +268,7 @@ bool CS230::MAP_SATCollision::IsCollidingWith(GameObject* other_object)
         float minA, maxA;
         ProjectPolygon(poly_1, axis, minA, maxA);
 
+
         float minB, maxB;
         ProjectPolygon(poly_2, axis, minB, maxB);
 

@@ -8,13 +8,21 @@
 class Boss : public CS230::GameObject
 {
 public:
-	enum BossType
+	enum BossName //for jsonfile read
 	{
 		e,
+		y,
 		count
 	};
 
-	Boss(vec2 start_position, BossType type);
+	enum class BossType {
+		ChasingPlayer,   
+		Shooting,        
+		MultiInstance,   
+		MovingToLocation 
+	};
+
+	Boss(vec2 start_position, BossName name, BossType type);
 	GameObjectTypes Type() override { return GameObjectTypes::Boss; }
 	std::string TypeName() override { return "Boss"; }
 	void Update(double dt) override;
@@ -23,11 +31,32 @@ public:
 	bool CanCollideWith(GameObjectTypes) override;
 	void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
 	static void LoadBossfile();
-	void ReadBossJSON(BossType type);
+	void ReadBossJSON(BossName type);
 	void RunMusic();
 	void InitializeStates();
 
 private:
+
+	//class BossBehavior {
+	//public:
+	//	virtual void Update(Boss* boss, double dt) = 0; // Abstract method
+	//	virtual void Initialize(Boss* boss) = 0;        // For setup
+	//	virtual ~BossBehavior() = default;
+	//};
+
+	//void InitializeBehavior(BossType type); // Factory Method
+	
+	static void Check_BossBehavior(int targetEntryNum, GameObject* object);
+	//------
+	static void Movingtolocation_fun(int targetEntryNum, Boss* object);
+	static void Chasingplayer_fun(int targetEntryNum, Boss* object);
+	static void Shooting_fun(int targetEntryNum, Boss* object);
+	static void MultiInstance_fun(int targetEntryNum, Boss* object);
+
+	BossType bossType;
+	//std::unique_ptr<BossBehavior> behavior; // Polymorphic behavior
+
+
 	class State_CutScene : public State {
 	public:
 		virtual void Enter(GameObject* object) override;
