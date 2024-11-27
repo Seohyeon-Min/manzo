@@ -45,7 +45,10 @@ void Rock::ResolveCollision(GameObject* other_object)
             // maybe an error?
         }
 
-        this->SetVelocity({-1000, 0});
+        RockGroup* rockgroup = this->GetRockGroup();
+        for (auto& rock : rockgroup->GetRocks()) {
+            rock->PopBack({ -1, 0 }, 10);
+        }
 
     }
 }

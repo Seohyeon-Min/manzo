@@ -115,9 +115,13 @@ void RockGroup::ResolveCollision(GameObject* other_object)
         if (collision_edge == nullptr) {
             // maybe an error?
         }
-        for (auto& rock : this->GetRocks()) {
-            rock->Pop({-1, 0}, 10);
+        if (can_collide) {
+            for (auto& rock : this->GetRocks()) {
+                rock->Pop({ -1, 0 }, 10);
+            }
         }
+        can_collide = false;
+        
 
     }
 }

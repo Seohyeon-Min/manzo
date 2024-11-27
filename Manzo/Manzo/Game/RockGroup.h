@@ -46,6 +46,7 @@ public:
 	void SetPoints();
 
 private:
+	bool can_collide = true;
 	mat3 matrix;
 	std::vector<Rock*> rocks;	//one group
 	std::string index = "";

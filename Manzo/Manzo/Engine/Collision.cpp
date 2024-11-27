@@ -285,7 +285,7 @@ bool CS230::MAP_SATCollision::IsCollidingWith(GameObject* other_object)
             return false;
         }
         else {
-            vec2 point_1 = poly_1.vertices[i];
+            vec2 point_1 = poly_1.vertices[i % poly_1.vertexCount];
             vec2 point_2 = poly_1.vertices[(i + 1) % poly_1.vertexCount];
             colliding_edge = { point_1 ,point_2 };
         }
