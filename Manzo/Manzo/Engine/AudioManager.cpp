@@ -1,89 +1,205 @@
 #include "AudioManager.h"
 
-AudioManager::AudioManager() {
-    Init();
+#include "../FMOD/fmod.hpp"
+#include "../FMOD/fmod_errors.h"
+#include "../FMOD/fmod_studio.hpp"
+
+Implementation::Implementation() {
+	mpStudioSystem = NULL;
+	mpSystem = NULL;
+	AudioManager::ErrorCheck(FMOD::Studio::System::create(&mpStudioSystem));
+
+	// FMOD Studio 시스템 초기화
+	AudioManager::ErrorCheck(mpStudioSystem->initialize(
+		32,                                   // 최대 채널 수
+		FMOD_STUDIO_INIT_LIVEUPDATE,         // Studio 초기화 플래그
+		FMOD_INIT_NORMAL,                    // Low-level 초기화 플래그
+		nullptr                              // 드라이버 데이터 (NULL)
+	));
+
+	// Low-level 시스템 가져오기 (대체 방법)
+	AudioManager::ErrorCheck(mpStudioSystem->getCoreSystem(&mpSystem));
+
+	// Low-level 시스템을 사용한 작업 예제
+	int driverCount = 0;
+	AudioManager::ErrorCheck(mpSystem->getNumDrivers(&driverCount));
+	std::cout << "Available audio drivers: " << driverCount << std::endl;
 }
 
-AudioManager::~AudioManager() {
-    CleanUp();
+Implementation::~Implementation() {
+	AudioManager::ErrorCheck(mpStudioSystem->unloadAll());
+	AudioManager::ErrorCheck(mpStudioSystem->release());
 }
 
-bool AudioManager::Init() {
-    if (SDL_Init(SDL_INIT_AUDIO) < 0) {
-        std::cerr << "SDL_Init error: " << SDL_GetError() << std::endl;
-        return false;
-    }
-    if (Mix_Init(MIX_INIT_MP3 | MIX_INIT_OGG) == 0) {
-        std::cerr << "Mix_Init error: " << Mix_GetError() << std::endl;
-        //SDL_Quit();
-        return false;
-    }
-    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
-        std::cerr << "Mix_OpenAudio error: " << Mix_GetError() << std::endl;
-        Mix_Quit();
-        //SDL_Quit();
-        return false;
-    }
-    return true;
+void Implementation::Update() {
+	std::vector<ChannelMap::iterator> pStoppedChannels;
+	for (auto it = mChannels.begin(), itEnd = mChannels.end(); it != itEnd; ++it)
+	{
+		bool bIsPlaying = false;
+		it->second->isPlaying(&bIsPlaying);
+		if (!bIsPlaying)
+		{
+			pStoppedChannels.push_back(it);
+		}
+	}
+	for (auto& it : pStoppedChannels)
+	{
+		mChannels.erase(it);
+	}
+	AudioManager::ErrorCheck(mpStudioSystem->update());
 }
 
-void AudioManager::CleanUp() {
-    for (auto& sound : soundEffects) {
-        Mix_FreeChunk(sound.second);
-    }
-    for (auto& music : musicTracks) {
-        Mix_FreeMusic(music.second);
-    }
-    Mix_CloseAudio();
-    //Mix_Quit();
-    //SDL_Quit();
+Implementation* sgpImplementation = nullptr;
+
+AudioManager::AudioManager()
+{
+	sgpImplementation = new Implementation;
 }
 
-Mix_Chunk* AudioManager::LoadSound(const std::string& filePath, const std::string& name) {
-    Mix_Chunk* sound = Mix_LoadWAV(filePath.c_str());
-    if (sound) {
-        soundEffects[name] = sound;
-    }
-    return sound;
+AudioManager::~AudioManager()
+{
+	delete sgpImplementation;
 }
 
-Mix_Music* AudioManager::LoadMusic(const std::string& filePath, const std::string& name) {
-    Mix_Music* music = Mix_LoadMUS(filePath.c_str());
-    if (music) {
-        musicTracks[name] = music;
-    }
-    return music;
+void AudioManager::Update() {
+	sgpImplementation->Update();
 }
 
-void AudioManager::PlaySound(Mix_Chunk* sound, int loops) {
-    Mix_PlayChannel(-1, sound, loops);
+void AudioManager::LoadSound(const std::string& strSoundName, bool b3d, bool bLooping, bool bStream)
+{
+	auto tFoundIt = sgpImplementation->mSounds.find(strSoundName);
+	if (tFoundIt != sgpImplementation->mSounds.end())
+		return;
+	FMOD_MODE eMode = FMOD_DEFAULT;
+	eMode |= b3d ? FMOD_3D : FMOD_2D;
+	eMode |= bLooping ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF;
+	eMode |= bStream ? FMOD_CREATESTREAM : FMOD_CREATECOMPRESSEDSAMPLE;
+	FMOD::Sound* pSound = nullptr;
+	ErrorCheck(sgpImplementation->mpSystem->createSound(strSoundName.c_str(), eMode, nullptr, &pSound));
+	if (pSound) {
+		sgpImplementation->mSounds[strSoundName] = pSound;
+	}
 }
 
-void AudioManager::PlayMusic(Mix_Music* music, int loops) {
-    Mix_PlayMusic(music, loops);
+void AudioManager::UnLoadSound(const std::string& strSoundName)
+{
+	auto tFoundIt = sgpImplementation->mSounds.find(strSoundName);
+	if (tFoundIt == sgpImplementation->mSounds.end())
+		return;
+	ErrorCheck(tFoundIt->second->release());
+	sgpImplementation->mSounds.erase(tFoundIt);
 }
 
-void AudioManager::StopMusic() {
-    Mix_HaltMusic();
+int AudioManager::PlaySounds(const std::string& strSoundName, const vec3& vPosition, float fVolumedB)
+{
+	int nChannelId = sgpImplementation->mnNextChannelId++;
+	auto tFoundIt = sgpImplementation->mSounds.find(strSoundName);
+	if (tFoundIt == sgpImplementation->mSounds.end())
+	{
+		LoadSound(strSoundName);
+		tFoundIt = sgpImplementation->mSounds.find(strSoundName);
+		if (tFoundIt == sgpImplementation->mSounds.end())
+		{
+			return nChannelId;
+		}
+	}
+	FMOD::Channel* pChannel = nullptr;
+	ErrorCheck(sgpImplementation->mpSystem->playSound(tFoundIt->second, nullptr, true, &pChannel));
+	if (pChannel)
+	{
+		FMOD_MODE currMode;
+		tFoundIt->second->getMode(&currMode);
+		if (currMode & FMOD_3D) {
+			FMOD_VECTOR position = VectorToFmod(vPosition);
+			ErrorCheck(pChannel->set3DAttributes(&position, nullptr));
+		}
+		ErrorCheck(pChannel->setVolume(dbToVolume(fVolumedB)));
+		ErrorCheck(pChannel->setPaused(false));
+		sgpImplementation->mChannels[nChannelId] = pChannel;
+	}
+	return nChannelId;
 }
 
-//Mix_Music* AudioManager::GetMusic(const std::string& name) {
-//    auto it = musicTracks.find(name);
-//    if (it != musicTracks.end()) {
-//        return it->second;
-//    }
-//    else {
-//        std::cerr << "Error: Music track with name '" << name << "' not found." << std::endl;
-//        return nullptr;
-//    }
-//}
+void AudioManager::StopChannel(int nChannelId)
+{
+	auto tFoundIt = sgpImplementation->mChannels.find(nChannelId);
+	if (tFoundIt != sgpImplementation->mChannels.end()) {
+		ErrorCheck(tFoundIt->second->stop());
+		sgpImplementation->mChannels.erase(tFoundIt);
+	}
+}
 
-double AudioManager::GetCurrentMusicTime() {
-    if (Mix_PlayingMusic()) {
-        return Mix_GetMusicPosition(nullptr);  // 현재 음악의 재생 위치를 반환합니다.
-    }
-    else {
-        //std::cerr << "No music is currently playing." << std::endl;
-        return 0;
-    }
+void AudioManager::StopAllChannels()
+{
+	for (auto& channelPair : sgpImplementation->mChannels) {
+		ErrorCheck(channelPair.second->stop());
+	}
+	sgpImplementation->mChannels.clear();
+}
+
+void AudioManager::Set3dListenerAndOrientation(const vec3& vPosition, const vec3& vLook, const vec3& vUp) {
+	if (!sgpImplementation->mpSystem)
+		return;
+
+	FMOD_VECTOR position = VectorToFmod(vPosition);
+	FMOD_VECTOR forward = VectorToFmod(vLook);
+	FMOD_VECTOR up = VectorToFmod(vUp);
+
+	ErrorCheck(sgpImplementation->mpSystem->set3DListenerAttributes(0, &position, nullptr, &forward, &up));
+}
+
+void AudioManager::SetChannel3dPosition(int nChannelId, const vec3& vPosition)
+{
+	auto tFoundIt = sgpImplementation->mChannels.find(nChannelId);
+	if (tFoundIt == sgpImplementation->mChannels.end())
+		return;
+
+	FMOD_VECTOR position = VectorToFmod(vPosition);
+	ErrorCheck(tFoundIt->second->set3DAttributes(&position, NULL));
+}
+
+void AudioManager::SetChannelVolume(int nChannelId, float fVolumedB)
+{
+	auto tFoundIt = sgpImplementation->mChannels.find(nChannelId);
+	if (tFoundIt == sgpImplementation->mChannels.end())
+		return;
+
+	ErrorCheck(tFoundIt->second->setVolume(dbToVolume(fVolumedB)));
+}
+
+bool AudioManager::IsPlaying(int nChannelId) const
+{
+	auto tFoundIt = sgpImplementation->mChannels.find(nChannelId);
+	if (tFoundIt != sgpImplementation->mChannels.end()) {
+		bool bIsPlaying = false;
+		ErrorCheck(tFoundIt->second->isPlaying(&bIsPlaying));
+		return bIsPlaying;
+	}
+	return false;
+}
+
+FMOD_VECTOR AudioManager::VectorToFmod(const vec3& vPosition) {
+	FMOD_VECTOR fVec;
+	fVec.x = vPosition.x;
+	fVec.y = vPosition.y;
+	fVec.z = vPosition.z;
+	return fVec;
+}
+
+int AudioManager::ErrorCheck(FMOD_RESULT result) {
+	if (result != FMOD_OK) {
+		std::cout << "FMOD ERROR " << result << std::endl;
+		return 1;
+	}
+	return 0;
+}
+
+float AudioManager::dbToVolume(float dB)
+{
+	return powf(10.0f, 0.05f * dB);
+}
+
+float AudioManager::VolumeTodB(float volume)
+{
+	return 20.0f * log10f(volume);
 }

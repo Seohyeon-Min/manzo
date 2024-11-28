@@ -88,10 +88,8 @@ void Mode1::Load() {
     GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/test2.svg");
 
     //// audio
-    Mix_Music* sample = Engine::GetAudioManager().LoadMusic("assets/audios/back_temp.wav", "sample");
-    if (sample) {
-        Engine::GetAudioManager().PlayMusic(sample, -1);
-    }
+    Engine::GetAudioManager().LoadSound("assets/audios/back_temp.wav", "sample");
+    Engine::GetAudioManager().PlaySounds("assets/audios/back_temp.wav", vec3{ 0, 0, 0 }, Engine::GetAudioManager().VolumeTodB(1.0f));
 
     // Skill
     if (!Engine::Instance().GetTmpPtr())
@@ -160,6 +158,6 @@ void Mode1::Unload() {
     GetGSComponent<Background>()->Unload();
     Engine::GetRender().ClearDrawCalls();
 	ClearGSComponents();
-    Engine::GetAudioManager().StopMusic();
+    Engine::GetAudioManager().StopAllChannels();
     Engine::Instance().ResetSlowDownFactor();
 }
