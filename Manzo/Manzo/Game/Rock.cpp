@@ -57,11 +57,13 @@ void Rock::Pop(const vec2& direction, float speed) {
     vec2 normVec = Normalize(direction);
     vec2 velo = { normVec.x * speed, normVec.y * speed };
     SetVelocity(velo);
+    this->GetRockGroup()->SetVelocity(velo);
 }
 
 void Rock::PopBack(const vec2& direction, float speed) {
     vec2 velo = { Normalize(direction).x * speed, Normalize(direction).y * speed };
     SetVelocity(velo);
+    this->GetRockGroup()->SetVelocity(velo);
 
 }
 
@@ -76,12 +78,13 @@ bool Rock::IsRange(const vec2& current_position) {
 
 void Rock::State_Idle::Enter(GameObject* object) {
     Rock* rock = static_cast<Rock*>(object);
-    rock->SetVelocity({ 0, 0 });
     rock->Hit(false);
 }
 void Rock::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {}
 void Rock::State_Idle::CheckExit(GameObject* object) {
     Rock* rock = static_cast<Rock*>(object);
+    rock->SetVelocity({ 0, 0 });
+    rock->GetRockGroup()->SetVelocity({0, 0});
     if (rock->hit) {
         rock->change_state(&rock->state_pop);
     }
@@ -109,6 +112,7 @@ void Rock::State_PopBack::Enter(GameObject* object) {
     rock->Hit(false);
 }
 void Rock::State_PopBack::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
+    std::cout << "popping" << "\n";
     Rock* rock = static_cast<Rock*>(object);
     RockGroup* rockgroup = rock->GetRockGroup();
 

@@ -50,9 +50,9 @@ public:
 	RockGroup* GetRockGroup() { return rockgroup; }
 private:
 	bool hit = false;
-	float pop_speed = 500;
+	float pop_speed = 300;
 	float pop_back_speed = 300;
-	float range = 10;
+	float range = 50.f;
 	RockGroup* rockgroup;
 	Polygon poly;
 
