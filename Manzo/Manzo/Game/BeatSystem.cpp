@@ -1,7 +1,7 @@
 #include "BeatSystem.h"
 #include <iostream>
 
-double sync = 0.29;
+constexpr double sync = 0.29;
 
 Beat::Beat()
 {
@@ -35,7 +35,7 @@ void Beat::Update(double dt)
         time_taken = current_music_time + sync; 
     }
 
-    std::cout << time_taken << " : " << is_on_beat << std::endl;
+    //std::cout << time_taken << " : " << is_on_beat << std::endl;
 
     if (beat) {
         beat = false;

@@ -23,28 +23,48 @@ Ship::Ship(vec2 start_position) :
 
 void Ship::State_Idle::Enter(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
-    if (ship->direction != vec2{ 0,0 })
+    if (ship->GetVelocity() != vec2{})
         ship->SetVelocity(ship->direction * skidding_speed);
 }
 void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
     //get mouse pos and move to there
     Ship* ship = static_cast<Ship*>(object);
+    // 마우스 위치와 화면 중심 계산
     vec2 window = { Engine::window_width / 2, Engine::window_height / 2 };
     vec2 mouse_pos = { (float)Engine::GetInput().GetMousePos().mouseWorldSpaceX, (float)Engine::GetInput().GetMousePos().mouseWorldSpaceY };
     vec2 pos = mouse_pos - window;
-    vec2 destination{};
-    destination.x = pos.x;
-    destination.y = pos.y;
-    vec2 skidding_direction = { destination.x - (ship->GetPosition().x), destination.y - (ship->GetPosition().y) };
-    skidding_direction = skidding_direction.Normalize();
-    vec2 force = { (skidding_direction * skidding_speed) };
+
+    // 목적지와 방향 계산
+    vec2 destination = pos;
+    vec2 direction = destination - ship->GetPosition();
+    float distance = direction.Length(); // 거리 계산
+    direction = direction.Normalize();
+
+    // 거리 기반 force 조정
+    float force_multiplier = 0.0f;
+    float min_distance = 50.0f;  // 최소 거리
+    float max_distance = 200.0f; // 최대 거리
+
+    if (distance <= min_distance) {
+        force_multiplier = 0.0f; // 가까우면 힘을 적용하지 않음
+    }
+    else if (distance >= max_distance) {
+        force_multiplier = 1.0f; // 멀면 최대 힘 적용
+    }
+    else {
+        // 거리 비례로 힘을 선형적으로 조정
+        force_multiplier = (distance - min_distance) / (max_distance - min_distance);
+    }
+
+    // 힘 적용
+    vec2 force = direction * skidding_speed * force_multiplier;
     ship->SetVelocity(force);
 }
 void Ship::State_Idle::CheckExit(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
-    if (ship->hit_with) {
-        ship->change_state(&ship->state_hit);
-    }
+    //if (ship->hit_with) {
+    //    ship->change_state(&ship->state_hit);
+    //}
     if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT) && ship->beat->GetIsOnBeat()) {
         // Get mouse position relative to the center of the screen
         vec2 window = { Engine::window_width / 2, Engine::window_height / 2 };
@@ -88,11 +108,12 @@ std::vector<vec2> spline_points;
 
 void Ship::State_Hit::Enter(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
-    float maxSpeed = speed;
-    float minFactor = 10; 
-    float maxFactor = 70; 
 
-    float incoming_speed = ship->GetVelocity().Length(); 
+    float maxSpeed = speed;
+    float minFactor = 10;
+    float maxFactor = 70;
+
+    float incoming_speed = ship->GetVelocity().Length();
     ship->slow_down_factor = minFactor + (incoming_speed / maxSpeed) * (maxFactor - minFactor);
     Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
     ship->HitWithReef(ship->normal);
@@ -124,8 +145,8 @@ void Ship::State_Hit::CheckExit(GameObject* object) {
 
 void Ship::Update(double dt)
 {
-    if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT)) 
-        std::cout << "move!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+    //if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT)) 
+    //    std::cout << "move!!!!!!!!!!!!!!!!!!!!!!!!!\n";
     //std::cout << (!hit_with ? "can collide" : "no") << std::endl;
     //std::cout << (!set_dest && beat->GetIsOnBeat() && !move) << std::endl;
     GameObject::Update(dt);
@@ -296,8 +317,14 @@ void Ship::ResolveCollision(GameObject* other_object)
     if (!hit_with) { // is it needful?
         if (other_object->Type() == GameObjectTypes::Reef) {
 
-            hit_with = true;
+            if (GetVelocity().Length() <= skidding_speed + 30.f) { // if it was skidding, don't reflect
+                vec2 smallCorrection = -GetVelocity().Normalize();
+                UpdatePosition(smallCorrection);
+                //SetVelocity({});
+                return;
+            }
 
+            hit_with = true;
             Rock* rock = static_cast<Rock*>(other_object);
             std::vector<vec2> points = rock->GetRockGroup()->GetPoints();
             vec2 center = rock->GetRockGroup()->FindCenterPoly();
