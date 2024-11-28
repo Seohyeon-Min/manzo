@@ -45,11 +45,7 @@ void Mode1::Load() {
     //shader
     Engine::GetShaderManager().LoadShader("pixelate", "assets/shaders/default.vert", "assets/shaders/pixelate.frag");
 
-    //// audio
-    Mix_Music* sample = Engine::GetAudioManager().LoadMusic("assets/audios/100BPM_edm_temp.wav", "sample");
-    if (sample) {
-        Engine::GetAudioManager().PlayMusic(sample, -1);
-    }
+
 
     // component
     AddGSComponent(new CS230::GameObjectManager());
@@ -107,6 +103,12 @@ void Mode1::Load() {
         skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
         skill_ptr->SetShipPtr(ship_ptr);
     }
+
+    //// audio
+    Mix_Music* sample = Engine::GetAudioManager().LoadMusic("assets/audios/100BPM_edm_temp.wav", "sample");
+    if (sample) {
+        Engine::GetAudioManager().PlayMusic(sample, -1);
+    }
 }
 
 void Mode1::Update(double dt) {
@@ -149,7 +151,7 @@ void Mode1::Draw() {
     ui_manager->AddDrawCalls();
 
     // Draw Font
-     Engine::GetFontManager().PrintText("HI", { 0.f,0.f }, 0.0f, 0.001f, { 1.0f,1.0f,1.0f });
+     //Engine::GetFontManager().PrintText("HI", { 0.f,0.f }, 0.0f, 0.001f, { 1.0f,1.0f,1.0f });
 }
 
 void Mode1::Unload() {
