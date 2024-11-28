@@ -37,7 +37,8 @@ public:
 	//position & moving
 	void SetCenter();
 	vec2 Normalize(const vec2& vec);
-	bool IsRange(vec2 current_position);
+	void Hit(bool hit) { this->hit = hit; }
+	bool IsRange(const vec2& current_position);
 	void Pop(const vec2& direction, float speed);
 	void PopBack(const vec2& direction, float speed);
 
@@ -48,7 +49,38 @@ public:
 	void SetRockGroup(RockGroup* rockgroup) { this->rockgroup = rockgroup; }
 	RockGroup* GetRockGroup() { return rockgroup; }
 private:
-	float range = 4;
+	bool hit = false;
+	float pop_speed = 500;
+	float pop_back_speed = 300;
+	float range = 10;
 	RockGroup* rockgroup;
 	Polygon poly;
+
+	class State_Idle : public State {
+	public:
+		virtual void Enter(GameObject* object) override;
+		virtual void Update(GameObject* object, double dt) override;
+		virtual void CheckExit(GameObject* object) override;
+		std::string GetName() override { return "State_Idle"; }
+	};
+
+	class State_Pop : public State {
+	public:
+		virtual void Enter(GameObject* object) override;
+		virtual void Update(GameObject* object, double dt) override;
+		virtual void CheckExit(GameObject* object) override;
+		std::string GetName() override { return "State_Pop"; }
+	};
+
+	class State_PopBack : public State {
+	public:
+		virtual void Enter(GameObject* object) override;
+		virtual void Update(GameObject* object, double dt) override;
+		virtual void CheckExit(GameObject* object) override;
+		std::string GetName() override { return "State_PopBack"; }
+	};
+
+	State_Idle state_idle;
+	State_Pop state_pop;
+	State_PopBack state_popback;
 };

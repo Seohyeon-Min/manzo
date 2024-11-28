@@ -39,20 +39,14 @@ void RockPoint::ResolveCollision(GameObject* other_object)
 {
     if (other_object->Type() == GameObjectTypes::Rock) {
         Rock* rock = static_cast<Rock*>(other_object);
-        RockGroup* rockgroup = rock->GetRockGroup();
         if (this->GetIndex() == rock->GetPolygon().polyindex) {
             auto* collision_edge = this->GetGOComponent<CS230::MAP_SATCollision>();
             if (collision_edge == nullptr) {
                 // maybe an error?
             }
+            for (auto& rock : rock->GetRockGroup()->GetRocks()) {
+                rock->Hit(true);    // rock changes state to State_Pop
 
-            vec2 back_position = this->GetPosition();
-            vec2 point_position = rockgroup->GetPosition();
-
-            for (auto& rock : rockgroup->GetRocks()) {
-                vec2 direction = point_position - back_position;
-                float speed = 200;
-                rock->PopBack(direction, speed);
             }
         }
     }

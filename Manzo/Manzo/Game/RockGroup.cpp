@@ -121,14 +121,13 @@ void RockGroup::ResolveCollision(GameObject* other_object)
         if (collision_edge == nullptr) {
             // maybe an error?
         }
-        if (can_collide) {
+        if (this->can_collide) {
             for (auto& rock : this->GetRocks()) {
-                vec2 direction = { rockpoint->GetPosition() - this->GetPosition()};
-                float speed = 200;
-                rock->Pop(direction, speed);
+                rock->Hit(true);    // rock changes state to State_Pop
+                
             }
         }
-        can_collide = false;
+        this->can_collide = false;
         
 
     }

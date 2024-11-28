@@ -10,9 +10,14 @@ Created:    November 25, 2024
 
 #include "Rock.h"
 
-Rock::Rock(Polygon poly) :GameObject({ 0,0 }), poly(poly)
+Rock::Rock(Polygon poly) :GameObject({ 0,0 }), poly(poly), hit(false)
 {
     SetCenter();
+
+    if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
+        current_state = &state_idle;
+        current_state->Enter(this);
+    }
 }
 
 void Rock::Update(double dt)
@@ -55,50 +60,70 @@ void Rock::Pop(const vec2& direction, float speed) {
 }
 
 void Rock::PopBack(const vec2& direction, float speed) {
-    if (IsRange(this->GetPosition())) {
-        SetVelocity({ 0, 0 });
-    }
-    else{
-        vec2 velo = { Normalize(direction).x * speed, Normalize(direction).y * speed };
-        SetVelocity(velo);
-    }
-    
-    
+    vec2 velo = { Normalize(direction).x * speed, Normalize(direction).y * speed };
+    SetVelocity(velo);
+
 }
 
-//bool Rock::CanCollideWith(GameObjectTypes other_object)
-//{
-//    switch (other_object) {
-//    case GameObjectTypes::RockPoint:
-//        return true;
-//        break;
-//    }
-//    return false;
-//}
-//
-//void Rock::ResolveCollision(GameObject* other_object)
-//{
-//    if (other_object->Type() == GameObjectTypes::RockPoint) {
-//        RockPoint* rockpoint = static_cast<RockPoint*>(other_object);
-//        if (rockpoint->GetIndex() == poly.polyindex) {
-//            auto* collision_edge = this->GetGOComponent<CS230::MAP_SATCollision>();
-//            if (collision_edge == nullptr) {
-//                // maybe an error?
-//            }
-//            /*
-//            vec2 point_position = other_object->GetPosition();
-//            RockGroup* rockgroup = this->GetRockGroup();
-//            for (auto& rock : rockgroup->GetRocks()) {
-//                vec2 direction = -other_object->GetPosition();
-//                float speed = 200;
-//                rock->PopBack(direction, speed);
-//            }*/
-//        }
-//    }
-//}
-
-bool Rock::IsRange(vec2 current_position) {
+bool Rock::IsRange(const vec2& current_position) {
     vec2 distanceVec = current_position - vec2({0, 0});
     float distance = distanceVec.x * distanceVec.x + distanceVec.y * distanceVec.y;
     return distance <= range;
+}
+
+
+//==========================State==================================
+
+void Rock::State_Idle::Enter(GameObject* object) {
+    Rock* rock = static_cast<Rock*>(object);
+    rock->SetVelocity({ 0, 0 });
+    rock->Hit(false);
+}
+void Rock::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {}
+void Rock::State_Idle::CheckExit(GameObject* object) {
+    Rock* rock = static_cast<Rock*>(object);
+    if (rock->hit) {
+        rock->change_state(&rock->state_pop);
+    }
+}
+
+void Rock::State_Pop::Enter(GameObject* object) {
+    Rock* rock = static_cast<Rock*>(object);
+    rock->Hit(false);
+}
+void Rock::State_Pop::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
+    Rock* rock = static_cast<Rock*>(object);
+    RockGroup* rockgroup = rock->GetRockGroup();
+    vec2 direction = { rockgroup->GetRockPoint()->GetPosition() - rockgroup->GetPosition()};
+    rock->Pop(direction, rock->pop_speed);
+}
+void Rock::State_Pop::CheckExit(GameObject* object) {
+    Rock* rock = static_cast<Rock*>(object);
+    if (rock->hit) {
+        rock->change_state(&rock->state_popback);
+    }
+}
+
+void Rock::State_PopBack::Enter(GameObject* object) {
+    Rock* rock = static_cast<Rock*>(object);
+    rock->Hit(false);
+}
+void Rock::State_PopBack::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
+    Rock* rock = static_cast<Rock*>(object);
+    RockGroup* rockgroup = rock->GetRockGroup();
+
+    vec2 back_position = rockgroup->GetRockPoint()->GetPosition();
+    vec2 point_position = rockgroup->GetPosition();
+
+    for (auto& rock : rockgroup->GetRocks()) {
+        vec2 direction = point_position - back_position;
+        rock->PopBack(direction, rock->pop_back_speed);
+    }
+}
+
+void Rock::State_PopBack::CheckExit(GameObject* object) {
+    Rock* rock = static_cast<Rock*>(object);
+    if (rock->IsRange(rock->GetPosition())) {
+        rock->change_state(&rock->state_idle);
+    }
 }
