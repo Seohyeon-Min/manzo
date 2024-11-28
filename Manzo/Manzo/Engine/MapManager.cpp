@@ -126,11 +126,11 @@ void CS230::Map::ParseSVG(const std::string& filename) {
             if (std::regex_search(currentTag, match, circleRegex)) {
                 float x = 0;
                 float y = 0;
-                vec2 vec = { x, -y };
-                vec.x = std::stof(match[1].str());
+                
+                x = std::stof(match[1].str());
                 if (std::regex_search(currentTag, match, cyRegex)) {
-                    vec.y = std::stof(match[1].str());
-                    circle_position = vec;
+                    y = std::stof(match[1].str());
+                    
                     std::cout << "Circle position || cx: " << circle_position.x << ", cy: " << circle_position.y << std::endl;
                 }
                 else {
@@ -141,6 +141,8 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                     //std::cout << "Circle index : " << circleIndex << std::endl;
 
                 }
+                vec2 vec = { x, -y };
+                circle_position = vec;
             }
 
             //poly position
