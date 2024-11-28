@@ -27,6 +27,7 @@ public:
 	std::string TypeName() override { return "Rock Point"; }
 	void Update(double dt);
 	void Draw(); 
+	std::string GetIndex() { return index; }
 
 private:
 	std::string index = "";

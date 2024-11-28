@@ -14,7 +14,6 @@ RockPoint::RockPoint(vec2 position, std::string index) :GameObject({ 0,0 }), ind
 {
     SetPosition(position);
     AddGOComponent(new CS230::Sprite("assets/images/rockpoint_temp.spt", this));
-
 }
 
 void RockPoint::Update(double dt)

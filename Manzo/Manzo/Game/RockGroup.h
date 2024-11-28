@@ -22,7 +22,8 @@ Created:    November 25, 2024
 #include <vector>
 class Rock;
 class RockPoint;
-class RockGroup : public CS230::GameObject //group of polys
+
+class RockGroup : public CS230::GameObject
 {
 public:
 	RockGroup(const std::string& index);
@@ -36,8 +37,8 @@ public:
 	bool CanCollideWith(GameObjectTypes) override;
 	void ResolveCollision(GameObject* other_object);
 
-	void AddRockPoint(RockPoint* rockpoint) { rock_points.push_back(rockpoint); }
-	std::vector<RockPoint*>GetRockPoint() { return rock_points; }
+	void AddRockPoint(RockPoint* rockpoint) { rockpoint = rockpoint; }
+	RockPoint* GetRockPoint() { return rockpoint; }
 
 	void AddRock(Rock* rock) { rocks.push_back(rock); }
 	std::vector<Rock*> GetRocks() { return rocks; }

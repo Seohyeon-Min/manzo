@@ -95,7 +95,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
             if (std::regex_search(currentTag, match, transformRegex)) {
                 std::string transformStr = match[1].str();
                 std::cout << "" << std::endl;
-               
+                
 
                 // rotate
                 if (std::regex_search(transformStr, match, rotateRegex)) {
@@ -124,9 +124,13 @@ void CS230::Map::ParseSVG(const std::string& filename) {
             
             //circle
             if (std::regex_search(currentTag, match, circleRegex)) {
-                circle_position.x = std::stof(match[1].str());
+                float x = 0;
+                float y = 0;
+                vec2 vec = { x, -y };
+                vec.x = std::stof(match[1].str());
                 if (std::regex_search(currentTag, match, cyRegex)) {
-                    circle_position.y = std::stof(match[1].str());
+                    vec.y = std::stof(match[1].str());
+                    circle_position = vec;
                     std::cout << "Circle position || cx: " << circle_position.x << ", cy: " << circle_position.y << std::endl;
                 }
                 else {
@@ -134,7 +138,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 }
                 if (std::regex_search(currentTag, match, labelRegex)) {
                     circleIndex = match[1].str();
-                    std::cout << "Circle index : " << circleIndex << std::endl;
+                    //std::cout << "Circle index : " << circleIndex << std::endl;
 
                 }
             }
@@ -248,8 +252,8 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 std::cout << "-----------------------------" << std::endl;
 
                 // Rock Point
-                RockPoint* rockpoint = new RockPoint(circle_position, circleIndex);
-                Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockpoint);
+
+                
 
 
                 // Making RockGroups
@@ -281,14 +285,27 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                     }
                 }
 
+                // Add RockPoints to the Rock Group
+                //for (auto& group : rock_groups) {
+                //    if (group->GetIndex() == circleIndex) {//if index is equal
+                //        group->AddRockPoint(rockpoint);     //add point to the group
+
+                //        std::cout << "Circle Added to" << group->GetIndex() << "\n";
+                //    }
+                //}
+                    
+                       
+
                 
             }
             
             //std::cout << "vertex count : " << poly.vertexCount << std::endl;
             //std::cout << "poly count : " << poly.polycount << std::endl;
             
-
+            RockPoint* rockpoint = new RockPoint(circle_position, circleIndex);
+            Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockpoint);
             // Reset transforms for the next group
+            std::cout << "circle indexxxxxxxxxxxxx" << rockpoint->GetIndex() << "\n";
 
         }
         
