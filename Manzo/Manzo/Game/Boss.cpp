@@ -35,22 +35,35 @@ void Boss::Movingtolocation_fun(int targetEntryNum, Boss* object) {
 	}
 }
 void Boss::Chasingplayer_fun(int targetEntryNum, Boss* boss) {
-    if (targetEntryNum - 1 < boss->parttern.size()) {
-     const auto& entryVec = boss->parttern[targetEntryNum - 1];
-        for (const auto& entryData : entryVec) {
-            if (entryData.delay + 1 == boss->beat->GetDelayCount()) {
+
+	if (targetEntryNum - 1 < boss->parttern.size()) {
+		const auto& entryVec = boss->parttern[targetEntryNum - 1];
+		for (const auto& entryData : entryVec) {
+			if (entryData.delay + 1 == boss->beat->GetDelayCount()) {
 				Ship* ship = Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->GetGOComponent<Ship>();
 				if (ship == nullptr) {
 					Engine::GetLogger().LogError("Ship component not found");
 					return;
 				}
-				vec2 playerposition = ship->GetPosition();
-				boss->current_position = playerposition;
 
-				std::cout << "move " << std::endl;
-            }
-        }
-    }
+				vec2 playerPosition = ship->GetPosition();
+				vec2 bossPosition = boss->GetPosition();
+				vec2 directionToPlayer = playerPosition - bossPosition;
+
+				float distanceToPlayer = directionToPlayer.Length();				
+				if (distanceToPlayer > (boss->speed / 4)) {
+					directionToPlayer = directionToPlayer.Normalize(); 
+					boss->current_position = bossPosition + (directionToPlayer * (boss->speed/4));
+				}
+				else {
+					boss->current_position = playerPosition;
+				}
+
+				std::cout << "Boss is moving towards player. New position: ("
+					<< boss->current_position.x << ", " << boss->current_position.y << ")" << std::endl;
+			}
+		}
+	}
 }
 void Boss::Shooting_fun(int targetEntryNum, Boss* object) {
 
@@ -94,13 +107,13 @@ void Boss::State_CutScene::Update(GameObject* object, double dt) {
 }
 void Boss::State_CutScene::CheckExit(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
-
-	if (Engine::GetInput().KeyDown(CS230::Input::Keys::R)&& boss->beat->GetBeat()) {
+	if (Engine::GetInput().KeyDown(CS230::Input::Keys::R)) {
 		Mix_Music* e_music = Engine::GetAudioManager().LoadMusic(boss->mp3_file_name, "E_Music");
 		if (e_music) {
 			Engine::GetAudioManager().PlayMusic(e_music, -1);
 		}
 		boss->beat->SetBPM(boss->bpm);
+		std::cout <<"boss bpm:" << boss->bpm << std::endl;
 		boss->change_state(&boss->entry1);
 	}
 }
@@ -162,7 +175,7 @@ void Boss::InitializeStates() {
 
 void Boss::Update(double dt) {
 	GameObject::Update(dt);
-
+	
 	if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
 		
 		if (GameObject::current_state->GetName() != Boss::state_cutscene.GetName()) {
@@ -201,7 +214,7 @@ void Boss::Move(double dt) {
 
 	static float lerp_factor = 0.0f;  
 	lerp_factor += (float)dt * 0.1f;  
-	lerp_factor = std::min(lerp_factor, 2.0f); 
+	lerp_factor = std::min(lerp_factor, 5.0f); 
 
 	vec2 lerped_position = Lerp(GetPosition(), current_position, lerp_factor);
 

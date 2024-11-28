@@ -115,5 +115,6 @@ private:
 	std::vector<int> Boss_procedural;
 	vec2 current_position;
 	float speed = 400;
+
 };
 
