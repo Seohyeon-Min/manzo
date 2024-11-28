@@ -42,7 +42,7 @@
    
      
      <g
-   id="g2-1-1"
+   id="g2-2-2"
    transform="translate(-412.55588,549.2625)"
    inkscape:label="g2-2-2">
    <path
@@ -100,7 +100,7 @@
    cx="616.20673"
    cy="177.77567"
    r="5"
-   inkscape:label="g2-2-1p" />
+   inkscape:label="g2-2-1" />
    </g>
   <circle
    style="fill:#28bed7;stroke:#738823;stroke-width:0.781"
@@ -108,6 +108,6 @@
    cx="-78.217804"
    cy="153.55717"
    r="5"
-   inkscape:label="g2-2-2p" />
+   inkscape:label="g2-2-2" />
    </g>
        </svg>

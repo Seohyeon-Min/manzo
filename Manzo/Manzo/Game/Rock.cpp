@@ -73,17 +73,23 @@ bool Rock::CanCollideWith(GameObjectTypes other_object)
 void Rock::ResolveCollision(GameObject* other_object)
 {
     if (other_object->Type() == GameObjectTypes::RockPoint) {
-        auto* collision_edge = this->GetGOComponent<CS230::MAP_SATCollision>();
-        if (collision_edge == nullptr) {
-            // maybe an error?
+        RockPoint* rockpoint = static_cast<RockPoint*>(other_object);
+        if (rockpoint->GetIndex() == poly.polyindex) {
+            auto* collision_edge = this->GetGOComponent<CS230::MAP_SATCollision>();
+            if (collision_edge == nullptr) {
+                // maybe an error?
+            }
+            vec2 point_position = other_object->GetPosition();
+            RockGroup* rockgroup = this->GetRockGroup();
+            for (auto& rock : rockgroup->GetRocks()) {
+                vec2 direction = other_object->GetPosition() - rock->GetPosition();
+                //vec2 direction = {1, 0};
+                float speed = 1000;
+                rock->PopBack(direction, speed);
+            }
         }
-        vec2 point_position = other_object->GetPosition();
-        RockGroup* rockgroup = this->GetRockGroup();
-        for (auto& rock : rockgroup->GetRocks()) {
-            vec2 direction = rock->GetPosition() - rockgroup->GetRockPoint()->GetPosition();
-            float speed = 1000;
-            rock->PopBack(direction, speed);
-        }
+
+        
 
     }
 }

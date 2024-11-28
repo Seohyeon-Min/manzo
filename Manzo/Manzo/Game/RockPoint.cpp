@@ -10,9 +10,8 @@ Created:    November 25, 2024
 
 #include "RockPoint.h"
 
-RockPoint::RockPoint(vec2 position, std::string index) :GameObject({ 0,0 }), index(index)
+RockPoint::RockPoint(vec2 position, std::string index) :GameObject(position), index(index)
 {
-    SetPosition(position);
     AddGOComponent(new CS230::Sprite("assets/images/rockpoint_temp.spt", this));
 }
 

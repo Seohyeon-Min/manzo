@@ -117,7 +117,9 @@ void RockGroup::ResolveCollision(GameObject* other_object)
         }
         if (can_collide) {
             for (auto& rock : this->GetRocks()) {
-                vec2 direction = {-1, 0};
+                vec2 direction = rockpoint->GetPosition();
+                //vec2 direction = { rockpoint->GetPosition().x - rock->GetPosition().x, 0 };
+                //vec2 direction = {-1, 0};
                 float speed = 1000;
                 rock->Pop(direction, speed);
             }

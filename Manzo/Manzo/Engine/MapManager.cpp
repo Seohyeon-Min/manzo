@@ -287,14 +287,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                     }
                 }
 
-                // Add RockPoints to the Rock Group
-                //for (auto& group : rock_groups) {
-                //    if (group->GetIndex() == circleIndex) {//if index is equal
-                //        group->AddRockPoint(rockpoint);     //add point to the group
-
-                //        std::cout << "Circle Added to" << group->GetIndex() << "\n";
-                //    }
-                //}
+                
                     
                        
 
@@ -308,6 +301,13 @@ void CS230::Map::ParseSVG(const std::string& filename) {
             Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockpoint);
             // Reset transforms for the next group
             std::cout << "circle indexxxxxxxxxxxxx" << rockpoint->GetIndex() << "\n";
+
+             //Add RockPoints to the Rock Group
+            for (auto& group : rock_groups) {
+                if (group->GetIndex() == circleIndex) {//if index is equal
+                    group->AddRockPoint(rockpoint);     //add point to the group
+                }
+            }
 
         }
         
