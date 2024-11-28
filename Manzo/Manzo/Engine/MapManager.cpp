@@ -57,6 +57,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
     bool IsRotate = false;
     bool IsinGroup = false; 
     std::string polyIndex;
+    std::string circleIndex;
 
     while (std::getline(file, line)) {
         currentTag += line;
@@ -107,7 +108,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
 
                    
                 }
-                // translat
+                // translate
                 else if (std::regex_search(transformStr, match, translateRegex)) {
                     rotateAngle = 0;
                     rotatetranslate = { 0, 0 };
@@ -132,8 +133,8 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                     //std::cerr << "Error: cy not found for circle with cx: " << circle_position.x << std::endl;
                 }
                 if (std::regex_search(currentTag, match, labelRegex)) {
-                    circle_index = match[1].str();
-                    std::cout << "Circle index : " << circle_index << std::endl;
+                    circleIndex = match[1].str();
+                    std::cout << "Circle index : " << circleIndex << std::endl;
 
                 }
             }
@@ -246,7 +247,8 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 std::cout << "poly index : " << poly.polyindex << std::endl;
                 std::cout << "-----------------------------" << std::endl;
 
-                RockPoint* rockpoint = new RockPoint(circle_position);
+                // Rock Point
+                RockPoint* rockpoint = new RockPoint(circle_position, circleIndex);
                 Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockpoint);
 
 
