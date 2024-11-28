@@ -38,7 +38,7 @@ void Boss::Chasingplayer_fun(int targetEntryNum, Boss* boss) {
     if (targetEntryNum - 1 < boss->parttern.size()) {
      const auto& entryVec = boss->parttern[targetEntryNum - 1];
         for (const auto& entryData : entryVec) {
-            if (entryData.delay + 1 == boss->beat->GetDelayCount()&&boss->beat->GetBeat()) {
+            if (entryData.delay + 1 == boss->beat->GetDelayCount()) {
 				Ship* ship = Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->GetGOComponent<Ship>();
 				if (ship == nullptr) {
 					Engine::GetLogger().LogError("Ship component not found");
@@ -200,8 +200,8 @@ void Boss::Move(double dt) {
 	vec2 force = direction * speed;
 
 	static float lerp_factor = 0.0f;  
-	lerp_factor += (float)dt * 0.5f;  
-	lerp_factor = std::min(lerp_factor, 1.0f); 
+	lerp_factor += (float)dt * 0.1f;  
+	lerp_factor = std::min(lerp_factor, 2.0f); 
 
 	vec2 lerped_position = Lerp(GetPosition(), current_position, lerp_factor);
 
