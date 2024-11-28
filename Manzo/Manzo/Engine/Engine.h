@@ -94,12 +94,12 @@ private:
     double accumulator;
     void* tmp_ptr = nullptr;
 
+    ShaderManager shadermanager;
+    AudioManager audiomanager;
     CS230::Logger logger;
     CS230::GameStateManager gamestatemanager;
     CS230::Input input;
     CS230::TextureManager texturemanager;
     CS230::Render render;
-    ShaderManager shadermanager;
-    AudioManager audiomanager;
     FontManager fontmanager;
 };

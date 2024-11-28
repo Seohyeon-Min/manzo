@@ -47,6 +47,7 @@ private:
     Boss* boss_ptr;
     UIManager* ui_manager;
     CS230::Cam* camera;
+    Beat* beat_system;
     Skillsys* skill_ptr;
     Skillsys::Skill_Net* Net_ptr;
 

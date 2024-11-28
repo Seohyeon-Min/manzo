@@ -13,6 +13,7 @@ Updated:    03/14/2024
 #pragma once
 #include "GameState.h"
 #include <vector>
+#include <thread>
 
 namespace CS230 {
     class GameStateManager {

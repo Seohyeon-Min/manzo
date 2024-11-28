@@ -42,14 +42,14 @@ void Mode1::Load() {
     AddGSComponent(new CS230::ShowCollision());
 #else
 #endif
+
     //shader
     Engine::GetShaderManager().LoadShader("pixelate", "assets/shaders/default.vert", "assets/shaders/pixelate.frag");
 
-
-
     // component
     AddGSComponent(new CS230::GameObjectManager());
-    AddGSComponent(new Beat());
+    beat_system = new Beat();
+    AddGSComponent(beat_system);
     AddGSComponent(new CS230::Map());
 
     //// ship
@@ -105,10 +105,8 @@ void Mode1::Load() {
     }
 
     //// audio
-    Mix_Music* sample = Engine::GetAudioManager().LoadMusic("assets/audios/100BPM_edm_temp.wav", "sample");
-    if (sample) {
-        Engine::GetAudioManager().PlayMusic(sample, -1);
-    }
+    Engine::GetAudioManager().LoadMusic("assets/audios/100BPM_edm_temp.wav", "sample");
+    beat_system->LoadMusicToSync("sample");
 }
 
 void Mode1::Update(double dt) {

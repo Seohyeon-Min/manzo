@@ -5,27 +5,37 @@ double sync = 0.29;
 
 Beat::Beat()
 {
-    audio = Engine::GetGameStateManager().GetGSComponent<AudioManager>();
+    audio = &Engine::GetAudioManager();
     fixed_duration = 60.0 / BPM;
-    duration += sync; 
+    duration; 
     delay_duration = fixed_duration / 4 ;
     current_delay_duration = delay_duration ;
 }
 
+void Beat::LoadMusicToSync(std::string music_name)
+{
+    music = audio->GetMusic(music_name);
+}
 //0.29
 
 void Beat::Update(double dt)
 {
+
     //std::cout << is_on_beat << std::endl;
     //audio->GetCurrentMusicTime();
+    if (!music_started && music) {
+        // 비트 시스템이 준비되었을 때 음악 재생 시작
+        audio->PlayMusic(music ,-1); // 무한 루프 재생
+        music_started = true;       // 음악 재생 상태 갱신
+    }
 
-    double current_music_time = Engine::GetAudioManager().GetCurrentMusicTime();
+    double current_music_time = audio->GetCurrentMusicTime();
 
     if (current_music_time > 0.0) { 
         time_taken = current_music_time + sync; 
     }
 
-    std::cout << time_taken << " : " << delay_count << std::endl;
+    std::cout << time_taken << " : " << is_on_beat << std::endl;
 
     if (beat) {
         beat = false;
@@ -61,6 +71,8 @@ void Beat::Update(double dt)
     }
 }
 
+
+
 void Beat::SetBPM(int set_BPM)
 {
     BPM = set_BPM;
@@ -73,4 +85,6 @@ void Beat::SetBPM(int set_BPM)
     delay_count = 0;
     beat = false;
     is_on_beat = false;
+    music_started = false;
+    music = nullptr;
 }
