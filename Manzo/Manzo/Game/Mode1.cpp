@@ -62,12 +62,6 @@ void Mode1::Load() {
     background = new Background();
     AddGSComponent(background);    
 
-    //// audio
-    Mix_Music* sample = Engine::GetAudioManager().LoadMusic("assets/audios/back_temp.wav", "sample");
-    if (sample) {
-        Engine::GetAudioManager().PlayMusic(sample, -1);
-    }
-
     //// to generate fish
     fishGenerator = new FishGenerator();
     Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
@@ -92,6 +86,12 @@ void Mode1::Load() {
 
     // Map
     GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/test2.svg");
+
+    //// audio
+    Mix_Music* sample = Engine::GetAudioManager().LoadMusic("assets/audios/back_temp.wav", "sample");
+    if (sample) {
+        Engine::GetAudioManager().PlayMusic(sample, -1);
+    }
 
     // Skill
     if (!Engine::Instance().GetTmpPtr())
