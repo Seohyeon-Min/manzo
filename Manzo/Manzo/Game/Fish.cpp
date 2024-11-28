@@ -154,11 +154,11 @@ float BackgroundFish::PointToSegmentDistance(const vec2& point, const vec2& segm
 
 	float segmentLengthSquared = magnitude_squared(segmentDir);
 	if (segmentLengthSquared == 0.0f) {
-		return toPoint.Length();  // ¼±ºÐÀÇ ±æÀÌ°¡ 0ÀÌ¸é Á¡°ú ¼±ºÐÀÇ °Å¸®´Â Á¡°ú Á¡ »çÀÌÀÇ °Å¸®
+		return toPoint.Length();  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½ 0ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½
 	}
 
 	float projection = dot(toPoint, segmentDir) / segmentLengthSquared;
-	projection = std::clamp(projection, 0.0f, 1.0f);  // [0, 1] ¹üÀ§·Î Å¬·¥ÇÁ
+	projection = std::clamp(projection, 0.0f, 1.0f);  // [0, 1] ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½
 
 	vec2 closestPoint = segmentStart + projection * segmentDir;
 	return (point - closestPoint).Length();
@@ -251,37 +251,37 @@ void BackgroundFish::Update(double dt) {
 		}
 	}
 
-	//rockÀÌ ÀÖ´Â ³»ºÎ¸¦ map tile triangle rasterization bounding box¸¶³É °³ÀÛÀº »ç°¢Çüµé·Î ÂÉ°³¼­ 
-	//³»ºÎ´Â 1, ¿ÜºÎ´Â 0 ÇÏ°í 0ÀÎ °æ·Î·Î¸¸ ÀÌµ¿ÇÏµµ·Ï ÇÏ¸é ÁÁÀ» °Å °°Àºµ¥
-	//¾à°£ Áö·ÚÃ£±â ´À³¦?
+	//rockï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Î¸ï¿½ map tile triangle rasterization bounding boxï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ç°¢ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½É°ï¿½ï¿½ï¿½ 
+	//ï¿½ï¿½ï¿½Î´ï¿½ 1, ï¿½ÜºÎ´ï¿½ 0 ï¿½Ï°ï¿½ 0ï¿½ï¿½ ï¿½ï¿½Î·Î¸ï¿½ ï¿½Ìµï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	//ï¿½à°£ ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½?
 
 	auto rocks = Engine::GetGameStateManager().GetGSComponent<CS230::Map>()->GetRock();
 	for (auto& rock : rocks) {
-		auto polygon = rock.GetPolygon();  // ¹ÙÀ§ÀÇ ´Ù°¢Çü ²ÀÁþÁ¡µé °¡Á®¿À±â
+		auto polygon = rock.GetPolygon();  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		float minDistanceToRock = std::numeric_limits<float>::max();
 
-		// ¹°°í±â Áß½É°ú ¹ÙÀ§ ´Ù°¢Çü °£ÀÇ ÃÖ¼Ò °Å¸® °è»ê
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß½É°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ ï¿½Å¸ï¿½ ï¿½ï¿½ï¿½
 		for (size_t i = 0; i < polygon.vertices.size(); ++i) {
 			vec2 p1 = polygon.vertices[i];
-			vec2 p2 = polygon.vertices[(i + 1) % polygon.vertices.size()];  // ÀÎÁ¢ÇÑ µÎ ²ÀÁþÁ¡
+			vec2 p2 = polygon.vertices[(i + 1) % polygon.vertices.size()];  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-			// ¹°°í±â Áß½É¿¡¼­ ÇöÀç µÎ ²ÀÁþÁ¡ »çÀÌÀÇ ÃÖ¼Ò °Å¸® °è»ê
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß½É¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ ï¿½Å¸ï¿½ ï¿½ï¿½ï¿½
 			float dist = PointToSegmentDistance(GetPosition(), p1, p2);
 			minDistanceToRock = std::min(minDistanceToRock, dist);
 		}
 
-		// ¹ÙÀ§¿ÍÀÇ ÃÖ¼Ò °Å¸®°¡ ÀÏÁ¤ ¹üÀ§ ÀÌ³»ÀÏ °æ¿ì ÇÇÇÏ´Â ·ÎÁ÷
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ ï¿½Å¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½
 		if (minDistanceToRock < separationDistance * 2.0f) {
 			vec2 toRock = rock.GetPosition() - GetPosition();
 			vec2 avoidanceDirection = -toRock.Normalize();
 
-			// ÇÇÇÏ´Â ÈûÀ» Àû¿ëÇÏ¿© ¼Óµµ °è»ê
+			// ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Óµï¿½ ï¿½ï¿½ï¿½
 			vec2 avoidanceForce = avoidanceDirection * separationWeight * reefAvoidanceWeight;
 
-			// ÇöÀç ¼Óµµ¿¡ ÇÇÇÏ´Â ÈûÀ» ´õÇÏ¿© »õ·Î¿î ¼Óµµ °è»ê
+			// ï¿½ï¿½ï¿½ï¿½ ï¿½Óµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½Óµï¿½ ï¿½ï¿½ï¿½
 			vec2 newVelocity = GetVelocity() + avoidanceForce;
 
-			// »õ·Î¿î ¼Óµµ·Î ¹°°í±âÀÇ ¼Óµµ ¼³Á¤
+			// ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½Óµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Óµï¿½ ï¿½ï¿½ï¿½ï¿½
 			SetVelocity(newVelocity * baseSpeed);
 		}
 	}

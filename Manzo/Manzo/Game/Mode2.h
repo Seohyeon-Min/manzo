@@ -39,6 +39,7 @@ private:
     Ship* ship_ptr;
     Background* background;
     Skillsys* skill_ptr;
+    UIManager* ui_manager;
 
     float y_limit = 15.0f;
     float frequency = 0.9f;

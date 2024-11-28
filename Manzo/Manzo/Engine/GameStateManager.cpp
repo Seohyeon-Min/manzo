@@ -41,6 +41,9 @@ bool CS230::GameStateManager::HasGameEnded() {
 }
 
 void CS230::GameStateManager::Update(double dt) {
+    static std::atomic<bool> isLoading{ false }; // 로딩 상태 플래그
+    static std::thread loadingThread;
+
     switch (status) {
     case Status::STARTING:
 
@@ -56,6 +59,7 @@ void CS230::GameStateManager::Update(double dt) {
         Engine::GetLogger().LogEvent("Load " + current_gamestate->GetName());
         current_gamestate->Load();
         Engine::GetLogger().LogEvent("Load Complete");
+
         status = Status::UPDATING;
         break;
     case Status::UPDATING:

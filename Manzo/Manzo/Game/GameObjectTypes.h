@@ -22,3 +22,5 @@ enum class GameObjectTypes {
     Boss,
     Count
 };
+
+bool IsPixelShaderApplicable(GameObjectTypes type);

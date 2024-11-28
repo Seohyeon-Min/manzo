@@ -78,6 +78,7 @@
   <ItemGroup>
     <ClCompile Include="source\Camera.cpp" />
     <ClCompile Include="source\CameraView.cpp" />
+    <ClCompile Include="source\GLBuffers.cpp" />
     <ClCompile Include="source\GLApp.cpp" />
     <ClCompile Include="source\glCheck.cpp" />
     <ClCompile Include="source\GLIndexBuffer.cpp" />
@@ -90,12 +91,14 @@
     <ClCompile Include="source\Random.cpp" />
     <ClCompile Include="source\stb_image_impl.cpp" />
     <ClCompile Include="source\vec2.cpp" />
+    <ClCompile Include="source\GLVertexBufferLayout.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\angles.h" />
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\CameraView.h" />
     <ClInclude Include="include\color3.h" />
+    <ClInclude Include="include\GLBuffers.h" />
     <ClInclude Include="include\GLApp.h" />
     <ClInclude Include="include\glCheck.h" />
     <ClInclude Include="include\GLHandle.h" />
@@ -113,6 +116,7 @@
     <ClInclude Include="include\to_span.h" />
     <ClInclude Include="include\vec2.h" />
     <ClInclude Include="include\vec3.h" />
+    <ClInclude Include="include\GLVertexBufferLayout.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

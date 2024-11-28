@@ -116,6 +116,14 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Game\RockPoint.cpp">
+    </ClCompile>
+    <ClCompile Include="Engine\Font.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\FontManager.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\AI.cpp">
       <Filter>Game</Filter>
     </ClCompile>
   </ItemGroup>
@@ -281,6 +289,21 @@
     </ClInclude>
     <ClInclude Include="Game\RockPoint.h">
       <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Font.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\FontManager.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Fonts.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\AI.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AABB.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

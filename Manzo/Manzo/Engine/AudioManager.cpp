@@ -55,6 +55,18 @@ Mix_Music* AudioManager::LoadMusic(const std::string& filePath, const std::strin
     return music;
 }
 
+Mix_Music* AudioManager::GetMusic(const std::string& name) const
+{
+    auto it = musicTracks.find(name);
+    if (it != musicTracks.end()) {
+        return it->second; // 해당 이름의 음악 반환
+    }
+    else {
+        std::cerr << "Music track not found: " << name << std::endl;
+        return nullptr; // 찾지 못하면 nullptr 반환
+    }
+}
+
 void AudioManager::PlaySound(Mix_Chunk* sound, int loops) {
     Mix_PlayChannel(-1, sound, loops);
 }
@@ -86,4 +98,9 @@ double AudioManager::GetCurrentMusicTime() {
         //std::cerr << "No music is currently playing." << std::endl;
         return 0;
     }
+}
+
+bool AudioManager::IsMusicPlaying() {
+    // SDL_mixer의 Mix_PlayingMusic() 함수로 확인
+    return Mix_PlayingMusic() == 1;
 }

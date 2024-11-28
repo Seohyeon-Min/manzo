@@ -14,8 +14,8 @@
 #include <sstream>
 #include <SDL2/SDL_mouse.h>
 
-#include <chrono>   // 시간 계산을 위한 chrono 헤더
-#include <thread>   // sleep_for를 사용하기 위한 thread 헤더
+#include <chrono> 
+#include <thread>
 
 namespace
 {
@@ -121,11 +121,9 @@ GLApp::~GLApp()
 void GLApp::Update() {
     using namespace std::chrono;
 
-    // 1. 프레임 시작 시간 기록
     static system_clock::time_point last_frame_time = system_clock::now();
     const double target_frame_time = 1.0 / 240;
 
-    // 2. 이벤트 처리
     SDL_Event event{ 0 };
     while (SDL_PollEvent(&event) != 0) {
         ImGuiHelper::FeedEvent(event);
@@ -135,14 +133,12 @@ void GLApp::Update() {
         }
     }
 
-    // 3. 업데이트 및 렌더링
     ptr_program->Update();
     ImGuiHelper::Begin();
     ptr_program->ImGuiDraw();
     ImGuiHelper::End(ptr_window, gl_context);
     SDL_GL_SwapWindow(ptr_window);
 
-    // 4. FPS 제한 로직
     system_clock::time_point now = system_clock::now();
     double frame_duration = duration<double>(now - last_frame_time).count();
 
@@ -150,7 +146,6 @@ void GLApp::Update() {
         std::this_thread::sleep_for(duration<double>(target_frame_time - frame_duration));
     }
 
-    // 5. 다음 프레임 시작 시간 기록
     last_frame_time = system_clock::now();
 }
 
