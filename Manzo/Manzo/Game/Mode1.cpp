@@ -73,12 +73,12 @@ void Mode1::Load() {
     Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
 
 
-    background->Add("assets/images/background/temp_background.png", 0.0f);
+    background->Add("assets/images/background/temp_background.png", 0.0f);/*
     background->Add("assets/images/background/bg1.png", 0.3f);
     background->Add("assets/images/background/bg2.png", 0.4f);
     background->Add("assets/images/background/bg3.png", 0.5f);
     background->Add("assets/images/background/bg4.png", 0.6f);
-    background->Add("assets/images/background/bg5.png", 0.7f);
+    background->Add("assets/images/background/bg5.png", 0.7f);*/
     /*
     GetGSComponent<Background>()->Add("assets/images/background/bg_rock4.png", 0.4f);
     GetGSComponent<Background>()->Add("assets/images/background/bg_rock2.png", 0.5f);
