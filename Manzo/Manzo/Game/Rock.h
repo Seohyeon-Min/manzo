@@ -37,7 +37,7 @@ public:
 	//position & moving
 	void SetCenter();
 	vec2 Normalize(const vec2& vec);
-	bool IsRange(vec2& current_position);
+	bool IsRange(vec2 current_position);
 	void Pop(const vec2& direction, float speed);
 	void PopBack(const vec2& direction, float speed);
 
@@ -49,7 +49,6 @@ public:
 	RockGroup* GetRockGroup() { return rockgroup; }
 private:
 	float range = 4;
-	vec2 start_position;
 	RockGroup* rockgroup;
 	Polygon poly;
 };

@@ -13,6 +13,11 @@ Created:    November 25, 2024
 RockGroup::RockGroup(const std::string& index) :GameObject({ 0,0 }), index(index)
 {}
 
+RockGroup::~RockGroup() {
+    rocks.clear();
+    delete this->rockpoint;
+}
+
 void RockGroup::Update(double dt)
 {
     CS230::GameObject::Update(dt);
@@ -69,6 +74,7 @@ vec2 RockGroup::FindCenterRect() {  // Calculate texture's position.
     }
     center.x = (minPoint.x + maxPoint.x) / 2;
     center.y = (minPoint.y + maxPoint.y) / 2;
+    this->start_position = center;
     return center;
 }
 
@@ -117,10 +123,8 @@ void RockGroup::ResolveCollision(GameObject* other_object)
         }
         if (can_collide) {
             for (auto& rock : this->GetRocks()) {
-                vec2 direction = rockpoint->GetPosition();
-                //vec2 direction = { rockpoint->GetPosition().x - rock->GetPosition().x, 0 };
-                //vec2 direction = {-1, 0};
-                float speed = 1000;
+                vec2 direction = { rockpoint->GetPosition() - this->GetPosition()};
+                float speed = 200;
                 rock->Pop(direction, speed);
             }
         }

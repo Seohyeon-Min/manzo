@@ -12,7 +12,7 @@ Created:    November 25, 2024
 
 Rock::Rock(Polygon poly) :GameObject({ 0,0 }), poly(poly)
 {
-    //this->SetCenter();  //set rock positions
+    SetCenter();
 }
 
 void Rock::Update(double dt)
@@ -35,7 +35,7 @@ void Rock::SetCenter() {
     }
     center.x /= vertices.size();
     center.y /= vertices.size();
-    SetPosition(center);
+    
 }
 vec2 Rock::Normalize(const vec2& vec) {
     float length = std::sqrt(vec.x * vec.x + vec.y * vec.y);
@@ -57,6 +57,9 @@ void Rock::Pop(const vec2& direction, float speed) {
 void Rock::PopBack(const vec2& direction, float speed) {
     vec2 velo = { Normalize(direction).x * speed, Normalize(direction).y * speed };
     SetVelocity(velo);
+    if (IsRange(this->GetPosition())) {
+        SetVelocity({ 0, 0 });
+    }
 }
 
 bool Rock::CanCollideWith(GameObjectTypes other_object)
@@ -79,23 +82,20 @@ void Rock::ResolveCollision(GameObject* other_object)
             if (collision_edge == nullptr) {
                 // maybe an error?
             }
+            SetVelocity({ 0, 0 });/*
             vec2 point_position = other_object->GetPosition();
             RockGroup* rockgroup = this->GetRockGroup();
             for (auto& rock : rockgroup->GetRocks()) {
-                vec2 direction = other_object->GetPosition() - rock->GetPosition();
-                //vec2 direction = {1, 0};
-                float speed = 1000;
+                vec2 direction = rock->GetPosition() - other_object->GetPosition();
+                float speed = 1005;
                 rock->PopBack(direction, speed);
-            }
+            }*/
         }
-
-        
-
     }
 }
 
-bool Rock::IsRange(vec2& current_position) {
-    vec2 distanceVec = current_position - start_position;
+bool Rock::IsRange(vec2 current_position) {
+    vec2 distanceVec = current_position - vec2({0, 0});
     float distance = distanceVec.x * distanceVec.x + distanceVec.y * distanceVec.y;
     return distance <= range;
 }

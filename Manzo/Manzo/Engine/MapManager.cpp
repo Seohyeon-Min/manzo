@@ -68,7 +68,6 @@ void CS230::Map::ParseSVG(const std::string& filename) {
             Polygon poly;
 
             
-            // Rock Point
            
 
             //g id
@@ -297,17 +296,23 @@ void CS230::Map::ParseSVG(const std::string& filename) {
             //std::cout << "vertex count : " << poly.vertexCount << std::endl;
             //std::cout << "poly count : " << poly.polycount << std::endl;
             
-            RockPoint* rockpoint = new RockPoint(circle_position, circleIndex);
-            Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockpoint);
-            // Reset transforms for the next group
-            std::cout << "circle indexxxxxxxxxxxxx" << rockpoint->GetIndex() << "\n";
+            if (circle_position.x != 0.f && circle_position.y != 0.f && circleIndex != "") {
+                RockPoint* rockpoint = new RockPoint(circle_position, circleIndex);
+                Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockpoint);
+                std::cout << "New Circle! " << "\n";
 
-             //Add RockPoints to the Rock Group
-            for (auto& group : rock_groups) {
-                if (group->GetIndex() == circleIndex) {//if index is equal
-                    group->AddRockPoint(rockpoint);     //add point to the group
+                for (auto& group : rock_groups) {
+                    if (group->GetIndex() == circleIndex) {//if index is equal
+                        group->AddRockPoint(rockpoint);     //add point to the group
+                        std::cout << "Circle Added to" << group->GetIndex() << "\n";
+                    }
                 }
             }
+           
+            // Reset transforms for the next group
+
+             //Add RockPoints to the Rock Group
+            
 
         }
         

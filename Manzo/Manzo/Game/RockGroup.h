@@ -27,9 +27,7 @@ class RockGroup : public CS230::GameObject
 {
 public:
 	RockGroup(const std::string& index);
-	~RockGroup() {
-		rocks.clear();
-	}
+	~RockGroup();
 	GameObjectTypes Type() override { return GameObjectTypes::RockBoundary; }
 	std::string TypeName() override { return "Rock Boundary"; }
 	void Update(double dt);
@@ -37,7 +35,7 @@ public:
 	bool CanCollideWith(GameObjectTypes) override;
 	void ResolveCollision(GameObject* other_object);
 
-	void AddRockPoint(RockPoint* rockpoint) { rockpoint = rockpoint; }
+	void AddRockPoint(RockPoint* rockpoint) { this->rockpoint = rockpoint; }
 	RockPoint* GetRockPoint() { return rockpoint; }
 
 	void AddRock(Rock* rock) { rocks.push_back(rock); }
@@ -53,6 +51,7 @@ public:
 
 private:
 	bool can_collide = true;
+	vec2 start_position;
 	mat3 matrix;
 	RockPoint* rockpoint;
 	std::vector<Rock*> rocks;
