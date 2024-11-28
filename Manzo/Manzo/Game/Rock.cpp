@@ -55,44 +55,47 @@ void Rock::Pop(const vec2& direction, float speed) {
 }
 
 void Rock::PopBack(const vec2& direction, float speed) {
-    vec2 velo = { Normalize(direction).x * speed, Normalize(direction).y * speed };
-    SetVelocity(velo);
     if (IsRange(this->GetPosition())) {
         SetVelocity({ 0, 0 });
     }
+    else{
+        vec2 velo = { Normalize(direction).x * speed, Normalize(direction).y * speed };
+        SetVelocity(velo);
+    }
+    
+    
 }
 
-bool Rock::CanCollideWith(GameObjectTypes other_object)
-{
-    switch (other_object) {
-    case GameObjectTypes::Ship:
-    case GameObjectTypes::RockPoint:
-        return true;
-        break;
-    }
-    return false;
-}
-
-void Rock::ResolveCollision(GameObject* other_object)
-{
-    if (other_object->Type() == GameObjectTypes::RockPoint) {
-        RockPoint* rockpoint = static_cast<RockPoint*>(other_object);
-        if (rockpoint->GetIndex() == poly.polyindex) {
-            auto* collision_edge = this->GetGOComponent<CS230::MAP_SATCollision>();
-            if (collision_edge == nullptr) {
-                // maybe an error?
-            }
-            SetVelocity({ 0, 0 });/*
-            vec2 point_position = other_object->GetPosition();
-            RockGroup* rockgroup = this->GetRockGroup();
-            for (auto& rock : rockgroup->GetRocks()) {
-                vec2 direction = -other_object->GetPosition();
-                float speed = 200;
-                rock->PopBack(direction, speed);
-            }*/
-        }
-    }
-}
+//bool Rock::CanCollideWith(GameObjectTypes other_object)
+//{
+//    switch (other_object) {
+//    case GameObjectTypes::RockPoint:
+//        return true;
+//        break;
+//    }
+//    return false;
+//}
+//
+//void Rock::ResolveCollision(GameObject* other_object)
+//{
+//    if (other_object->Type() == GameObjectTypes::RockPoint) {
+//        RockPoint* rockpoint = static_cast<RockPoint*>(other_object);
+//        if (rockpoint->GetIndex() == poly.polyindex) {
+//            auto* collision_edge = this->GetGOComponent<CS230::MAP_SATCollision>();
+//            if (collision_edge == nullptr) {
+//                // maybe an error?
+//            }
+//            /*
+//            vec2 point_position = other_object->GetPosition();
+//            RockGroup* rockgroup = this->GetRockGroup();
+//            for (auto& rock : rockgroup->GetRocks()) {
+//                vec2 direction = -other_object->GetPosition();
+//                float speed = 200;
+//                rock->PopBack(direction, speed);
+//            }*/
+//        }
+//    }
+//}
 
 bool Rock::IsRange(vec2 current_position) {
     vec2 distanceVec = current_position - vec2({0, 0});

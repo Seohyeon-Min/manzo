@@ -28,6 +28,8 @@ public:
 	void Update(double dt);
 	void Draw(); 
 	std::string GetIndex() { return index; }
+	bool CanCollideWith(GameObjectTypes) override;
+	void ResolveCollision(GameObject* other_object);
 
 private:
 	std::string index = "";

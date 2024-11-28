@@ -30,9 +30,9 @@ public:
 	GameObjectTypes Type() override { return GameObjectTypes::Rock; }
 	std::string TypeName() override { return "Rock"; }
 	void Update(double dt);
-	void Draw();
+	void Draw();/*
 	bool CanCollideWith(GameObjectTypes) override;
-	void ResolveCollision(GameObject* other_object);
+	void ResolveCollision(GameObject* other_object);*/
 
 	//position & moving
 	void SetCenter();
