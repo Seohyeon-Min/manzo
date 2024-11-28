@@ -115,8 +115,6 @@
     <ClCompile Include="Game\RockGroup.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="Game\RockPoint.cpp">
-    </ClCompile>
     <ClCompile Include="Engine\Font.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -124,6 +122,12 @@
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Game\AI.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameObjectTypes.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\RockPoint.cpp">
       <Filter>Game</Filter>
     </ClCompile>
   </ItemGroup>
@@ -226,9 +230,6 @@
     </ClInclude>
     <ClInclude Include="Engine\AudioManager.h">
       <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Reef.h">
-      <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Game\Fish.h">
       <Filter>Game</Filter>
