@@ -65,11 +65,11 @@ void Rock::PopBack(const vec2& direction, float speed) {
 bool Rock::CanCollideWith(GameObjectTypes other_object)
 {
     switch (other_object) {
+    case GameObjectTypes::Ship:
     case GameObjectTypes::RockPoint:
         return true;
         break;
     }
-
     return false;
 }
 
@@ -86,8 +86,8 @@ void Rock::ResolveCollision(GameObject* other_object)
             vec2 point_position = other_object->GetPosition();
             RockGroup* rockgroup = this->GetRockGroup();
             for (auto& rock : rockgroup->GetRocks()) {
-                vec2 direction = rock->GetPosition() - other_object->GetPosition();
-                float speed = 1005;
+                vec2 direction = -other_object->GetPosition();
+                float speed = 200;
                 rock->PopBack(direction, speed);
             }*/
         }
