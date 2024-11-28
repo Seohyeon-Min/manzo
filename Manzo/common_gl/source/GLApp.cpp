@@ -14,6 +14,9 @@
 #include <sstream>
 #include <SDL2/SDL_mouse.h>
 
+#include <chrono> 
+#include <thread>
+
 namespace
 {
     void hint_gl(SDL_GLattr attr, int value)
@@ -115,28 +118,37 @@ GLApp::~GLApp()
     SDL_Quit();
 }
 
-void GLApp::Update()
-{
+void GLApp::Update() {
+    using namespace std::chrono;
+
+    static system_clock::time_point last_frame_time = system_clock::now();
+    const double target_frame_time = 1.0 / 240;
+
     SDL_Event event{ 0 };
-    while (SDL_PollEvent(&event) != 0)
-    {
+    while (SDL_PollEvent(&event) != 0) {
         ImGuiHelper::FeedEvent(event);
         ptr_program->HandleEvent(*ptr_window, event);
-        if (event.type == SDL_QUIT || (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE)) [[unlikely]]
-        {
+        if (event.type == SDL_QUIT || (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE)) [[unlikely]] {
             is_done = true;
         }
-
     }
+
     ptr_program->Update();
     ImGuiHelper::Begin();
-
-    //ptr_program->Draw();
     ptr_program->ImGuiDraw();
     ImGuiHelper::End(ptr_window, gl_context);
-
     SDL_GL_SwapWindow(ptr_window);
+
+    system_clock::time_point now = system_clock::now();
+    double frame_duration = duration<double>(now - last_frame_time).count();
+
+    if (frame_duration < target_frame_time) {
+        std::this_thread::sleep_for(duration<double>(target_frame_time - frame_duration));
+    }
+
+    last_frame_time = system_clock::now();
 }
+
 
 bool GLApp::IsDone() const noexcept
 {

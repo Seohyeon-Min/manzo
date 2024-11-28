@@ -27,12 +27,12 @@
    inkscape:deskcolor="#d1d1d1"
    inkscape:document-units="mm"
    inkscape:zoom="0.12500001"
-   inkscape:cx="943.99992"
-   inkscape:cy="563.99995"
-   inkscape:window-width="2880"
-   inkscape:window-height="1514"
-   inkscape:window-x="238"
-   inkscape:window-y="-11"
+   inkscape:cx="1399.9999"
+   inkscape:cy="-155.99999"
+   inkscape:window-width="1920"
+   inkscape:window-height="1009"
+   inkscape:window-x="-8"
+   inkscape:window-y="-8"
    inkscape:window-maximized="1"
    inkscape:current-layer="g1" /><defs
    id="defs1" /><g
@@ -40,21 +40,11 @@
    inkscape:groupmode="layer">  
    
    
+     
      <g
-   id="g2"
-   transform="translate(280.20598,-25.635203)">
-   <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 464.41426,-235.73127 -110.06664,-65.61666 -2.11667,169.33331 162.98331,-33.86666 z"
-   id="path17-7" />
-     <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 515.13982,-166.24133 -74.08333,14.81667 52.91666,141.8166592 z"
-   id="path1-7" />
-     </g>
-     <g
-   id="g2-47"
-   transform="translate(-80.239242,566.19583)">
+   id="g2-1-1"
+   transform="translate(-412.55588,549.2625)"
+   inkscape:label="g2-1-1">
    <path
    style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
    d="m 464.41426,-235.73127 -110.06664,-65.61666 -2.11667,169.33331 162.98331,-33.86666 z"
@@ -65,268 +55,64 @@
    id="path1-7-04" />
      </g>
      <g
-   id="g2-6"
-   transform="translate(702.92738,-28.587459)">
+   id="g2-1-2"
+   transform="translate(-865.52255,179.90417)"
+   inkscape:label="g2-1-2">
    <path
    style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
    d="m 464.41426,-235.73127 -110.06664,-65.61666 -2.11667,169.33331 162.98331,-33.86666 z"
-   id="path17-7-3" />
+   id="path17-7-1-9" />
      <path
    style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
    d="m 515.13982,-166.24133 -74.08333,14.81667 52.91666,141.8166592 z"
-   id="path1-7-0" />
+   id="path1-7-04-18" />
      </g>
-     
      <g
-   id="g2-4"
-   transform="translate(-571.36681,820.00284)">
+   id="g2-2-1"
+   transform="translate(139.89405,123.81253)"
+   inkscape:label="g2-2-1">
    <path
    style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
    d="m 464.41426,-235.73127 -110.06664,-65.61666 -2.11667,169.33331 162.98331,-33.86666 z"
-   id="path17-7-4" />
+   id="path17-7-1-0" />
      <path
    style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
    d="m 515.13982,-166.24133 -74.08333,14.81667 52.91666,141.8166592 z"
-   id="path1-7-8" />
-     </g>
-     <g
-   id="g2-8"
-   transform="translate(-945.68646,276.60708)">
-   <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 464.41426,-235.73127 -110.06664,-65.61666 -2.11667,169.33331 162.98331,-33.86666 z"
-   id="path17-7-5" />
-     <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 515.13982,-166.24133 -74.08333,14.81667 52.91666,141.8166592 z"
-   id="path1-7-1" />
-     </g>
-     
-     
-     <g
-   id="g3-8"
-   transform="translate(-1688.2422,-248.50718)">
-   <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="M 670.52573,42.27102 463.97986,60.231532 532.82849,182.96169 Z"
-   id="path2-9" />
-     <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 669.65165,42.212986 -137.94353,140.142284 123.5066,47.8857 z"
-   id="path2-6-4" />
-     </g>
-     <g
-   id="g3-8-2"
-   transform="translate(-1816.0006,-371.09003)">
-   <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="M 670.52573,42.27102 463.97986,60.231532 532.82849,182.96169 Z"
-   id="path2-9-4" />
-     <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 669.65165,42.212986 -137.94353,140.142284 123.5066,47.8857 z"
-   id="path2-6-4-9" />
-     </g>
-     <g
-   id="g3-8-6"
-   transform="translate(792.72119,-595.69141)">
-   <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="M 670.52573,42.27102 463.97986,60.231532 532.82849,182.96169 Z"
-   id="path2-9-8" />
-     <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 669.65165,42.212986 -137.94353,140.142284 123.5066,47.8857 z"
-   id="path2-6-4-91" />
-     </g>
-     <g
-   id="g3-8-2-7"
-   transform="translate(664.96269,-718.27426)">
-   <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="M 670.52573,42.27102 463.97986,60.231532 532.82849,182.96169 Z"
-   id="path2-9-4-58" />
-     <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 669.65165,42.212986 -137.94353,140.142284 123.5066,47.8857 z"
-   id="path2-6-4-9-2" />
-     </g>
-     <g
-   id="g3-8-2-7-1"
-   transform="translate(554.66593,-860.04006)">
-   <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="M 670.52573,42.27102 463.97986,60.231532 532.82849,182.96169 Z"
-   id="path2-9-4-58-0" />
-     <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 669.65165,42.212986 -137.94353,140.142284 123.5066,47.8857 z"
-   id="path2-6-4-9-2-9" />
-     </g>
-     <g
-   id="g3-8-2-7-1-7"
-   transform="translate(497.51598,-225.04009)">
-   <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="M 670.52573,42.27102 463.97986,60.231532 532.82849,182.96169 Z"
-   id="path2-9-4-58-0-9" />
-     <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 669.65165,42.212986 -137.94353,140.142284 123.5066,47.8857 z"
-   id="path2-6-4-9-2-9-4" />
-     </g>
-     <g
-   id="g3-8-5"
-   transform="translate(251.04042,-817.40688)">
-   <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="M 670.52573,42.27102 463.97986,60.231532 532.82849,182.96169 Z"
-   id="path2-9-2" />
-     <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 669.65165,42.212986 -137.94353,140.142284 123.5066,47.8857 z"
-   id="path2-6-4-3" />
-     </g>
-     <g
-   id="g3-8-2-00"
-   transform="translate(407.65678,-841.20693)">
-   <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="M 670.52573,42.27102 463.97986,60.231532 532.82849,182.96169 Z"
-   id="path2-9-4-84" />
-     <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 669.65165,42.212986 -137.94353,140.142284 123.5066,47.8857 z"
-   id="path2-6-4-9-8" />
+   id="path1-7-04-1" />
      </g>
      
      
      
      
-     <g
-   id="g3-8-2-8-7"
-   transform="translate(753.62293,176.3712)">
-   <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="M 670.52573,42.27102 463.97986,60.231532 532.82849,182.96169 Z"
-   id="path2-9-4-4-6" />
-     <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 669.65165,42.212986 -137.94353,140.142284 123.5066,47.8857 z"
-   id="path2-6-4-9-0-8" />
-     </g>
-     <g
-   id="g3-8-2-8-7-6"
-   transform="translate(755.77534,414.59804)">
-   <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="M 670.52573,42.27102 463.97986,60.231532 532.82849,182.96169 Z"
-   id="path2-9-4-4-6-3" />
-     <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 669.65165,42.212986 -137.94353,140.142284 123.5066,47.8857 z"
-   id="path2-6-4-9-0-8-2" />
-     </g>
-     <g
-   id="g3-8-2-0"
-   transform="translate(-1109.0291,61.347436)">
-   <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="M 670.52573,42.27102 463.97986,60.231532 532.82849,182.96169 Z"
-   id="path2-9-4-5" />
-     <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 669.65165,42.212986 -137.94353,140.142284 123.5066,47.8857 z"
-   id="path2-6-4-9-11" />
-     </g>
-     <g
-   id="g2-8-4"
-   transform="translate(-874.8293,80.400638)">
-   <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 464.41426,-235.73127 -110.06664,-65.61666 -2.11667,169.33331 162.98331,-33.86666 z"
-   id="path17-7-5-7" />
-     <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 515.13982,-166.24133 -74.08333,14.81667 52.91666,141.8166592 z"
-   id="path1-7-1-5" />
-     </g>
-     <g
-   id="g3-8-2-0-5"
-   transform="translate(-1038.1719,-134.859)">
-   <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="M 670.52573,42.27102 463.97986,60.231532 532.82849,182.96169 Z"
-   id="path2-9-4-5-5" />
-     <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 669.65165,42.212986 -137.94353,140.142284 123.5066,47.8857 z"
-   id="path2-6-4-9-11-3" />
-     </g>
-     <g
-   id="g2-8-6"
-   transform="translate(433.82885,705.35062)">
-   <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 464.41426,-235.73127 -110.06664,-65.61666 -2.11667,169.33331 162.98331,-33.86666 z"
-   id="path17-7-5-2" />
-     <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 515.13982,-166.24133 -74.08333,14.81667 52.91666,141.8166592 z"
-   id="path1-7-1-9" />
-     </g>
-     <g
-   id="g3-8-2-0-9"
-   transform="translate(270.48621,490.09098)">
-   <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="M 670.52573,42.27102 463.97986,60.231532 532.82849,182.96169 Z"
-   id="path2-9-4-5-50" />
-     <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 669.65165,42.212986 -137.94353,140.142284 123.5066,47.8857 z"
-   id="path2-6-4-9-11-4" />
-     </g>
-     <g
-   id="g2-8-4-4"
-   transform="translate(504.68601,509.14418)">
-   <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 464.41426,-235.73127 -110.06664,-65.61666 -2.11667,169.33331 162.98331,-33.86666 z"
-   id="path17-7-5-7-1" />
-     <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 515.13982,-166.24133 -74.08333,14.81667 52.91666,141.8166592 z"
-   id="path1-7-1-5-3" />
-     </g>
-     <g
-   id="g3-8-2-0-5-6"
-   transform="translate(341.34341,293.88454)">
-   <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="M 670.52573,42.27102 463.97986,60.231532 532.82849,182.96169 Z"
-   id="path2-9-4-5-5-2" />
-     <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 669.65165,42.212986 -137.94353,140.142284 123.5066,47.8857 z"
-   id="path2-6-4-9-11-3-2" />
-     </g>
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
      
      <g
-   id="g3-8-9"
-   transform="translate(-1626.8687,349.12141)">
-   <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="M 670.52573,42.27102 463.97986,60.231532 532.82849,182.96169 Z"
-   id="path2-9-46" />
-     <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 669.65165,42.212986 -137.94353,140.142284 123.5066,47.8857 z"
-   id="path2-6-4-4" />
-     </g>
-     <g
-   id="g3-8-9-2"
-   transform="translate(-339.85492,-654.18209)">
+   id="g3-1-1"
+   transform="translate(-422.40491,-438.2821)"
+   inkscape:label="g3-1-1">
    <path
    style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
    d="M 670.52573,42.27102 463.97986,60.231532 532.82849,182.96169 Z"
@@ -336,41 +122,8 @@
    d="m 669.65165,42.212986 -137.94353,140.142284 123.5066,47.8857 z"
    id="path2-6-4-4-0" />
      </g>
-     <g
-   id="g3-8-2-9"
-   transform="translate(-1754.6271,226.53856)">
-   <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="M 670.52573,42.27102 463.97986,60.231532 532.82849,182.96169 Z"
-   id="path2-9-4-8" />
-     <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 669.65165,42.212986 -137.94353,140.142284 123.5066,47.8857 z"
-   id="path2-6-4-9-1" />
-     </g>
-     <g
-   id="g3-8-9-5"
-   transform="translate(-183.82155,204.45946)">
-   <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="M 670.52573,42.27102 463.97986,60.231532 532.82849,182.96169 Z"
-   id="path2-9-46-9" />
-     <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 669.65165,42.212986 -137.94353,140.142284 123.5066,47.8857 z"
-   id="path2-6-4-4-2" />
-     </g>
-     <g
-   id="g3-8-2-9-9"
-   transform="translate(-383.54661,225.80993)">
-   <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="M 670.52573,42.27102 463.97986,60.231532 532.82849,182.96169 Z"
-   id="path2-9-4-8-8" />
-     <path
-   style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
-   d="m 669.65165,42.212986 -137.94353,140.142284 123.5066,47.8857 z"
-   id="path2-6-4-9-1-0" />
-     </g>
+     
+     
+     
      </g>
        </svg>

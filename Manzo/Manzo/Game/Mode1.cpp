@@ -17,7 +17,6 @@ Created:    March 8, 2023
 #include "../Engine/Rapidjson.h"
 #include "../Engine/UI.h"
 
-
 #include "Particles.h"
 #include "Mouse.h"
 #include "States.h"
@@ -43,11 +42,19 @@ void Mode1::Load() {
     AddGSComponent(new CS230::ShowCollision());
 #else
 #endif
+    //shader
+    Engine::GetShaderManager().LoadShader("pixelate", "assets/shaders/default.vert", "assets/shaders/pixelate.frag");
+
+    //// audio
+    Mix_Music* sample = Engine::GetAudioManager().LoadMusic("assets/audios/100BPM_edm_temp.wav", "sample");
+    if (sample) {
+        Engine::GetAudioManager().PlayMusic(sample, -1);
+    }
+
     // component
     AddGSComponent(new CS230::GameObjectManager());
     AddGSComponent(new Beat());
     AddGSComponent(new CS230::Map());
-
 
     //// ship
     ship_ptr = new Ship({ 0, 0 });
@@ -63,16 +70,9 @@ void Mode1::Load() {
     background = new Background();
     AddGSComponent(background);    
 
-    //// audio
-    Mix_Music* sample = Engine::GetAudioManager().LoadMusic("assets/audios/back_temp.wav", "sample");
-    if (sample) {
-        Engine::GetAudioManager().PlayMusic(sample, -1);
-    }
-
     //// to generate fish
     fishGenerator = new FishGenerator();
     Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
-
 
     background->Add("assets/images/background/temp_background.png", 0.0f);
     background->Add("assets/images/background/bg1.png", 0.3f);
@@ -80,21 +80,9 @@ void Mode1::Load() {
     background->Add("assets/images/background/bg3.png", 0.5f);
     background->Add("assets/images/background/bg4.png", 0.6f);
     background->Add("assets/images/background/bg5.png", 0.7f);
-    /*
-    GetGSComponent<Background>()->Add("assets/images/background/bg_rock4.png", 0.4f);
-    GetGSComponent<Background>()->Add("assets/images/background/bg_rock2.png", 0.5f);
-    GetGSComponent<Background>()->Add("assets/images/background/bg_rock1.png", 0.7f);*/
-
-
-    //testing fish
-    /*BackgroundFish* bg_fish = new BackgroundFish();
-    GetGSComponent<CS230::GameObjectManager>()->Add(bg_fish);
-    bg_fish->AddBackgroundFishes(bg_fish);*/
 
     // Mouse and Particle
     AddGSComponent(new CS230::ParticleManager<Particles::MouseFollow>());
-    //AddGSComponent(new Mouse());
-    //Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::Mouse>>()->Emit(2, mouse_position, { 0, 0 }, { 0, 100 }, M_PI / 2);
     Boss::LoadBossfile();
    
 
@@ -124,27 +112,17 @@ void Mode1::Load() {
 void Mode1::Update(double dt) {
     UpdateGSComponents(dt);
     GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
-
+    //std::cout << "update: " << dt << std::endl;
     //camera postion update
     camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
 
-	fishGenerator->GenerateFish(dt);
+	//fishGenerator->GenerateFish(dt);
     skill_ptr->Update();
-
     if (ship_ptr->IsShipUnder() && Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Q)) {
         Engine::GetGameStateManager().ClearNextGameState();
         Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
     }
 
-    if (Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() >= 20) {
-            Engine::GetGameStateManager().ClearNextGameState();
-            Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Clear));
-    }
-    if (ship_ptr->IsFuelZero()
-        || Engine::GetInput().KeyJustPressed(CS230::Input::Keys::M)) {
-        Engine::GetGameStateManager().ClearNextGameState();
-        Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::GameOver));
-    }
     if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::W)) {
         Engine::GetGameStateManager().ReloadState();
 
@@ -156,12 +134,22 @@ void Mode1::Update(double dt) {
     }
 }
 
+void Mode1::FixedUpdate(double dt)
+{
+    //std::cout << "fixedupdate: " << dt << std::endl;
+    if (GetGSComponent<CS230::GameObjectManager>()) {
+        GetGSComponent<CS230::GameObjectManager>()->FixedUpdateAll(dt);
+    }
+}
+
 void Mode1::Draw() {
     GetGSComponent<Background>()->Draw(*GetGSComponent<CS230::Cam>());
-    //GetGSComponent<Mouse>()->AddDrawCall();
     GetGSComponent<CS230::Map>()->AddDrawCall();
     GetGSComponent<CS230::GameObjectManager>()->DrawAll();
     ui_manager->AddDrawCalls();
+
+    // Draw Font
+     Engine::GetFontManager().PrintText("HI", { 0.f,0.f }, 0.0f, 0.001f, { 1.0f,1.0f,1.0f });
 }
 
 void Mode1::Unload() {
@@ -175,5 +163,5 @@ void Mode1::Unload() {
     Engine::GetRender().ClearDrawCalls();
 	ClearGSComponents();
     Engine::GetAudioManager().StopMusic();
-	//fishGenerator->DeleteFish();
+    Engine::Instance().ResetSlowDownFactor();
 }

@@ -21,6 +21,7 @@ namespace CS230 {
         void Add(GameObject* object);
         void Unload();
         void UpdateAll(double dt);
+        void FixedUpdateAll(double dt);
         void DrawAll();
         void CollisionTest();
         template<typename T>

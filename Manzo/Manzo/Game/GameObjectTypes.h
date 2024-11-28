@@ -13,6 +13,7 @@ Created:    March 8, 2023
 enum class GameObjectTypes {
     Ship,
     Reef,
+    ReefBoundary,
     Fish,
     Net,
     BackgroundFish,
@@ -20,3 +21,5 @@ enum class GameObjectTypes {
     Boss,
     Count
 };
+
+bool IsPixelShaderApplicable(GameObjectTypes type);
