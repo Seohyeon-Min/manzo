@@ -14,6 +14,7 @@ void Beat::Update(double dt)
     //std::cout << is_on_beat << std::endl;
     //audio->GetCurrentMusicTime();
 
+    if(Engine::GetAudioManager().GetCurrentMusicTime() > 0.1)
     time_taken += dt;
 
     if (beat) {

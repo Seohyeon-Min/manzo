@@ -45,11 +45,16 @@ void Mode1::Load() {
     //shader
     Engine::GetShaderManager().LoadShader("pixelate", "assets/shaders/default.vert", "assets/shaders/pixelate.frag");
 
+    //// audio
+    Mix_Music* sample = Engine::GetAudioManager().LoadMusic("assets/audios/100BPM_edm_temp.wav", "sample");
+    if (sample) {
+        Engine::GetAudioManager().PlayMusic(sample, -1);
+    }
+
     // component
     AddGSComponent(new CS230::GameObjectManager());
     AddGSComponent(new Beat());
     AddGSComponent(new CS230::Map());
-
 
     //// ship
     ship_ptr = new Ship({ 0, 0 });
@@ -64,12 +69,6 @@ void Mode1::Load() {
     //// background
     background = new Background();
     AddGSComponent(background);    
-
-    //// audio
-    Mix_Music* sample = Engine::GetAudioManager().LoadMusic("assets/audios/back_temp.wav", "sample");
-    if (sample) {
-        //Engine::GetAudioManager().PlayMusic(sample, -1);
-    }
 
     //// to generate fish
     fishGenerator = new FishGenerator();

@@ -26,7 +26,20 @@ void Ship::State_Idle::Enter(GameObject* object) {
     if (ship->direction != vec2{ 0,0 })
         ship->SetVelocity(ship->direction * skidding_speed);
 }
-void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {}
+void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
+    //get mouse pos and move to there
+    Ship* ship = static_cast<Ship*>(object);
+    vec2 window = { Engine::window_width / 2, Engine::window_height / 2 };
+    vec2 mouse_pos = { (float)Engine::GetInput().GetMousePos().mouseWorldSpaceX, (float)Engine::GetInput().GetMousePos().mouseWorldSpaceY };
+    vec2 pos = mouse_pos - window;
+    vec2 destination{};
+    destination.x = pos.x;
+    destination.y = pos.y;
+    vec2 skidding_direction = { destination.x - (ship->GetPosition().x), destination.y - (ship->GetPosition().y) };
+    skidding_direction = skidding_direction.Normalize();
+    vec2 force = { (skidding_direction * skidding_speed) };
+    ship->SetVelocity(force);
+}
 void Ship::State_Idle::CheckExit(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
     if (ship->hit_with) {
@@ -39,36 +52,13 @@ void Ship::State_Idle::CheckExit(GameObject* object) {
         vec2 pos = mouse_pos - window;
         ship->destination.x = pos.x;
         ship->destination.y = pos.y;
-        ship->change_state(&ship->state_set_dest);
-    }
-}
-
-void Ship::State_Set_Dest::Enter(GameObject* object) { }
-void Ship::State_Set_Dest::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) { }
-void Ship::State_Set_Dest::CheckExit(GameObject* object) {
-    Ship* ship = static_cast<Ship*>(object);
-    if (ship->hit_with) {
-        ship->change_state(&ship->state_hit);
-    }
-    if (!ship->beat->GetIsOnBeat()) { // wait for next beat
-        ship->change_state(&ship->state_ready_to_move);
-    }
-}
-
-void Ship::State_Ready_to_Move::Enter(GameObject* object) {}
-void Ship::State_Ready_to_Move::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) { }
-void Ship::State_Ready_to_Move::CheckExit(GameObject* object) {
-    Ship* ship = static_cast<Ship*>(object);
-    if (ship->hit_with) {
-        ship->change_state(&ship->state_hit);
-    }
-    if (ship->beat->GetBeat()) { // move when its on next beat
         ship->direction = { ship->destination.x - (ship->GetPosition().x), ship->destination.y - (ship->GetPosition().y) };
         ship->direction = ship->direction.Normalize();
         ship->force = { (ship->direction * speed) };
         ship->change_state(&ship->state_move);
     }
 }
+
 
 void Ship::State_Move::Enter(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
@@ -89,9 +79,6 @@ void Ship::State_Move::CheckExit(GameObject* object) {
         ship->change_state(&ship->state_hit);
     }
     if (!ship->beat->GetIsOnBeat()) {
-        //if (!clickable) { // wait for next beat
-        //    clickable = true;
-        //}
         ship->move = false;
         ship->change_state(&ship->state_idle);
     }
