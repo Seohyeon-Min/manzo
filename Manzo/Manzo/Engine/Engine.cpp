@@ -45,7 +45,7 @@ void Engine::Update() {
 
     accumulator += dt;
     double fixed_delta_time = 1.0 / TargetFPS;
-    fixed_delta_time *= slow_down_factor;
+    //fixed_delta_time *= slow_down_factor;
 
     if (!gamestatemanager.IsNull()) {
         while (accumulator >= fixed_delta_time) {

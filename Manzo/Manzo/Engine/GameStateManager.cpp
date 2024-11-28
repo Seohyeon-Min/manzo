@@ -59,6 +59,7 @@ void CS230::GameStateManager::Update(double dt) {
         status = Status::UPDATING;
         break;
     case Status::UPDATING:
+        dt *= time_scale;
         if (current_gamestate != next_gamestate) {
             status = Status::UNLOADING;
         }
@@ -98,9 +99,11 @@ void CS230::GameStateManager::FixedUpdate(double dt)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     Engine::GetLogger().LogVerbose("FixedUpdate" + current_gamestate->GetName());
-    current_gamestate->FixedUpdate(dt);
-    if (current_gamestate->GetGSComponent<CS230::GameObjectManager>() != nullptr) {
-        current_gamestate->GetGSComponent<CS230::GameObjectManager>()->CollisionTest();
+    if (status == Status::UPDATING) {
+        current_gamestate->FixedUpdate(dt);
+        if (current_gamestate->GetGSComponent<CS230::GameObjectManager>() != nullptr) {
+            current_gamestate->GetGSComponent<CS230::GameObjectManager>()->CollisionTest();
+        }
     }
 
 }

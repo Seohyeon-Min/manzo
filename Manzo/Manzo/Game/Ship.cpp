@@ -13,7 +13,7 @@ Ship::Ship(vec2 start_position) :
     skill = Engine::GetGameStateManager().GetGSComponent<Skillsys>();
     fuel = Maxfuel;
     FuelFlag = false;
-    HitTimer = new CS230::Timer(0.0);
+    HitTimer = new CS230::RealTimeTimer(0.0);
     AddGOComponent(HitTimer);
     SetVelocity({ 0,0 });
 
@@ -113,7 +113,7 @@ void Ship::State_Hit::Enter(GameObject* object) {
 
     // slow down dt
     ship->slow_down_factor = minFactor + (incoming_speed / maxSpeed) * (maxFactor - minFactor);
-    Engine::Instance().SetSlowDownFactor(1);
+    Engine::Instance().SetSlowDownFactor(0);
 
     ship->HitWithReef(ship->normal);
 }
@@ -185,10 +185,6 @@ void Ship::Draw(DrawLayer drawlayer) {
     CS230::GameObject::Draw(DrawLayer::DrawLast);
 }
 
-
-vec2 GetPerpendicular(vec2 v) {
-    return { -v.y, v.x };
-}
 
 vec2 CatmullRomSpline(const vec2& p0, const vec2& p1, const vec2& p2, const vec2& p3, float t) {
     float t2 = t * t;
