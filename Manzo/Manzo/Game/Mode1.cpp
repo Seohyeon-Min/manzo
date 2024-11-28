@@ -140,7 +140,7 @@ void Mode1::Update(double dt) {
 
     }
     if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::E)&&!Isboss) {
-        boss_ptr = new Boss({ 750,500}, Boss::BossType::e);
+        boss_ptr = new Boss({750,500}, Boss::BossType::e);
         GetGSComponent<CS230::GameObjectManager>()->Add(boss_ptr);
         Isboss = true;
     }

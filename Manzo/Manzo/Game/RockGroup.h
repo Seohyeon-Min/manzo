@@ -20,6 +20,8 @@ Created:    November 25, 2024
 
 #include <vector>
 class Rock;
+class RockPoint;
+
 class RockGroup : public CS230::GameObject //group of polys
 {
 public:
@@ -48,7 +50,8 @@ public:
 private:
 	bool can_collide = true;
 	mat3 matrix;
-	std::vector<Rock*> rocks;	//one group
+	RockPoint* rockpoint;
+	std::vector<Rock*> rocks;
 	std::string index = "";
 	std::vector<vec2> points;	// All polygon's points
 };

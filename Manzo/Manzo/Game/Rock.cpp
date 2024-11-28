@@ -48,21 +48,17 @@ vec2 Rock::Normalize(const vec2& vec) {
 
     return normalized_vec;
 }
-void Rock::Pop(const vec2& direction, float length) {
-    float speed = 1000;
+void Rock::Pop(const vec2& direction, float speed) {
+    vec2 normVec = Normalize(direction);
+    vec2 velo = { normVec.x * speed, normVec.y * speed };
+    SetVelocity(velo);
+}
+
+void Rock::PopBack(const vec2& direction, float speed) {
     vec2 velo = { Normalize(direction).x * speed, Normalize(direction).y * speed };
     SetVelocity(velo);
-
-    //SetVelocity(-velo); // return first location
 }
 
-void Rock::PopBack(const vec2& direction, float length) {
-    float speed = 1000;
-    vec2 velo = { -Normalize(direction).x * speed, -Normalize(direction).y * speed };
-    SetVelocity(velo);
-
-    //SetVelocity(-velo); // return first location
-}
 bool Rock::CanCollideWith(GameObjectTypes other_object)
 {
     switch (other_object) {
@@ -84,8 +80,17 @@ void Rock::ResolveCollision(GameObject* other_object)
         vec2 point_position = other_object->GetPosition();
         RockGroup* rockgroup = this->GetRockGroup();
         for (auto& rock : rockgroup->GetRocks()) {
-            rock->PopBack({ -1, 0 }, 10);
+            //vec2 direction = rock->GetPosition() - rockpoint->GetPosition();
+            vec2 direction = { 1, 0 };
+            float speed = 1000;
+            rock->PopBack(direction, speed);
         }
 
     }
+}
+
+bool Rock::IsRange(vec2& current_position) {
+    vec2 distanceVec = current_position - start_position;
+    float distance = distanceVec.x * distanceVec.x + distanceVec.y * distanceVec.y;
+    return distance <= range;
 }

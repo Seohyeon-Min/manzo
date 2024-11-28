@@ -28,4 +28,6 @@ public:
 	void Update(double dt);
 	void Draw(); 
 
+private:
+	std::string index = "";
 };
