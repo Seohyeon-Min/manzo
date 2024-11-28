@@ -38,6 +38,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
     std::regex gIdRegex(R"(<g[^>]*\bid\s*=\s*"([^"]+))");
     std::regex circleRegex(R"(circle[^>]*\bcx\s*=\s*"([^"]+))");
     std::regex cyRegex(R"(\bcy\s*=\s*"([^"]+))");
+    std::regex cIdxRegex(R"()");
     std::regex transformRegex(R"(transform\s*=\s*"([^"]+))");
     std::regex translateRegex(R"(translate\(([^,]+),\s*([^\)]+)\))");
     std::regex rotateRegex(R"(rotate\(\s*([^\s,]+)\s*,\s*([^\s,]+)\s*,\s*([^\)]+)\s*\))");
@@ -75,6 +76,9 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                     //std::cerr << "Error: cy not found for circle with cx: " << circle_position.x << std::endl;
                 }
             }
+            // Rock Point
+            RockPoint* rockpoint = new RockPoint(circle_position);
+            Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockpoint);
 
             //g id
             if (line.find("</g>") != std::string::npos) {
@@ -237,10 +241,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 std::cout << "poly index : " << poly.polyindex << std::endl;
                 std::cout << "-----------------------------" << std::endl;
 
-                //RockPoint Test
-                RockPoint* rockpoint = new RockPoint();
-                rockpoint->SetPosition({ 0,0 });
-                Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockpoint);
+                
 
                 // Making RockGroups
                 if (rock_groups.empty()) {

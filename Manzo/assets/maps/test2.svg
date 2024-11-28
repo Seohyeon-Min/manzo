@@ -26,9 +26,9 @@
    inkscape:pagecheckerboard="0"
    inkscape:deskcolor="#d1d1d1"
    inkscape:document-units="mm"
-   inkscape:zoom="1.0000001"
-   inkscape:cx="2207.4998"
-   inkscape:cy="229.49998"
+   inkscape:zoom="0.17677671"
+   inkscape:cx="-941.86614"
+   inkscape:cy="890.95445"
    inkscape:window-width="2880"
    inkscape:window-height="1514"
    inkscape:window-x="177"
@@ -37,15 +37,14 @@
    inkscape:current-layer="g1" /><defs
    id="defs1" /><g
    inkscape:label="Layer 1"
-   inkscape:groupmode="layer"
-   id="g1">  
+   inkscape:groupmode="layer">  
    
    
      
      <g
    id="g2-1-1"
    transform="translate(-412.55588,549.2625)"
-   inkscape:label="g2-1-1">
+   inkscape:label="g2-2-2">
    <path
    style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
    d="m 464.41426,-235.73127 -110.06664,-65.61666 -2.11667,169.33331 162.98331,-33.86666 z"
@@ -81,35 +80,6 @@
    d="m 515.13982,-166.24133 -74.08333,14.81667 52.91666,141.8166592 z"
    id="path1-7-04-1" />
      </g>
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
      <g
    id="g3-1-1"
    transform="translate(-422.40491,-438.2821)"
@@ -124,13 +94,19 @@
    id="path2-6-4-4-0" />
      </g>
      
-     
-     
      <circle
    style="fill:#28bed7;stroke:#738823;stroke-width:0.781"
    id="path1"
    cx="616.20673"
    cy="177.77567"
    r="5"
-   inkscape:label="point1" /></g>
+   inkscape:label="g2-2-1p" 
+   />
+      <circle
+   style="fill:#28bed7;stroke:#738823;stroke-width:0.781"
+   id="path1-2"
+   cx="-78.217804"
+   cy="153.55717"
+   r="5"
+   inkscape:label="g2-2-2p" /></g>
        </svg>
