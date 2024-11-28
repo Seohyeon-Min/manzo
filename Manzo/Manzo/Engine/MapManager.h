@@ -41,6 +41,7 @@ namespace CS230 {
 		std::vector<Rock> objects;
 		std::vector<RockGroup*> rock_groups;
 		vec2 circle_position{ 0,0 };
+		std::string circle_index;
 
 	};
 }
