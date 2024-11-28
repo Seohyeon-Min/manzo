@@ -36,14 +36,18 @@ void Boss::Movingtolocation_fun(int targetEntryNum, Boss* object) {
 }
 void Boss::Chasingplayer_fun(int targetEntryNum, Boss* boss) {
     if (targetEntryNum - 1 < boss->parttern.size()) {
-        const auto& entryVec = boss->parttern[targetEntryNum - 1];
+     const auto& entryVec = boss->parttern[targetEntryNum - 1];
         for (const auto& entryData : entryVec) {
-            if (entryData.delay + 1 == boss->beat->GetDelayCount()) {
-				Ship* ship = Engine::GetGameStateManager().GetGSComponent<CS230::GameObject>()->GetGOComponent<Ship>();
-				if (ship != nullptr) {
-					boss->current_position = ship->GetPosition();
+            if (entryData.delay + 1 == boss->beat->GetDelayCount()&&boss->beat->GetBeat()) {
+				Ship* ship = Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->GetGOComponent<Ship>();
+				if (ship == nullptr) {
+					Engine::GetLogger().LogError("Ship component not found");
+					return;
 				}
-                std::cout << "Chasing player at: (" << boss->current_position.x << ", " << boss->current_position.y << ")" << std::endl;
+				vec2 playerposition = ship->GetPosition();
+				boss->current_position = playerposition;
+
+				std::cout << "move " << std::endl;
             }
         }
     }
