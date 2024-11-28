@@ -22,7 +22,7 @@ Created:    November 25, 2024
 #include <vector>
 class RockPoint : public CS230::GameObject {
 public:
-	RockPoint();
+	RockPoint(vec2 position);
 	GameObjectTypes Type() override { return GameObjectTypes::RockPoint; }
 	std::string TypeName() override { return "Rock Point"; }
 	void Update(double dt);

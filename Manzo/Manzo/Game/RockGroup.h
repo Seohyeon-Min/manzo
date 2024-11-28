@@ -17,11 +17,11 @@ Created:    November 25, 2024
 #include "..\Engine\Polygon.h"
 #include "GameObjectTypes.h"
 #include "Rock.h"
+#include "RockPoint.h"
 
 #include <vector>
 class Rock;
 class RockPoint;
-
 class RockGroup : public CS230::GameObject //group of polys
 {
 public:
@@ -35,6 +35,9 @@ public:
 	void Draw();
 	bool CanCollideWith(GameObjectTypes) override;
 	void ResolveCollision(GameObject* other_object);
+
+	void AddRockPoint(RockPoint* rockpoint) { rock_points.push_back(rockpoint); }
+	std::vector<RockPoint*>GetRockPoint() { return rock_points; }
 
 	void AddRock(Rock* rock) { rocks.push_back(rock); }
 	std::vector<Rock*> GetRocks() { return rocks; }

@@ -37,9 +37,11 @@ namespace CS230 {
 		}
 
 	private:
-		//std::vector<RockPoint*> rock_points;
+		std::vector<RockPoint*> rock_points;
 		std::vector<Rock> objects;
 		std::vector<RockGroup*> rock_groups;
+		vec2 circle_position{ 0,0 };
+		std::string circle_index;
 
 	};
 }
