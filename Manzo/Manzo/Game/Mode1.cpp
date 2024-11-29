@@ -56,7 +56,7 @@ void Mode1::Load() {
     GetGSComponent<CS230::GameObjectManager>()->Add(ship_ptr);
 
     //// camera
-    Math::rect Boundary({ -9600,-6400 }, { 9600, 6400 });
+    Math::rect Boundary({ -640,-360 }, { 640,360 });
     camera = new CS230::Cam();
     AddGSComponent(camera);
     camera->SetLimit(Boundary);
@@ -69,11 +69,11 @@ void Mode1::Load() {
     fishGenerator = new FishGenerator();
     Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
 
-    background->Add("assets/images/background/temp_background2.png", 0.0f);/*
+    background->Add("assets/images/background/temp_background.png", 0.0f);
     background->Add("assets/images/background/bg1.png", 0.3f);
     background->Add("assets/images/background/bg2.png", 0.4f);
     background->Add("assets/images/background/bg3.png", 0.5f);
-    background->Add("assets/images/background/bg4.png", 0.6f);*/
+    background->Add("assets/images/background/bg4.png", 0.6f);
     background->Add("assets/images/background/bg5.png", 0.7f);
 
     // Mouse and Particle

@@ -132,23 +132,21 @@ void Ship::Update(double dt)
     GameObject::Update(dt);
     CS230::RectCollision* collider = GetGOComponent<CS230::RectCollision>();
 
-    float width = 9600;
-    float height = 6400;
     // World Boundary
-    if (collider->WorldBoundary_rect().Left() < Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x - width) {
-        UpdatePosition({ Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x - width - collider->WorldBoundary_rect().Left(), 0 });
+    if (collider->WorldBoundary_rect().Left() < Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x - 640) {
+        UpdatePosition({ Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x - 640 - collider->WorldBoundary_rect().Left(), 0 });
         SetVelocity({ 0, GetVelocity().y });
     }
-    if (collider->WorldBoundary_rect().Right() > Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x + width) {
-        UpdatePosition({ Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x + width - collider->WorldBoundary_rect().Right(), 0 });
+    if (collider->WorldBoundary_rect().Right() > Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x + 640) {
+        UpdatePosition({ Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x + 640 - collider->WorldBoundary_rect().Right(), 0 });
         SetVelocity({ 0, GetVelocity().y });
     }
-    if (collider->WorldBoundary_rect().Bottom() < Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y - height) {
-        UpdatePosition({ 0, Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y - height - collider->WorldBoundary_rect().Bottom() });
+    if (collider->WorldBoundary_rect().Bottom() < Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y - 360) {
+        UpdatePosition({ 0, Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y - 360 - collider->WorldBoundary_rect().Bottom() });
         SetVelocity({ GetVelocity().x, 0 });
     }
-    if (collider->WorldBoundary_rect().Top() > Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y + height) {
-        UpdatePosition({ 0, Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y + height - collider->WorldBoundary_rect().Top() });
+    if (collider->WorldBoundary_rect().Top() > Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y + 360) {
+        UpdatePosition({ 0, Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y + 360 - collider->WorldBoundary_rect().Top() });
         SetVelocity({ GetVelocity().x, 0 });
     }
 
