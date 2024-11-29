@@ -1,6 +1,5 @@
 #include "Ship.h"
 #include "BeatSystem.h"
-#include "Rock.h"
 #include "../Engine/Camera.h"
 #include "../Engine/Input.h"
 #include <iostream>
@@ -30,34 +29,30 @@ void Ship::State_Idle::Enter(GameObject* object) {
 void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
     //get mouse pos and move to there
     Ship* ship = static_cast<Ship*>(object);
-    // ���콺 ��ġ�� ȭ�� �߽� ���
+
     vec2 window = { Engine::window_width / 2, Engine::window_height / 2 };
     vec2 mouse_pos = { (float)Engine::GetInput().GetMousePos().mouseWorldSpaceX, (float)Engine::GetInput().GetMousePos().mouseWorldSpaceY };
     vec2 pos = mouse_pos - window;
 
-    // �������� ���� ���
     vec2 destination = pos;
     vec2 direction = destination - ship->GetPosition();
-    float distance = direction.Length(); // �Ÿ� ���
+    float distance = direction.Length(); 
     direction = direction.Normalize();
 
-    // �Ÿ� ��� force ����
     float force_multiplier = 0.0f;
-    float min_distance = 50.0f;  // �ּ� �Ÿ�
-    float max_distance = 200.0f; // �ִ� �Ÿ�
+    float min_distance = 50.0f; 
+    float max_distance = 200.0f; 
 
     if (distance <= min_distance) {
-        force_multiplier = 0.0f; // ������ ���� �������� ����
+        force_multiplier = 0.0f; 
     }
     else if (distance >= max_distance) {
-        force_multiplier = 1.0f; // �ָ� �ִ� �� ����
+        force_multiplier = 1.0f; 
     }
     else {
-        // �Ÿ� ��ʷ� ���� ���������� ����
         force_multiplier = (distance - min_distance) / (max_distance - min_distance);
     }
 
-    // �� ����
     vec2 force = direction * skidding_speed * force_multiplier;
     ship->SetVelocity(force);
 }
@@ -91,7 +86,7 @@ void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_
     ship->FuelUpdate(fixed_dt);
     ship->SetVelocity(ship->force);
     float base_dt = 1.0f / 240.f;
-    float adjusted_deceleration = (float)pow(deceleration, fixed_dt / base_dt); 
+    float adjusted_deceleration = (float)pow(deceleration, fixed_dt / base_dt);
     ship->force *= adjusted_deceleration;
 }
 void Ship::State_Move::CheckExit(GameObject* object) {
@@ -153,19 +148,17 @@ void Ship::Update(double dt)
     GameObject::Update(dt);
     CS230::RectCollision* collider = GetGOComponent<CS230::RectCollision>();
 
-    float width = 1280;
-    float height = 720;
     // World Boundary
     if (collider->WorldBoundary_rect().Left() < Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x - 640) {
         UpdatePosition({ Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x - 640 - collider->WorldBoundary_rect().Left(), 0 });
         SetVelocity({ 0, GetVelocity().y });
     }
-    if (collider->WorldBoundary_rect().Right() > Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x + width) {
-        UpdatePosition({ Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x + width - collider->WorldBoundary_rect().Right(), 0 });
+    if (collider->WorldBoundary_rect().Right() > Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x + 640) {
+        UpdatePosition({ Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x + 640 - collider->WorldBoundary_rect().Right(), 0 });
         SetVelocity({ 0, GetVelocity().y });
     }
-    if (collider->WorldBoundary_rect().Bottom() < Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y - height) {
-        UpdatePosition({ 0, Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y - height - collider->WorldBoundary_rect().Bottom() });
+    if (collider->WorldBoundary_rect().Bottom() < Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y - 360) {
+        UpdatePosition({ 0, Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y - 360 - collider->WorldBoundary_rect().Bottom() });
         SetVelocity({ GetVelocity().x, 0 });
     }
     if (collider->WorldBoundary_rect().Top() > Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y + 360) {
@@ -213,7 +206,7 @@ std::vector<vec2> SortPointsCounterClockwise(const std::vector<vec2>& points, co
         [&center](const vec2& a, const vec2& b) {
             float angle_a = atan2(a.y - center.y, a.x - center.x);
             float angle_b = atan2(b.y - center.y, b.x - center.x);
-            return angle_a > angle_b; 
+            return angle_a > angle_b;
         });
 
     return sorted_points;
@@ -274,7 +267,7 @@ vec2 ComputeNormalAtPoint(const vec2& p0, const vec2& p1) {
     vec2 normal = { -tangent.y, tangent.x };
     float length = normal.Length();
     if (length > 0.0f) {
-        normal = { normal.x / length, normal.y / length }; 
+        normal = { normal.x / length, normal.y / length };
 
         if (normal.x < 0.0f) {
             normal.x = -normal.x;
@@ -349,7 +342,7 @@ void Ship::HitWithReef(vec2 normal) {
         fuel = 0.0f;
     }
 
-    vec2 velocity = GetVelocity(); 
+    vec2 velocity = GetVelocity();
 
     float dot_product = velocity.x * normal.x + velocity.y * normal.y;
 
@@ -358,13 +351,13 @@ void Ship::HitWithReef(vec2 normal) {
         velocity.y - 2 * dot_product * normal.y
     };
 
-    float incoming_speed = velocity.Length(); 
+    float incoming_speed = velocity.Length();
 
     if (reflection.Length() > 0.0f) {
         direction = reflection.Normalize();
     }
     else {
-        direction = { 1.0f, 0.0f }; 
+        direction = { 1.0f, 0.0f };
     }
 
     SetVelocity(direction * incoming_speed * 0.75f);
