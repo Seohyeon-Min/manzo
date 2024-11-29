@@ -11,7 +11,6 @@ Created:    March 8, 2023
 #pragma once
 #include "Sprite.h"
 #include "ComponentManager.h"
-#include <string>
 
 #include "vec2.h"
 #include "Component.h"
@@ -19,6 +18,9 @@ Created:    March 8, 2023
 #include "ShowCollision.h"
 #include "engine.h"
 #include "GLShader.h"
+#include "../Game/GameObjectTypes.h"
+
+#include <string>
 
 namespace Math { class TransformationMatrix; }
 enum class GameObjectTypes;
@@ -41,6 +43,7 @@ namespace CS230 {
         virtual void Draw(DrawLayer drawlayer = DrawLayer::Draw);
         virtual void Destroy() { destroy = true; }
         virtual bool Destroyed() { return destroy; }
+        virtual void SetShader(GLShader* new_shader) { shader = new_shader; };
 
         const mat3& GetMatrix();
         const vec2& GetPosition() const;

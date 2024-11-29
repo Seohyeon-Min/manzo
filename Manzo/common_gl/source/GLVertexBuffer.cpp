@@ -71,6 +71,15 @@ void GLVertexBuffer::Use(bool bind) const
     glCheck(glBindBuffer(GL_ARRAY_BUFFER, bind ? buffer_handle : 0)); // Bind or unbind the buffer
 }
 
+void GLVertexBuffer::CreateVertexBuffer(const void* data, unsigned int size)
+{
+    // Main Constructor
+    glGenBuffers(1, &buffer_handle);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer_handle);
+    glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+}
+
+
 /******************************************************************************
 * @brief    Sends data from CPU memory to the GPU for this buffer.
 * @param    data Pointer to the data to send.
