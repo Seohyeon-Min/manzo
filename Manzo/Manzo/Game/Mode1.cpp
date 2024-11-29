@@ -116,7 +116,7 @@ void Mode1::Update(double dt) {
     //camera postion update
     camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
 
-	//fishGenerator->GenerateFish(dt);
+	fishGenerator->GenerateFish(dt);
     skill_ptr->Update();
     if (ship_ptr->IsShipUnder() && Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Q)) {
         Engine::GetGameStateManager().ClearNextGameState();

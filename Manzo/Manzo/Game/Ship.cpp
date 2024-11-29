@@ -188,11 +188,6 @@ void Ship::Draw(DrawLayer drawlayer) {
     CS230::GameObject::Draw(DrawLayer::DrawLast);
 }
 
-
-vec2 GetPerpendicular(vec2 v) {
-    return { -v.y, v.x };
-}
-
 vec2 CatmullRomSpline(const vec2& p0, const vec2& p1, const vec2& p2, const vec2& p3, float t) {
     float t2 = t * t;
     float t3 = t2 * t;
@@ -318,9 +313,8 @@ void Ship::ResolveCollision(GameObject* other_object)
         if (other_object->Type() == GameObjectTypes::Reef) {
 
             if (GetVelocity().Length() <= skidding_speed + 30.f) { // if it was skidding, don't reflect
-                vec2 smallCorrection = -GetVelocity().Normalize();
+                vec2 smallCorrection = -GetVelocity().Normalize(); // with this, ship should not able to move!
                 UpdatePosition(smallCorrection);
-                //SetVelocity({});
                 return;
             }
 
