@@ -1,23 +1,17 @@
 
 #include "FishEcosystem.h"
-#include "AI.h"
 #include "../Engine/GameObjectManager.h"
 
 FishGenerator::FishGenerator()
 {
 	timer = new CS230::Timer(2.0);
-
-	for (int i = 0; i < 30; i++)
-	{
-		BackgroundFish* bg_fish = new BackgroundFish();
-		Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(bg_fish);
-		bg_fish->AddBackgroundFishes(bg_fish);
-	}
+	bg_timer = new CS230::Timer(5.0);
 }
 
 void FishGenerator::GenerateFish(double dt)
 {
 	timer->Update(dt);
+	bg_timer->Update(dt);
 
 	if (timer->Remaining() == 0)
 	{
@@ -51,9 +45,22 @@ void FishGenerator::GenerateFish(double dt)
 				Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(additionalFish);
 			}
 		}
+
 	}
 
+
 	//generate background fish
+	if (bg_timer->Remaining() == 0)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			BackgroundFish* bg_fish = new BackgroundFish();
+			Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(bg_fish);
+			bg_fish->AddBackgroundFishes(bg_fish);
+		}
+
+		bg_timer->Reset();
+	}
 }
 
 FishGenerator::~FishGenerator()

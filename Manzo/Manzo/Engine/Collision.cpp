@@ -123,9 +123,9 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
             {rectangle_1.Left(), rectangle_1.Top()}
         };
 
-        float min_distance = std::numeric_limits<float>::max();
-        int closest_index = -1;
-        bool is_colliding = true;
+        float min_distance = std::numeric_limits<float>::max(); 
+        int closest_index = -1; 
+        bool is_colliding = true; 
 
         for (int i = 0; i < other_poly.vertexCount; i++) {
             vec2 edge = { other_poly.vertices[(i + 1) % other_poly.vertexCount].x - other_poly.vertices[i].x,
@@ -139,15 +139,15 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
             ProjectPolygon(other_poly, axis, minB, maxB);
 
             if (maxA < minB || maxB < minA) {
-                is_colliding = false;
-                break;
+                is_colliding = false;  
+                break;  
             }
 
             float distance = std::min(std::abs(maxA - minB), std::abs(maxB - minA));
 
             if (distance < min_distance) {
                 min_distance = distance;
-                closest_index = i;
+                closest_index = i; 
             }
         }
 
@@ -215,7 +215,7 @@ bool CS230::MAP_SATCollision::IsCollidingWith(vec2 point) {
         else {
             vec2 point_1 = poly_1.vertices[i];
             vec2 point_2 = poly_1.vertices[(i + 1) % poly_1.vertexCount];
-            colliding_edge = { point_1 ,point_2 };
+            colliding_edge = { point_1 ,point_2 }; 
         }
     }
 
@@ -264,7 +264,7 @@ bool CS230::MAP_SATCollision::IsCollidingWith(GameObject* other_object)
         else {
             vec2 point_1 = poly_1.vertices[i];
             vec2 point_2 = poly_1.vertices[(i + 1) % poly_1.vertexCount];
-            colliding_edge = { point_1 ,point_2 };
+            colliding_edge = { point_1 ,point_2 }; 
         }
     }
 

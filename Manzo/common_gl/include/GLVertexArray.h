@@ -12,7 +12,6 @@
 #include <GL/glew.h>
 #include <memory>
 #include <vector>
-#include <GLVertexBufferLayout.h>
 
 struct GLAttributeLayout
 {
@@ -81,14 +80,9 @@ public:
     GLVertexArray& operator=(GLVertexArray&& temp) noexcept;
 
     void Use(bool bind = true) const;
-    void CreateVertexArray();
-
-    std::vector<GLAttributeLayout> GetAttributeLayouts(const GLVertexBufferLayout& layout);
 
     void AddVertexBuffer(GLVertexBuffer&& vertex_buffer, std::initializer_list<GLAttributeLayout> buffer_layout);
-    void AddVertexBuffer(GLVertexBuffer&& vertex_buffer, const GLVertexBufferLayout& layout);
     void SetIndexBuffer(GLIndexBuffer&& the_indices);
-    void AddBuffer(const GLVertexBuffer& vbo, const GLVertexBufferLayout& layout);
 
     [[nodiscard]] GLHandle GetHandle() const noexcept
     {

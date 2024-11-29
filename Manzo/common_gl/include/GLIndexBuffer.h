@@ -56,8 +56,6 @@ public:
     {
         return element_type;
     }
-
-    void CreateIndexBuffer(const unsigned int* indices, unsigned int count);
 private:
  /******************************************************************************
  * @brief    Creates and uploads index data to an OpenGL buffer.
@@ -71,6 +69,4 @@ private:
         glCheck(glCreateBuffers(1, &buffer));
         glCheck(glNamedBufferStorage(buffer, data.size_bytes(), data.data(), 0));
     }
-
-    unsigned int m_count;
 };

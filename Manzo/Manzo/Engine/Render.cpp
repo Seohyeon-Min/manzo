@@ -142,8 +142,6 @@ void CS230::Render::Draw(const DrawCall& draw_call) {
     const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
 
     shader->SendUniform("uModelToNDC", to_span(model_to_ndc)); // Send transformation matrix to shader
-    if (Engine::GetShaderManager().GetShader("pixelate") == shader) 				
-        shader->SendUniform("uPixelSize", 0.012f);
 
     //if there is a uniform, add
     if (draw_call.SetUniforms) {

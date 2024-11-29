@@ -19,7 +19,6 @@ int main() {
         GLApp OpenGLAPPlication("Manzo");
         Engine& engine = Engine::Instance();
 
-        engine.GetFontManager().AddFontType("assets/fonts/Font1.ttf");
 
         Mode1 mode1;
         engine.GetGameStateManager().AddGameState(mode1);

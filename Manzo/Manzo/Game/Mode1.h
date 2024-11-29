@@ -13,6 +13,7 @@ Created:    March 8, 2023
 #include "../Engine/Sprite.h"
 #include "..\Engine\GameObjectManager.h"
 #include "../Engine/UIManager.h"
+//#include "../Engine/Fonts.h"
 #include "../Engine/Timer.h"
 #include "FishEcosystem.h"
 #include "../Engine/Camera.h"
@@ -47,7 +48,6 @@ private:
     Boss* boss_ptr;
     UIManager* ui_manager;
     CS230::Cam* camera;
-    Beat* beat_system;
     Skillsys* skill_ptr;
     Skillsys::Skill_Net* Net_ptr;
 

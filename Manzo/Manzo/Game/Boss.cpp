@@ -35,7 +35,7 @@ void Boss::State_CutScene::Update(GameObject* object, double dt) {
 void Boss::State_CutScene::CheckExit(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
 
-	if (Engine::GetInput().KeyDown(CS230::Input::Keys::R)) {
+	if (Engine::GetInput().KeyDown(CS230::Input::Keys::R)&& boss->beat->GetBeat()) {
 		Mix_Music* e_music = Engine::GetAudioManager().LoadMusic(boss->mp3_file_name, "E_Music");
 		if (e_music) {
 			Engine::GetAudioManager().PlayMusic(e_music, -1);

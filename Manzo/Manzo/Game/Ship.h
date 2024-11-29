@@ -33,7 +33,6 @@ public:
     const vec2& GetPosition() const { return GameObject::GetPosition(); }
     //for fuel
     float GetFuel() { return (float)fuel; }
-    float GetMaxFuel() { return (float)Maxfuel; }
     void FuelUpdate(double dt);
     void SetMaxFuel(double input);
     void HitWithReef(vec2 normal);
@@ -44,14 +43,12 @@ public:
 private:
     static constexpr double speed = 6500.f;
     static constexpr float deceleration = 0.88f;
-    static constexpr double skidding_speed = 150.f;
-    double slow_down_factor;
+    static constexpr double skidding_speed = 20.f;
     bool move;
     bool hit_with = false;
     vec2 force = {};
     vec2 destination;
     vec2 direction = { 0,0 };
-    vec2 normal;
     Beat* beat;
     Skillsys* skill;
     Math::rect limit;
@@ -77,6 +74,22 @@ private:
         std::string GetName() override { return "State_Idle"; }
     };
 
+    class State_Set_Dest : public State {
+    public:
+        virtual void Enter(GameObject* object) override;
+        virtual void Update(GameObject* object, double dt) override;
+        virtual void CheckExit(GameObject* object) override;
+        std::string GetName() override { return "State_Set_Dest"; }
+    };
+
+    class State_Ready_to_Move : public State {
+    public:
+        virtual void Enter(GameObject* object) override;
+        virtual void Update(GameObject* object, double dt) override;
+        virtual void CheckExit(GameObject* object) override;
+        std::string GetName() override { return "State_Ready_to_Move"; }
+    };
+
     class State_Move : public State {
     public:
         virtual void Enter(GameObject* object) override;
@@ -96,6 +109,8 @@ private:
     };
 
     State_Idle state_idle;
+    State_Set_Dest state_set_dest;
+    State_Ready_to_Move state_ready_to_move;
     State_Move state_move;
     State_Hit state_hit;
 };

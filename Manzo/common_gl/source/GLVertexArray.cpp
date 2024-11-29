@@ -81,28 +81,6 @@ void GLVertexArray::Use(bool bind) const
     }
 }
 
-void GLVertexArray::CreateVertexArray()
-{
-    glCheck(glGenVertexArrays(1, &vertex_array_handle));
-}
-
-std::vector<GLAttributeLayout> GLVertexArray::GetAttributeLayouts(const GLVertexBufferLayout& layout)
-{
-    std::vector<GLAttributeLayout> attribute_layouts;
-    for (const auto& element : layout.GetElements()) {
-        GLAttributeLayout attribute;
-        attribute.vertex_layout_location = element.location;
-        attribute.component_type = static_cast<GLAttributeLayout::ComponentType>(element.type);
-        attribute.component_dimension = static_cast<GLAttributeLayout::NumComponents>(element.count);
-        attribute.normalized = GL_FALSE; // Set as needed
-        attribute.stride = element.stride;
-        attribute.offset = element.offset;
-        attribute.relative_offset = element.relative_offset;
-        attribute_layouts.push_back(attribute);
-    }
-    return attribute_layouts; // return the vector directly
-}
-
 /******************************************************************************
 * @brief    Adds a vertex buffer to the VAO and configures the buffer layout.
 * @param    vertex_buffer The vertex buffer to add.
@@ -121,19 +99,6 @@ void GLVertexArray::AddVertexBuffer(GLVertexBuffer&& vertex_buffer, std::initial
     vertex_buffers.push_back(std::move(vertex_buffer)); // Store the vertex buffer
 }
 
-void GLVertexArray::AddVertexBuffer(GLVertexBuffer&& vertex_buffer, const GLVertexBufferLayout& layout)
-{
-    std::vector<GLAttributeLayout> buffer_layout = GetAttributeLayouts(layout);
-    for (const auto& attribute : buffer_layout) {
-        glCheck(glEnableVertexArrayAttrib(vertex_array_handle, attribute.vertex_layout_location));
-        glCheck(glVertexArrayVertexBuffer(vertex_array_handle, attribute.vertex_layout_location, vertex_buffer.GetHandle(), attribute.offset, attribute.stride));
-        glCheck(glVertexArrayAttribFormat(vertex_array_handle, attribute.vertex_layout_location, attribute.component_dimension, attribute.component_type, attribute.normalized, attribute.relative_offset));
-        glCheck(glVertexArrayAttribBinding(vertex_array_handle, attribute.vertex_layout_location, attribute.vertex_layout_location));
-    }
-    vertex_buffers.push_back(std::move(vertex_buffer)); // Store the vertex buffer
-}
-
-
 /******************************************************************************
 * @brief    Sets the index buffer for the VAO.
 * @param    the_indices The index buffer to set.
@@ -145,39 +110,6 @@ void GLVertexArray::SetIndexBuffer(GLIndexBuffer&& the_indices)
 
     glCheck(glVertexArrayElementBuffer(vertex_array_handle, the_indices.GetHandle())); // Set the index buffer
     this->index_buffer = std::move(the_indices); // Store the index buffer
-}
-
-void GLVertexArray::AddBuffer(const GLVertexBuffer& vbo, const GLVertexBufferLayout& layout)
-{
-    // Associates a vertex buffer object with the vertex array object.
-    // Bind the vertex array object.
-    Use(true);
-
-    // Bind the vertex buffer object.
-    vbo.Use(true);
-
-    const auto& elements = layout.GetElements();
-    unsigned int offset = 0;
-
-    for (int i = 0; i < elements.size(); i++)
-    {
-        const auto& element = elements[i];
-        // Enable the vertex attribute array for the specified buffer index.
-        glEnableVertexAttribArray(i);
-
-        // Set up the vertex attribute pointer for the specified buffer index.
-        // This specifies how to interpret the vertex data in the vertex buffer object.
-        glVertexAttribPointer(i, element.count, element.type,
-            element.normalized, layout.GetStride(), (const void*)(uintptr_t)offset);
-
-        offset += element.count * VertexBufferElement::GetSizeOfType(element.type);
-    }
-
-    // Unbind the vertex buffer object.
-    vbo.Use(false);
-
-    // Unbind the vertex array object.
-    Use(false);
 }
 
 /******************************************************************************

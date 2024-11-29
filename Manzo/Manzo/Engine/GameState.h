@@ -24,7 +24,7 @@ namespace CS230 {
         template<typename T>
         T* GetGSComponent() {
             return componentmanager.GetComponent<T>();
-        }
+        }   
 
     protected:
         void AddGSComponent(Component* component) {

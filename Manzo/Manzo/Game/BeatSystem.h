@@ -7,7 +7,6 @@
 class Beat : public CS230::Component {
 public:
     Beat();
-    void LoadMusicToSync(std::string music_name);
     void Update(double dt);
     bool GetBeat() { return beat; }
     bool GetIsOnBeat() { return is_on_beat; }
@@ -21,14 +20,11 @@ private:
     int beat_count = 0;
     int delay_count = 0;
     double duration = 0;
-    double fixed_duration = 0;
     double delay_duration = 0;
     double current_delay_duration = 0;
     double time_taken = 0;
-    static constexpr double judge_offset = 0.2;
+    static constexpr double judge_offset = 0.20;
     bool beat = false;
     bool is_on_beat = false;
-    bool music_started = false;
     AudioManager* audio;
-    Mix_Music* music = nullptr;
 };
