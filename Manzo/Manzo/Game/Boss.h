@@ -34,6 +34,8 @@ public:
 	void ReadBossJSON(BossName type);
 	void RunMusic();
 	void InitializeStates();
+	void AvoidObstacle(float avoidDistance, float steerSpeed, float speed, vec2 point);
+	bool IsReefOutOfRange(vec2 point);
 
 private:
 
@@ -115,6 +117,10 @@ private:
 	std::vector<int> Boss_procedural;
 	vec2 current_position;
 	float speed = 400;
+	float avoidDistance = 200.0f;
+	float steerSpeed = 0.1f;
+	int detectionRadius = 100;
 
+	vec2 currentTargetRock;
 };
 

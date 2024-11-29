@@ -59,12 +59,13 @@ void Boss::Chasingplayer_fun(int targetEntryNum, Boss* boss) {
 					boss->current_position = playerPosition;
 				}
 
-				std::cout << "Boss is moving towards player. New position: ("
-					<< boss->current_position.x << ", " << boss->current_position.y << ")" << std::endl;
+				/*std::cout << "Boss is moving towards player. New position: ("
+					<< boss->current_position.x << ", " << boss->current_position.y << ")" << std::endl;*/
 			}
 		}
 	}
 }
+
 void Boss::Shooting_fun(int targetEntryNum, Boss* object) {
 
 }
@@ -172,32 +173,48 @@ void Boss::InitializeStates() {
 	stateMap.push_back(&entry4);
 }
 
+bool Boss::IsReefOutOfRange(vec2 point) {
+	float distance = sqrtf((float)pow(point.x - GetPosition().x, 2) + (float)pow(point.y - GetPosition().y, 2));
+	return distance > detectionRadius;
+}
 
 void Boss::Update(double dt) {
+	Boss* boss = static_cast<Boss*>(this);
+	CS230::GameObjectManager* gameobjectmanager = Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>();
 	GameObject::Update(dt);
-	
-	if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
+	vec2 nearestRockpoint = gameobjectmanager->FindNearestRock(boss);
+
+	if (IsReefOutOfRange(currentTargetRock)) {
+		currentTargetRock = gameobjectmanager->FindNearestRock(boss);
 		
-		if (GameObject::current_state->GetName() != Boss::state_cutscene.GetName()) {
-			int barCount = beat->GetBarCount();
-			//std::cout << total_entry.size() << std::endl;
-			
-			if(barCount < (int)total_entry.size()){
-				if (barCount < total_entry.size() && total_entry[barCount] - 1 < stateMap.size()) {
-					change_state(stateMap[total_entry[barCount] - 1]);
+	}
+	else if (currentTargetRock.x || currentTargetRock.y) {
+		AvoidObstacle(200.0f, 0.1f, 300.0f, currentTargetRock);
+		std::cout << "detected" << std::endl;
+	}
+	else {
+		if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
+
+			if (GameObject::current_state->GetName() != Boss::state_cutscene.GetName()) {
+				int barCount = beat->GetBarCount();
+				//std::cout << total_entry.size() << std::endl;
+
+				if (barCount < (int)total_entry.size()) {
+					if (barCount < total_entry.size() && total_entry[barCount] - 1 < stateMap.size()) {
+						change_state(stateMap[total_entry[barCount] - 1]);
+					}
+					else {
+
+						std::cerr << "Invalid barCount or index out of range: " << barCount << std::endl;
+					}
 				}
-				else  {
-				
-					std::cerr << "Invalid barCount or index out of range: " << barCount << std::endl;
+				else if (barCount = (int)total_entry.size()) {
+					Destroy();
+					Engine::GetAudioManager().StopMusic();
 				}
-			}
-			else if (barCount = (int)total_entry.size()) {
-				Destroy();
-				Engine::GetAudioManager().StopMusic();
 			}
 		}
 	}
-
 	Move(dt);
 }
 
@@ -249,6 +266,34 @@ void Boss::ReadBossJSON(BossName name)
 
 }
 
+void Boss::AvoidObstacle(float avoidDistance, float steerSpeed, float speed, vec2 point) {
+	vec2 bossPosition = GetPosition();
+	vec2 reefPosition = point;
+
+
+	vec2 currentVelocity = GetVelocity(); 
+
+	float distanceFromObstacle = sqrtf((float)pow(bossPosition.x - reefPosition.x, 2) + (float)pow(bossPosition.y - reefPosition.y, 2));
+
+	if (distanceFromObstacle < avoidDistance) {
+		vec2 directionToObstacle = { reefPosition.x - bossPosition.x, reefPosition.y - bossPosition.y };
+		float magnitude = sqrtf(directionToObstacle.x * directionToObstacle.x + directionToObstacle.y * directionToObstacle.y);
+
+		if (magnitude > 0.0f) {
+			directionToObstacle.x /= magnitude;
+			directionToObstacle.y /= magnitude;
+		}
+
+		vec2 avoidDirection = { -directionToObstacle.x, -directionToObstacle.y };
+		vec2 targetVelocity = { avoidDirection.x * speed, avoidDirection.y * speed };
+
+		currentVelocity = Lerp(currentVelocity, targetVelocity, steerSpeed);
+	}
+
+
+	SetPosition({ bossPosition.x + currentVelocity.x, bossPosition.y + currentVelocity.y });
+}
+
 void Boss::RunMusic()
 {
 
@@ -277,3 +322,5 @@ void Boss::ResolveCollision(GameObject* other_object) {
 		break;
 	}
 }
+
+

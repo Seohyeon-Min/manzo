@@ -45,10 +45,14 @@ namespace CS230 {
         virtual bool Destroyed() { return destroy; }
         virtual void SetShader(GLShader* new_shader) { shader = new_shader; };
 
+
         const mat3& GetMatrix();
         const vec2& GetPosition() const;
         const vec2& GetVelocity() const;
         const vec2& GetScale() const;
+
+       
+
         //const MAP_SATCollision& GetSATCollision() const;
         double GetRotation() const;
         //void SetModel(GLVertexArray* model) { draw_call.model = model; }
