@@ -53,6 +53,7 @@ void Mode1::Load() {
     AddGSComponent(beat_system);
     AddGSComponent(new CS230::Map());
     AddGSComponent(new GodRay());
+    //AddGSComponent(new Pump());
 
     //// ship
     ship_ptr = new Ship({ 0, 0 });
@@ -148,6 +149,7 @@ void Mode1::Draw() {
     GetGSComponent<Background>()->Draw(*GetGSComponent<CS230::Cam>());
     GetGSComponent<CS230::Map>()->AddDrawCall();
     GetGSComponent<GodRay>()->Draw();
+    //GetGSComponent<Pump>()->Draw();
     GetGSComponent<CS230::GameObjectManager>()->DrawAll();
     ui_manager->AddDrawCalls();
 

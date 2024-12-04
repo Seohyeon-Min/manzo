@@ -123,13 +123,21 @@ void CS230::Render::Draw(const DrawCall& draw_call) {
         throw std::runtime_error("no texture!"); // Error if no texture is assigned
     }
 
-    if (settings.do_blending) {
-        glCheck(glEnable(GL_BLEND));
-        //glEnable(GL_MULTISAMPLE);//anti-alising
-        glCheck(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+    if (settings.do_blending || settings.glow || settings.modulate_color) {
+        glCheck(glEnable(GL_BLEND)); // 블렌딩 활성화
     }
     else {
-        glCheck(glDisable(GL_BLEND));
+        glCheck(glDisable(GL_BLEND)); // 블렌딩 비활성화
+    }
+
+    if (settings.glow) {
+        glCheck(glBlendFunc(GL_ONE, GL_ONE)); // Glow 블렌딩 설정
+    }
+    else if (settings.do_blending) {
+        glCheck(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)); // 일반 알파 블렌딩 설정
+    }
+    else if (settings.modulate_color) {
+        glCheck(glBlendFunc(GL_DST_COLOR, GL_ZERO));
     }
 
     vec2 texture_size = (vec2)draw_call.texture->GetSize();
@@ -292,7 +300,7 @@ void CS230::Render::CreatModel()
 {
     float w = 0.5f, h = 0.5f;
     const std::array positions = { vec2{-w, -h}, vec2{w, -h}, vec2{w, h}, vec2{-w, h} };
-    constexpr std::array colors = { color3{1, 1, 1}, color3{1, 0, 0}, color3{0, 1, 0}, color3{0, 0, 1} };
+    constexpr std::array colors = { color3{1, 1, 1}, color3{1, 1, 1}, color3{1, 1, 1}, color3{1, 1, 1} };
     constexpr std::array<unsigned, 4> indices = { 0, 3, 1, 2 };
     constexpr std::array texture_coordinates = { vec2{0, 0}, vec2{1, 0}, vec2{1, 1}, vec2{0, 1} };
 
@@ -361,4 +369,37 @@ void CS230::Render::CreatLineModel()
     line_model.SetVertexCount(2);
     line_model.AddVertexBuffer(std::move(buffer), { position });
     line_model.SetPrimitivePattern(GLPrimitive::Lines);
+}
+
+
+void CS230::Render::CreateCircleLineModel() {
+    int segments = 20;
+    float radius = 0.5;
+
+    std::vector<vec2> positions;
+    positions.reserve(segments);
+
+    float angle_step = 2.0f * 3.1415926535f / static_cast<float>(segments);
+
+    for (int i = 0; i < segments; ++i) {
+        float angle = i * angle_step;
+        positions.emplace_back(radius * cos(angle), radius * sin(angle));
+    }
+
+    const auto positions_byte_size = static_cast<long long>(sizeof(vec2) * positions.size());
+    const GLsizei buffer_size = static_cast<GLsizei>(positions_byte_size);
+    GLVertexBuffer buffer(buffer_size);
+    buffer.SetData(std::span(positions));
+
+    GLAttributeLayout position;
+    position.component_type = GLAttributeLayout::Float;
+    position.component_dimension = GLAttributeLayout::_2;
+    position.normalized = false;
+    position.vertex_layout_location = 0; // Layout location for position
+    position.stride = sizeof(vec2); // Stride for position
+    position.offset = 0; // Offset for position
+
+    circle_line_model.SetVertexCount(segments);
+    circle_line_model.AddVertexBuffer(std::move(buffer), { position });
+    circle_line_model.SetPrimitivePattern(GLPrimitive::LineLoop);
 }

@@ -14,4 +14,8 @@ namespace util {
     inline std::span<const float, 3> to_span(const color3& c) {
         return std::span<const float, 3>(&c.elements[0], 3);
     }
+
+    inline std::span<const float, 2> to_span(const vec2& v) {
+        return std::span<const float, 2>(&v.elements[0], 2);
+    }
 }

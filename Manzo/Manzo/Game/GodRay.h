@@ -5,6 +5,18 @@ class GodRay : public CS230::Component {
 public:
     GodRay();
     void Draw();
+    void SetUniforms(const GLShader* shader);
 private:
     GLTexture* texture;
+};
+
+class Pump : public CS230::Component {
+public:
+    Pump();
+    void Draw();
+    void Update(double dt) override;
+    void SetUniforms(const GLShader* shader);
+private:
+    GLTexture* texture;
+    float alpha = 1.0;
 };

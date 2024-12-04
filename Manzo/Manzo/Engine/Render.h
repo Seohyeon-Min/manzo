@@ -70,7 +70,7 @@ namespace CS230 {
 
     class Render {
     public:
-        Render() { CreatModel(); CreatLineModel(); };
+        Render() { CreatModel(); CreatLineModel(); CreateCircleLineModel(); }
 
         void AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase = DrawLayer::Draw);
         void AddDrawCall
@@ -78,6 +78,7 @@ namespace CS230 {
         void RenderAll();
         void CreatModel();
         void CreatLineModel();
+        void CreateCircleLineModel();
         void RenderBackgrounds();
         void ClearDrawCalls();
 
@@ -102,5 +103,6 @@ namespace CS230 {
 
         GLVertexArray model;
         GLVertexArray line_model;
+        GLVertexArray circle_line_model;
     };
 }
