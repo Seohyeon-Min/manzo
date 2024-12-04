@@ -86,10 +86,31 @@ void Mode1::Load() {
 
     // Map
     GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/test2.svg");
+    //for (int i = 0; i < 25; i++)
+    //{
+    //    GetGSComponent<Boss>()->ReadBossJSON(static_cast<Boss::BossType>(i));
+    //    BossFirstPos.push_back(GetGSComponent<Boss>()->GetFirstPosition());
+    //}
+
+
+
+    boss_ptr = new Boss({ 750,500 }, Boss::BossType::e);
+    boss_ptr->ReadBossJSON(Boss::BossType::e);
+    BossFirstPos.push_back(boss_ptr->GetFirstPosition());
+
+    std::array<int, 2> bossFirstPos = boss_ptr->GetFirstPosition();
+    vec3 bossPosition = { static_cast<float>(bossFirstPos[0])*0.2f, static_cast<float>(bossFirstPos[1]) * 0.2f, 0.0f };
 
     //// audio
     Engine::GetAudioManager().LoadSound("assets/audios/back_temp.wav", "sample");
-    Engine::GetAudioManager().PlaySounds("assets/audios/back_temp.wav", vec3{ 0, 0, 0 }, Engine::GetAudioManager().VolumeTodB(1.0f));
+    bossChannelID = Engine::GetAudioManager().PlaySounds("assets/audios/back_temp.wav", bossPosition, Engine::GetAudioManager().VolumeTodB(1.0f));
+
+    // Convert Boss Position to vec3
+
+    // Get Ship Position
+
+
+
 
     // Skill
     if (!Engine::Instance().GetTmpPtr())
@@ -109,11 +130,16 @@ void Mode1::Update(double dt) {
     UpdateGSComponents(dt);
     GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
 
-    //camera postion update
+    // Update Camera
     camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
 
-	fishGenerator->GenerateFish(dt);
+    // Update Fish Generator
+    fishGenerator->GenerateFish(dt);
+
+    // Update Skills
     skill_ptr->Update();
+
+    // Handle Input
     if (ship_ptr->IsShipUnder() && Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Q)) {
         Engine::GetGameStateManager().ClearNextGameState();
         Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
@@ -121,13 +147,23 @@ void Mode1::Update(double dt) {
 
     if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::W)) {
         Engine::GetGameStateManager().ReloadState();
-
     }
+
     if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::E) && !Isboss) {
-        boss_ptr = new Boss({ 750,500 }, Boss::BossType::e);
         GetGSComponent<CS230::GameObjectManager>()->Add(boss_ptr);
         Isboss = true;
     }
+
+    if (!Engine::GetAudioManager().IsPlaying(bossChannelID)) {
+        std::cout << "!!!!!!!!!!!No Sound!!!!!!!!!!1111" << std::endl;
+    }
+
+    // Update 3D Audio
+
+    vec3 shipPosition = { ship_ptr->GetPosition().x, ship_ptr->GetPosition().y, 0.0f };
+    Engine::GetAudioManager().Set3dListenerAndOrientation(
+        shipPosition, vec3{ 0.0f, 1.0f, 0.0f }, vec3{ 0.0f, 0.0f, 1.0f });
+    Engine::GetAudioManager().SetChannel3dPosition(bossChannelID, bossPosition);
 }
 
 void Mode1::FixedUpdate(double dt)
