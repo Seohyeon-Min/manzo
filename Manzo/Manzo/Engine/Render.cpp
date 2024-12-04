@@ -241,6 +241,7 @@ void CS230::Render::DrawLine(LineDrawCall drawcall) {
     line_model.Use(false); // Unbind line model
 }
 
+
 void CS230::Render::DrawLinePro(LineDrawCallPro drawcall)
 {
     vec2 start = drawcall.start;
