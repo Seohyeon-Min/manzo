@@ -1,98 +1,122 @@
 #include "AI.h"
+#include "ScreenWrap.h"
+
+std::vector<BackgroundFish*> BackgroundFish::globalLeaders;
 
 BackgroundFish::BackgroundFish() : GameObject({ start_position })
 {
-	ivec2 windowSize = { Engine::window_width, Engine::window_height };
-	start_position = { ((float)rand() / RAND_MAX) * 2.0f * windowSize.x - windowSize.x ,((float)rand() / RAND_MAX) * 2.0f * windowSize.y - windowSize.y }; //outside of window
+    ivec2 windowSize = { Engine::window_width, Engine::window_height };
+    start_position = { ((float)rand() / RAND_MAX) * 2.0f * windowSize.x - windowSize.x ,((float)rand() / RAND_MAX) * 2.0f * windowSize.y - windowSize.y }; // Spawn outside of window
 
-	SetPosition(start_position);
-	SetVelocity({ 30,0 });
+    SetPosition(start_position);
+    SetVelocity({ 30,0 });
 
-	AddGOComponent(new CS230::Sprite("assets/images/BackgroundFish.spt", this));
-}
+    AddGOComponent(new CS230::Sprite("assets/images/BackgroundFish.spt", this));
 
-float BackgroundFish::PointToSegmentDistance(const vec2& point, const vec2& segmentStart, const vec2& segmentEnd) {
-	vec2 segmentDir = segmentEnd - segmentStart;
-	vec2 toPoint = point - segmentStart;
+    if (globalLeaders.size() < 6) {
+        if (std::find(globalLeaders.begin(), globalLeaders.end(), this) == globalLeaders.end()) {
+            globalLeaders.push_back(this);
+        }
+    }
 
-	float segmentLengthSquared = magnitude_squared(segmentDir);
-	if (segmentLengthSquared == 0.0f) {
-		return toPoint.Length();  // 선분의 길이가 0이면 점과 선분의 거리는 점과 점 사이의 거리
-	}
-
-	float projection = dot(toPoint, segmentDir) / segmentLengthSquared;
-	projection = std::clamp(projection, 0.0f, 1.0f);  // [0, 1] 범위로 클램프
-
-	vec2 closestPoint = segmentStart + projection * segmentDir;
-	return (point - closestPoint).Length();
+    AddGOComponent(new ScreenWrap(*this));
 }
 
 void BackgroundFish::Update(double dt) {
-    GameObject::Update(dt);
-
-    static Quadtree quadtree(AABB{ {0.0f, 0.0f}, {Engine::window_width / 2.0f, Engine::window_height / 2.0f} });
-    quadtree.clear();
-
-    // Insert all fish into the Quadtree
-    for (auto& fish : backgroundFishes) {
-        quadtree.insert(fish);
-    }
-
-    // Define the search range
-    AABB searchRange = { GetPosition(), vec2{150.0f, 150.0f} };
-    std::vector<BackgroundFish*> neighbors;
-    quadtree.query(searchRange, neighbors);
 
     vec2 alignment(0.0f, 0.0f);
     vec2 cohesion(0.0f, 0.0f);
     vec2 separation(0.0f, 0.0f);
     vec2 wanderForce(0.0f, 0.0f);
-
     int neighborCount = 0;
 
-    for (auto* neighbor : neighbors) {
-        if (neighbor == this) continue;
+    GameObject::Update(dt);
 
-        vec2 toNeighbor = neighbor->GetPosition() - GetPosition();
-        float distance = toNeighbor.Length();
+    static Quadtree quadtree(AABB{ {-Engine::window_width, -Engine::window_height}, {Engine::window_width, Engine::window_height} });
+    quadtree.clear();
 
-        alignment += neighbor->GetVelocity();
-        cohesion += neighbor->GetPosition();
+    // 쿼드트리에 모든 물고기 삽입
+    for (auto& fish : backgroundFishes) {
+        quadtree.insert(fish);
+    }
 
-        if (distance < 50.0f) {
-            separation += toNeighbor / -distance;
+    // 리더별로 이웃 물고기들 처리
+    for (auto* leader : globalLeaders) {
+        AABB searchRange = { leader->GetPosition(), vec2{50.0f, 50.0f} };
+        std::vector<BackgroundFish*> neighbors;
+        quadtree.query(searchRange, neighbors);
+
+        // 리더 중심으로 이웃 물고기들에 영향을 주는 행동 수행
+        for (auto* neighbor : neighbors) {
+            if (neighbor == leader) continue;
+
+            vec2 toLeader = leader->GetPosition() - neighbor->GetPosition();
+            float distance = toLeader.Length();
+
+            if (distance < 50.0f) {
+                vec2 influence = toLeader.Normalize() * 2.0f;
+                neighbor->SetVelocity(neighbor->GetVelocity() + influence);
+            }
+
+            alignment += neighbor->GetVelocity();
+            cohesion += neighbor->GetPosition();
+
+            // Separation: 물고기 간의 최소 거리가 20보다 작은 경우 분리력 증가
+            if (distance < minDistance) {
+                vec2 pushAway = (GetPosition() - neighbor->GetPosition()).Normalize();
+                separation += pushAway * (separationStrength / distance);
+            }
+            else if (distance < 100.0f) {
+                separation += toLeader / -distance;
+            }
+
+            neighborCount++;
         }
+    }
 
-        neighborCount++;
+
+
+    // 가장 가까운 리더 찾기
+    BackgroundFish* closestLeader = nullptr;
+    float closestDistance = std::numeric_limits<float>::max();
+
+    for (auto* leader : globalLeaders) {
+        float distanceToLeader = (GetPosition() - leader->GetPosition()).Length();
+        if (distanceToLeader < closestDistance) {
+            closestLeader = leader;
+            closestDistance = distanceToLeader;
+        }
+    }
+
+    // 리더를 찾았다면 그 리더를 따름
+    if (closestLeader) {
+        vec2 toLeader = (closestLeader->GetPosition() - GetPosition()).Normalize() * 2.0f;
+        wanderForce += toLeader;  // 리더를 따르는 힘
     }
 
     if (neighborCount > 0) {
-        alignment = (alignment / (float)neighborCount).Normalize() * 3.0f;
+        alignment = (alignment / (float)neighborCount).Normalize() * 5.0f;
         cohesion = ((cohesion / (float)neighborCount) - GetPosition()).Normalize() * 0.5f;
-        separation = separation.Normalize() * 0.2f;
+        separation = separation.Normalize() * 15.0f;
     }
 
+    // 물고기가 이탈하지 않도록 랜덤한 이동
     wanderForce.x += ((float(rand()) / RAND_MAX) - 0.5f) * 0.5f;
     wanderForce.y += ((float(rand()) / RAND_MAX) - 0.5f) * 0.5f;
 
-    vec2 boidForce = alignment + cohesion + separation + wanderForce;
+    // 모든 힘을 합침
+    vec2 boidForce = alignment * 0.3f + cohesion * 0.4f + separation * 0.35f + wanderForce * 0.01f;
 
-    // Update velocity and position
-    SetVelocity((GetVelocity() + boidForce).Normalize() * 30.0f);
+    // Follower는 리더를 추종하는 동작
+    vec2 newVelocity = GetVelocity() + boidForce;
+    newVelocity = newVelocity.Normalize() * std::min(newVelocity.Length(), 15.0f);  // 최대 속도 제한
+    SetVelocity(newVelocity);
 
-    // Screen boundary detection and flip logic
-    vec2 pos = GetPosition();
-    vec2 vel = GetVelocity();
-
-    // Check horizontal boundaries
-    if (pos.x <= -Engine::window_width || pos.x >= Engine::window_width) {
-        vel.x = -vel.x;  // Flip horizontal direction
-    }
-
-    SetVelocity(vel);
+    /*if (pos.x <= -Engine::window_width || pos.x >= Engine::window_width) vel.x = -vel.x;
+    if (pos.y <= -Engine::window_height || pos.y >= Engine::window_height) vel.y = -vel.y;*/
 }
 
 void BackgroundFish::Draw()
 {
-	GameObject::Draw();
+    GameObject::Draw();
 }

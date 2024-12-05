@@ -30,6 +30,7 @@ Created:    March 8, 2023
 #include "Boss.h"
 
 #include <iostream>
+#include "Fonts.h"
 
 Mode1::Mode1()
 {
@@ -102,8 +103,8 @@ void Mode1::Load() {
     vec3 bossPosition = { static_cast<float>(bossFirstPos[0])*0.2f, static_cast<float>(bossFirstPos[1]) * 0.2f, 0.0f };
 
     //// audio
-    Engine::GetAudioManager().LoadSound("assets/audios/back_temp.wav", "sample");
-    bossChannelID = Engine::GetAudioManager().PlaySounds("assets/audios/back_temp.wav", bossPosition, Engine::GetAudioManager().VolumeTodB(1.0f));
+    //Engine::GetAudioManager().LoadSound("assets/audios/back_temp.wav", "sample");
+    //bossChannelID = Engine::GetAudioManager().PlaySounds("assets/audios/back_temp.wav", bossPosition, Engine::GetAudioManager().VolumeTodB(1.0f));
 
     // Convert Boss Position to vec3
 
@@ -154,16 +155,15 @@ void Mode1::Update(double dt) {
         Isboss = true;
     }
 
-    if (!Engine::GetAudioManager().IsPlaying(bossChannelID)) {
+    /*if (!Engine::GetAudioManager().IsPlaying(bossChannelID)) {
         std::cout << "!!!!!!!!!!!No Sound!!!!!!!!!!1111" << std::endl;
-    }
+    }*/
 
     // Update 3D Audio
 
-    vec3 shipPosition = { ship_ptr->GetPosition().x, ship_ptr->GetPosition().y, 0.0f };
-    Engine::GetAudioManager().Set3dListenerAndOrientation(
-        shipPosition, vec3{ 0.0f, 1.0f, 0.0f }, vec3{ 0.0f, 0.0f, 1.0f });
-    Engine::GetAudioManager().SetChannel3dPosition(bossChannelID, bossPosition);
+    //vec3 shipPosition = { ship_ptr->GetPosition().x, ship_ptr->GetPosition().y, 0.0f };
+    //Engine::GetAudioManager().Set3dListenerAndOrientation(shipPosition, vec3{ 0.0f, 1.0f, 0.0f }, vec3{ 0.0f, 0.0f, 1.0f });
+    //Engine::GetAudioManager().SetChannel3dPosition(bossChannelID, bossPosition);
 }
 
 void Mode1::FixedUpdate(double dt)
@@ -181,7 +181,8 @@ void Mode1::Draw() {
     ui_manager->AddDrawCalls();
 
     // Draw Font
-    Engine::GetFontManager().PrintText("HI", { 0.f,0.f }, 0.0f, 0.001f, { 1.0f,1.0f,1.0f });
+    Engine::GetFontManager().PrintText(FontType::Bold, "HI", { 0.f,0.f }, 0.0f, 0.001f, { 1.0f,1.0f,1.0f });
+    Engine::GetFontManager().PrintText(FontType::Thin, "123", { 0.5f,0.5f }, 0.0f, 0.0005f, { 0.0f,0.0f,0.0f });
 }
 
 void Mode1::Unload() {
