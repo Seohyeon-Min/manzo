@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include <iostream>
+
 CS230::Cam::Cam()
 {
 	//this->player_zone = player_zone;
@@ -8,6 +9,15 @@ CS230::Cam::Cam()
 
 void CS230::Cam::Update(double dt, const vec2& player_position, bool playerMove)
 {
+#ifdef _DEBUG
+    if (Engine::GetInput().KeyDown(CS230::Input::Keys::T)) {    // zoom out
+        caminfo.camera_view.SetFramebufferSize(Engine::window_width * 3, Engine::window_height * 3);
+    }
+    else {
+        caminfo.camera_view.SetFramebufferSize(Engine::window_width, Engine::window_height);
+    }
+#else
+#endif
 
     float lerpFactor = 0.03f; // (0.0 ~ 1.0)
     vec2 target_position = player_position;
@@ -21,6 +31,9 @@ void CS230::Cam::Update(double dt, const vec2& player_position, bool playerMove)
 
 	// world_to_ndc <- cam_to_ndc * world_to_cam
 	world_to_ndc = cam_to_ndc * world_to_cam;
+
+    
+
 
     if (caminfo.camera.Position.x < limit.Left()) {
         caminfo.camera.Position.x = limit.Left();
