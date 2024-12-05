@@ -5,6 +5,7 @@
 #include "mat3.h"
 #include "color3.h"
 #include "DrawSetting.h"
+#include "GLFrameBuffer.h"
 
 #include <vector>
 #include <unordered_map>
@@ -78,13 +79,17 @@ namespace CS230 {
 
     class Render {
     public:
-        Render() { CreatModel(); CreatLineModel(); CreateCircleLineModel(); }
+        Render();
 
         void AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase = DrawLayer::Draw);
         void AddDrawCall
         (vec2 start, vec2 end, color3 color, float width = 1.0f, float alpha = 255.0f, const GLShader* shader = nullptr, bool iscollision = true);
         void AddDrawCall(const CircleDrawCall& drawcall, const DrawLayer& phase = DrawLayer::Draw);
         void RenderAll();
+
+        void ApplyPostProcessing();
+        void RenderQuad();
+
         void CreatModel();
         void CreatLineModel();
         void CreateCircleLineModel();
@@ -115,5 +120,6 @@ namespace CS230 {
         GLVertexArray model;
         GLVertexArray line_model;
         GLVertexArray circle_line_model;
+        GLFrameBuffer postProcessFramebuffer;
     };
 }

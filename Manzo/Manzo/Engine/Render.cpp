@@ -16,6 +16,14 @@
 
 const float WORLD_SIZE_MAX = (float)std::max(Engine::window_width, Engine::window_height);
 
+CS230::Render::Render()
+    : postProcessFramebuffer(Engine::window_width, Engine::window_height) { // 프레임 버퍼 생성
+    Engine::GetShaderManager().LoadShader("post_process", "assets/shaders/post_default.vert", "assets/shaders/post_default.frag");
+    CreatModel();  // 모델 생성
+    CreatLineModel();
+    CreateCircleLineModel();
+}
+
 // Add a draw call to the corresponding vector based on the draw layer
 // Draw calls are grouped into first, normal, and late phases
 void CS230::Render::AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase) {
@@ -57,6 +65,9 @@ void CS230::Render::AddDrawCall (const CircleDrawCall& drawcall, const DrawLayer
 // Render all stored draw calls, starting with early phase, normal phase, and then late phase
 // Also handles rendering of lines and collision shapes
 void CS230::Render::RenderAll() {
+    postProcessFramebuffer.Bind();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     // Draw calls in the early phase
     for (const auto& draw_call : draw_first_calls) {
         Draw(draw_call);
@@ -95,8 +106,35 @@ void CS230::Render::RenderAll() {
         }
     }
 
+    postProcessFramebuffer.Unbind();
+    ApplyPostProcessing();
     // Clear draw call vectors for the next frame
     ClearDrawCalls();
+}
+
+void CS230::Render::ApplyPostProcessing()
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // 후처리 셰이더 가져오기
+    auto* postProcessingShader = Engine::GetShaderManager().GetShader("post_process");
+    postProcessingShader->Use();
+
+    // 프레임 버퍼 텍스처 바인딩
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer.GetColorAttachment());
+    postProcessingShader->SendUniform("uSceneTexture", 0);
+
+    // 화면 전체 렌더링
+    RenderQuad();
+    postProcessingShader->Use(false);
+}
+
+void CS230::Render::RenderQuad()
+{
+    model.Use();             // Quad 모델 바인딩
+    GLDrawIndexed(model);    // 모델 렌더링
+    model.Use(false);        // 모델 언바인딩
 }
 
 // Helper function to convert matrix or color to a span of floats
