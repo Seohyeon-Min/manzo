@@ -19,6 +19,7 @@ Created:    March 8, 2023
 #include "Background.h"
 #include "Skill.h"
 #include "Fish.h"
+#include "GodRay.h"
 
 class Reef;
 class Ship;
@@ -48,6 +49,7 @@ private:
     UIManager* ui_manager;
     CS230::Cam* camera;
     Beat* beat_system;
+    GodRay* god_ray;
     Skillsys* skill_ptr;
     Skillsys::Skill_Net* Net_ptr;
 

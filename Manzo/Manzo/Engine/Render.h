@@ -49,7 +49,7 @@ namespace CS230 {
         const mat3* transform;
         const GLShader* shader;
         std::function<void(const GLShader*)> SetUniforms = nullptr;
-         DrawSettings settings; // later, change it to pointer
+        DrawSettings settings; // later, change it to pointer
     };
 
     struct LineDrawCall {
@@ -68,6 +68,14 @@ namespace CS230 {
         const GLShader* shader;
     };
 
+    struct CircleDrawCall {
+        float radius;
+        vec2 pos;
+        const GLShader* shader;
+        std::function<void(const GLShader*)> SetUniforms = nullptr;
+        DrawSettings settings;
+    };
+
     class Render {
     public:
         Render() { CreatModel(); CreatLineModel(); CreateCircleLineModel(); }
@@ -75,6 +83,7 @@ namespace CS230 {
         void AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase = DrawLayer::Draw);
         void AddDrawCall
         (vec2 start, vec2 end, color3 color, float width = 1.0f, float alpha = 255.0f, const GLShader* shader = nullptr, bool iscollision = true);
+        void AddDrawCall(const CircleDrawCall& drawcall, const DrawLayer& phase = DrawLayer::Draw);
         void RenderAll();
         void CreatModel();
         void CreatLineModel();
@@ -88,6 +97,7 @@ namespace CS230 {
         void DrawBackground(const DrawCall& draw_call);
         void DrawLine(LineDrawCall drawcall);
         void DrawLinePro(LineDrawCallPro drawcall);
+        void DrawCircleLine(CircleDrawCall drawcall);
 
         mat3 GetWorldtoNDC();
 
@@ -100,6 +110,7 @@ namespace CS230 {
         std::vector<DrawCall> draw_ui_calls;
         std::vector<LineDrawCallPro> draw_line_calls;
         std::vector<LineDrawCall> draw_collision_calls;
+        std::vector<CircleDrawCall> draw_circle_calls;
 
         GLVertexArray model;
         GLVertexArray line_model;

@@ -11,11 +11,13 @@ Ship::Ship(vec2 start_position) :
     AddGOComponent(new CS230::Sprite("assets/images/ship.spt", this));
     beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
     skill = Engine::GetGameStateManager().GetGSComponent<Skillsys>();
+
     fuel = Maxfuel;
     FuelFlag = false;
     SetVelocity({ 0,0 });
 
     if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
+        Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(new Pump);
         current_state = &state_idle;
         current_state->Enter(this);
     }
@@ -150,6 +152,7 @@ void Ship::Update(double dt)
     //std::cout << (!hit_with ? "can collide" : "no") << std::endl;
     //std::cout << (!set_dest && beat->GetIsOnBeat() && !move) << std::endl;
     GameObject::Update(dt);
+
     CS230::RectCollision* collider = GetGOComponent<CS230::RectCollision>();
 
     // World Boundary
@@ -435,4 +438,69 @@ bool Ship::IsShipUnder()
         return true;
     }
     return false;
+}
+
+
+Pump::Pump() :
+    GameObject({})
+{
+    Engine::GetShaderManager().LoadShader("change_alpha", "assets/shaders/default.vert", "assets/shaders/change_alpha.frag");
+    beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
+}
+
+void Pump::Update(double dt)
+{
+    float decrease_duration = (float)beat->GetFixedDuration() - 0.1f;
+    float delta_radius = (max_pump_radius - min_pump_radius) / decrease_duration;
+    float delta_alpha = 1 / decrease_duration;
+
+    if (beat->GetBeat()) {
+        radius = min_pump_radius;
+        wait = true;
+    }
+    if (wait && !beat->GetIsOnBeat()) {
+        radius = max_pump_radius;
+        alpha = 0.f;
+        wait = false;
+    }
+
+    if (!wait && radius > min_pump_radius) {
+        radius -= delta_radius * (float)dt;
+        alpha += delta_alpha * (float)dt;
+    }
+
+    radius = std::max(radius, min_pump_radius);
+}
+
+void Pump::Draw(DrawLayer drawlayer)
+{
+    Ship* ship = Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->GetGOComponent<Ship>();
+    DrawSettings settings;
+    settings.do_blending = true;
+
+    CS230::CircleDrawCall draw_call = {
+    min_pump_radius,                       // Texture to draw
+    ship->GetPosition(),                          // Transformation matrix
+    nullptr,
+    nullptr,
+    settings
+    };
+
+    CS230::CircleDrawCall draw_call2 = {
+    radius,                       // Texture to draw
+    ship->GetPosition(),                          // Transformation matrix
+    Engine::GetShaderManager().GetShader("change_alpha"), // Shader to use
+    [this](const GLShader* shader) {
+        this->SetUniforms(shader);
+    },
+    settings
+    };
+
+    Engine::GetRender().AddDrawCall(draw_call);
+    Engine::GetRender().AddDrawCall(draw_call2);
+}
+
+void Pump::SetUniforms(const GLShader* shader)
+{
+    shader->SendUniform("uAlpha", alpha);
 }

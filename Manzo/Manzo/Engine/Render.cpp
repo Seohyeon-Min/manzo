@@ -50,6 +50,10 @@ void CS230::Render::AddDrawCall
     }
 }
 
+void CS230::Render::AddDrawCall (const CircleDrawCall& drawcall, const DrawLayer& phase) {
+    draw_circle_calls.push_back(drawcall); // Regular line
+}
+
 // Render all stored draw calls, starting with early phase, normal phase, and then late phase
 // Also handles rendering of lines and collision shapes
 void CS230::Render::RenderAll() {
@@ -61,6 +65,10 @@ void CS230::Render::RenderAll() {
     // Draw normal draw calls
     for (const auto& draw_call : draw_calls) {
         Draw(draw_call);
+    }
+
+    for (const auto& draw_call : draw_circle_calls) {
+        DrawCircleLine(draw_call);
     }
 
     // Draw calls in the late phase
@@ -88,12 +96,7 @@ void CS230::Render::RenderAll() {
     }
 
     // Clear draw call vectors for the next frame
-    draw_first_calls.clear();
-    draw_calls.clear();
-    draw_late_calls.clear();
-    draw_line_calls.clear();
-    draw_ui_calls.clear();
-    draw_collision_calls.clear();
+    ClearDrawCalls();
 }
 
 // Helper function to convert matrix or color to a span of floats
@@ -110,6 +113,9 @@ namespace {
 // Converts world coordinates to normalized device coordinates (NDC)
 void CS230::Render::Draw(const DrawCall& draw_call) {
     const GLShader* shader = draw_call.shader;
+    if (shader == nullptr) {
+        shader = Engine::GetShaderManager().GetShader("default_collision");
+    }
     shader->Use(); // Use the specified shader
     auto settings = draw_call.settings;
 
@@ -124,7 +130,7 @@ void CS230::Render::Draw(const DrawCall& draw_call) {
     }
 
     if (settings.do_blending || settings.glow || settings.modulate_color) {
-        glCheck(glEnable(GL_BLEND)); // 블렌딩 활성화
+        glCheck(glEnable(GL_BLEND));
     }
     else {
         glCheck(glDisable(GL_BLEND)); // 블렌딩 비활성화
@@ -183,6 +189,7 @@ void CS230::Render::ClearDrawCalls()
     draw_line_calls.clear();
     draw_ui_calls.clear();
     draw_collision_calls.clear();
+    draw_circle_calls.clear();
 }
 
 
@@ -290,6 +297,54 @@ void CS230::Render::DrawLinePro(LineDrawCallPro drawcall)
     glCheck(glLineWidth(1.0f)); // Set line width
 }
 
+void CS230::Render::DrawCircleLine(CircleDrawCall draw_call) {
+    float radius = draw_call.radius;
+    const GLShader* shader = draw_call.shader;
+    color3 color = {255,255,255};
+    vec2 position = draw_call.pos;
+    auto settings = draw_call.settings;
+
+    if (shader == nullptr) {
+        shader = Engine::GetShaderManager().GetShader("default_collision");
+    }
+    shader->Use();
+
+    if (settings.do_blending || settings.glow || settings.modulate_color) {
+        glCheck(glEnable(GL_BLEND)); // 블렌딩 활성화
+    }
+    else {
+        glCheck(glDisable(GL_BLEND)); // 블렌딩 비활성화
+    }
+
+    if (settings.glow) {
+        glCheck(glBlendFunc(GL_ONE, GL_ONE)); // Glow 블렌딩 설정
+    }
+    else if (settings.do_blending) {
+        glCheck(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)); // 일반 알파 블렌딩 설정
+    }
+
+    mat3 model_to_world = mat3::build_translation(position) * mat3::build_scale(radius);
+
+    mat3 WORLD_TO_NDC = settings.is_UI
+        ? mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height)
+        : GetWorldtoNDC();
+
+    const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
+    shader->SendUniform("uModelToNDC", to_span(model_to_ndc));
+    shader->SendUniform("uFillColor", to_span(color)); // Send line color to shader
+
+    //if there is a uniform, add
+    if (draw_call.SetUniforms) {
+        draw_call.SetUniforms(shader);
+    }
+
+    circle_line_model.Use();
+    GLDrawVertices(circle_line_model);
+
+    circle_line_model.Use(false);
+    shader->Use(false);
+}
+
 mat3 CS230::Render::GetWorldtoNDC()
 {
     return Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->world_to_ndc;
@@ -373,7 +428,7 @@ void CS230::Render::CreatLineModel()
 
 
 void CS230::Render::CreateCircleLineModel() {
-    int segments = 20;
+    int segments = 30;
     float radius = 0.5;
 
     std::vector<vec2> positions;

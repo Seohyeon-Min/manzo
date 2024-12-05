@@ -8,15 +8,16 @@ public:
     void SetUniforms(const GLShader* shader);
 private:
     GLTexture* texture;
+    mat3 mat;
 };
 
-class Pump : public CS230::Component {
-public:
-    Pump();
-    void Draw();
-    void Update(double dt) override;
-    void SetUniforms(const GLShader* shader);
-private:
-    GLTexture* texture;
-    float alpha = 1.0;
-};
+//class Pump : public CS230::Component {
+//public:
+//    Pump();
+//    void Draw();
+//    void Update(double dt) override;
+//    void SetUniforms(const GLShader* shader);
+//private:
+//    GLTexture* texture;
+//    float alpha = 1.0;
+//};

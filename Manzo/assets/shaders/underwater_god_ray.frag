@@ -59,10 +59,10 @@ void main() {
 
     // Alpha 및 투명도 계산
     float mask = smoothstep(.15, .96, p.y);
-    float alpha = n3 * mask * 0.9;
+    float alpha = n3 * mask * 0.5;
 
     // 빛 효과 색상
-    vec3 lightColor = mix(vec3(0.0, 0.412, 0.580), vec3(1.0), alpha);
+    vec3 lightColor = mix(vec3(1, 1, 1), vec3(1.0), alpha); //0.0, 0.412, 0.580
 
     // 빛 외의 영역은 투명하게 설정
     fragColor = vec4(lightColor, alpha); // Alpha를 적용

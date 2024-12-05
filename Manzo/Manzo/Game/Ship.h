@@ -69,6 +69,8 @@ private:
 
     //
 
+
+
     class State_Idle : public State {
     public:
         virtual void Enter(GameObject* object) override;
@@ -98,4 +100,24 @@ private:
     State_Idle state_idle;
     State_Move state_move;
     State_Hit state_hit;
+};
+
+class Pump : public CS230::GameObject {
+public:
+    Pump();
+    GameObjectTypes Type() override { return GameObjectTypes::Ship; }
+    std::string TypeName() override { return "Ship:Dal"; }
+    void Update(double dt) override;
+    void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
+    float GetRadius() { return radius; }
+    void SetUniforms(const GLShader* shader);
+
+private:
+    Beat* beat;
+    float max_pump_radius = 100;
+    float min_pump_radius = 55;
+    float radius = 0;
+    float alpha = 0.0;
+    bool wait = false;
+    bool has_done = false;
 };

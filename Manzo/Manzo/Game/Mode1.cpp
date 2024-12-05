@@ -28,7 +28,7 @@ Created:    March 8, 2023
 #include "Reef.h"
 #include "Skill.h"
 #include "Boss.h"
-#include "GodRay.h"
+
 
 #include <iostream>
 
@@ -52,7 +52,8 @@ void Mode1::Load() {
     beat_system = new Beat();
     AddGSComponent(beat_system);
     AddGSComponent(new CS230::Map());
-    AddGSComponent(new GodRay());
+    god_ray = new GodRay();
+    AddGSComponent(god_ray);
     //AddGSComponent(new Pump());
 
     //// ship
@@ -148,8 +149,8 @@ void Mode1::FixedUpdate(double dt)
 void Mode1::Draw() {
     GetGSComponent<Background>()->Draw(*GetGSComponent<CS230::Cam>());
     GetGSComponent<CS230::Map>()->AddDrawCall();
-    GetGSComponent<GodRay>()->Draw();
     //GetGSComponent<Pump>()->Draw();
+    god_ray->Draw();
     GetGSComponent<CS230::GameObjectManager>()->DrawAll();
     ui_manager->AddDrawCalls();
 
@@ -166,6 +167,7 @@ void Mode1::Unload() {
 	GetGSComponent<CS230::GameObjectManager>()->Unload();
     GetGSComponent<Background>()->Unload();
     Engine::GetRender().ClearDrawCalls();
+    ui_manager->UnloadUI();
 	ClearGSComponents();
     Engine::GetAudioManager().StopMusic();
     Engine::Instance().ResetSlowDownFactor();

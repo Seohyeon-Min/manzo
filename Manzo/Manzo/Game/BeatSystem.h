@@ -14,6 +14,7 @@ public:
     void SetBPM(int set_BPM);
     int GetBarCount() { return bar_count; }
     int GetDelayCount() { return delay_count; }
+    double GetFixedDuration() { return fixed_duration; }
 
 private:
     int BPM = 100;
