@@ -46,6 +46,8 @@ void Mode1::Load() {
 
     //shader
     Engine::GetShaderManager().LoadShader("pixelate", "assets/shaders/default.vert", "assets/shaders/pixelate.frag");
+    Engine::GetShaderManager().LoadShader("post_process", "assets/shaders/post_default.vert", "assets/shaders/post_default.frag");
+    Engine::GetShaderManager().LoadShader("post_threshold", "assets/shaders/post_default.vert", "assets/shaders/post_threshold.frag");
 
     // component
     AddGSComponent(new CS230::GameObjectManager());

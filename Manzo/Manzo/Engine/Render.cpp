@@ -18,7 +18,6 @@ const float WORLD_SIZE_MAX = (float)std::max(Engine::window_width, Engine::windo
 
 CS230::Render::Render()
     : postProcessFramebuffer(Engine::window_width, Engine::window_height) { // 프레임 버퍼 생성
-    Engine::GetShaderManager().LoadShader("post_process", "assets/shaders/post_default.vert", "assets/shaders/post_default.frag");
     CreatModel();  // 모델 생성
     CreatLineModel();
     CreateCircleLineModel();
@@ -65,9 +64,12 @@ void CS230::Render::AddDrawCall (const CircleDrawCall& drawcall, const DrawLayer
 // Render all stored draw calls, starting with early phase, normal phase, and then late phase
 // Also handles rendering of lines and collision shapes
 void CS230::Render::RenderAll() {
-    postProcessFramebuffer.Bind();
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //postProcessFramebuffer.Bind();
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    for (const auto& draw_call : draw_background_calls) {
+        DrawBackground(draw_call);
+    }
     // Draw calls in the early phase
     for (const auto& draw_call : draw_first_calls) {
         Draw(draw_call);
@@ -106,8 +108,8 @@ void CS230::Render::RenderAll() {
         }
     }
 
-    postProcessFramebuffer.Unbind();
-    ApplyPostProcessing();
+    //postProcessFramebuffer.Unbind();
+    //ApplyPostProcessing();
     // Clear draw call vectors for the next frame
     ClearDrawCalls();
 }
@@ -132,9 +134,29 @@ void CS230::Render::ApplyPostProcessing()
 
 void CS230::Render::RenderQuad()
 {
-    model.Use();             // Quad 모델 바인딩
-    GLDrawIndexed(model);    // 모델 렌더링
-    model.Use(false);        // 모델 언바인딩
+    static unsigned int quadVAO = 0;
+    static unsigned int quadVBO;
+    if (quadVAO == 0) {
+        float quadVertices[] = {
+            // positions    // texCoords
+            -1.0f,  1.0f,  0.0f, 1.0f,
+            -1.0f, -1.0f,  0.0f, 0.0f,
+             1.0f, -1.0f,  1.0f, 0.0f,
+             1.0f,  1.0f,  1.0f, 1.0f,
+        };
+        glGenVertexArrays(1, &quadVAO);
+        glGenBuffers(1, &quadVBO);
+        glBindVertexArray(quadVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+    }
+    glBindVertexArray(quadVAO);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    glBindVertexArray(0);
 }
 
 // Helper function to convert matrix or color to a span of floats
@@ -210,15 +232,6 @@ void CS230::Render::Draw(const DrawCall& draw_call) {
 }
 
 
-void CS230::Render::RenderBackgrounds()
-{
-    for (const auto& draw_call : draw_background_calls) {
-        DrawBackground(draw_call);
-    }
-
-    draw_background_calls.clear();
-}
-
 void CS230::Render::ClearDrawCalls()
 {
     draw_first_calls.clear();
@@ -228,6 +241,7 @@ void CS230::Render::ClearDrawCalls()
     draw_ui_calls.clear();
     draw_collision_calls.clear();
     draw_circle_calls.clear();
+    draw_background_calls.clear();
 }
 
 

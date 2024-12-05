@@ -93,7 +93,6 @@ namespace CS230 {
         void CreatModel();
         void CreatLineModel();
         void CreateCircleLineModel();
-        void RenderBackgrounds();
         void ClearDrawCalls();
 
     private:
