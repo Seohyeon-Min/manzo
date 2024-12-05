@@ -11,10 +11,10 @@ void CS230::Cam::Update(double dt, const vec2& player_position, bool playerMove)
 {
 #ifdef _DEBUG
     if (Engine::GetInput().KeyDown(CS230::Input::Keys::T)) {    // zoom out
-        caminfo.camera_view.SetFramebufferSize(Engine::window_width * 3, Engine::window_height * 3);
+        caminfo.camera_view.SetFramebufferSize(Engine::window_width * 10, Engine::window_height * 10);
     }
     else {
-        caminfo.camera_view.SetFramebufferSize(Engine::window_width, Engine::window_height);
+        caminfo.camera_view.SetFramebufferSize(Engine::window_width * 2, Engine::window_height * 2);
     }
 #else
 #endif
@@ -32,7 +32,7 @@ void CS230::Cam::Update(double dt, const vec2& player_position, bool playerMove)
 	// world_to_ndc <- cam_to_ndc * world_to_cam
 	world_to_ndc = cam_to_ndc * world_to_cam;
 
-    
+
 
 
     if (caminfo.camera.Position.x < limit.Left()) {

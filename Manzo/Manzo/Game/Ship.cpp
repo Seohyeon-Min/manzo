@@ -21,7 +21,7 @@ Ship::Ship(vec2 start_position) :
     }
 }
 
-\
+
 void Ship::State_Idle::Enter(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
     if (ship->GetVelocity() != vec2{})

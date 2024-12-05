@@ -287,10 +287,6 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 }
 
                 
-                    
-                       
-
-                
             }
 
             //std::cout << "vertex count : " << poly.vertexCount << std::endl;
