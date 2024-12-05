@@ -16,6 +16,15 @@
 
 const float WORLD_SIZE_MAX = (float)std::max(Engine::window_width, Engine::window_height);
 
+CS230::Render::Render()
+    : post_process_framebuffer(Engine::window_width, Engine::window_height)
+{
+    Engine::GetShaderManager().LoadShader("post_bloom", "assets/shaders/post_default.vert", "assets/shaders/post_bloom.frag");
+    CreatModel();
+    CreatLineModel();
+    CreateCircleLineModel();
+}
+
 // Add a draw call to the corresponding vector based on the draw layer
 // Draw calls are grouped into first, normal, and late phases
 void CS230::Render::AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase) {
@@ -57,6 +66,9 @@ void CS230::Render::AddDrawCall (const CircleDrawCall& drawcall, const DrawLayer
 // Render all stored draw calls, starting with early phase, normal phase, and then late phase
 // Also handles rendering of lines and collision shapes
 void CS230::Render::RenderAll() {
+    post_process_framebuffer.Bind();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     // Draw calls in the early phase
     for (const auto& draw_call : draw_first_calls) {
         Draw(draw_call);
@@ -95,8 +107,55 @@ void CS230::Render::RenderAll() {
         }
     }
 
+    // post-processing shader
+    ApplyPostProcessing();
+
     // Clear draw call vectors for the next frame
     ClearDrawCalls();
+}
+
+void CS230::Render::ApplyPostProcessing() {
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    auto* post_processing_shader = Engine::GetShaderManager().GetShader("post_bloom");
+    post_processing_shader->Use();
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, post_process_framebuffer.GetColorAttachment());
+    post_processing_shader->SendUniform("uSceneTexture", 0);
+
+    RenderQuad(); // Quad 렌더링
+    post_processing_shader->Use(false);
+}
+
+void CS230::Render::RenderQuad() {
+    static GLuint quadVAO = 0, quadVBO;
+
+    if (quadVAO == 0) {
+        float quadVertices[] = {
+            // x, y        u, v
+            -1.0f,  1.0f,  0.0f, 1.0f,  // 좌상단
+            -1.0f, -1.0f,  0.0f, 0.0f,  // 좌하단
+             1.0f, -1.0f,  1.0f, 0.0f,  // 우하단
+             1.0f,  1.0f,  1.0f, 1.0f   // 우상단
+        };
+
+        glGenVertexArrays(1, &quadVAO);
+        glGenBuffers(1, &quadVBO);
+
+        glBindVertexArray(quadVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
+
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0); // 위치
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float))); // 텍스처 좌표
+    }
+
+    glBindVertexArray(quadVAO);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    glBindVertexArray(0);
 }
 
 // Helper function to convert matrix or color to a span of floats
