@@ -50,6 +50,8 @@ private:
     Beat* beat_system;
     Skillsys* skill_ptr;
     Skillsys::Skill_Net* Net_ptr;
+    float BoundaryX = 6400;
+    float BoundaryY = 3600;
 
     bool Isboss = false;
 };
