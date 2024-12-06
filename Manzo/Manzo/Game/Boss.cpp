@@ -180,20 +180,9 @@ bool Boss::IsReefOutOfRange(vec2 point) {
 
 void Boss::Update(double dt) {
 	Boss* boss = static_cast<Boss*>(this);
-	CS230::GameObjectManager* gameobjectmanager = Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>();
-	GameObject::Update(dt);
-	vec2 nearestRockpoint = gameobjectmanager->FindNearestRock(boss);
-
-	if (IsReefOutOfRange(currentTargetRock)) {
-		currentTargetRock = gameobjectmanager->FindNearestRock(boss);
-		
-	}
-	else if (currentTargetRock.x || currentTargetRock.y) {
-		AvoidObstacle(200.0f, 0.1f, 300.0f, currentTargetRock);
-		std::cout << "detected" << std::endl;
-	}
-	else {
+	
 		if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
+			
 
 			if (GameObject::current_state->GetName() != Boss::state_cutscene.GetName()) {
 				int barCount = beat->GetBarCount();
@@ -202,6 +191,7 @@ void Boss::Update(double dt) {
 				if (barCount < (int)total_entry.size()) {
 					if (barCount < total_entry.size() && total_entry[barCount] - 1 < stateMap.size()) {
 						change_state(stateMap[total_entry[barCount] - 1]);
+						std::cout << "detected" << std::endl;
 					}
 					else {
 
@@ -214,7 +204,7 @@ void Boss::Update(double dt) {
 				}
 			}
 		}
-	}
+	
 	Move(dt);
 }
 
@@ -224,6 +214,8 @@ vec2 Lerp(const vec2& start, const vec2& end, float t) {
 }
 
 void Boss::Move(double dt) {
+	Boss* boss = static_cast<Boss*>(this);
+
 	vec2 direction = current_position - GetPosition();
 	direction = direction.Normalize(); 
 
@@ -236,6 +228,17 @@ void Boss::Move(double dt) {
 	vec2 lerped_position = Lerp(GetPosition(), current_position, lerp_factor);
 
 	SetVelocity((lerped_position - GetPosition()) / (float)dt);  
+	CS230::GameObjectManager* gameobjectmanager = Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>();
+	GameObject::Update(dt);
+	vec2 nearestRockpoint = gameobjectmanager->FindNearestRock(boss);
+
+	if (IsReefOutOfRange(currentTargetRock)) {
+		currentTargetRock = gameobjectmanager->FindNearestRock(boss);
+
+	}
+	else if (currentTargetRock.x || currentTargetRock.y) {
+		AvoidObstacle(200.0f, 0.1f, 300.0f, currentTargetRock, current_position);
+	}
 
 	if ((current_position - GetPosition()).Length() < 10.0f) {
 		lerp_factor = 0.0f; 
@@ -266,33 +269,79 @@ void Boss::ReadBossJSON(BossName name)
 
 }
 
-void Boss::AvoidObstacle(float avoidDistance, float steerSpeed, float speed, vec2 point) {
+void Boss::AvoidObstacle(float avoidDistance, float steerSpeed, float speed, vec2 obstaclePoint, vec2 targetPoint) {
 	vec2 bossPosition = GetPosition();
-	vec2 reefPosition = point;
+	targetPoint = Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->GetGOComponent<Ship>()->GetPosition();
 
+	// 장애물과 보스 사이 거리 계산
+	float distanceFromObstacle = sqrtf((bossPosition.x - obstaclePoint.x) * (bossPosition.x - obstaclePoint.x) +
+		(bossPosition.y - obstaclePoint.y) * (bossPosition.y - obstaclePoint.y));
 
-	vec2 currentVelocity = GetVelocity(); 
+	vec2 currentVelocity = GetVelocity(); // 현재 속도
 
-	float distanceFromObstacle = sqrtf((float)pow(bossPosition.x - reefPosition.x, 2) + (float)pow(bossPosition.y - reefPosition.y, 2));
 
 	if (distanceFromObstacle < avoidDistance) {
-		vec2 directionToObstacle = { reefPosition.x - bossPosition.x, reefPosition.y - bossPosition.y };
+		// 장애물을 기준으로 회피 방향 계산
+		vec2 directionToObstacle = { -(obstaclePoint.x - bossPosition.x), -(obstaclePoint.y - bossPosition.y) };
 		float magnitude = sqrtf(directionToObstacle.x * directionToObstacle.x + directionToObstacle.y * directionToObstacle.y);
+		//std::cout << magnitude << std::endl;
 
+		// 방향 정규화
 		if (magnitude > 0.0f) {
 			directionToObstacle.x /= magnitude;
 			directionToObstacle.y /= magnitude;
 		}
 
-		vec2 avoidDirection = { -directionToObstacle.x, -directionToObstacle.y };
+		// 목표 포인트를 향한 방향 계산
+		vec2 directionToTarget = { targetPoint.x - bossPosition.x, targetPoint.y - bossPosition.y };
+		magnitude = sqrtf(directionToTarget.x * directionToTarget.x + directionToTarget.y * directionToTarget.y);
+		if (magnitude > 0.0f) {
+			directionToTarget.x /= magnitude;
+			directionToTarget.y /= magnitude;
+		}
+
+		// 회피 방향과 목표 방향을 조합해 자연스러운 전환
+		vec2 avoidDirection = {
+			directionToObstacle.x + directionToTarget.x,
+			directionToObstacle.y + directionToTarget.y
+		};
+
+		magnitude = sqrtf(avoidDirection.x * avoidDirection.x + avoidDirection.y * avoidDirection.y);
+		if (magnitude > 0.0f) {
+			avoidDirection.x /= magnitude;
+			avoidDirection.y /= magnitude;
+		}
+
+		// 회피 속도 설정
 		vec2 targetVelocity = { avoidDirection.x * speed, avoidDirection.y * speed };
 
+		// 선형 보간으로 속도 전환
+		currentVelocity = Lerp(currentVelocity, targetVelocity, steerSpeed);
+	}
+	else {
+		// 목표 지점으로 이동
+		vec2 directionToTarget = { targetPoint.x - bossPosition.x, targetPoint.y - bossPosition.y };
+		float magnitude = sqrtf(directionToTarget.x * directionToTarget.x + directionToTarget.y * directionToTarget.y);
+
+		if (magnitude > 0.0f) {
+			directionToTarget.x /= magnitude;
+			directionToTarget.y /= magnitude;
+		}
+
+		vec2 targetVelocity = { directionToTarget.x * speed, directionToTarget.y * speed };
 		currentVelocity = Lerp(currentVelocity, targetVelocity, steerSpeed);
 	}
 
+	// 속도 제한
+	float maxSpeed = speed * 1.5f;
+	if (sqrtf(currentVelocity.x * currentVelocity.x + currentVelocity.y * currentVelocity.y) > maxSpeed) {
+		currentVelocity = normalize(currentVelocity) * maxSpeed;
+	}
 
-	SetPosition({ bossPosition.x + currentVelocity.x, bossPosition.y + currentVelocity.y });
+	// 보스의 새로운 위치 설정
+	SetVelocity({ bossPosition.x + currentVelocity.x, bossPosition.y + currentVelocity.y });
 }
+
 
 void Boss::RunMusic()
 {
