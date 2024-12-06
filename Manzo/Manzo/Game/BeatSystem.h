@@ -31,5 +31,6 @@ private:
     bool is_on_beat = false;
     bool music_started = false;
     AudioManager* audio;
-    Mix_Music* music = nullptr;
+    int channel_id;
+    std::string music_name;
 };

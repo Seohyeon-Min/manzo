@@ -87,6 +87,53 @@ void AudioManager::UnLoadSound(const std::string& strSoundName)
 	sgpImplementation->mSounds.erase(tFoundIt);
 }
 
+FMOD::Sound* AudioManager::GetMusic(const std::string& strMusicName) {
+	auto it = sgpImplementation->mSounds.find(strMusicName);
+	if (it != sgpImplementation->mSounds.end()) {
+		return it->second;
+	}
+	else {
+		std::cerr << "Error: Music with name " << strMusicName << " not found." << std::endl;
+		return nullptr;
+	}
+}
+
+float AudioManager::GetCurrentMusicTime(int nChannelId) {
+	auto it = sgpImplementation->mChannels.find(nChannelId);
+	if (it != sgpImplementation->mChannels.end()) {
+		FMOD::Channel* channel = it->second;
+		unsigned int currentPosition = 0;
+		FMOD_RESULT result = channel->getPosition(&currentPosition, FMOD_TIMEUNIT_MS);
+		if (ErrorCheck(result) == 0) {
+			return currentPosition / 1000.0f; // 초 단위로 변환
+		}
+		else {
+			std::cerr << "Error: Failed to get current music time." << std::endl;
+		}
+	}
+	else {
+		std::cerr << "Error: Channel with ID " << nChannelId << " not found." << std::endl;
+	}
+	return 0.0f;
+}
+
+
+int AudioManager::GetID(const std::string& soundName)
+{
+	// Find the sound in the channels map
+	for (const auto& pair : sgpImplementation->mChannels) {
+		FMOD::Channel* channel = pair.second;
+		FMOD::Sound* sound;
+		if (channel->getCurrentSound(&sound) == FMOD_OK) {
+			if (sgpImplementation->mSounds[soundName] == sound) {
+				return pair.first; // Return the channel ID
+			}
+		}
+	}
+	std::cerr << "Error: Sound with name " << soundName << " not found in any channel." << std::endl;
+	return -1; // Return -1 if the sound is not found
+}
+
 int AudioManager::PlaySounds(const std::string& strSoundName, const vec3& vPosition, float fVolumedB)
 {
 	int nChannelId = sgpImplementation->mnNextChannelId++;

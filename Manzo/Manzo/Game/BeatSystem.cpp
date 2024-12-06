@@ -12,9 +12,9 @@ Beat::Beat()
     current_delay_duration = delay_duration ;
 }
 
-void Beat::LoadMusicToSync(std::string music_name)
+void Beat::LoadMusicToSync(std::string _music_name)
 {
-    music = audio->GetMusic(music_name);
+    music_name =_music_name;
 }
 //0.29
 
@@ -23,14 +23,14 @@ void Beat::Update(double dt)
 
     //std::cout << is_on_beat << std::endl;
     //audio->GetCurrentMusicTime();
-    if (!music_started && music) {
+    if (!music_started && !music_name.empty()) {
         // 비트 시스템이 준비되었을 때 음악 재생 시작
-        audio->PlayMusic(music ,-1); // 무한 루프 재생
-        Mix_VolumeMusic(0);
+        channel_id = audio->PlaySounds(music_name); // 무한 루프 재생
         music_started = true;       // 음악 재생 상태 갱신
     }
 
-    double current_music_time = audio->GetCurrentMusicTime();
+    double current_music_time = audio->GetCurrentMusicTime(channel_id);
+    std::cout << current_music_time << std::endl;
 
     if (current_music_time > 0.0) { 
         time_taken = current_music_time + sync; 
@@ -87,5 +87,5 @@ void Beat::SetBPM(int set_BPM)
     beat = false;
     is_on_beat = false;
     music_started = false;
-    music = nullptr;
+    music_name.clear();
 }

@@ -140,8 +140,8 @@ void Mode1::Load() {
     }
 
     //// audio
-    Engine::GetAudioManager().LoadMusic("assets/audios/100BPM_edm_temp.wav", "sample");
-    beat_system->LoadMusicToSync("sample");
+    Engine::GetAudioManager().LoadSound("assets/audios/100BPM_edm_temp.wav");
+    beat_system->LoadMusicToSync("assets/audios/100BPM_edm_temp.wav");
 }
 
 void Mode1::Update(double dt) {
@@ -195,7 +195,6 @@ void Mode1::FixedUpdate(double dt)
 void Mode1::Draw() {
     GetGSComponent<Background>()->Draw(*GetGSComponent<CS230::Cam>());
     GetGSComponent<CS230::Map>()->AddDrawCall();
-    //GetGSComponent<Pump>()->Draw();
     god_ray->Draw();
     GetGSComponent<CS230::GameObjectManager>()->DrawAll();
     ui_manager->AddDrawCalls();

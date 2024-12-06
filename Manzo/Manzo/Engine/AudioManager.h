@@ -38,6 +38,9 @@ public:
 
 	void LoadSound(const std::string& strSoundName, bool b3d = true, bool bLooping = false, bool bStream = false);
 	void UnLoadSound(const std::string& strSoundName);
+	FMOD::Sound* GetMusic(const std::string& strMusicName);
+	float GetCurrentMusicTime(int nChannelId);
+	int GetID(const std::string& soundName);
 	void Set3dListenerAndOrientation(const vec3& vPosition, const vec3& vLook, const vec3& vUp);
 	int PlaySounds(const std::string& strSoundName, const vec3& vPos = vec3{ 0, 0, 0 }, float fVolumedB = 0.0f);
 	void StopChannel(int nChannelId);

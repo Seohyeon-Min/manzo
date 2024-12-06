@@ -228,9 +228,6 @@
     <ClInclude Include="Engine\AudioManager.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Reef.h">
-      <Filter>Game</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Fish.h">
       <Filter>Game</Filter>
     </ClInclude>
