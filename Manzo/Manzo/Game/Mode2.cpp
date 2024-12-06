@@ -18,6 +18,7 @@ Created:    March 8, 2023
 #include "BeatSystem.h"
 #include "Ship.h"
 #include "Mode2.h"
+#include "Mouse.h"
 
 
 #include <iostream>     // for debug
@@ -48,6 +49,10 @@ void Mode2::Load() {
     AddGSComponent(background);
     background->Add("assets/images/background/temp_back2.png", 0.25f);
 
+
+    AddGSComponent(new UIManager());
+    ui_manager = GetGSComponent<UIManager>();
+    ui_manager->AddUI(std::make_unique<Mouse>());
 
     //// audio
     //Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("assets/audios/basic_beat_100_4.wav", "sample");
@@ -97,6 +102,7 @@ void Mode2::Draw() {
     GetGSComponent<Background>()->Draw(*GetGSComponent<CS230::Cam>());
 
     GetGSComponent<CS230::GameObjectManager>()->DrawAll();
+    ui_manager->AddDrawCalls();
 }
 
 void Mode2::Unload() {

@@ -35,16 +35,17 @@ public:
 		Active,
 	};
 
-	Skillsys() : skillslots(3, Empty) { is_active_skill = false; }
+	Skillsys() : skillslots(3, Empty), inventory(0) { is_active_skill = false; }
 
 	void Update();
 	void setskill(int slot, Skill_list skill);
-	void skillprint();
-	void ClearSkill();
-	void SetShipPtr(Ship* ptr);
-	Ship* GetShipPtr();
+	void skillprint(); // for debug, print skillslot info
+	void ClearSkill(); // Clear skillslot vector
+	void SetShipPtr(Ship* ptr); // need ship..
+	Ship* GetShipPtr(); 
 	std::vector<Skill_list> GetSkill() { return skillslots; };
 	void AddSkill(Skill_list input, int money);
+	const std::vector<Skill_list> GetInventory() { return inventory; };
 
 	void Active_skill(Skill_list skill);
 	void SkillNet();
@@ -52,6 +53,7 @@ public:
 	void PrintInven();
 
 	//Class for each skill
+
 	class Skill_Net : public CS230::GameObject // Net
 	{
 
@@ -72,7 +74,6 @@ public:
 		void Draw();
 		Ship* ship_ptr = nullptr;
 
-
 	};
 
 private:
@@ -86,8 +87,6 @@ private:
 	Skill_list Selected_skill = Empty;
 	Ship* Ship_ptr = nullptr;
 	Skill_Net* skill_net;
-
-
 
 	//For Skill
 

@@ -179,6 +179,9 @@ void Skillsys::skillprint()
             case Light:
                 std::cout << "Slot " << i + 1 << ": Light\n";
                 break;
+            case GARRY:
+                std::cout << "Slot " << i + 1 << ": GARRY\n";
+                break;
             }
         }
         else
