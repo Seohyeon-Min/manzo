@@ -63,8 +63,13 @@ void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
 
     // 힘 적용
     vec2 force = direction * skidding_speed * force_multiplier;
-    vec2 target_position = ship->GetPosition() + direction * -30.f;
+
+    float randomAngle = util::random(180.0f, 200.0f); // -90도에서 90도까지 랜덤
+    float angleRadians = util::to_radians(randomAngle);  // 라디안으로 변환
+    vec2 bubble_direction = { cos(angleRadians), sin(angleRadians) };
+    vec2 target_position = ship->GetPosition() + bubble_direction * -30.f;
     ship->SetVelocity(force);
+    if(force_multiplier > 0.4)
     Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::FuelBubble>>()->Emit(1, target_position, {0,0}, -force*0.4f, 1.5);
 }
 void Ship::State_Idle::CheckExit(GameObject* object) {

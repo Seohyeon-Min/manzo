@@ -74,12 +74,15 @@ namespace CS230 {
             //if(particles[index]->Alive())
             //    Engine::GetLogger().LogEvent("Particle overwritten");
             double angle_variation = 0.0;
-
+            if (particles[index]->Alive())
+                return;
             if (spread != 0) 
                 angle_variation = ((rand() % static_cast<int>(spread * 1024)) / 1024.0f) - spread / 2;
             vec2 random_magnitude = direction * (((rand() % 1024) / 2048.0f) + 0.5f);
             vec2 particle_velocity = m.build_rotation(float(angle_variation)) * random_magnitude + emitter_velocity;
-            particles[index]->Start(emitter_position, particle_velocity, T::MaxLife);
+            T* plankton = static_cast<T*>(particles[index]);
+            float scale = plankton->scale; // 개별 Plankton 객체의 scale 값 사용
+            particles[index]->Start(emitter_position, particle_velocity, T::MaxLife, { scale , scale });
 
             index++;
             if (index < 0 || index >= particles.size())

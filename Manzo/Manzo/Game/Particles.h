@@ -20,23 +20,24 @@ namespace Particles {
         std::string TypeName() override { return "Mouse Particle"; }
         static constexpr int MaxCount = 30;
         static constexpr double MaxLife = 0.5;
+        float scale = 1.f;
     };
 
     class Plankton : public CS230::Particle {
     public:
         Plankton() : Particle("assets/images/Plankton.spt") { scale = util::random(0.5f, 4.6f); };
         std::string TypeName() override { return "Plankton Particle"; }
-        static constexpr int MaxCount = 80;
+        static constexpr int MaxCount = 60;
         static constexpr double MaxLife = 10.5;
         float scale;
     };
 
     class FuelBubble : public CS230::Particle {
     public:
-        FuelBubble() : Particle("assets/images/Plankton.spt") { scale = util::random(0.5f, 4.6f); };
+        FuelBubble() : Particle("assets/images/Plankton.spt") { scale = util::random(0.5f, 1.f); };
         std::string TypeName() override { return "FuelBubble Particle"; }
-        static constexpr int MaxCount = 15;
-        static constexpr double MaxLife = 0.8;
+        static constexpr int MaxCount = 10;
+        static constexpr double MaxLife = 0.6;
         float scale;
     };
 }
