@@ -25,7 +25,6 @@ Created:    March 8, 2023
 #include "Background.h"
 #include "Ship.h"
 #include "Fish.h"
-#include "Reef.h"
 #include "Skill.h"
 #include "Boss.h"
 
@@ -47,7 +46,7 @@ void Mode1::Load() {
     //shader
     Engine::GetShaderManager().LoadShader("pixelate", "assets/shaders/default.vert", "assets/shaders/pixelate.frag");
     Engine::GetShaderManager().LoadShader("post_process", "assets/shaders/post_default.vert", "assets/shaders/post_default.frag");
-    Engine::GetShaderManager().LoadShader("post_threshold", "assets/shaders/post_default.vert", "assets/shaders/post_threshold.frag");
+    Engine::GetShaderManager().LoadShader("post_bloom", "assets/shaders/post_default.vert", "assets/shaders/post_bloom.frag");
 
     // component
     AddGSComponent(new CS230::GameObjectManager());
@@ -97,6 +96,10 @@ void Mode1::Load() {
     // Map
     GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/test2.svg");
 
+    //Particle
+    AddGSComponent(new CS230::ParticleManager<Particles::Plankton>());
+    AddGSComponent(new CS230::ParticleManager<Particles::FuelBubble>());
+
     // Skill
     if (!Engine::Instance().GetTmpPtr())
     {
@@ -118,6 +121,7 @@ void Mode1::Load() {
 void Mode1::Update(double dt) {
     UpdateGSComponents(dt);
     GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
+    Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::Plankton>>()->Spray();
     //std::cout << "update: " << dt << std::endl;
     //camera postion update
     camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());

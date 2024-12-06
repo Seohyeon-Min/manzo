@@ -3,6 +3,8 @@
 #include "GLShader.h"
 #include "Engine.h"
 #include "GameObject.h"
+#include "Camera.h"
+#include "to_span.h"
 
 #include <vector>
 #include <unordered_map>
@@ -11,7 +13,6 @@
 #include <span>
 #include <array>
 #include <iostream>
-#include "Camera.h"
 
 
 const float WORLD_SIZE_MAX = (float)std::max(Engine::window_width, Engine::window_height);
@@ -64,8 +65,8 @@ void CS230::Render::AddDrawCall (const CircleDrawCall& drawcall, const DrawLayer
 // Render all stored draw calls, starting with early phase, normal phase, and then late phase
 // Also handles rendering of lines and collision shapes
 void CS230::Render::RenderAll() {
-    //postProcessFramebuffer.Bind();
-    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    postProcessFramebuffer.Bind();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     for (const auto& draw_call : draw_background_calls) {
         DrawBackground(draw_call);
@@ -108,66 +109,32 @@ void CS230::Render::RenderAll() {
         }
     }
 
-    //postProcessFramebuffer.Unbind();
-    //ApplyPostProcessing();
+    postProcessFramebuffer.Unbind();
+    ApplyPostProcessing();
     // Clear draw call vectors for the next frame
     ClearDrawCalls();
 }
 
 void CS230::Render::ApplyPostProcessing()
 {
+    auto* bloomShader = Engine::GetShaderManager().GetShader("post_bloom");
+    bloomShader->Use();
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0); // 기본 프레임버퍼로 출력
     glClear(GL_COLOR_BUFFER_BIT);
 
-    // 후처리 셰이더 가져오기
-    auto* postProcessingShader = Engine::GetShaderManager().GetShader("post_process");
-    postProcessingShader->Use();
-
-    // 프레임 버퍼 텍스처 바인딩
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer.GetColorAttachment());
-    postProcessingShader->SendUniform("uSceneTexture", 0);
+    bloomShader->SendUniform("uSceneTexture", 0);
+    bloomShader->SendUniform("uThreshold", 0.7f);
+    bloomShader->SendUniform("uBlurDirection", 1.0f, 0.0f); // 수평 블러
+    bloomShader->SendUniform("uResolution", static_cast<float>(Engine::window_width));
+    bloomShader->SendUniform("uBloomIntensity", 1.0f);
 
-    // 화면 전체 렌더링
     RenderQuad();
-    postProcessingShader->Use(false);
+    bloomShader->Use(false);
 }
 
-void CS230::Render::RenderQuad()
-{
-    static unsigned int quadVAO = 0;
-    static unsigned int quadVBO;
-    if (quadVAO == 0) {
-        float quadVertices[] = {
-            // positions    // texCoords
-            -1.0f,  1.0f,  0.0f, 1.0f,
-            -1.0f, -1.0f,  0.0f, 0.0f,
-             1.0f, -1.0f,  1.0f, 0.0f,
-             1.0f,  1.0f,  1.0f, 1.0f,
-        };
-        glGenVertexArrays(1, &quadVAO);
-        glGenBuffers(1, &quadVBO);
-        glBindVertexArray(quadVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-    }
-    glBindVertexArray(quadVAO);
-    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-    glBindVertexArray(0);
-}
-
-// Helper function to convert matrix or color to a span of floats
-namespace {
-    std::span<const float, 3 * 3> to_span(const mat3& m) {
-        return std::span<const float, 3 * 3>(&m.elements[0][0], 9);
-    }
-    std::span<const float, 3> to_span(const color3& c) {
-        return std::span<const float, 3>(&c.elements[0], 3);
-    }
-}
 
 // Draw an individual draw call (textured quad)
 // Converts world coordinates to normalized device coordinates (NDC)
@@ -215,9 +182,9 @@ void CS230::Render::Draw(const DrawCall& draw_call) {
 
     const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
 
-    shader->SendUniform("uModelToNDC", to_span(model_to_ndc)); // Send transformation matrix to shader
+    shader->SendUniform("uModelToNDC", util::to_span(model_to_ndc)); // Send transformation matrix to shader
     if (Engine::GetShaderManager().GetShader("pixelate") == shader) 				
-        shader->SendUniform("uPixelSize", 0.012f);
+        shader->SendUniform("uPixelSize", 0.008f);
 
     //if there is a uniform, add
     if (draw_call.SetUniforms) {
@@ -264,7 +231,7 @@ void CS230::Render::DrawBackground(const DrawCall& draw_call)
     mat3 WORLD_TO_NDC = GetWorldtoNDC();
 
     const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
-    shader->SendUniform("uModelToNDC", to_span(model_to_ndc));
+    shader->SendUniform("uModelToNDC", util::to_span(model_to_ndc));
     model.Use();
     GLDrawIndexed(model);
 
@@ -298,8 +265,8 @@ void CS230::Render::DrawLine(LineDrawCall drawcall) {
     const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
 
     shader->Use(); // Use shader
-    shader->SendUniform("uModelToNDC", to_span(model_to_ndc)); // Send transformation matrix to shader
-    shader->SendUniform("uFillColor", to_span(color)); // Send line color to shader
+    shader->SendUniform("uModelToNDC", util::to_span(model_to_ndc)); // Send transformation matrix to shader
+    shader->SendUniform("uFillColor", util::to_span(color)); // Send line color to shader
 
     line_model.Use(); // Bind line model
     GLDrawVertices(line_model); // Draw the line
@@ -337,8 +304,8 @@ void CS230::Render::DrawLinePro(LineDrawCallPro drawcall)
     const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
 
     shader->Use(); // Use shader
-    shader->SendUniform("uModelToNDC", to_span(model_to_ndc)); // Send transformation matrix to shader
-    shader->SendUniform("uFillColor", to_span(color)); // Send line color to shader
+    shader->SendUniform("uModelToNDC", util::to_span(model_to_ndc)); // Send transformation matrix to shader
+    shader->SendUniform("uFillColor", util::to_span(color)); // Send line color to shader
 
     glCheck(glLineWidth(width)); // Set line width
     line_model.Use(); // Bind line model
@@ -382,8 +349,8 @@ void CS230::Render::DrawCircleLine(CircleDrawCall draw_call) {
         : GetWorldtoNDC();
 
     const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
-    shader->SendUniform("uModelToNDC", to_span(model_to_ndc));
-    shader->SendUniform("uFillColor", to_span(color)); // Send line color to shader
+    shader->SendUniform("uModelToNDC", util::to_span(model_to_ndc));
+    shader->SendUniform("uFillColor", util::to_span(color)); // Send line color to shader
 
     //if there is a uniform, add
     if (draw_call.SetUniforms) {
@@ -509,4 +476,31 @@ void CS230::Render::CreateCircleLineModel() {
     circle_line_model.SetVertexCount(segments);
     circle_line_model.AddVertexBuffer(std::move(buffer), { position });
     circle_line_model.SetPrimitivePattern(GLPrimitive::LineLoop);
+}
+
+void CS230::Render::RenderQuad()
+{
+    static unsigned int quadVAO = 0;
+    static unsigned int quadVBO;
+    if (quadVAO == 0) {
+        float quadVertices[] = {
+            // positions    // texCoords
+            -1.0f,  1.0f,  0.0f, 1.0f,
+            -1.0f, -1.0f,  0.0f, 0.0f,
+             1.0f, -1.0f,  1.0f, 0.0f,
+             1.0f,  1.0f,  1.0f, 1.0f,
+        };
+        glGenVertexArrays(1, &quadVAO);
+        glGenBuffers(1, &quadVBO);
+        glBindVertexArray(quadVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+    }
+    glBindVertexArray(quadVAO);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    glBindVertexArray(0);
 }

@@ -3,10 +3,10 @@
 layout(location = 0) in vec3 vColor;
 layout(location = 1) in vec2 vTextureCoordinates;
 
-uniform vec2 iResolution; // 화면 해상도
-uniform float iTime;      // 시간
+uniform vec2 iResolution;
+uniform float iTime;
 
-out vec4 fragColor; // 최종 출력 색상
+out vec4 fragColor;
 
 const mat2 myt = mat2(.12121212, .13131313, -.13131313, .12121212);
 const vec2 mys = vec2(1e4, 1e6);
@@ -38,7 +38,7 @@ vec2 cart2polar(vec2 uv) {
 }
 
 void main() {
-    vec2 fragCoord = gl_FragCoord.xy; // 화면 좌표
+    vec2 fragCoord = gl_FragCoord.xy;
     vec2 uv = fragCoord / iResolution.xy;
 
     // UV 좌표 변환
@@ -53,17 +53,18 @@ void main() {
     uv = cart2polar(uv);
 
     // Voronoi 노이즈 계산
-    float n1 = voronoi2d((vec2(uv.x, 0.0) + 0.04 * iTime) * 8.0);
-    float n2 = voronoi2d((vec2(0.1, uv.x) + 0.04 * iTime * 1.5) * 5.0);
+    float n1 = voronoi2d((vec2(uv.x, 0.0) + 0.04 * iTime) * 1.0);
+    float n2 = voronoi2d((vec2(0.1, uv.x) + 0.04 * iTime * 1.5) * 4.0);
     float n3 = min(n1, n2);
 
-    // Alpha 및 투명도 계산
+    // Alpha 및 밝기 계산
     float mask = smoothstep(.15, .96, p.y);
-    float alpha = n3 * mask * 0.5;
+    float brightness = n3 * mask * 0.4;         // 밝기 증가
+    float alpha = n3 * mask * 1.;               // 투명도 증가
 
     // 빛 효과 색상
-    vec3 lightColor = mix(vec3(1, 1, 1), vec3(1.0), alpha); //0.0, 0.412, 0.580
+    vec3 glowColor = vec3(1.0, 0.9, 0.8) * brightness;
+    vec3 baseColor = mix(vec3(0.2,0.4,0.5), vec3(1.0), alpha);
 
-    // 빛 외의 영역은 투명하게 설정
-    fragColor = vec4(lightColor, alpha); // Alpha를 적용
+    fragColor = vec4(baseColor + glowColor, max(alpha, glowColor.r * 2));
 }

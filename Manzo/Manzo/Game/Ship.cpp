@@ -1,9 +1,12 @@
 #include "Ship.h"
 #include "BeatSystem.h"
+#include "Particles.h"
 #include "../Engine/Camera.h"
 #include "../Engine/Input.h"
-#include <iostream>
 #include "../Engine/MapManager.h"
+#include "angles.h"
+
+#include <iostream>
 
 Ship::Ship(vec2 start_position) :
     GameObject(start_position), move(false)
@@ -60,7 +63,9 @@ void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
 
     // Èû Àû¿ë
     vec2 force = direction * skidding_speed * force_multiplier;
+    vec2 target_position = ship->GetPosition() + direction * -30.f;
     ship->SetVelocity(force);
+    Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::FuelBubble>>()->Emit(1, target_position, {0,0}, -force*0.4f, 1.5);
 }
 void Ship::State_Idle::CheckExit(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
@@ -86,7 +91,10 @@ void Ship::State_Move::Enter(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
     ship->move = true;
 }
-void Ship::State_Move::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) { }
+void Ship::State_Move::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
+    Ship* ship = static_cast<Ship*>(object);
+    //Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::Plankton>>()->Emit(6, ship->GetPosition(), { 0, 0 }, { 0, 20 }, 1);
+}
 void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_unused]] double fixed_dt) {
     Ship* ship = static_cast<Ship*>(object);
     ship->FuelUpdate(fixed_dt);

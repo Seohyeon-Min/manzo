@@ -45,6 +45,7 @@ enum class DrawLayer {
 
 namespace CS230 {
 
+    //이건 그래도 굿! 유저 프랜들리 하다네요
     struct DrawCall {
         GLTexture* texture;
         const mat3* transform;
@@ -81,6 +82,8 @@ namespace CS230 {
     public:
         Render();
 
+        // 매개변수를 스트럭트로 넘길수도 있다!!! 그게 더 좋을거같다!!!
+
         void AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase = DrawLayer::Draw);
         void AddDrawCall
         (vec2 start, vec2 end, color3 color, float width = 1.0f, float alpha = 255.0f, const GLShader* shader = nullptr, bool iscollision = true);
@@ -107,6 +110,9 @@ namespace CS230 {
 
 
         // Vectors for draw calls
+        // z 발류 갖고있는 스트럭트로 불투명 리스트 하나, 투명 리스트 하나 할 수 있다!!
+        // 이게 더 좋을듯
+
         std::vector<DrawCall> draw_background_calls;
         std::vector<DrawCall> draw_first_calls;
         std::vector<DrawCall> draw_calls;
