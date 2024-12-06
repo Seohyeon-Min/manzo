@@ -11,11 +11,13 @@ Created:    March 8, 2023
 #include "Engine.h"
 #include "ShowCollision.h"
 #include "../Game/BeatSystem.h"
+#include "../Game/AI.h"
 
 #include <SDL2/SDL.h>
 #include <iostream>
 #include <imgui.h>
 #include <GL/glew.h>
+#include "GameObject.h"
 
 Engine::Engine() :
 #ifdef _DEBUG
@@ -103,17 +105,16 @@ void Engine::ImGuiDraw()
             static_cast<double>(camX), static_cast<double>(camY),    // in Camera Space
             static_cast<double>(WorldX), static_cast<double>(WorldY) // in World Space
         );
-        //const auto cam_pos = caminfo.camera.Position;
-        //ImGui::LabelText("Camera World Position", "(%.1f,%.1f)", static_cast<double>(cam_pos.x), static_cast<double>(cam_pos.y));
-        //const auto cam_orientation = int(util::to_degrees(caminfo.camera.GetOrientation()) + 360) % 360;
-        //ImGui::LabelText("Camera World Orientation", "%d degrees", cam_orientation);
-        //const auto cam_size = caminfo.camera_view.CalcViewSizeWithZoom();
-        //ImGui::LabelText("Camera View Size", "%.1f x %.1f", static_cast<double>(cam_size.width), static_cast<double>(cam_size.height));
-        //auto zoom = caminfo.camera_view.GetZoom() * 100.0f;
-        //if (ImGui::SliderFloat("Zoom", &zoom, 25.0f, 400.0f, "%.0f%%"))
-        //{
-        //    caminfo.camera_view.SetZoom(zoom / 100.0f);
-        //}
+        
+        if (!GetGameStateManager().IsNull())
+        {
+
+            ImGui::SliderFloat("alignment", &BackgroundFish::a, 0.0f, 5.0f, "%.4f");
+            ImGui::SliderFloat("cohesion", &BackgroundFish::b, 0.0f, 5.0f, "%.4f");
+            ImGui::SliderFloat("separate", &BackgroundFish::c, 0.0f, 5.0f, "%.4f");
+            ImGui::SliderFloat("wanderForce", &BackgroundFish::d, 0.0f, 5.0f, "%.4f");
+        }
+
         if (!GetGameStateManager().IsNull()
             && GetGameStateManager().GetGSComponent<Beat>() != nullptr) {
             ImGui::LabelText("Is on beat?", "%s", GetGameStateManager().GetGSComponent<Beat>()->GetIsOnBeat() ? "true" : "false");

@@ -7,7 +7,7 @@ FishGenerator::FishGenerator()
 {
 	timer = new CS230::Timer(2.0);
 
-	for (int i = 0; i < 200; i++)
+	for (int i = 0; i < 250; i++)
 	{
 		BackgroundFish* bg_fish = new BackgroundFish();
 		Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(bg_fish);

@@ -5,8 +5,6 @@
 #include "../Engine/MapManager.h"
 #include "../Engine/AABB.h"
 
-static double elapsedTime = 0.0;
-
 class BackgroundFish : public CS230::GameObject
 {
 public:
@@ -23,6 +21,8 @@ public:
 		backgroundFishes.push_back(obj);
 	}
 
+    static float a, b, c, d;
+
 private:
 	vec2 start_position;
 	std::list<BackgroundFish*> backgroundFishes;
@@ -37,6 +37,8 @@ private:
     float separationStrength = 20.0f;
 
     ivec2 windowSize = { Engine::window_width, Engine::window_height };
+
+    std::array<std::pair<float, float>, 3> yRanges = { std::make_pair(-800.0f, -500.0f), std::make_pair(-150.0f, 150.0f), std::make_pair(400.0f, 700.0f) };
 };
 
 class Quadtree {
