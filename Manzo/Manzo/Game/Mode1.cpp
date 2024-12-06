@@ -52,7 +52,7 @@ void Mode1::Load() {
     AddGSComponent(new CS230::Map());
 
     //// ship
-    ship_ptr = new Ship({ 0, -3000 });
+    ship_ptr = new Ship({ 0, 0 });
     GetGSComponent<CS230::GameObjectManager>()->Add(ship_ptr);
 
     //// camera
@@ -88,7 +88,7 @@ void Mode1::Load() {
     ui_manager->AddUI(std::make_unique<Mouse>());
 
     // Map
-    GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/Sea3.svg");
+    GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/Sea4.svg");
 
     // Skill
     if (!Engine::Instance().GetTmpPtr())
