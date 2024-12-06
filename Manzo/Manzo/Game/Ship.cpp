@@ -211,7 +211,38 @@ std::vector<vec2> SortPointsCounterClockwise(const std::vector<vec2>& points, co
         });
 
     return sorted_points;
+
+
 }
+
+
+float CrossProduct(const vec2& a, const vec2& b, const vec2& c) {
+    return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+}
+
+std::vector<vec2> ConvexHull(std::vector<vec2>& points) {
+    std::vector<vec2> hull;
+    std::sort(points.begin(), points.end());
+
+    for (const auto& p : points) {
+        while (hull.size() >= 2 && CrossProduct(hull[hull.size() - 2], hull[hull.size() - 1], p) <= 0) {
+            hull.pop_back();
+        }
+        hull.push_back(p);
+    }
+
+    size_t lower_size = hull.size();
+    for (auto it = points.rbegin(); it != points.rend(); ++it) {
+        while (hull.size() > lower_size && CrossProduct(hull[hull.size() - 2], hull[hull.size() - 1], *it) <= 0) {
+            hull.pop_back();
+        }
+        hull.push_back(*it);
+    }
+
+    hull.pop_back();
+    return hull;
+}
+
 
 std::vector<vec2> ExtendBoundaryPoints(const std::vector<vec2>& points) {
     std::vector<vec2> extended_points = points;
@@ -282,9 +313,15 @@ vec2 ComputeNormalAtPoint(const vec2& p0, const vec2& p1) {
 
 vec2 ComputeCollisionNormal(const std::vector<vec2>& points, const vec2& pos, const vec2& center, int resolution = 20) {
     std::vector<vec2> closest_points = points;
-    std::vector<vec2> sorted_point = SortPointsCounterClockwise(closest_points, center);
+    std::vector<vec2> sorted_point = ConvexHull(closest_points);
 
     spline_points = GenerateSplinePoints(sorted_point, resolution);
+
+    std::cout << "Spline Points:" << std::endl;
+    for (const auto& point : spline_points) {
+        std::cout << "x: " << point.x << ", y: " << point.y << std::endl;
+    }
+
 
     vec2 closest_point_on_spline = FindClosestPointOnSpline(spline_points, pos);
 
@@ -292,6 +329,8 @@ vec2 ComputeCollisionNormal(const std::vector<vec2>& points, const vec2& pos, co
     vec2 tangent_point1 = spline_points[std::max(0, static_cast<int>(closest_index) - 1)];
     vec2 tangent_point2 = spline_points[std::min(static_cast<int>(spline_points.size() - 1), static_cast<int>(closest_index) + 1)];
     vec2 normal = ComputeNormalAtPoint(tangent_point1, tangent_point2);
+
+    
 
     return normal;
 }
