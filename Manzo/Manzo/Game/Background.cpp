@@ -41,7 +41,6 @@ void Background::Draw(const CS230::Cam& camera)
 
         Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawBackground);
     }
-    Engine::GetRender().RenderBackgrounds();
 }
 
 ivec2 Background::GetSize()

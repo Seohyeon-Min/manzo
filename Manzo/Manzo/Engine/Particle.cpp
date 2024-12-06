@@ -16,12 +16,13 @@ CS230::Particle::Particle(const std::filesystem::path& sprite_file):
 	AddGOComponent(new CS230::Sprite(sprite_file, this));
 }
 
-void CS230::Particle::Start(vec2 position, vec2 velocity, double max_life)
+void CS230::Particle::Start(vec2 position, vec2 velocity, double max_life, vec2 scale)
 {
 	SetPosition(position);
 	SetVelocity(velocity);
+	SetScale(scale);
 	life = max_life;
-	GetGOComponent<CS230::Sprite>()->Reset();
+	//GetGOComponent<CS230::Sprite>()->Reset();
 }
 
 void CS230::Particle::Update(double dt)

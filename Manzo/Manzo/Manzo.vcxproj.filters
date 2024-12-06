@@ -130,6 +130,9 @@
     <ClCompile Include="Game\AI.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Game\GodRay.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h">
@@ -308,6 +311,9 @@
     </ClInclude>
     <ClInclude Include="Engine\AABB.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GodRay.h">
+      <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -26,6 +26,7 @@ void Beat::Update(double dt)
     if (!music_started && music) {
         // 비트 시스템이 준비되었을 때 음악 재생 시작
         audio->PlayMusic(music ,-1); // 무한 루프 재생
+        Mix_VolumeMusic(0);
         music_started = true;       // 음악 재생 상태 갱신
     }
 

@@ -28,6 +28,7 @@ Created:    March 8, 2023
 #include "Skill.h"
 #include "Boss.h"
 
+
 #include <iostream>
 
 Mode1::Mode1()
@@ -44,12 +45,17 @@ void Mode1::Load() {
 
     //shader
     Engine::GetShaderManager().LoadShader("pixelate", "assets/shaders/default.vert", "assets/shaders/pixelate.frag");
+    Engine::GetShaderManager().LoadShader("post_process", "assets/shaders/post_default.vert", "assets/shaders/post_default.frag");
+    Engine::GetShaderManager().LoadShader("post_bloom", "assets/shaders/post_default.vert", "assets/shaders/post_bloom.frag");
 
     // component
     AddGSComponent(new CS230::GameObjectManager());
     beat_system = new Beat();
     AddGSComponent(beat_system);
     AddGSComponent(new CS230::Map());
+    god_ray = new GodRay();
+    AddGSComponent(god_ray);
+    //AddGSComponent(new Pump());
 
     //// ship
     ship_ptr = new Ship({ 0, 0 });
@@ -90,6 +96,10 @@ void Mode1::Load() {
     // Map
     GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/redtest.svg");
 
+    //Particle
+    AddGSComponent(new CS230::ParticleManager<Particles::Plankton>());
+    AddGSComponent(new CS230::ParticleManager<Particles::FuelBubble>());
+
     // Skill
     if (!Engine::Instance().GetTmpPtr())
     {
@@ -111,11 +121,12 @@ void Mode1::Load() {
 void Mode1::Update(double dt) {
     UpdateGSComponents(dt);
     GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
+    Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::Plankton>>()->Spray();
     //std::cout << "update: " << dt << std::endl;
     //camera postion update
     camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
 
-	//fishGenerator->GenerateFish(dt);
+	fishGenerator->GenerateFish(dt);
     skill_ptr->Update();
     if (ship_ptr->IsShipUnder() && Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Q)) {
         Engine::GetGameStateManager().ClearNextGameState();
@@ -144,6 +155,8 @@ void Mode1::FixedUpdate(double dt)
 void Mode1::Draw() {
     GetGSComponent<Background>()->Draw(*GetGSComponent<CS230::Cam>());
     GetGSComponent<CS230::Map>()->AddDrawCall();
+    //GetGSComponent<Pump>()->Draw();
+    god_ray->Draw();
     GetGSComponent<CS230::GameObjectManager>()->DrawAll();
     ui_manager->AddDrawCalls();
 
@@ -160,6 +173,7 @@ void Mode1::Unload() {
 	GetGSComponent<CS230::GameObjectManager>()->Unload();
     GetGSComponent<Background>()->Unload();
     Engine::GetRender().ClearDrawCalls();
+    ui_manager->UnloadUI();
 	ClearGSComponents();
     Engine::GetAudioManager().StopMusic();
     Engine::Instance().ResetSlowDownFactor();

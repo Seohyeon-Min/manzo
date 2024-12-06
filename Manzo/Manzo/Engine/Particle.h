@@ -12,7 +12,8 @@ Created:    March 8, 2023
 #include "..\Game\GameObjectTypes.h"
 #include "Sprite.h"
 #include "ComponentManager.h"
-
+#include "Random.h"
+#include "angles.h"
 #include "vec2.h"
 #include "engine.h"
 #include "GameObjectManager.h"
@@ -24,7 +25,7 @@ namespace CS230 {
     class Particle : public GameObject {
     public:
         Particle(const std::filesystem::path& sprite_file);
-        void Start(vec2 position, vec2 velocity, double max_life);
+        void Start(vec2 position, vec2 velocity, double max_life, vec2 scale = vec2{1.f,1.f});
         void Update(double dt) override;
         void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
         bool Alive() {
@@ -42,6 +43,7 @@ namespace CS230 {
         ParticleManager();
         ~ParticleManager();
         void Emit(int count, vec2 emitter_position, vec2 emitter_velocity, vec2 direction, double spread);
+        void Spray();
     private:
         std::vector<T*> particles;
         int index;
@@ -85,4 +87,24 @@ namespace CS230 {
         }
     }
 
+    template<typename T>
+    inline void ParticleManager<T>::Spray()
+    {
+        if (particles[index]->Alive())
+            return;
+        float speed = 30.f;
+        float angle = (float)util::to_radians(util::random(30,150));
+        float x = util::random(-1500.f, 1500.f);
+        float y = util::random(-1500.f, 1500.f);
+        vec2 pos = { x,y };
+        vec2 vel = { cos(angle) * speed, sin(angle) * speed };
+
+        T* plankton = static_cast<T*>(particles[index]);
+        float scale = plankton->scale; // 개별 Plankton 객체의 scale 값 사용
+
+        particles[index]->Start(pos, vel, T::MaxLife, { scale , scale });
+        index++;
+        if (index < 0 || index >= particles.size())
+            index = 0;
+    }
 }

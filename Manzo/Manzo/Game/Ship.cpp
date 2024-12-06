@@ -1,9 +1,12 @@
 #include "Ship.h"
 #include "BeatSystem.h"
+#include "Particles.h"
 #include "../Engine/Camera.h"
 #include "../Engine/Input.h"
-#include <iostream>
 #include "../Engine/MapManager.h"
+#include "angles.h"
+
+#include <iostream>
 
 Ship::Ship(vec2 start_position) :
     GameObject(start_position), move(false)
@@ -11,11 +14,13 @@ Ship::Ship(vec2 start_position) :
     AddGOComponent(new CS230::Sprite("assets/images/ship.spt", this));
     beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
     skill = Engine::GetGameStateManager().GetGSComponent<Skillsys>();
+
     fuel = Maxfuel;
     FuelFlag = false;
     SetVelocity({ 0,0 });
 
     if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
+        Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(new Pump);
         current_state = &state_idle;
         current_state->Enter(this);
     }
@@ -55,7 +60,9 @@ void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
     }
 
     vec2 force = direction * skidding_speed * force_multiplier;
+    vec2 target_position = ship->GetPosition() + direction * -30.f;
     ship->SetVelocity(force);
+    Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::FuelBubble>>()->Emit(1, target_position, {0,0}, -force*0.4f, 1.5);
 }
 void Ship::State_Idle::CheckExit(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
@@ -81,7 +88,10 @@ void Ship::State_Move::Enter(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
     ship->move = true;
 }
-void Ship::State_Move::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) { }
+void Ship::State_Move::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
+    Ship* ship = static_cast<Ship*>(object);
+    //Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::Plankton>>()->Emit(6, ship->GetPosition(), { 0, 0 }, { 0, 20 }, 1);
+}
 void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_unused]] double fixed_dt) {
     Ship* ship = static_cast<Ship*>(object);
     ship->FuelUpdate(fixed_dt);
@@ -147,6 +157,7 @@ void Ship::Update(double dt)
     //std::cout << (!hit_with ? "can collide" : "no") << std::endl;
     //std::cout << (!set_dest && beat->GetIsOnBeat() && !move) << std::endl;
     GameObject::Update(dt);
+
     CS230::RectCollision* collider = GetGOComponent<CS230::RectCollision>();
 
     // World Boundary
@@ -183,11 +194,6 @@ void Ship::FixedUpdate(double fixed_dt) {
 
 void Ship::Draw(DrawLayer drawlayer) {
     CS230::GameObject::Draw(DrawLayer::DrawLast);
-}
-
-
-vec2 GetPerpendicular(vec2 v) {
-    return { -v.y, v.x };
 }
 
 vec2 CatmullRomSpline(const vec2& p0, const vec2& p1, const vec2& p2, const vec2& p3, float t) {
@@ -354,9 +360,8 @@ void Ship::ResolveCollision(GameObject* other_object)
         if (other_object->Type() == GameObjectTypes::Rock) {
 
             if (GetVelocity().Length() <= skidding_speed + 30.f) { // if it was skidding, don't reflect
-                vec2 smallCorrection = -GetVelocity().Normalize();
+                vec2 smallCorrection = -GetVelocity().Normalize(); // with this, ship should not able to move!
                 UpdatePosition(smallCorrection);
-                //SetVelocity({});
                 return;
             }
 
@@ -477,4 +482,69 @@ bool Ship::IsShipUnder()
         return true;
     }
     return false;
+}
+
+
+Pump::Pump() :
+    GameObject({})
+{
+    Engine::GetShaderManager().LoadShader("change_alpha", "assets/shaders/default.vert", "assets/shaders/change_alpha.frag");
+    beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
+}
+
+void Pump::Update(double dt)
+{
+    float decrease_duration = (float)beat->GetFixedDuration() - 0.1f;
+    float delta_radius = (max_pump_radius - min_pump_radius) / decrease_duration;
+    float delta_alpha = 1 / decrease_duration;
+
+    if (beat->GetBeat()) {
+        radius = min_pump_radius;
+        wait = true;
+    }
+    if (wait && !beat->GetIsOnBeat()) {
+        radius = max_pump_radius;
+        alpha = 0.f;
+        wait = false;
+    }
+
+    if (!wait && radius > min_pump_radius) {
+        radius -= delta_radius * (float)dt;
+        alpha += delta_alpha * (float)dt;
+    }
+
+    radius = std::max(radius, min_pump_radius);
+}
+
+void Pump::Draw(DrawLayer drawlayer)
+{
+    Ship* ship = Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->GetGOComponent<Ship>();
+    DrawSettings settings;
+    settings.do_blending = true;
+
+    CS230::CircleDrawCall draw_call = {
+    min_pump_radius,                       // Texture to draw
+    ship->GetPosition(),                          // Transformation matrix
+    nullptr,
+    nullptr,
+    settings
+    };
+
+    CS230::CircleDrawCall draw_call2 = {
+    radius,                       // Texture to draw
+    ship->GetPosition(),                          // Transformation matrix
+    Engine::GetShaderManager().GetShader("change_alpha"), // Shader to use
+    [this](const GLShader* shader) {
+        this->SetUniforms(shader);
+    },
+    settings
+    };
+
+    Engine::GetRender().AddDrawCall(draw_call);
+    Engine::GetRender().AddDrawCall(draw_call2);
+}
+
+void Pump::SetUniforms(const GLShader* shader)
+{
+    shader->SendUniform("uAlpha", alpha);
 }

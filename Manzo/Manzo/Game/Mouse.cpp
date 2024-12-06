@@ -1,5 +1,6 @@
 #include "mouse.h"
 #include "..\Engine\Input.h"
+#include "BeatSystem.h"
 #include "Particles.h"
 #include <iostream>
 
@@ -47,23 +48,6 @@ void Mouse::UpdateTrail(const vec2& new_position) {
     }
 }
 
-void Mouse::DrawLaserCurve() {
-    if (trails.size() > 1) {
-        float line_width = 5.0f;
-        for (size_t i = trails.size() - 1; i > 0; --i) {
-            vec2 previous_point = trails[i].position;
-            vec2 current_point = trails[i - 1].position;
-            line_width *= decrease_factor;
-            if (line_width <= 0.001f) {
-                line_width = 0.0001f;
-            }
-
-            Engine::GetRender().AddDrawCall(previous_point, current_point, { 255,255,255 }, line_width, 255.0f, nullptr, false);
-
-            previous_point = current_point;
-        }
-    }
-}
 
 void Mouse::DrawMouseCursor()
 {
@@ -83,3 +67,23 @@ void Mouse::DrawMouseCursor()
 
     Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawUI);
 }
+
+
+void Mouse::DrawLaserCurve() {
+    if (trails.size() > 1) {
+        float line_width = 5.0f;
+        for (size_t i = trails.size() - 1; i > 0; --i) {
+            vec2 previous_point = trails[i].position;
+            vec2 current_point = trails[i - 1].position;
+            line_width *= decrease_factor;
+            if (line_width <= 0.001f) {
+                line_width = 0.0001f;
+            }
+
+            Engine::GetRender().AddDrawCall(previous_point, current_point, { 255,255,255 }, line_width, 255.0f, nullptr, false);
+
+            previous_point = current_point;
+        }
+    }
+}
+

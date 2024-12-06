@@ -110,6 +110,7 @@ void Mode2::Draw() {
 void Mode2::Unload() {
     GetGSComponent<CS230::GameObjectManager>()->Unload();
     GetGSComponent<Background>()->Unload();
+    ui_manager->UnloadUI();
     ClearGSComponents();
     ship_ptr = nullptr;
     skill_ptr = nullptr;

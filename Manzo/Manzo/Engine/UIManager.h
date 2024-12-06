@@ -24,7 +24,7 @@ public:
         }
     }
 
-    ~UIManager() {
+    void UnloadUI() {
         ui_elements.clear();
     }
 
