@@ -124,6 +124,9 @@
     <ClCompile Include="Game\GodRay.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Game\ScreenWrap.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h">
@@ -295,6 +298,9 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Game\GodRay.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\ScreenWrap.h">
       <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>

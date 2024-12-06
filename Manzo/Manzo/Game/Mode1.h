@@ -54,4 +54,7 @@ private:
     Skillsys::Skill_Net* Net_ptr;
 
     bool Isboss = false;
+    std::vector< std::array<int, 2>> BossFirstPos;
+    vec3 bossPosition;
+    int bossChannelID;
 };

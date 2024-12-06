@@ -21,23 +21,28 @@ public:
 		backgroundFishes.push_back(obj);
 	}
 
+    static float a, b, c, d;
+
 private:
 	vec2 start_position;
 	std::list<BackgroundFish*> backgroundFishes;
-
-	float PointToSegmentDistance(const vec2& point, const vec2& segmentStart, const vec2& segmentEnd);
+    static std::vector<BackgroundFish*> globalLeaders;
 	vec2 direction = { 0,0 };
 
 	vec2 GetPerpendicular(vec2 v) {
 		return { -v.y, v.x };
 	}
 
+    float minDistance = 20.0f; 
+    float separationStrength = 20.0f;
 
     ivec2 windowSize = { Engine::window_width, Engine::window_height };
+
+    std::array<std::pair<float, float>, 3> yRanges = { std::make_pair(-800.0f, -500.0f), std::make_pair(-150.0f, 150.0f), std::make_pair(400.0f, 700.0f) };
 };
 
 class Quadtree {
-    static const int MAX_CAPACITY = 4;
+    static const int MAX_CAPACITY = 60;
     AABB boundary;
     std::vector<BackgroundFish*> fish;
     bool divided = false;

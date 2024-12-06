@@ -77,6 +77,7 @@ namespace CS230 {
         void SetVelocity(vec2 new_velocity);
         void UpdateVelocity(vec2 delta);
         void SetScale(vec2 new_scale);
+        void SetFlipX(bool flip);
         void UpdateScale(vec2 delta);
         void SetRotation(double new_rotation);
         void UpdateRotation(double delta);

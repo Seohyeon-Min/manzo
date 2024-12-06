@@ -34,38 +34,37 @@ void Ship::State_Idle::Enter(GameObject* object) {
 void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
     //get mouse pos and move to there
     Ship* ship = static_cast<Ship*>(object);
-    // 마우스 위치와 화면 중심 계산
+
     vec2 window = { Engine::window_width / 2, Engine::window_height / 2 };
     vec2 mouse_pos = { (float)Engine::GetInput().GetMousePos().mouseWorldSpaceX, (float)Engine::GetInput().GetMousePos().mouseWorldSpaceY };
     vec2 pos = mouse_pos - window;
 
-    // 목적지와 방향 계산
+
     vec2 destination = pos;
     vec2 direction = destination - ship->GetPosition();
-    float distance = direction.Length(); // 거리 계산
+    float distance = direction.Length();
     direction = direction.Normalize();
 
-    // 거리 기반 force 조정
+
     float force_multiplier = 0.0f;
-    float min_distance = 50.0f;  // 최소 거리
-    float max_distance = 200.0f; // 최대 거리
+    float min_distance = 50.0f;
+    float max_distance = 200.0f;
 
     if (distance <= min_distance) {
-        force_multiplier = 0.0f; // 가까우면 힘을 적용하지 않음
+        force_multiplier = 0.0f;
     }
     else if (distance >= max_distance) {
-        force_multiplier = 1.0f; // 멀면 최대 힘 적용
+        force_multiplier = 1.0f;
     }
     else {
-        // 거리 비례로 힘을 선형적으로 조정
         force_multiplier = (distance - min_distance) / (max_distance - min_distance);
     }
 
-    // 힘 적용
+
     vec2 force = direction * skidding_speed * force_multiplier;
 
-    float randomAngle = util::random(180.0f, 200.0f); // -90도에서 90도까지 랜덤
-    float angleRadians = util::to_radians(randomAngle);  // 라디안으로 변환
+    float randomAngle = util::random(180.0f, 200.0f);
+    float angleRadians = util::to_radians(randomAngle);
     vec2 bubble_direction = { cos(angleRadians), sin(angleRadians) };
     vec2 target_position = ship->GetPosition() + bubble_direction * -30.f;
     ship->SetVelocity(force);

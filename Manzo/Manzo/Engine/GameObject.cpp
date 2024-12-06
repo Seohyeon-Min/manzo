@@ -159,6 +159,14 @@ void CS230::GameObject::SetScale(vec2 new_scale)
 	//matrix_outdated = true;
 }
 
+void CS230::GameObject::SetFlipX(bool flip) 
+{
+	if ((flip && scale.x > 0) || (!flip && scale.x < 0)) 
+	{
+		scale.x = -scale.x;
+	}
+}
+
 void CS230::GameObject::UpdateScale(vec2 delta)
 {
 	scale += delta;
