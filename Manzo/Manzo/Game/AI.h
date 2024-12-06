@@ -5,6 +5,8 @@
 #include "../Engine/MapManager.h"
 #include "../Engine/AABB.h"
 
+static double elapsedTime = 0.0;
+
 class BackgroundFish : public CS230::GameObject
 {
 public:
