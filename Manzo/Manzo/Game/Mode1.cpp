@@ -79,7 +79,7 @@ void Mode1::Load() {
     // Mouse and Particle
     AddGSComponent(new CS230::ParticleManager<Particles::MouseFollow>());
     Boss::LoadBossfile();
-   
+    
 
     // UI
     AddGSComponent(new UIManager());
@@ -88,7 +88,7 @@ void Mode1::Load() {
     ui_manager->AddUI(std::make_unique<Mouse>());
 
     // Map
-    GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/shallowww.svg");
+    GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/Sea3.svg");
 
     // Skill
     if (!Engine::Instance().GetTmpPtr())
