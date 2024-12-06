@@ -17,6 +17,16 @@ void Background::Add(const std::filesystem::path& texture_path, float speed)
     backgrounds.push_back(ParallaxLayer({ Engine::GetTextureManager().Load(texture_path), speed }));
 }
 
+void Background::SetUniforms(const GLShader* shader) {
+    double currentTime = Engine::GetAudioManager().GetCurrentMusicTime(Engine::GetAudioManager().GetID("assets/audios/100BPM_edm_temp.wav"));
+    //counter += Engine::Instance().GetDt();
+    float texelSizeX = 1.0f / GetSize().width-70.f;
+    float texelSizeY = 1.0f / GetSize().height - 70.f;
+    shader->SendUniform("uResolution",texelSizeX, texelSizeY);    shader->SendUniform("uBlurDirection", 1.0f, 0.0f); // 가로 방향
+    //shader->SendUniform("uChannelResolution", (float)GetSize().width, (float)GetSize().height);
+}
+
+
 void Background::Unload()
 {
     backgrounds.clear();
@@ -26,8 +36,12 @@ void Background::Draw(const CS230::Cam& camera)
 {
     vec2 cameraPos = camera.GetPosition();
 
-    for (ParallaxLayer& background : backgrounds) {
 
+
+    for (ParallaxLayer& background : backgrounds) {
+        DrawSettings settings;
+        settings.do_blending = true;
+        settings.is_UI = true;
         // Build the translation matrix with parallax effect
         //background.matrix = mat3::build_translation({ (0 - cameraPos.x) * background.speed, (0 - cameraPos.y) * background.speed });
         //background.matrix = mat3::build_translation({ 0 + cameraPos.x, 0 + cameraPos.y });
@@ -36,7 +50,7 @@ void Background::Draw(const CS230::Cam& camera)
         CS230::DrawCall draw_call = {
             background.texture,                       // Texture to draw
             &background.matrix,                          // Transformation matrix
-            Engine::GetShaderManager().GetDefaultShader() // Shader to use
+            Engine::GetShaderManager().GetDefaultShader()
         };
 
         Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawBackground);

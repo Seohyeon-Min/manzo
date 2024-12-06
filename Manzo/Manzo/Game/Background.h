@@ -19,6 +19,7 @@ public:
     void Add(const std::filesystem::path& texture_path, float speed);
     void Unload();
     void Draw(const CS230::Cam& camera);
+    void SetUniforms(const GLShader* shader);
     ivec2 GetSize();
 private:
     struct ParallaxLayer {

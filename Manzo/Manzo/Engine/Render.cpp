@@ -216,6 +216,7 @@ void CS230::Render::DrawBackground(const DrawCall& draw_call)
 {
     const GLShader* shader = draw_call.shader;
     shader->Use();
+    auto settings = draw_call.settings;
 
     if (draw_call.texture) {
         draw_call.texture->UseForSlot(1);
@@ -224,6 +225,24 @@ void CS230::Render::DrawBackground(const DrawCall& draw_call)
     else {
         throw std::runtime_error("no texture!");
     }
+
+    if (settings.do_blending || settings.glow || settings.modulate_color) {
+        glCheck(glEnable(GL_BLEND));
+    }
+    else {
+        glCheck(glDisable(GL_BLEND)); // 블렌딩 비활성화
+    }
+
+    if (settings.glow) {
+        glCheck(glBlendFunc(GL_ONE, GL_ONE)); // Glow 블렌딩 설정
+    }
+    else if (settings.do_blending) {
+        glCheck(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)); // 일반 알파 블렌딩 설정
+    }
+    else if (settings.modulate_color) {
+        glCheck(glBlendFunc(GL_DST_COLOR, GL_ZERO));
+    }
+
 
     vec2 texture_size = (vec2)draw_call.texture->GetSize();
     mat3 model_to_world = *draw_call.transform * mat3::build_scale(texture_size);

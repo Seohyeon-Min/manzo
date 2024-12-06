@@ -30,7 +30,6 @@ void Beat::Update(double dt)
     }
 
     double current_music_time = audio->GetCurrentMusicTime(channel_id);
-    std::cout << current_music_time << std::endl;
 
     if (current_music_time > 0.0) { 
         time_taken = current_music_time + sync; 

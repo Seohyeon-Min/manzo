@@ -48,6 +48,7 @@ void Mode1::Load() {
     Engine::GetShaderManager().LoadShader("pixelate", "assets/shaders/default.vert", "assets/shaders/pixelate.frag");
     Engine::GetShaderManager().LoadShader("post_process", "assets/shaders/post_default.vert", "assets/shaders/post_default.frag");
     Engine::GetShaderManager().LoadShader("post_bloom", "assets/shaders/post_default.vert", "assets/shaders/post_bloom.frag");
+    Engine::GetShaderManager().LoadShader("blur", "assets/shaders/default.vert", "assets/shaders/blur.frag");
 
     // component
     AddGSComponent(new CS230::GameObjectManager());
@@ -73,8 +74,8 @@ void Mode1::Load() {
     AddGSComponent(background);    
 
     //// to generate fish
-    fishGenerator = new FishGenerator();
-    Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
+    //fishGenerator = new FishGenerator();
+    //Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
 
     background->Add("assets/images/background/temp_background.png", 0.0f);
     background->Add("assets/images/background/bg1.png", 0.3f);
@@ -153,7 +154,7 @@ void Mode1::Update(double dt) {
     camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
 
     // Update Fish Generator
-    fishGenerator->GenerateFish(dt);
+    //fishGenerator->GenerateFish(dt);
 
     // Update Skills
     skill_ptr->Update();
@@ -207,9 +208,9 @@ void Mode1::Draw() {
 void Mode1::Unload() {
 
     ship_ptr = nullptr;
-    fishGenerator->~FishGenerator();
-    delete fishGenerator;
-    fishGenerator = nullptr;
+    //fishGenerator->~FishGenerator();
+    //delete fishGenerator;
+    //fishGenerator = nullptr;
 	GetGSComponent<CS230::GameObjectManager>()->Unload();
     GetGSComponent<Background>()->Unload();
     Engine::GetRender().ClearDrawCalls();
