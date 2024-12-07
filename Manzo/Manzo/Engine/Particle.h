@@ -28,6 +28,7 @@ namespace CS230 {
         void Start(vec2 position, vec2 velocity, double max_life, vec2 scale = vec2{1.f,1.f});
         void Update(double dt) override;
         void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
+        void SetAlpha(const GLShader* shader);
         bool Alive() {
             return  life > 0;
         }
@@ -35,6 +36,9 @@ namespace CS230 {
         std::string TypeName() override { return "Particle"; }
     private:
         double life;
+        double max_life;
+    protected:
+        GLShader* shader = nullptr;
     };
 
     template<typename T>

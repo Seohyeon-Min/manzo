@@ -86,6 +86,29 @@ void CS230::GameObject::Draw(DrawLayer drawlayer) {
 	}
 }
 
+void CS230::GameObject::Draw(const DrawCall& draw_call, DrawLayer drawlayer)
+{
+	Sprite* sprite = GetGOComponent<Sprite>();
+	if (sprite != nullptr) {
+		if (shader == nullptr) {
+			if (IsPixelShaderApplicable(Type())) {
+				shader = Engine::GetShaderManager().GetShader("pixelate");
+			}
+			else {
+				shader = Engine::GetShaderManager().GetDefaultShader();
+			}
+		}
+
+		Engine::GetRender().AddDrawCall(draw_call, drawlayer);
+	}
+	if (Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>() != nullptr && Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>()->Enabled()) {
+		Collision* collision = GetGOComponent<Collision>();
+		if (collision != nullptr) {
+			collision->Draw();
+		}
+	}
+}
+
 bool CS230::GameObject::IsCollidingWith(GameObject* other_object) {
 	Collision* collider = GetGOComponent<Collision>();
 	return collider != nullptr && collider->IsCollidingWith(other_object);

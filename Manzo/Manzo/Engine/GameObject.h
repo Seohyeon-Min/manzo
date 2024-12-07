@@ -41,6 +41,7 @@ namespace CS230 {
         virtual void Update(double dt);
         virtual void FixedUpdate(double fixed_dt);
         virtual void Draw(DrawLayer drawlayer = DrawLayer::Draw);
+        virtual void Draw(const DrawCall& draw_call, DrawLayer drawlayer = DrawLayer::Draw);
         virtual void Destroy() { destroy = true; }
         virtual bool Destroyed() { return destroy; }
         virtual void SetShader(GLShader* new_shader) { shader = new_shader; };

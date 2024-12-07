@@ -16,7 +16,7 @@ Created:    March 8, 2023
 namespace Particles {
     class MouseFollow : public CS230::Particle {
     public:
-        MouseFollow() : Particle("assets/images/mouse_part.spt") { };
+        MouseFollow() : Particle("assets/images/mouse_part.spt") {  };
         std::string TypeName() override { return "Mouse Particle"; }
         static constexpr int MaxCount = 30;
         static constexpr double MaxLife = 0.5;
@@ -34,7 +34,10 @@ namespace Particles {
 
     class FuelBubble : public CS230::Particle {
     public:
-        FuelBubble() : Particle("assets/images/Plankton.spt") { scale = util::random(0.5f, 1.f); };
+        FuelBubble() : Particle("assets/images/Plankton.spt") 
+        {
+            scale = util::random(0.5f, 1.f); shader = Engine::GetShaderManager().GetShader("change_alpha");
+        };
         std::string TypeName() override { return "FuelBubble Particle"; }
         static constexpr int MaxCount = 7;
         static constexpr double MaxLife = 0.38;
@@ -43,11 +46,15 @@ namespace Particles {
 
     class BubblePop : public CS230::Particle {
     public:
-        BubblePop() : Particle("assets/images/Plankton.spt") { scale = util::random(1.f, 2.f); };
+        BubblePop() : Particle("assets/images/Plankton.spt") 
+        { 
+            scale = util::random(1.f, 2.2f); shader = Engine::GetShaderManager().GetShader("change_alpha");
+        };
         std::string TypeName() override { return "BubblePop Particle"; }
-        static constexpr int MaxCount = 12;
-        static constexpr double MaxLife = 0.6;
+        static constexpr int MaxCount = 8;
+        static constexpr double MaxLife = 0.5;
         float scale;
     };
+
 }
 

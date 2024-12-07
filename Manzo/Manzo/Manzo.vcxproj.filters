@@ -127,6 +127,8 @@
     <ClCompile Include="Game\ScreenWrap.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Game\DialogBox.cpp" />
+    <ClCompile Include="Game\Shop.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h">
@@ -295,6 +297,11 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Game\ScreenWrap.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\DialogBox.h" />
+    <ClInclude Include="Game\Shop.h" />
+    <ClInclude Include="Game\DashEffect.h">
       <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>

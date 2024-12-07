@@ -5,6 +5,7 @@
 #include "../Engine/Input.h"
 #include "../Engine/MapManager.h"
 #include "angles.h"
+#include "DashEffect.h"
 
 #include <iostream>
 
@@ -106,7 +107,9 @@ void Ship::State_Idle::CheckExit(GameObject* object) {
 void Ship::State_Move::Enter(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
     ship->move = true;
-    Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::BubblePop>>()->Emit(12, ship->GetPosition(), { 60,60 }, {60,60}, 1.5);
+    vec2 dir = ship->GetVelocity().Normalize();
+    Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::BubblePop>>()->Emit(8, ship->GetPosition(), { 0,0 }, dir * -100.f, 1.5);
+    Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(new DashEffect());
     
 }
 void Ship::State_Move::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
@@ -469,7 +472,6 @@ bool Ship::IsShipUnder()
 Pump::Pump() :
     GameObject({})
 {
-    Engine::GetShaderManager().LoadShader("change_alpha", "assets/shaders/default.vert", "assets/shaders/change_alpha.frag");
     beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
 }
 

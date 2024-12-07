@@ -95,6 +95,7 @@
     <ClInclude Include="Game\BeatSystem.h" />
     <ClInclude Include="Game\Boss.h" />
     <ClInclude Include="Game\Clear.h" />
+    <ClInclude Include="Game\DashEffect.h" />
     <ClInclude Include="Game\DialogBox.h" />
     <ClInclude Include="Game\Fish.h" />
     <ClInclude Include="Game\FishEcosystem.h" />
