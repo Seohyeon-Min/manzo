@@ -285,9 +285,6 @@
     <ClInclude Include="Engine\FontManager.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Fonts.h">
-      <Filter>Game</Filter>
-    </ClInclude>
     <ClInclude Include="Game\AI.h">
       <Filter>Game</Filter>
     </ClInclude>

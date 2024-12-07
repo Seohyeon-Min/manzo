@@ -30,7 +30,6 @@ Created:    March 8, 2023
 
 
 #include <iostream>
-#include "Fonts.h"
 
 Mode1::Mode1()
 {
@@ -74,8 +73,8 @@ void Mode1::Load() {
     AddGSComponent(background);    
 
     //// to generate fish
-    //fishGenerator = new FishGenerator();
-    //Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
+    fishGenerator = new FishGenerator();
+    Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
 
     background->Add("assets/images/background/temp_background.png", 0.0f);
     background->Add("assets/images/background/bg1.png", 0.3f);
@@ -201,16 +200,16 @@ void Mode1::Draw() {
     ui_manager->AddDrawCalls();
 
     // Draw Font
-    //Engine::GetFontManager().PrintText(FontType::Bold, "HI", { 0.f,0.f }, 0.0f, 0.001f, { 1.0f,1.0f,1.0f });
-    //Engine::GetFontManager().PrintText(FontType::Thin, "123", { 0.5f,0.5f }, 0.0f, 0.0005f, { 0.0f,0.0f,0.0f });
+    Engine::GetFontManager().PrintText(FontType::Bold, "HI", { 0.f,0.f }, 0.0f, 0.001f, { 1.0f,1.0f,1.0f });
+    Engine::GetFontManager().PrintText(FontType::Thin, "A", { 0.5f,0.5f }, 0.0f, 0.0005f, { 0.0f,0.0f,0.0f });
 }
 
 void Mode1::Unload() {
 
     ship_ptr = nullptr;
-    //fishGenerator->~FishGenerator();
-    //delete fishGenerator;
-    //fishGenerator = nullptr;
+    fishGenerator->~FishGenerator();
+    delete fishGenerator;
+    fishGenerator = nullptr;
 	GetGSComponent<CS230::GameObjectManager>()->Unload();
     GetGSComponent<Background>()->Unload();
     Engine::GetRender().ClearDrawCalls();
