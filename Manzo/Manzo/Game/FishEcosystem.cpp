@@ -28,32 +28,30 @@ void FishGenerator::GenerateFish(double dt)
 		timer->Reset();
 
 		//generate object fishes
-		if (newFish->type == Fish::FishType::Fish3)
-		{
-			for (int i = 0; i < 4; i++)
-			{
-				Fish* additionalFish = new Fish(newFish);
+        if (newFish->type == Fish::FishType::Fish3)
+        {
+            int shape_index = rand() % formations.size();
+            const auto& selectedFormation = formations[shape_index];
 
-				int formation_index = i + 1;
-				vec2 offset;
-				switch (formation_index) {
-				case 1: offset = { -30, -30 }; break;
-				case 2: offset = { -30, 30 }; break;
-				case 3: offset = { -60, -60 }; break;
-				case 4: offset = { -60, 60 }; break;
-				default: offset = { 0, 0 }; break;
-				}
+            for (const auto& offset : selectedFormation.offsets)
+            {
+                Fish* additionalFish = new Fish(newFish);
 
-				additionalFish->SetPosition(newFish->GetPosition() + offset);
-				additionalFish->SetVelocity(newFish->GetVelocity());
+                float randomX = rand() % (int)(selectedFormation.randomOffsetMaxX - selectedFormation.randomOffsetMinX)
+                    + selectedFormation.randomOffsetMinX;
+                float randomY = rand() % (int)(selectedFormation.randomOffsetMaxY - selectedFormation.randomOffsetMinY)
+                    + selectedFormation.randomOffsetMinY;
 
-				fishList.push_back(additionalFish);
-				Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(additionalFish);
-			}
-		}
-	}
+                vec2 randomOffset = { randomX, randomY };
 
-	//generate background fish
+                additionalFish->SetPosition(newFish->GetPosition() + offset + randomOffset);
+                additionalFish->SetVelocity(newFish->GetVelocity());
+
+                fishList.push_back(additionalFish);
+                Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(additionalFish);
+            }
+        }
+    }
 }
 
 FishGenerator::~FishGenerator()

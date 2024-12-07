@@ -153,7 +153,7 @@ void Mode1::Update(double dt) {
     camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
 
     // Update Fish Generator
-    //fishGenerator->GenerateFish(dt);
+    fishGenerator->GenerateFish(dt);
 
     // Update Skills
     skill_ptr->Update();
@@ -200,8 +200,8 @@ void Mode1::Draw() {
     ui_manager->AddDrawCalls();
 
     // Draw Font
-    Engine::GetFontManager().PrintText(FontType::Bold, "HI", { 0.f,0.f }, 0.0f, 0.001f, { 1.0f,1.0f,1.0f });
-    Engine::GetFontManager().PrintText(FontType::Thin, "A", { 0.5f,0.5f }, 0.0f, 0.0005f, { 0.0f,0.0f,0.0f });
+    //Engine::GetFontManager().PrintText(FontType::Bold, "HI", { 0.f,0.f }, 0.0f, 0.001f, { 1.0f,1.0f,1.0f });
+    //Engine::GetFontManager().PrintText(FontType::Thin, "A", { 0.5f,0.5f }, 0.0f, 0.0005f, { 0.0f,0.0f,0.0f });
 }
 
 void Mode1::Unload() {
