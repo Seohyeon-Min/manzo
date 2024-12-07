@@ -34,6 +34,7 @@ void Ship::State_Idle::Enter(GameObject* object) {
 void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
     //get mouse pos and move to there
     Ship* ship = static_cast<Ship*>(object);
+    vec2 ship_position = ship->GetPosition();
 
     vec2 window = { Engine::window_width / 2, Engine::window_height / 2 };
     vec2 mouse_pos = { (float)Engine::GetInput().GetMousePos().mouseWorldSpaceX, (float)Engine::GetInput().GetMousePos().mouseWorldSpaceY };
@@ -41,7 +42,7 @@ void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
 
 
     vec2 destination = pos;
-    vec2 direction = destination - ship->GetPosition();
+    vec2 direction = destination - ship_position;
     float distance = direction.Length();
     direction = direction.Normalize();
 
@@ -66,8 +67,14 @@ void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
     float randomAngle = util::random(180.0f, 200.0f);
     float angleRadians = util::to_radians(randomAngle);
     vec2 bubble_direction = { cos(angleRadians), sin(angleRadians) };
-    vec2 target_position = ship->GetPosition() + bubble_direction * -30.f;
+    vec2 target_position = {
+    ship_position.x + bubble_direction.x * (-30.f * (ship->GetFlipX() ? -1.f : 1.f)),
+    ship_position.y + bubble_direction.y * -30.f
+    };
+
     ship->SetVelocity(force);
+    
+    std::cout << ship->GetFlipX() << std::endl;
     if(force_multiplier > 0.4)
     Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::FuelBubble>>()->Emit(1, target_position, {0,0}, -force*0.4f, 1.5);
 }
@@ -159,39 +166,38 @@ void Ship::State_Hit::CheckExit(GameObject* object) {
 
 void Ship::Update(double dt)
 {
-    //if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT)) 
-    //    std::cout << "move!!!!!!!!!!!!!!!!!!!!!!!!!\n";
-    //std::cout << (!hit_with ? "can collide" : "no") << std::endl;
-    //std::cout << (!set_dest && beat->GetIsOnBeat() && !move) << std::endl;
     GameObject::Update(dt);
 
-    CS230::RectCollision* collider = GetGOComponent<CS230::RectCollision>();
-
-    // World Boundary
-    if (collider->WorldBoundary_rect().Left() < Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x - 640) {
-        UpdatePosition({ Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x - 640 - collider->WorldBoundary_rect().Left(), 0 });
-        SetVelocity({ 0, GetVelocity().y });
-    }
-    if (collider->WorldBoundary_rect().Right() > Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x + 640) {
-        UpdatePosition({ Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x + 640 - collider->WorldBoundary_rect().Right(), 0 });
-        SetVelocity({ 0, GetVelocity().y });
-    }
-    if (collider->WorldBoundary_rect().Bottom() < Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y - 360) {
-        UpdatePosition({ 0, Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y - 360 - collider->WorldBoundary_rect().Bottom() });
-        SetVelocity({ GetVelocity().x, 0 });
-    }
-    if (collider->WorldBoundary_rect().Top() > Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y + 360) {
-        UpdatePosition({ 0, Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y + 360 - collider->WorldBoundary_rect().Top() });
-        SetVelocity({ GetVelocity().x, 0 });
-    }
 
     if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
+        // World Boundary
+        CS230::RectCollision* collider = GetGOComponent<CS230::RectCollision>();
+
+        if (collider->WorldBoundary_rect().Left() < Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x - 640) {
+            UpdatePosition({ Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x - 640 - collider->WorldBoundary_rect().Left(), 0 });
+            SetVelocity({ 0, GetVelocity().y });
+        }
+        if (collider->WorldBoundary_rect().Right() > Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x + 640) {
+            UpdatePosition({ Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x + 640 - collider->WorldBoundary_rect().Right(), 0 });
+            SetVelocity({ 0, GetVelocity().y });
+        }
+        if (collider->WorldBoundary_rect().Bottom() < Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y - 360) {
+            UpdatePosition({ 0, Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y - 360 - collider->WorldBoundary_rect().Bottom() });
+            SetVelocity({ GetVelocity().x, 0 });
+        }
+        if (collider->WorldBoundary_rect().Top() > Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y + 360) {
+            UpdatePosition({ 0, Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y + 360 - collider->WorldBoundary_rect().Top() });
+            SetVelocity({ GetVelocity().x, 0 });
+        }
 
         if (isCollidingWithReef && !IsTouchingReef())
         {
             isCollidingWithReef = false;
         }
+
+        Engine::GetInput().GetMousePos().mouseWorldSpaceX - Engine::window_width / 2 > GetPosition().x ? SetFlipX(true) : SetFlipX(false);
     }
+    //std::cout << Engine::GetInput().GetMousePos().mouseWorldSpaceX - Engine::window_width/ 2 << " " << Engine::GetInput().GetMousePosition().x << std::endl;
 }
 
 void Ship::FixedUpdate(double fixed_dt) {

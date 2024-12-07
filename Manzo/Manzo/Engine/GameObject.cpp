@@ -126,6 +126,11 @@ const vec2& CS230::GameObject::GetScale() const
 	return scale;
 }
 
+const bool CS230::GameObject::GetFlipX() const
+{
+	return scale.x < 0;
+}
+
 double CS230::GameObject::GetRotation() const
 {
 	return rotation;
