@@ -34,6 +34,9 @@ namespace CS230 {
             }
             return nullptr;
         }
+
+        vec2 FindNearestRock(GameObject* object);
+
     private:
         std::list<GameObject*> objects;
     };
