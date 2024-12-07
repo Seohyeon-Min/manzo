@@ -95,7 +95,6 @@
     <ClInclude Include="Game\Clear.h" />
     <ClInclude Include="Game\Fish.h" />
     <ClInclude Include="Game\FishEcosystem.h" />
-    <ClInclude Include="Game\Fonts.h" />
     <ClInclude Include="Game\GameObjectTypes.h" />
     <ClInclude Include="Game\GameOver.h" />
     <ClInclude Include="Game\GodRay.h" />
@@ -182,7 +181,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)external\lib;C:\raylib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Opengl32.lib;glew32.lib;imgui.lib;SDL2.lib;SDL2_mixer.lib;freetype.lib</AdditionalDependencies>
+      <AdditionalDependencies>Opengl32.lib;glew32.lib;imgui.lib;SDL2.lib;freetype.lib;fmodL_vc.lib;fmodstudioL_vc.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
