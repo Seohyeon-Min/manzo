@@ -319,14 +319,14 @@ vec2 ComputeNormalAtPoint(const vec2& p0, const vec2& p1) {
 
 vec2 ComputeCollisionNormal(const std::vector<vec2>& points, const vec2& pos, const vec2& center, int resolution = 20) {
     std::vector<vec2> closest_points = points;
-    std::vector<vec2> sorted_point = ConvexHull(closest_points);
+    std::vector<vec2> sorted_point = SortPointsCounterClockwise(closest_points, center);
 
     spline_points = GenerateSplinePoints(sorted_point, resolution);
 
     std::cout << "Spline Points:" << std::endl;
-    for (const auto& point : spline_points) {
+    /*for (const auto& point : sorted_point) {
         std::cout << "x: " << point.x << ", y: " << point.y << std::endl;
-    }
+    }*/
 
 
     vec2 closest_point_on_spline = FindClosestPointOnSpline(spline_points, pos);
@@ -335,9 +335,6 @@ vec2 ComputeCollisionNormal(const std::vector<vec2>& points, const vec2& pos, co
     vec2 tangent_point1 = spline_points[std::max(0, static_cast<int>(closest_index) - 1)];
     vec2 tangent_point2 = spline_points[std::min(static_cast<int>(spline_points.size() - 1), static_cast<int>(closest_index) + 1)];
     vec2 normal = ComputeNormalAtPoint(tangent_point1, tangent_point2);
-
-    
-
     return normal;
 }
 
