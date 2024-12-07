@@ -8,6 +8,7 @@ std::vector<Fish::FishDex> Fish::fishBook;
 
 int Fish::money = 0;
 
+
 Fish::Fish(Fish* parent) : CS230::GameObject({ 0, 0 }) {
 
 	std::uniform_int_distribution<int> fishIndex(0, static_cast<int>(fishBook.size() - 1));

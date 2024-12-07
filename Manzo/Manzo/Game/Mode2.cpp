@@ -51,6 +51,10 @@ void Mode2::Load() {
     background->Add("assets/images/background/temp_back2.png", 0.25f);
 
 
+    AddGSComponent(new UIManager());
+    ui_manager = GetGSComponent<UIManager>();
+    ui_manager->AddUI(std::make_unique<Mouse>());
+
     //// audio
     //Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("assets/audios/basic_beat_100_4.wav", "sample");
     //if (sample) {
@@ -74,6 +78,9 @@ void Mode2::Load() {
     AddGSComponent(new UIManager());
     ui_manager = GetGSComponent<UIManager>();
     ui_manager->AddUI(std::make_unique<Mouse>());
+    AddGSComponent(new Shop());
+
+    std::cout << "Left money : " << Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() << std::endl;
 }
 
 void Mode2::Update(double dt) {

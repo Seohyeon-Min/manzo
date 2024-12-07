@@ -17,6 +17,7 @@ public:
 	static void ReadFishCSV(const std::string& filename);
 	int GetMoney() { return money; }
 	void ClearMoney() { money = 0; }
+	void SetMoney(int count) { money = count; }
 
 	vec2 start_position = { 0,0 };
 
