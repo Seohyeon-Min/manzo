@@ -193,7 +193,7 @@ void Boss::LoadBossfile() {
 
 void Boss::ReadBossJSON(BossType type)
 {
-	CS230::JsonParser* ReadJson = new CS230::JsonParser(BossJSONfileMap[type]);
+	CS230::JsonParser_boss* ReadJson = new CS230::JsonParser_boss(BossJSONfileMap[type]);
 	AddGOComponent(ReadJson);
 
 	boss_name = ReadJson->GetBossName();

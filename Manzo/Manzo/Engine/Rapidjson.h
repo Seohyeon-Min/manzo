@@ -17,10 +17,10 @@ using namespace rapidjson;
 
 
 namespace CS230 {
-    class JsonParser : public CS230::Component {
+    class JsonParser_boss : public CS230::Component {
     public:
-        JsonParser(std::string path);
-        virtual ~JsonParser() = default;
+        JsonParser_boss(std::string path);
+        virtual ~JsonParser_boss() = default;
 
         inline std::string GetBossName() { return boss_name; }
         inline int GetIndex() { return index; }
@@ -43,5 +43,15 @@ namespace CS230 {
         std::vector<int> total_entry;
 
         Document document;
+    };
+}
+
+namespace CS230 {
+    class JsonParser_dialog : public CS230::Component {
+    public:
+        bool LoadLanguage_dialog(const std::string& language);
+    private:
+
+
     };
 }

@@ -35,6 +35,7 @@
     <ClCompile Include="Game\BeatSystem.cpp" />
     <ClCompile Include="Game\Boss.cpp" />
     <ClCompile Include="Game\Clear.cpp" />
+    <ClCompile Include="Game\DialogBox.cpp" />
     <ClCompile Include="Game\Fish.cpp" />
     <ClCompile Include="Game\FishEcosystem.cpp" />
     <ClCompile Include="Game\GameOver.cpp" />
@@ -85,6 +86,7 @@
     <ClInclude Include="Game\BeatSystem.h" />
     <ClInclude Include="Game\Boss.h" />
     <ClInclude Include="Game\Clear.h" />
+    <ClInclude Include="Game\DialogBox.h" />
     <ClInclude Include="Game\Fish.h" />
     <ClInclude Include="Game\FishEcosystem.h" />
     <ClInclude Include="Game\GameObjectTypes.h" />
