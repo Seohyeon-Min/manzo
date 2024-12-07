@@ -58,6 +58,13 @@ void Mode1::Load() {
     AddGSComponent(god_ray);
     //AddGSComponent(new Pump());
 
+
+    //Particle
+    AddGSComponent(new CS230::ParticleManager<Particles::Plankton>());
+    AddGSComponent(new CS230::ParticleManager<Particles::FuelBubble>());
+    AddGSComponent(new CS230::ParticleManager<Particles::BubblePop>());
+
+
     //// ship
     ship_ptr = new Ship({ 0, 0 });
     GetGSComponent<CS230::GameObjectManager>()->Add(ship_ptr);
@@ -119,12 +126,6 @@ void Mode1::Load() {
 
     // Get Ship Position
 
-
-
-
-    //Particle
-    AddGSComponent(new CS230::ParticleManager<Particles::Plankton>());
-    AddGSComponent(new CS230::ParticleManager<Particles::FuelBubble>());
 
     // Skill
     if (!Engine::Instance().GetTmpPtr())
@@ -200,8 +201,8 @@ void Mode1::Draw() {
     ui_manager->AddDrawCalls();
 
     // Draw Font
-    Engine::GetFontManager().PrintText(FontType::Bold, "HI", { 0.f,0.f }, 0.0f, 0.001f, { 1.0f,1.0f,1.0f });
-    Engine::GetFontManager().PrintText(FontType::Thin, "A", { 0.5f,0.5f }, 0.0f, 0.0005f, { 0.0f,0.0f,0.0f });
+    //Engine::GetFontManager().PrintText(FontType::Bold, "HI", { 0.f,0.f }, 0.0f, 0.001f, { 1.0f,1.0f,1.0f });
+    //Engine::GetFontManager().PrintText(FontType::Thin, "A", { 0.5f,0.5f }, 0.0f, 0.0005f, { 0.0f,0.0f,0.0f });
 }
 
 void Mode1::Unload() {

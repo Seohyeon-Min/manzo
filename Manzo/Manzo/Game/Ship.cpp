@@ -23,6 +23,9 @@ Ship::Ship(vec2 start_position) :
         Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(new Pump);
         current_state = &state_idle;
         current_state->Enter(this);
+        fuel_bubble_timer = new CS230::Timer(0.0);
+        AddGOComponent(fuel_bubble_timer);
+        fuel_bubble_timer->Set(fuel_bubble_time);
     }
 }
 
@@ -75,8 +78,10 @@ void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
     ship->SetVelocity(force);
     
     std::cout << ship->GetFlipX() << std::endl;
-    if(force_multiplier > 0.4)
-    Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::FuelBubble>>()->Emit(1, target_position, {0,0}, -force*0.4f, 1.5);
+    if (ship->fuel_bubble_timer->Remaining() == 0.0 && force_multiplier > 0.4) {
+        Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::FuelBubble>>()->Emit(1, target_position, { 0,0 }, -force * 0.4f, 1.5);
+        ship->fuel_bubble_timer->Reset();
+    }
 }
 void Ship::State_Idle::CheckExit(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
@@ -101,10 +106,12 @@ void Ship::State_Idle::CheckExit(GameObject* object) {
 void Ship::State_Move::Enter(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
     ship->move = true;
+    Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::BubblePop>>()->Emit(12, ship->GetPosition(), { 60,60 }, {60,60}, 1.5);
+    
 }
 void Ship::State_Move::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
     Ship* ship = static_cast<Ship*>(object);
-    //Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::Plankton>>()->Emit(6, ship->GetPosition(), { 0, 0 }, { 0, 20 }, 1);
+
 }
 void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_unused]] double fixed_dt) {
     Ship* ship = static_cast<Ship*>(object);

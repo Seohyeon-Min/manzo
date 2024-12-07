@@ -36,7 +36,16 @@ namespace Particles {
     public:
         FuelBubble() : Particle("assets/images/Plankton.spt") { scale = util::random(0.5f, 1.f); };
         std::string TypeName() override { return "FuelBubble Particle"; }
-        static constexpr int MaxCount = 10;
+        static constexpr int MaxCount = 7;
+        static constexpr double MaxLife = 0.38;
+        float scale;
+    };
+
+    class BubblePop : public CS230::Particle {
+    public:
+        BubblePop() : Particle("assets/images/Plankton.spt") { scale = util::random(1.f, 2.f); };
+        std::string TypeName() override { return "BubblePop Particle"; }
+        static constexpr int MaxCount = 12;
         static constexpr double MaxLife = 0.6;
         float scale;
     };

@@ -55,6 +55,8 @@ private:
     Beat* beat;
     Skillsys* skill;
     Math::rect limit;
+    const double fuel_bubble_time = 0.03;
+    CS230::Timer* fuel_bubble_timer;
 
     //for fuel
 
