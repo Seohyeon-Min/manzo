@@ -169,86 +169,11 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 pathData = match[1].str();
                 std::replace(pathData.begin(), pathData.end(), ' ', ',');
 
-                std::istringstream stream(pathData);
-                std::string data;
-                float last_x = 0, last_y = 0;
-                int count = 0;
-                bool isRelative = false;
-
-                std::vector<vec2> positions;
-                while (std::getline(stream, data, ',')) {
-                    if (data == "m") {
-                        isRelative = true;
-                        count = 0;
-                        continue;
-                    }
-                    else if (data == "M") {
-                        isRelative = false;
-                        count = 0;
-                        continue;
-                    }
-                    else if (data == "z" || data == "Z") {
-                        continue;
-                    }
-
-                    float x = 0, y = 0;
-                    if (count < 1) {
-                        x = std::stof(data);
-                        last_x = x;
-                        if (std::getline(stream, data, ',')) {
-                            y = std::stof(data);
-                            last_y = y;
-                        }
-                    }
-                    else {
-                        if (isRelative) {
-                            x = last_x + std::stof(data);
-                            last_x = x;
-                            if (std::getline(stream, data, ',')) {
-                                y = last_y + (std::stof(data));
-                                last_y = y;
-                            }
-                        }
-                        else {
-                            x = std::stof(data);
-                            last_x = x;
-                            if (std::getline(stream, data, ',')) {
-                                y = (std::stof(data));
-                                last_y = y;
-                            }
-                        }
-                    }
-
-                    std::cout << x << "  |  " << y << std::endl;
-                    vec2 vec = { x, -y };
-                    if (IsinGroup) {
-
-                        // scale
-                        vec.x *= scale.x;
-                        vec.y *= scale.y;
-                        //rotate
-                        if (IsRotate) {
-                            vec.x += rotatetranslate.x;
-                            vec.y += rotatetranslate.y;
-
-                            float rotatedX = vec.x * std::cos(rotateAngle) - vec.y * std::sin(rotateAngle);
-                            float rotatedY = vec.x * std::sin(rotateAngle) + vec.y * std::cos(rotateAngle);
-                            vec.x = rotatedX;
-                            vec.y = rotatedY;
+                std::cout << "PathData before parsePathData: " << pathData << std::endl;
 
 
-                        }
-                        // translate
-                        if (Istranslate) {
-                            vec.x += translate.x;
-                            vec.y += translate.y;
-                        }
-                        
-                    }
-
-                    positions.push_back(vec);
-                    count++;
-                }
+                std::vector<vec2> positions= parsePathData(pathData);
+                
 
 
                 
@@ -451,4 +376,67 @@ std::vector<Polygon> EarClipping(const std::vector<vec2>& points) {
 
     return triangles;*/
 
+}
+
+std::vector<vec2> CS230::Map::parsePathData(const std::string& pathData) {
+    std::cout << "PathData before parsePathData: " << pathData << std::endl;
+
+    std::istringstream stream(pathData);
+    std::string data;
+    
+    float last_x = 0, last_y = 0; // 이전 좌표
+    bool isRelative = false;
+
+    std::vector<vec2> positions;
+
+    while (stream >> data) {
+        if (std::isalpha(data[0])) { // 명령어 확인
+            currentCommand = data[0];
+            isRelative = std::islower(currentCommand); // 소문자면 상대 명령어
+            continue;
+        }
+
+        // 숫자 처리
+        if (currentCommand == 'm' || currentCommand == 'M') {
+            float x = std::stof(data);
+            if (stream >> data) {
+                float y = std::stof(data);
+                last_x = isRelative ? last_x + x : x;
+                last_y = isRelative ? last_y + y : y;
+                positions.push_back({ last_x, last_y });
+                currentCommand = isRelative ? 'l' : 'L'; // 이후에는 LineTo로 처리
+            }
+        }
+        else if (currentCommand == 'l' || currentCommand == 'L') {
+            float x = std::stof(data);
+            if (stream >> data) {
+                float y = std::stof(data);
+                last_x = isRelative ? last_x + x : x;
+                last_y = isRelative ? last_y + y : y;
+                positions.push_back({ last_x, last_y });
+            }
+        }
+        else if (currentCommand == 'v' || currentCommand == 'V') {
+            float y = std::stof(data);
+            last_y = isRelative ? last_y + y : y;
+            positions.push_back({ last_x, last_y }); // x는 그대로 유지
+        }
+        else if (currentCommand == 'h' || currentCommand == 'H') {
+            float x = std::stof(data);
+            last_x = isRelative ? last_x + x : x;
+            positions.push_back({ last_x, last_y }); // y는 그대로 유지
+        }
+        else if (currentCommand == 'z' || currentCommand == 'Z') {
+            if (!positions.empty()) {
+                positions.push_back(positions.front()); // 경로 닫기
+            }
+        }
+    }
+
+    // 결과 출력
+    for (const auto& pos : positions) {
+        std::cout << "Position: (" << pos.x << ", " << pos.y << ")" << std::endl;
+    }
+
+    return positions;
 }

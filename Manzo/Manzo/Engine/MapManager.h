@@ -29,6 +29,7 @@ namespace CS230 {
 			rock_groups.clear();
 		}
 		void ParseSVG(const std::string& filename);
+		std::vector<vec2> parsePathData(const std::string& pathData);
 		void AddDrawCall();
 
 		std::vector<Rock> GetRock()
@@ -37,7 +38,7 @@ namespace CS230 {
 		}
 
 	private:
-		
+		char currentCommand = '\0';
 		std::vector<Rock> objects;
 		std::vector<RockGroup*> rock_groups;
 		vec2 circle_position{ 0,0 };
