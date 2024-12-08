@@ -108,7 +108,6 @@ void Ship::State_Move::Enter(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
     ship->move = true;
     vec2 dir = ship->GetVelocity().Normalize();
-    Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::BubblePop>>()->Emit(8, ship->GetPosition(), { 0,0 }, dir * -100.f, 1.5);
     Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(new DashEffect());
     
 }
@@ -516,7 +515,7 @@ void Pump::Draw(DrawLayer drawlayer)
     CS230::CircleDrawCall draw_call2 = {
     radius,                       // Texture to draw
     ship->GetPosition(),                          // Transformation matrix
-    Engine::GetShaderManager().GetShader("change_alpha"), // Shader to use
+    Engine::GetShaderManager().GetShader("change_alpha_no_texture"), // Shader to use
     [this](const GLShader* shader) {
         this->SetUniforms(shader);
     },

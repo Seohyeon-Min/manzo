@@ -49,6 +49,7 @@ void Mode1::Load() {
     Engine::GetShaderManager().LoadShader("post_bloom", "assets/shaders/post_default.vert", "assets/shaders/post_bloom.frag");
     Engine::GetShaderManager().LoadShader("blur", "assets/shaders/default.vert", "assets/shaders/blur.frag");
     Engine::GetShaderManager().LoadShader("change_alpha", "assets/shaders/default.vert", "assets/shaders/change_alpha.frag");
+    Engine::GetShaderManager().LoadShader("change_alpha_no_texture", "assets/shaders/default.vert", "assets/shaders/change_alpha_no_texture.frag");
 
     // component
     AddGSComponent(new CS230::GameObjectManager());
@@ -81,8 +82,8 @@ void Mode1::Load() {
     AddGSComponent(background);    
 
     //// to generate fish
-    fishGenerator = new FishGenerator();
-    Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
+    //fishGenerator = new FishGenerator();
+    //Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
 
     background->Add("assets/images/background/temp_background.png", 0.0f);
     background->Add("assets/images/background/bg1.png", 0.3f);
@@ -209,9 +210,9 @@ void Mode1::Draw() {
 void Mode1::Unload() {
 
     ship_ptr = nullptr;
-    fishGenerator->~FishGenerator();
-    delete fishGenerator;
-    fishGenerator = nullptr;
+    //fishGenerator->~FishGenerator();
+    //delete fishGenerator;
+    //fishGenerator = nullptr;
 	GetGSComponent<CS230::GameObjectManager>()->Unload();
     GetGSComponent<Background>()->Unload();
     Engine::GetRender().ClearDrawCalls();

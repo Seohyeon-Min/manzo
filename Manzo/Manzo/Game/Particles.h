@@ -52,7 +52,7 @@ namespace Particles {
         };
         std::string TypeName() override { return "BubblePop Particle"; }
         static constexpr int MaxCount = 8;
-        static constexpr double MaxLife = 0.5;
+        static constexpr double MaxLife = 0.3;
         float scale;
     };
 
