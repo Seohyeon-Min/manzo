@@ -55,6 +55,7 @@ private:
 
     bool Isboss = false;
     bool playing = false;
+    const float maxDistance = 200.0f;
     std::vector<std::pair<int, int>> BossFirstPos;
     vec3 bossPosition;
     vec3 previousPosition = { 0,0,0 };

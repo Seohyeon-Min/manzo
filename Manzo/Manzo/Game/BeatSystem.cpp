@@ -87,3 +87,20 @@ void Beat::SetBPM(int set_BPM)
     music_started = false;
     music_name.clear();
 }
+
+void Beat::CleartoOriginal() {
+    fixed_duration = 60.0 / BPM;
+    duration = fixed_duration;
+    delay_duration = fixed_duration / 4;
+    current_delay_duration = delay_duration;
+
+    time_taken = 0;
+    bar_count = 0;
+    beat_count = 0;
+    delay_count = 0;
+
+    beat = false;
+    is_on_beat = false;
+    music_started = false;
+    music_name.clear();
+}

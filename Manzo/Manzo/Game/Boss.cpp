@@ -1,6 +1,7 @@
 #include "../Engine/Rapidjson.h"
 #include "../Engine/AudioManager.h"
 #include "Boss.h"
+#include "Ship.h"
 
 
 std::vector<CS230::GameObject::State*> stateMap;
@@ -15,7 +16,8 @@ Boss::Boss(vec2 start_position, BossType type)
 	SetVelocity({ start_position });
 
 	// cutscean
-	
+
+	Engine::GetAudioManager().LoadMusic(mp3_file_name, false);
 	////////
 	current_state = &state_cutscene;
 	current_state->Enter(this);
@@ -35,7 +37,7 @@ void Boss::State_CutScene::CheckExit(GameObject* object) {
 	if (Engine::GetInput().KeyDown(CS230::Input::Keys::R)&& boss->beat->GetBeat()) {
 
 		Engine::GetAudioManager().SetMute(0,true);
-		Engine::GetAudioManager().PlaySounds(boss->mp3_file_name, vec3{ boss->GetPosition().x, boss->GetPosition().y, 0 });
+		Engine::GetAudioManager().PlayMusics(boss->mp3_file_name, vec3{ boss->GetPosition().x, boss->GetPosition().y, 0 });
 
 		boss->beat->SetBPM(boss->bpm);
 		boss->change_state(&boss->entry1);
@@ -151,9 +153,7 @@ void Boss::Update(double dt) {
 			}
 			else {
 				Destroy();
-				Engine::GetAudioManager().StopChannel(1);
-				Engine::GetAudioManager().RestartPlay(0);
-				Engine::GetAudioManager().SetMute(0, false);
+				AfterDied();
 			}
 		}
 	}
@@ -161,6 +161,18 @@ void Boss::Update(double dt) {
 	Move(dt);
 }
 
+void Boss::AfterDied()
+{
+	Engine::GetAudioManager().StopChannel(1);
+	Engine::GetGameStateManager().GetGSComponent<Beat>()->CleartoOriginal();
+
+	auto pump = Engine::GetGameStateManager().GetGSComponent<Pump>();
+	if (pump) {
+		pump->Reset();
+	}
+	Engine::GetAudioManager().RestartPlayMusic(0);
+	Engine::GetAudioManager().SetMute(0, false);
+}
 
 vec2 Lerp(const vec2& start, const vec2& end, float t) {
 	return start + t * (end - start);  

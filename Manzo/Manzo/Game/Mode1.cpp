@@ -90,6 +90,8 @@ void Mode1::Load() {
 	AddGSComponent(new CS230::ParticleManager<Particles::MouseFollow>());
 	Boss::LoadBossfile();
 
+	Engine::GetAudioManager().LoadMusic("assets/audios/100BPM_edm_temp.wav",true);
+	Engine::GetAudioManager().Set3DMode(FMOD_3D_LINEARROLLOFF);
 
 	// UI
 	AddGSComponent(new UIManager());
@@ -137,7 +139,7 @@ void Mode1::Update(double dt) {
 	//audio play
 	if (!playing)
 	{
-		Engine::GetAudioManager().PlaySounds("assets/audios/100BPM_edm_temp.wav");
+		Engine::GetAudioManager().PlayMusics("assets/audios/100BPM_edm_temp.wav");
 		playing = true;
 	}
 
@@ -170,16 +172,41 @@ void Mode1::Update(double dt) {
 		Isboss = true;
 	}
 
-	// Update 3D Audio
+
+
+	// Update 3D Audio with smooth transition for ship position
 	smoothShipPosition.x = std::lerp(previousPosition.x, ship_ptr->GetPosition().x, 0.1f);
 	smoothShipPosition.y = std::lerp(previousPosition.y, ship_ptr->GetPosition().y, 0.1f);
 	previousPosition = smoothShipPosition;
 
-	if ((std::fabs(smoothShipPosition.x - bossPosition.x) < 150 && std::fabs(smoothShipPosition.y - bossPosition.y) < 150))
-	{
-		Engine::GetAudioManager().Set3dListenerAndOrientation(smoothShipPosition, vec3{ 0.0f, -1.0f, 0.0f }, vec3{ 0.0f, 0.0f, 1.0f });
+	// Calculate the distance between ship and boss positions
+	float dx = smoothShipPosition.x - bossPosition.x;
+	float dy = smoothShipPosition.y - bossPosition.y;
+	float distance = std::sqrt(dx * dx + dy * dy);
+
+	// Check if within the max distance and apply 3D audio accordingly
+	bool isWithinRange = distance < maxDistance;
+
+	Engine::GetAudioManager().Set3dListenerAndOrientation(
+		isWithinRange ? smoothShipPosition : vec3{ 0.0f, 0.0f, 0.0f },
+		vec3{ 0.0f, -1.0f, 0.0f },
+		vec3{ 0.0f, 0.0f, 1.0f }
+	);
+
+	// Apply 3D position for the boss and calculate volume based on the distance
+	if (isWithinRange) {
 		Engine::GetAudioManager().SetChannel3dPosition(0, bossPosition);
+
+		// Calculate the volume based on the distance
+		float volumeFactor = 1.0f - std::clamp(distance / 300.0f, 0.0f, 1.0f);
+		float volume = std::lerp(-20.0f, 0.0f, volumeFactor);
+		Engine::GetAudioManager().SetChannelVolume(0, volume);
 	}
+	else {
+		Engine::GetAudioManager().SetChannel3dPosition(0, vec3{ 0.0f, 0.0f, 0.0f });
+		Engine::GetAudioManager().SetChannelVolume(0, -20.0f);  // Default volume if out of range
+	}
+
 }
 
 void Mode1::FixedUpdate(double dt)

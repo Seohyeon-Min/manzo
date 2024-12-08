@@ -129,7 +129,7 @@ void Ship::State_Hit::Enter(GameObject* object) {
 
     float incoming_speed = ship->GetVelocity().Length();
     ship->slow_down_factor = minFactor + (incoming_speed / maxSpeed) * (maxFactor - minFactor);
-    Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
+    //Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
     ship->HitWithReef(ship->normal);
 }
 void Ship::State_Hit::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
@@ -511,6 +511,13 @@ void Pump::Draw(DrawLayer drawlayer)
     Engine::GetRender().AddDrawCall(draw_call);
     Engine::GetRender().AddDrawCall(draw_call2);
 }
+
+void Pump::Reset() {
+    radius = max_pump_radius;
+    alpha = 0.0f;
+    wait = false;
+}
+
 
 void Pump::SetUniforms(const GLShader* shader)
 {

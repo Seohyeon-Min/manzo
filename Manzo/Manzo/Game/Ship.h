@@ -110,6 +110,7 @@ public:
     void Update(double dt) override;
     void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
     float GetRadius() { return radius; }
+    void Reset();
     void SetUniforms(const GLShader* shader);
 
 private:
