@@ -45,6 +45,8 @@ void CS230::Map::ParseSVG(const std::string& filename) {
     std::regex transformRegex(R"(transform\s*=\s*"([^"]+))");
     std::regex translateRegex(R"(translate\(([^,]+),\s*([^\)]+)\))");
     std::regex rotateRegex(R"(rotate\(\s*([^\s,]+)\s*,\s*([^\s,]+)\s*,\s*([^\)]+)\s*\))");
+    std::regex matrixRegex(R"(matrix\(([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+)\))");
+
     std::smatch match;
     std::string line;
     std::string currentTag;
@@ -53,6 +55,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
     vec2 translate = { 0, 0 };
     float rotateAngle = 0;
     vec2 rotatetranslate = { 0, 0 };
+    vec2 scale = { 1.0f, 1.0f };
 
     bool IsinG = false;
     bool Istranslate = false;
@@ -97,10 +100,23 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 std::string transformStr = match[1].str();
                 std::cout << "" << std::endl;
                 
+                // scale
+                if (std::regex_search(transformStr, match, matrixRegex)) {
+                    float a = std::stof(match[1].str());
+                    float b = std::stof(match[2].str());
+                    float c = std::stof(match[3].str());
+                    float d = std::stof(match[4].str());
+                    float e = std::stof(match[5].str());
+                    float f = std::stof(match[6].str());
 
+                    scale.x = std::sqrt(a * a + c * c);  
+                    scale.y = std::sqrt(b * b + d * d); 
+
+                    rotateAngle = -std::atan2(b, a);
+                }
 
                 // rotate
-                if (std::regex_search(transformStr, match, rotateRegex)) {
+                else if (std::regex_search(transformStr, match, rotateRegex)) {
                     translate = { 0, 0 };
                     Istranslate = false;
                     IsRotate = true;
@@ -206,6 +222,10 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                     std::cout << x << "  |  " << y << std::endl;
                     vec2 vec = { x, -y };
                     if (IsinGroup) {
+
+                        // scale
+                        vec.x *= scale.x;
+                        vec.y *= scale.y;
                         //rotate
                         if (IsRotate) {
                             vec.x += rotatetranslate.x;
@@ -223,6 +243,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                             vec.x += translate.x;
                             vec.y += translate.y;
                         }
+                        
                     }
 
                     positions.push_back(vec);
@@ -254,8 +275,8 @@ void CS230::Map::ParseSVG(const std::string& filename) {
 
                 // Rock Point
 
-                std::vector<Polygon> Polys = EarClipping(positions);
-                for (Polygon& poly : Polys) {
+                //std::vector<Polygon> Polys = EarClipping(positions);
+                //for (Polygon& poly : Polys) {
                     Rock* rock = new Rock(poly);
                     Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rock);
                     rock->AddGOComponent(new MAP_SATCollision(poly, rock));
@@ -286,7 +307,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                             rock_groups.back()->AddRock(rock);
                             rock->SetRockGroup(rock_groups.back());
                         }
-                    }
+                    //}
 
                 }
 
@@ -325,9 +346,9 @@ void CS230::Map::ParseSVG(const std::string& filename) {
     for (auto& r_group : rock_groups) {
         r_group->MatchIndex();
         r_group->SetPoints();
-        /*std::cout <<"Group Position: " << r_group->GetPosition().x << "," << r_group->GetPosition().y<<"\n";
+        std::cout <<"Group Position: " << r_group->GetPosition().x << "," << r_group->GetPosition().y<<"\n";
         std::cout <<"Group Index : " << r_group->GetIndex()<<"\n";
-        std::cout <<"Group Rocks Size : " << r_group->GetRocks().size() <<"\n";*/
+        std::cout <<"Group Rocks Size : " << r_group->GetRocks().size() <<"\n";
         //std::cout <<"How Many Points? : " << r_group->GetPoints().size() <<"\n";
     }
     file.close();
@@ -348,7 +369,7 @@ void CS230::Map::AddDrawCall()
 constexpr bool IsConvex(const vec2& a, const vec2& b, const vec2& c) noexcept {
     vec2 ab = b - a;
     vec2 bc = c - b;
-    return cross(ab, bc) > 0;
+    return cross(ab, bc) < 0;
 }
 
 bool PointInTriangle(const vec2& p, const vec2& a, const vec2& b, const vec2& c) {
@@ -360,13 +381,27 @@ bool PointInTriangle(const vec2& p, const vec2& a, const vec2& b, const vec2& c)
     float cross3 = cross(ca, cp);
 
    
-    return (cross1 > 0 && cross2 > 0 && cross3 > 0) || (cross1 < 0 && cross2 < 0 && cross3 < 0);
+    return (cross1 < 0 && cross2 < 0 && cross3 < 0) || (cross1 > 0 && cross2 > 0 && cross3 > 0);
 }
 std::vector<Polygon> EarClipping(const std::vector<vec2>& points) {
+
+    // for convex polygon
+    std::vector<Polygon> triangles;
+
+    for (size_t i = 1; i < points.size() - 1; ++i) {
+        Polygon triangle;
+        triangle.vertices = { points[0], points[i], points[i + 1] };
+        triangles.push_back(triangle);
+    }
+
+    return triangles;
+
+    // for the concave polygon
+    /*
     std::vector<vec2> remaining_points = points;
     std::vector<Polygon> triangles;
 
-    
+
     while (remaining_points.size() > 3) {
         bool ear_found = false;
 
@@ -378,10 +413,10 @@ std::vector<Polygon> EarClipping(const std::vector<vec2>& points) {
             vec2 b = remaining_points[i];
             vec2 c = remaining_points[next];
 
-            
+
             if (!IsConvex(a, b, c)) continue;
 
-            
+
             bool has_internal_point = false;
             for (size_t j = 0; j < remaining_points.size(); ++j) {
                 if (j == prev || j == i || j == next) continue;
@@ -414,5 +449,6 @@ std::vector<Polygon> EarClipping(const std::vector<vec2>& points) {
     triangle.vertices = { remaining_points[0], remaining_points[1], remaining_points[2] };
     triangles.push_back(triangle);
 
-    return triangles;
+    return triangles;*/
+
 }
