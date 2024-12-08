@@ -1,0 +1,6 @@
+{
+    "dialogs":{
+        "1":{"character":"Man", "text":"Hello World."},
+        "2":{"character":"Man", "text":"This is fun."}
+    }
+}
