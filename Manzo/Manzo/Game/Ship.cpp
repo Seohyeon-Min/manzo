@@ -375,6 +375,11 @@ void Ship::ResolveCollision(GameObject* other_object)
     }
 }
 
+bool IsNearPoint(const vec2& object_position, const vec2& point, float threshold) {
+    return (object_position - point).Length() <= threshold;
+}
+
+
 void Ship::HitWithReef(vec2 normal) {
     fuel -= HitDecFuel;
 

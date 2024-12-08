@@ -228,7 +228,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 }
 
 
-
+                
                 poly.vertices = positions;
                 poly.vertexCount = int(positions.size());
                 poly.polycount = pathCountInGroup > 0 ? pathCountInGroup : 0;
@@ -338,3 +338,74 @@ void CS230::Map::AddDrawCall()
 }
 
 
+constexpr bool IsConvex(const vec2& a, const vec2& b, const vec2& c) noexcept {
+    vec2 ab = b - a;
+    vec2 bc = c - b;
+    return cross(ab, bc) > 0; // 왼쪽으로 꺾이면 Convex
+}
+
+bool PointInTriangle(const vec2& p, const vec2& a, const vec2& b, const vec2& c) {
+    vec2 ab = b - a, bc = c - b, ca = a - c;
+    vec2 ap = p - a, bp = p - b, cp = p - c;
+
+    float cross1 = cross(ab, ap);
+    float cross2 = cross(bc, bp);
+    float cross3 = cross(ca, cp);
+
+    // 모든 cross product의 부호가 같으면 삼각형 내부
+    return (cross1 > 0 && cross2 > 0 && cross3 > 0) || (cross1 < 0 && cross2 < 0 && cross3 < 0);
+}
+std::vector<Polygon> EarClipping(const std::vector<vec2>& points) {
+    std::vector<vec2> remaining_points = points; // 작업용 복사본
+    std::vector<Polygon> triangles;
+
+    // 다각형을 삼각형으로 분해
+    while (remaining_points.size() > 3) {
+        bool ear_found = false;
+
+        for (size_t i = 0; i < remaining_points.size(); ++i) {
+            size_t prev = (i == 0) ? remaining_points.size() - 1 : i - 1;
+            size_t next = (i + 1) % remaining_points.size();
+
+            vec2 a = remaining_points[prev];
+            vec2 b = remaining_points[i];
+            vec2 c = remaining_points[next];
+
+            // Convex 확인
+            if (!IsConvex(a, b, c)) continue;
+
+            // 삼각형 내부에 다른 점이 있는지 확인
+            bool has_internal_point = false;
+            for (size_t j = 0; j < remaining_points.size(); ++j) {
+                if (j == prev || j == i || j == next) continue;
+                if (PointInTriangle(remaining_points[j], a, b, c)) {
+                    has_internal_point = true;
+                    break;
+                }
+            }
+
+            if (has_internal_point) continue;
+
+            // 귀(Ear) 발견, 삼각형 추가
+            Polygon triangle;
+            triangle.vertices = { a, b, c };
+            triangles.push_back(triangle);
+
+            // 현재 점 제거
+            remaining_points.erase(remaining_points.begin() + i);
+            ear_found = true;
+            break;
+        }
+
+        if (!ear_found) {
+            throw std::runtime_error("EarClipping failed: Invalid polygon or input");
+        }
+    }
+
+    // 마지막 남은 삼각형 추가
+    Polygon triangle;
+    triangle.vertices = { remaining_points[0], remaining_points[1], remaining_points[2] };
+    triangles.push_back(triangle);
+
+    return triangles;
+}
