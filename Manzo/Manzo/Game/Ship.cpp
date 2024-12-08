@@ -105,38 +105,17 @@ std::vector<vec2> spline_points;
 
 void Ship::State_Hit::Enter(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
-
-    float maxSpeed = speed;
-    float minFactor = 10;
-    float maxFactor = 70;
-
-    float incoming_speed = ship->GetVelocity().Length();
-    ship->slow_down_factor = minFactor + (incoming_speed / maxSpeed) * (maxFactor - minFactor);
-    Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
-    ship->HitWithReef(ship->normal);
+    std::cout << "state_hit_enter~~~~~~~~~~~~~\n";
+    //ship->HitWithReef(ship->normal);
 }
 void Ship::State_Hit::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
     Ship* ship = static_cast<Ship*>(object);
-    Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
-    ship->slow_down_factor *= deceleration;
-    //Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
-    if (spline_points.size() > 2) {
-        for (size_t i = 0; i < spline_points.size() - 1; ++i) {
-            vec2 point_a = spline_points[i];
-            vec2 point_b = spline_points[i + 1];
-
-            Engine::GetRender().AddDrawCall(point_a, point_b, color3{ 0,255,0 });
-        }
-    }
 }
 void Ship::State_Hit::FixedUpdate(GameObject* object, double fixed_dt) {}
 void Ship::State_Hit::CheckExit(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
-    if (ship->slow_down_factor <= 1) { // should be a timer?
-        ship->hit_with = false;
-        ship->change_state(&ship->state_idle);
-        Engine::Instance().ResetSlowDownFactor();
-    }
+    std::cout << "state_hit_exit~~~~~~~~~~~~~\n";
+    ship->change_state(&ship->state_idle);
 }
 
 
@@ -186,155 +165,6 @@ void Ship::Draw(DrawLayer drawlayer) {
 }
 
 
-vec2 GetPerpendicular(vec2 v) {
-    return { -v.y, v.x };
-}
-
-vec2 CatmullRomSpline(const vec2& p0, const vec2& p1, const vec2& p2, const vec2& p3, float t) {
-    float t2 = t * t;
-    float t3 = t2 * t;
-
-    return 0.5f * ((2.0f * p1) +
-        (-p0 + p2) * t +
-        (2.0f * p0 - 5.0f * p1 + 4.0f * p2 - p3) * t2 +
-        (-p0 + 3.0f * p1 - 3.0f * p2 + p3) * t3);
-}
-
-std::vector<vec2> SortPointsCounterClockwise(const std::vector<vec2>& points, const vec2& center) {
-    std::vector<vec2> sorted_points = points;
-
-    std::sort(sorted_points.begin(), sorted_points.end(),
-        [&center](const vec2& a, const vec2& b) {
-            float angle_a = atan2(a.y - center.y, a.x - center.x);
-            float angle_b = atan2(b.y - center.y, b.x - center.x);
-            return angle_a > angle_b;
-        });
-
-    return sorted_points;
-
-
-}
-
-
-float CrossProduct(const vec2& a, const vec2& b, const vec2& c) {
-    return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
-}
-
-std::vector<vec2> ConvexHull(std::vector<vec2>& points) {
-    std::vector<vec2> hull;
-    std::sort(points.begin(), points.end());
-
-    for (const auto& p : points) {
-        while (hull.size() >= 2 && CrossProduct(hull[hull.size() - 2], hull[hull.size() - 1], p) <= 0) {
-            hull.pop_back();
-        }
-        hull.push_back(p);
-    }
-
-    size_t lower_size = hull.size();
-    for (auto it = points.rbegin(); it != points.rend(); ++it) {
-        while (hull.size() > lower_size && CrossProduct(hull[hull.size() - 2], hull[hull.size() - 1], *it) <= 0) {
-            hull.pop_back();
-        }
-        hull.push_back(*it);
-    }
-
-    hull.pop_back();
-    return hull;
-}
-
-
-std::vector<vec2> ExtendBoundaryPoints(const std::vector<vec2>& points) {
-    std::vector<vec2> extended_points = points;
-
-    if (points.size() > 3) {
-
-        extended_points.insert(extended_points.begin(), points.back());
-        extended_points.push_back(points.front());
-        extended_points.push_back(points[1]);
-    }
-
-    return extended_points;
-}
-
-std::vector<vec2> GenerateSplinePoints(const std::vector<vec2>& points, int resolution) {
-    std::vector<vec2> spline_points;
-
-    if (points.size() < 2) {
-        return spline_points;
-    }
-
-    std::vector<vec2> extended_points = ExtendBoundaryPoints(points);
-
-    for (size_t i = 0; i < extended_points.size() - 3; ++i) {
-        for (int j = 0; j < resolution; ++j) {
-            float t = j / static_cast<float>(resolution - 1);
-            vec2 point = CatmullRomSpline(extended_points[i], extended_points[i + 1], extended_points[i + 2], extended_points[i + 3], t);
-            spline_points.push_back(point);
-        }
-    }
-
-    return spline_points;
-}
-
-vec2 FindClosestPointOnSpline(const std::vector<vec2>& spline_points, const vec2& position) {
-    float min_distance = std::numeric_limits<float>::max();
-    vec2 closest_point;
-    size_t closest_index = 0;
-
-    for (size_t i = 0; i < spline_points.size(); ++i) {
-        float distance = (spline_points[i] - position).Length();
-        if (distance < min_distance) {
-            min_distance = distance;
-            closest_point = spline_points[i];
-            closest_index = i;
-        }
-    }
-
-    return closest_point;
-}
-
-vec2 ComputeNormalAtPoint(const vec2& p0, const vec2& p1) {
-    vec2 tangent = p1 - p0;
-    vec2 normal = { -tangent.y, tangent.x };
-    float length = normal.Length();
-    if (length > 0.0f) {
-        normal = { normal.x / length, normal.y / length };
-
-        if (normal.x < 0.0f) {
-            normal.x = -normal.x;
-            normal.y = -normal.y;
-        }
-
-        return normal;
-    }
-    return { 0.0f, 0.0f };
-}
-
-vec2 ComputeCollisionNormal(const std::vector<vec2>& points, const vec2& pos, const vec2& center, int resolution = 20) {
-    std::vector<vec2> closest_points = points;
-    std::vector<vec2> sorted_point = ConvexHull(closest_points);
-
-    spline_points = GenerateSplinePoints(sorted_point, resolution);
-
-    std::cout << "Spline Points:" << std::endl;
-    for (const auto& point : spline_points) {
-        std::cout << "x: " << point.x << ", y: " << point.y << std::endl;
-    }
-
-
-    vec2 closest_point_on_spline = FindClosestPointOnSpline(spline_points, pos);
-
-    size_t closest_index = std::find(spline_points.begin(), spline_points.end(), closest_point_on_spline) - spline_points.begin();
-    vec2 tangent_point1 = spline_points[std::max(0, static_cast<int>(closest_index) - 1)];
-    vec2 tangent_point2 = spline_points[std::min(static_cast<int>(spline_points.size() - 1), static_cast<int>(closest_index) + 1)];
-    vec2 normal = ComputeNormalAtPoint(tangent_point1, tangent_point2);
-
-    
-
-    return normal;
-}
-
 bool Ship::CanCollideWith(GameObjectTypes other_object)
 {
     switch (other_object) {
@@ -350,28 +180,27 @@ bool Ship::CanCollideWith(GameObjectTypes other_object)
 
 void Ship::ResolveCollision(GameObject* other_object)
 {
-    if (!hit_with) { // is it needful?
-        if (other_object->Type() == GameObjectTypes::Rock) {
+    if (other_object->Type() == GameObjectTypes::Rock) {
 
-            if (GetVelocity().Length() <= skidding_speed + 30.f) { // if it was skidding, don't reflect
-                vec2 smallCorrection = -GetVelocity().Normalize();
-                UpdatePosition(smallCorrection);
-                //SetVelocity({});
-                return;
-            }
-
-            hit_with = true;
-            Rock* rock = static_cast<Rock*>(other_object);
-            std::vector<vec2> points = rock->GetRockGroup()->GetPoints();
-            vec2 center = rock->GetRockGroup()->FindCenterPoly();
-
-            normal = ComputeCollisionNormal(points, GetPosition(), center);
-
-            auto* collision_edge = this->GetGOComponent<CS230::RectCollision>();
-            if (collision_edge == nullptr) {
-                // maybe an error?
-            }
+        if (GetVelocity().Length() <= skidding_speed + 30.f) { // if it was skidding, don't reflect
+            vec2 smallCorrection = -GetVelocity().Normalize();
+            UpdatePosition(smallCorrection);
+            return;
         }
+
+        std::pair<vec2, vec2> edge = other_object->GetGOComponent<CS230::MAP_SATCollision>()->GetCollidingEdge();
+        vec2 pointA = edge.first;
+        vec2 pointB = edge.second;
+
+        vec2 edgeVector = pointB - pointA;
+        vec2 normalVector = { -edgeVector.y, edgeVector.x };
+
+
+        SetVelocity({});
+        hit_with = true;
+        std::cout << "collide~~~~~~~~~~~~~\n";
+        normal = normalVector.Normalize();
+        HitWithReef(normal);
     }
 }
 
@@ -381,6 +210,7 @@ bool IsNearPoint(const vec2& object_position, const vec2& point, float threshold
 
 
 void Ship::HitWithReef(vec2 normal) {
+    std::cout << "hit_wit_reef~~~~~~~~~~~~~\n";
     fuel -= HitDecFuel;
 
     if (fuel < 0.0f) {
@@ -398,14 +228,7 @@ void Ship::HitWithReef(vec2 normal) {
 
     float incoming_speed = velocity.Length();
 
-    if (reflection.Length() > 0.0f) {
-        direction = reflection.Normalize();
-    }
-    else {
-        direction = { 1.0f, 0.0f };
-    }
-
-    SetVelocity(direction * incoming_speed * 0.75f);
+    SetVelocity(reflection.Normalize() * incoming_speed * 0.35f);
 
     move = false;
 
