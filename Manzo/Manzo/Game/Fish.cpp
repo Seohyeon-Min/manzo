@@ -6,7 +6,7 @@
 std::mt19937 dre;
 std::vector<Fish::FishDex> Fish::fishBook;
 
-int Fish::money = 0;
+int Fish::money = 500;
 
 
 Fish::Fish(Fish* parent) : CS230::GameObject({ 0, 0 }) {

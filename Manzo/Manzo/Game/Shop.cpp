@@ -2,6 +2,7 @@
 
 static bool is_on_inven = false;
 static bool Ready_to_buy = false;
+static bool Ready_to_sell = false;
 
 Shop::Shop()
 {
@@ -9,9 +10,10 @@ Shop::Shop()
 	shop_background = Engine::GetTextureManager().Load("assets/images/temp_box1.png");
 	shop_button = Engine::GetTextureManager().Load("assets/images/temp_box3.png");
 	shop_icon = Engine::GetTextureManager().Load("assets/images/temp_box2.png");
-	base_botton_direction = { 100, (Engine::window_height) / 2.2f };
-	defualt_botton_direction = { 100, (Engine::window_height) / 2.2f }; // 아이콘 기본값
-	inven_back_pos = { static_cast<float>(200 - shop_background->GetWidth() / 2), Engine::window_height / 13 };
+	base_botton_direction = { static_cast < float>(100 - shop_background->GetWidth() / 2), (Engine::window_height) / 2.2f };
+	defualt_botton_direction = { static_cast<float>(100 - shop_background->GetWidth() / 2), (Engine::window_height) / 2.2f }; // 아이콘 기본값
+	inven_back_pos = { 200, Engine::window_height / 13 };
+	back_matrix_defualt = { static_cast<float>(200 - shop_background->GetWidth() / 2), Engine::window_height / 13 };
 	for (int i = 1; i < 4; i++)
 	{
 		icon_matrix.push_back(mat3::build_translation({ base_botton_direction.x , base_botton_direction.y - (float) (i*140) }) * mat3::build_scale(0.4f));
@@ -29,7 +31,7 @@ void Shop::Update(double dt)
 		std::cout << "Shop active" << std::endl;
 	}
 
-	if (shop_available) // Can buy something
+	if (shop_available) // Is shop available?
 	{
 		Shop_Back_draw(); // draw shop background
 		Inventory_Back_draw();
@@ -73,13 +75,37 @@ void Shop::Buy(Skillsys::Skill_list skill,int input)
 	std::cout << "Shop inactive" << std::endl;
 }
 
+void Shop::Sell(Skillsys::Skill_list skill, int input)
+{
+	bool exist = false;
+	for (auto& i : skill_ptr->GetInventory())
+	{
+		if (i == skill)
+		{
+			exist = true;
+		}
+		if (exist)
+		{
+			skill_ptr->GetInventory()[i] = skill_ptr->Empty;
+			Engine::GetGameStateManager().GetGSComponent<Fish>()->SetMoney(Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() + input);
+			std::cout << "Sell complete" << std::endl;
+			std::cout << "Left money: " << Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() << std::endl;
+			
+		}
+		else
+		{
+			std::cout << "Error(didn't exist, how can?)" << std::endl;
+		}
+	}
+}
+
 void Shop::Shop_Back_draw()
 {
 	DrawSettings settings;
 	settings.is_UI = true;
 	settings.do_blending = true;
 
-	back_matrix = mat3::build_translation({ 200 , Engine::window_height / 13 }) * mat3::build_scale(0.7f) * mat3::build_rotation(3.141592f/2.0f);
+	back_matrix = mat3::build_translation({ back_matrix_defualt }) * mat3::build_scale(0.7f) * mat3::build_rotation(3.141592f/2.0f);
 
 	draw_call = 
 	{
@@ -208,7 +234,7 @@ void Shop::Shop_button_draw()
 	settings.is_UI = true;
 	settings.do_blending = true;
 
-	botton_matrix = mat3::build_translation({ 300 , (Engine::window_height) / 2.2f - (float)(pick * 140) }) * mat3::build_scale(1.0f);
+	botton_matrix = mat3::build_translation({ static_cast<float>(270 - shop_background->GetWidth() / 2) , (Engine::window_height) / 2.2f - (float)(pick * 140) }) * mat3::build_scale(1.0f);
 
 	if (Engine::Instance().GetInput().KeyJustPressed(CS230::Input::Keys::Up))
 	{
@@ -289,13 +315,13 @@ void Shop::Inventory_Icon_draw()
 		{
 			// 아이콘 위치 및 크기 설정
 			inv_icon_matrix.emplace_back(mat3::build_translation({
-				defualt_botton_direction.x + inven_back_pos.x,
+				defualt_botton_direction.x + shop_background->GetHeight(),
 				defualt_botton_direction.y - ((i + 1) * 140)
 				}) * mat3::build_scale(0.4f));
 
 			// DrawCall 생성
 			inv_icon_draw_calls.emplace_back(
-				draw_call=
+				draw_call =
 				{
 				shop_icon,
 				&inv_icon_matrix.back(),

@@ -138,7 +138,7 @@ void Mode1::Update(double dt) {
         Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
     }
 
-    if (Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() >= 20) {
+    if (Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() >= 1000) {
             Engine::GetGameStateManager().ClearNextGameState();
             Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Clear));
     }
