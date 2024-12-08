@@ -6,7 +6,7 @@
 struct [[nodiscard]] Polygon
 {
 	std::vector<vec2> vertices;
-	int vertexCount = 0;
+	int vertexCount = 3;
 	int polycount = 0;
 	std::string polyindex = "";
 

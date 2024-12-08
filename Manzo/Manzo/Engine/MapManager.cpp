@@ -27,6 +27,8 @@ Created:    September 12, 2024
 #endif
 
 
+std::vector<Polygon> EarClipping(const std::vector<vec2>& points);
+
 void CS230::Map::ParseSVG(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
@@ -240,9 +242,6 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 }
 
                 objects.push_back(poly);
-                Rock* rock = new Rock(poly);
-                Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rock);
-                rock->AddGOComponent(new MAP_SATCollision(poly, rock));
 
                 pathCountInGroup++;
                 currentTag.clear();
@@ -255,23 +254,15 @@ void CS230::Map::ParseSVG(const std::string& filename) {
 
                 // Rock Point
 
-                
+                std::vector<Polygon> Polys = EarClipping(positions);
+                for (Polygon& poly : Polys) {
+                    Rock* rock = new Rock(poly);
+                    Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rock);
+                    rock->AddGOComponent(new MAP_SATCollision(poly, rock));
 
-
-                // Making RockGroups
-                if (rock_groups.empty()) {
-                    RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new group
-                    rockgroup->AddRock(rock);                                       //add poly into new group
-                    rockgroup->SetRotation(rotateAngle);
-                    //rockgroup->SetScale();
-
-                    rock->SetRockGroup(rockgroup);
-                    Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup);
-                    rock_groups.push_back(rockgroup);
-                }
-                else {
-                    if (rock_groups.back()->GetIndex() != poly.polyindex) {             // if poly has different index
-                        RockGroup* rockgroup = new RockGroup(poly.polyindex);           // make new group
+                    // Making RockGroups
+                    if (rock_groups.empty()) {
+                        RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new group
                         rockgroup->AddRock(rock);                                       //add poly into new group
                         rockgroup->SetRotation(rotateAngle);
                         //rockgroup->SetScale();
@@ -280,11 +271,27 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                         Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup);
                         rock_groups.push_back(rockgroup);
                     }
-                    else {                                                              // if poly has same index
-                        rock_groups.back()->AddRock(rock);
-                        rock->SetRockGroup(rock_groups.back());
+                    else {
+                        if (rock_groups.back()->GetIndex() != poly.polyindex) {             // if poly has different index
+                            RockGroup* rockgroup = new RockGroup(poly.polyindex);           // make new group
+                            rockgroup->AddRock(rock);                                       //add poly into new group
+                            rockgroup->SetRotation(rotateAngle);
+                            //rockgroup->SetScale();
+
+                            rock->SetRockGroup(rockgroup);
+                            Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup);
+                            rock_groups.push_back(rockgroup);
+                        }
+                        else {                                                              // if poly has same index
+                            rock_groups.back()->AddRock(rock);
+                            rock->SetRockGroup(rock_groups.back());
+                        }
                     }
+
                 }
+
+
+                
 
                 
             }
@@ -341,7 +348,7 @@ void CS230::Map::AddDrawCall()
 constexpr bool IsConvex(const vec2& a, const vec2& b, const vec2& c) noexcept {
     vec2 ab = b - a;
     vec2 bc = c - b;
-    return cross(ab, bc) > 0; // 왼쪽으로 꺾이면 Convex
+    return cross(ab, bc) > 0;
 }
 
 bool PointInTriangle(const vec2& p, const vec2& a, const vec2& b, const vec2& c) {
@@ -352,14 +359,14 @@ bool PointInTriangle(const vec2& p, const vec2& a, const vec2& b, const vec2& c)
     float cross2 = cross(bc, bp);
     float cross3 = cross(ca, cp);
 
-    // 모든 cross product의 부호가 같으면 삼각형 내부
+   
     return (cross1 > 0 && cross2 > 0 && cross3 > 0) || (cross1 < 0 && cross2 < 0 && cross3 < 0);
 }
 std::vector<Polygon> EarClipping(const std::vector<vec2>& points) {
-    std::vector<vec2> remaining_points = points; // 작업용 복사본
+    std::vector<vec2> remaining_points = points;
     std::vector<Polygon> triangles;
 
-    // 다각형을 삼각형으로 분해
+    
     while (remaining_points.size() > 3) {
         bool ear_found = false;
 
@@ -371,10 +378,10 @@ std::vector<Polygon> EarClipping(const std::vector<vec2>& points) {
             vec2 b = remaining_points[i];
             vec2 c = remaining_points[next];
 
-            // Convex 확인
+            
             if (!IsConvex(a, b, c)) continue;
 
-            // 삼각형 내부에 다른 점이 있는지 확인
+            
             bool has_internal_point = false;
             for (size_t j = 0; j < remaining_points.size(); ++j) {
                 if (j == prev || j == i || j == next) continue;
@@ -386,12 +393,12 @@ std::vector<Polygon> EarClipping(const std::vector<vec2>& points) {
 
             if (has_internal_point) continue;
 
-            // 귀(Ear) 발견, 삼각형 추가
+            //add triangle
             Polygon triangle;
             triangle.vertices = { a, b, c };
             triangles.push_back(triangle);
 
-            // 현재 점 제거
+            //eleminate current point
             remaining_points.erase(remaining_points.begin() + i);
             ear_found = true;
             break;
@@ -402,7 +409,7 @@ std::vector<Polygon> EarClipping(const std::vector<vec2>& points) {
         }
     }
 
-    // 마지막 남은 삼각형 추가
+    // add last triangle
     Polygon triangle;
     triangle.vertices = { remaining_points[0], remaining_points[1], remaining_points[2] };
     triangles.push_back(triangle);
