@@ -11,7 +11,7 @@ void CS230::Cam::Update(double dt, const vec2& player_position, bool playerMove)
 {
 #ifdef _DEBUG
     if (Engine::GetInput().KeyDown(CS230::Input::Keys::T)) {    // zoom out
-        caminfo.camera_view.SetFramebufferSize(Engine::window_width * 11, Engine::window_height * 11);
+        caminfo.camera_view.SetFramebufferSize(Engine::window_width * 4, Engine::window_height * 4);
     }
     else {
         caminfo.camera_view.SetFramebufferSize(Engine::window_width, Engine::window_height);
