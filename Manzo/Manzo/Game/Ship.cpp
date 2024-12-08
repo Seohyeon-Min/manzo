@@ -30,7 +30,6 @@ Ship::Ship(vec2 start_position) :
     }
 }
 
-
 void Ship::State_Idle::Enter(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
     if (ship->GetVelocity() != vec2{})
@@ -66,6 +65,7 @@ void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
         force_multiplier = (distance - min_distance) / (max_distance - min_distance);
     }
 
+
     vec2 force = direction * skidding_speed * force_multiplier;
 
     float randomAngle = util::random(180.0f, 200.0f);
@@ -77,7 +77,7 @@ void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
     };
 
     ship->SetVelocity(force);
-    
+
     std::cout << ship->GetFlipX() << std::endl;
     if (ship->fuel_bubble_timer->Remaining() == 0.0 && force_multiplier > 0.4) {
         Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::FuelBubble>>()->Emit(1, target_position, { 0,0 }, -force * 0.4f, 1.5);
@@ -109,7 +109,7 @@ void Ship::State_Move::Enter(GameObject* object) {
     ship->move = true;
     vec2 dir = ship->GetVelocity().Normalize();
     Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(new DashEffect());
-    
+
 }
 void Ship::State_Move::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
     Ship* ship = static_cast<Ship*>(object);
@@ -138,17 +138,38 @@ std::vector<vec2> spline_points;
 
 void Ship::State_Hit::Enter(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
-    std::cout << "state_hit_enter~~~~~~~~~~~~~\n";
+
+    float maxSpeed = speed;
+    float minFactor = 10;
+    float maxFactor = 70;
+
+    float incoming_speed = ship->GetVelocity().Length();
+    ship->slow_down_factor = minFactor + (incoming_speed / maxSpeed) * (maxFactor - minFactor);
+    Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
     ship->HitWithReef(ship->normal);
 }
 void Ship::State_Hit::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
     Ship* ship = static_cast<Ship*>(object);
+    Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
+    ship->slow_down_factor *= deceleration;
+    //Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
+    if (spline_points.size() > 2) {
+        for (size_t i = 0; i < spline_points.size() - 1; ++i) {
+            vec2 point_a = spline_points[i];
+            vec2 point_b = spline_points[i + 1];
+
+            Engine::GetRender().AddDrawCall(point_a, point_b, color3{ 0,255,0 });
+        }
+    }
 }
 void Ship::State_Hit::FixedUpdate(GameObject* object, double fixed_dt) {}
 void Ship::State_Hit::CheckExit(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
-    std::cout << "state_hit_exit~~~~~~~~~~~~~\n";
-    ship->change_state(&ship->state_idle);
+    if (ship->slow_down_factor <= 1) { // should be a timer?
+        ship->hit_with = false;
+        ship->change_state(&ship->state_idle);
+        Engine::Instance().ResetSlowDownFactor();
+    }
 }
 
 
@@ -214,7 +235,7 @@ std::vector<vec2> SortPointsCounterClockwise(const std::vector<vec2>& points, co
         [&center](const vec2& a, const vec2& b) {
             float angle_a = atan2(a.y - center.y, a.x - center.x);
             float angle_b = atan2(b.y - center.y, b.x - center.x);
-            return angle_a > angle_b; 
+            return angle_a > angle_b;
         });
 
     return sorted_points;
@@ -275,7 +296,7 @@ vec2 ComputeNormalAtPoint(const vec2& p0, const vec2& p1) {
     vec2 normal = { -tangent.y, tangent.x };
     float length = normal.Length();
     if (length > 0.0f) {
-        normal = { normal.x / length, normal.y / length }; 
+        normal = { normal.x / length, normal.y / length };
 
         if (normal.x < 0.0f) {
             normal.x = -normal.x;
@@ -318,7 +339,8 @@ bool Ship::CanCollideWith(GameObjectTypes other_object)
 
 void Ship::ResolveCollision(GameObject* other_object)
 {
-    if (other_object->Type() == GameObjectTypes::Rock) {
+    if (!hit_with) { // is it needful?
+        if (other_object->Type() == GameObjectTypes::Rock) {
 
             if (GetVelocity().Length() <= skidding_speed + 30.f) { // if it was skidding, don't reflect
                 vec2 smallCorrection = -GetVelocity().Normalize(); // with this, ship should not able to move!
@@ -338,30 +360,10 @@ void Ship::ResolveCollision(GameObject* other_object)
                 // maybe an error?
             }
         }
-
-        std::pair<vec2, vec2> edge = other_object->GetGOComponent<CS230::MAP_SATCollision>()->GetCollidingEdge();
-        vec2 pointA = edge.first;
-        vec2 pointB = edge.second;
-
-        vec2 edgeVector = pointB - pointA;
-        vec2 normalVector = { -edgeVector.y, edgeVector.x };
-
-
-        SetVelocity({});
-        hit_with = true;
-        std::cout << "collide~~~~~~~~~~~~~\n";
-        normal = normalVector.Normalize();
-        HitWithReef(normal);
     }
 }
 
-bool IsNearPoint(const vec2& object_position, const vec2& point, float threshold) {
-    return (object_position - point).Length() <= threshold;
-}
-
-
 void Ship::HitWithReef(vec2 normal) {
-    std::cout << "hit_wit_reef~~~~~~~~~~~~~\n";
     fuel -= HitDecFuel;
 
     if (fuel < 0.0f) {
@@ -379,7 +381,14 @@ void Ship::HitWithReef(vec2 normal) {
 
     float incoming_speed = velocity.Length();
 
-    SetVelocity(reflection.Normalize() * incoming_speed * 0.35f);
+    if (reflection.Length() > 0.0f) {
+        direction = reflection.Normalize();
+    }
+    else {
+        direction = { 1.0f, 0.0f };
+    }
+
+    SetVelocity(direction * incoming_speed * 0.75f);
 
     move = false;
 
