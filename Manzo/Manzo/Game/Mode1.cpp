@@ -39,182 +39,180 @@ Mode1::Mode1()
 void Mode1::Load() {
 
 #ifdef _DEBUG
-    AddGSComponent(new CS230::ShowCollision());
+	AddGSComponent(new CS230::ShowCollision());
 #else
 #endif
 
-    //shader
-    Engine::GetShaderManager().LoadShader("pixelate", "assets/shaders/default.vert", "assets/shaders/pixelate.frag");
-    Engine::GetShaderManager().LoadShader("post_process", "assets/shaders/post_default.vert", "assets/shaders/post_default.frag");
-    Engine::GetShaderManager().LoadShader("post_bloom", "assets/shaders/post_default.vert", "assets/shaders/post_bloom.frag");
-    Engine::GetShaderManager().LoadShader("blur", "assets/shaders/default.vert", "assets/shaders/blur.frag");
+	//shader
+	Engine::GetShaderManager().LoadShader("pixelate", "assets/shaders/default.vert", "assets/shaders/pixelate.frag");
+	Engine::GetShaderManager().LoadShader("post_process", "assets/shaders/post_default.vert", "assets/shaders/post_default.frag");
+	Engine::GetShaderManager().LoadShader("post_bloom", "assets/shaders/post_default.vert", "assets/shaders/post_bloom.frag");
+	Engine::GetShaderManager().LoadShader("blur", "assets/shaders/default.vert", "assets/shaders/blur.frag");
 
-    // component
-    AddGSComponent(new CS230::GameObjectManager());
-    beat_system = new Beat();
-    AddGSComponent(beat_system);
-    AddGSComponent(new CS230::Map());
-    god_ray = new GodRay();
-    AddGSComponent(god_ray);
-    //AddGSComponent(new Pump());
+	// component
+	AddGSComponent(new CS230::GameObjectManager());
 
-    //// ship
-    ship_ptr = new Ship({ 0, 0 });
-    GetGSComponent<CS230::GameObjectManager>()->Add(ship_ptr);
+	beat_system = new Beat();
+	beat_system->LoadMusicToSync("assets/audios/100BPM_edm_temp.wav");
 
-    //// camera
-    Math::rect Boundary({ -640,-360 }, { 640,360 });
-    camera = new CS230::Cam();
-    AddGSComponent(camera);
-    camera->SetLimit(Boundary);
+	AddGSComponent(beat_system);
+	AddGSComponent(new CS230::Map());
+	god_ray = new GodRay();
+	AddGSComponent(god_ray);
+	//AddGSComponent(new Pump());
 
-    //// background
-    background = new Background();
-    AddGSComponent(background);    
+	//// ship
+	ship_ptr = new Ship({ 0, 0 });
+	GetGSComponent<CS230::GameObjectManager>()->Add(ship_ptr);
 
-    //// to generate fish
-    fishGenerator = new FishGenerator();
-    Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
+	//// camera
+	Math::rect Boundary({ -640,-360 }, { 640,360 });
+	camera = new CS230::Cam();
+	AddGSComponent(camera);
+	camera->SetLimit(Boundary);
 
-    background->Add("assets/images/background/temp_background.png", 0.0f);
-    background->Add("assets/images/background/bg1.png", 0.3f);
-    background->Add("assets/images/background/bg2.png", 0.4f);
-    background->Add("assets/images/background/bg3.png", 0.5f);
-    background->Add("assets/images/background/bg4.png", 0.6f);
-    background->Add("assets/images/background/bg5.png", 0.7f);
+	//// background
+	background = new Background();
+	AddGSComponent(background);
 
-    // Mouse and Particle
-    AddGSComponent(new CS230::ParticleManager<Particles::MouseFollow>());
-    Boss::LoadBossfile();
-   
+	//// to generate fish
+	fishGenerator = new FishGenerator();
+	Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
 
-    // UI
-    AddGSComponent(new UIManager());
-    ui_manager = GetGSComponent<UIManager>();
-    ui_manager->AddUI(std::make_unique<FuelUI>(ship_ptr));
-    ui_manager->AddUI(std::make_unique<Mouse>());
+	background->Add("assets/images/background/temp_background.png", 0.0f);
+	background->Add("assets/images/background/bg1.png", 0.3f);
+	background->Add("assets/images/background/bg2.png", 0.4f);
+	background->Add("assets/images/background/bg3.png", 0.5f);
+	background->Add("assets/images/background/bg4.png", 0.6f);
+	background->Add("assets/images/background/bg5.png", 0.7f);
 
-    // Map
-    GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/test2.svg");
-    //for (int i = 0; i < 25; i++)
-    //{
-    //    GetGSComponent<Boss>()->ReadBossJSON(static_cast<Boss::BossType>(i));
-    //    BossFirstPos.push_back(GetGSComponent<Boss>()->GetFirstPosition());
-    //}
+	// Mouse and Particle
+	AddGSComponent(new CS230::ParticleManager<Particles::MouseFollow>());
+	Boss::LoadBossfile();
 
 
+	// UI
+	AddGSComponent(new UIManager());
+	ui_manager = GetGSComponent<UIManager>();
+	ui_manager->AddUI(std::make_unique<FuelUI>(ship_ptr));
+	ui_manager->AddUI(std::make_unique<Mouse>());
 
-    boss_ptr = new Boss({ 750,500 }, Boss::BossType::e);
-    boss_ptr->ReadBossJSON(Boss::BossType::e);
-    BossFirstPos.push_back(boss_ptr->GetFirstPosition());
+	// Map
+	GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/test2.svg");
+	/*for (int i = 0; i < 25; i++)
+	{
+		GetGSComponent<Boss>()->ReadBossJSON(static_cast<Boss::BossType>(i));
+		BossFirstPos.push_back(GetGSComponent<Boss>()->GetFirstPosition());
+	}*/
 
-    std::array<int, 2> bossFirstPos = boss_ptr->GetFirstPosition();
-    vec3 bossPosition = { static_cast<float>(bossFirstPos[0])*0.2f, static_cast<float>(bossFirstPos[1]) * 0.2f, 0.0f };
+	////¿”Ω√fish
+   /* Fish* fish = new Fish();
+	GetGSComponent<CS230::GameObjectManager>()->Add(fish);*/
 
-    //// audio
-    //Engine::GetAudioManager().LoadSound("assets/audios/back_temp.wav", "sample");
-    //bossChannelID = Engine::GetAudioManager().PlaySounds("assets/audios/back_temp.wav", bossPosition, Engine::GetAudioManager().VolumeTodB(1.0f));
+	boss_ptr = new Boss({ 750,500 }, Boss::BossType::e);
+	boss_ptr->ReadBossJSON(Boss::BossType::e);
+	BossFirstPos.push_back(std::make_pair(boss_ptr->GetFirstPosition()[0], boss_ptr->GetFirstPosition()[1]));
 
-    // Convert Boss Position to vec3
+	bossPosition = { static_cast<float>(BossFirstPos[0].first), static_cast<float>(BossFirstPos[0].second), 0.0f };
 
-    // Get Ship Position
+	//Particle
+	AddGSComponent(new CS230::ParticleManager<Particles::Plankton>());
+	AddGSComponent(new CS230::ParticleManager<Particles::FuelBubble>());
 
-
-
-
-    //Particle
-    AddGSComponent(new CS230::ParticleManager<Particles::Plankton>());
-    AddGSComponent(new CS230::ParticleManager<Particles::FuelBubble>());
-
-    // Skill
-    if (!Engine::Instance().GetTmpPtr())
-    {
-        Engine::Instance().SetTmpPtr(new Skillsys);
-        skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
-        skill_ptr->SetShipPtr(ship_ptr);
-    }
-    else
-    {
-        skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
-        skill_ptr->SetShipPtr(ship_ptr);
-    }
-
-    //// audio
-    Engine::GetAudioManager().LoadSound("assets/audios/100BPM_edm_temp.wav");
-    beat_system->LoadMusicToSync("assets/audios/100BPM_edm_temp.wav");
+	// Skill
+	if (!Engine::Instance().GetTmpPtr())
+	{
+		Engine::Instance().SetTmpPtr(new Skillsys);
+		skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
+		skill_ptr->SetShipPtr(ship_ptr);
+	}
+	else
+	{
+		skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
+		skill_ptr->SetShipPtr(ship_ptr);
+	}
 }
 
 void Mode1::Update(double dt) {
-    UpdateGSComponents(dt);
-    GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
-    Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::Plankton>>()->Spray();
-    //std::cout << "update: " << dt << std::endl;
-    //camera postion update
-    camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
+	//audio play
+	if (!playing)
+	{
+		Engine::GetAudioManager().PlaySounds("assets/audios/100BPM_edm_temp.wav");
+		playing = true;
+	}
 
-    // Update Fish Generator
-    fishGenerator->GenerateFish(dt);
+	UpdateGSComponents(dt);
+	GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
+	Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::Plankton>>()->Spray();
 
-    // Update Skills
-    skill_ptr->Update();
 
-    // Handle Input
-    if (ship_ptr->IsShipUnder() && Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Q)) {
-        Engine::GetGameStateManager().ClearNextGameState();
-        Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
-    }
+	//camera postion update
+	camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
 
-    if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::W)) {
-        Engine::GetGameStateManager().ReloadState();
-    }
+	// Update Fish Generator
+	//fishGenerator->GenerateFish(dt);
 
-    if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::E) && !Isboss) {
-        GetGSComponent<CS230::GameObjectManager>()->Add(boss_ptr);
-        Isboss = true;
-    }
+	// Update Skills
+	skill_ptr->Update();
 
-    /*if (!Engine::GetAudioManager().IsPlaying(bossChannelID)) {
-        std::cout << "!!!!!!!!!!!No Sound!!!!!!!!!!1111" << std::endl;
-    }*/
+	// Handle Input
+	if (ship_ptr->IsShipUnder() && Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Q)) {
+		Engine::GetGameStateManager().ClearNextGameState();
+		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
+	}
 
-    // Update 3D Audio
+	if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::W)) {
+		Engine::GetGameStateManager().ReloadState();
+	}
 
-    //vec3 shipPosition = { ship_ptr->GetPosition().x, ship_ptr->GetPosition().y, 0.0f };
-    //Engine::GetAudioManager().Set3dListenerAndOrientation(shipPosition, vec3{ 0.0f, 1.0f, 0.0f }, vec3{ 0.0f, 0.0f, 1.0f });
-    //Engine::GetAudioManager().SetChannel3dPosition(bossChannelID, bossPosition);
+	if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::E) && !Isboss) {
+		GetGSComponent<CS230::GameObjectManager>()->Add(boss_ptr);
+		Isboss = true;
+	}
+
+	// Update 3D Audio
+	smoothShipPosition.x = std::lerp(previousPosition.x, ship_ptr->GetPosition().x, 0.1f);
+	smoothShipPosition.y = std::lerp(previousPosition.y, ship_ptr->GetPosition().y, 0.1f);
+	previousPosition = smoothShipPosition;
+
+	if ((std::fabs(smoothShipPosition.x - bossPosition.x) < 150 && std::fabs(smoothShipPosition.y - bossPosition.y) < 150))
+	{
+		Engine::GetAudioManager().Set3dListenerAndOrientation(smoothShipPosition, vec3{ 0.0f, -1.0f, 0.0f }, vec3{ 0.0f, 0.0f, 1.0f });
+		Engine::GetAudioManager().SetChannel3dPosition(0, bossPosition);
+	}
 }
 
 void Mode1::FixedUpdate(double dt)
 {
-    //std::cout << "fixedupdate: " << dt << std::endl;
-    if (GetGSComponent<CS230::GameObjectManager>()) {
-        GetGSComponent<CS230::GameObjectManager>()->FixedUpdateAll(dt);
-    }
+	if (GetGSComponent<CS230::GameObjectManager>()) {
+		GetGSComponent<CS230::GameObjectManager>()->FixedUpdateAll(dt);
+	}
 }
 
 void Mode1::Draw() {
-    GetGSComponent<Background>()->Draw(*GetGSComponent<CS230::Cam>());
-    GetGSComponent<CS230::Map>()->AddDrawCall();
-    god_ray->Draw();
-    GetGSComponent<CS230::GameObjectManager>()->DrawAll();
-    ui_manager->AddDrawCalls();
+	GetGSComponent<Background>()->Draw(*GetGSComponent<CS230::Cam>());
+	GetGSComponent<CS230::Map>()->AddDrawCall();
+	god_ray->Draw();
+	GetGSComponent<CS230::GameObjectManager>()->DrawAll();
+	ui_manager->AddDrawCalls();
 
-    // Draw Font
-    //Engine::GetFontManager().PrintText(FontType::Bold, "HI", { 0.f,0.f }, 0.0f, 0.001f, { 1.0f,1.0f,1.0f });
-    //Engine::GetFontManager().PrintText(FontType::Thin, "A", { 0.5f,0.5f }, 0.0f, 0.0005f, { 0.0f,0.0f,0.0f });
+	// Draw Font
+	//Engine::GetFontManager().PrintText(FontType::Bold, "HI", { 0.f,0.f }, 0.0f, 0.001f, { 1.0f,1.0f,1.0f });
+	//Engine::GetFontManager().PrintText(FontType::Thin, "A", { 0.5f,0.5f }, 0.0f, 0.0005f, { 0.0f,0.0f,0.0f });
 }
 
 void Mode1::Unload() {
 
-    ship_ptr = nullptr;
-    fishGenerator->~FishGenerator();
-    delete fishGenerator;
-    fishGenerator = nullptr;
+	ship_ptr = nullptr;
+	fishGenerator->~FishGenerator();
+	delete fishGenerator;
+	playing = false;
+	fishGenerator = nullptr;
 	GetGSComponent<CS230::GameObjectManager>()->Unload();
-    GetGSComponent<Background>()->Unload();
-    Engine::GetRender().ClearDrawCalls();
-    ui_manager->UnloadUI();
+	GetGSComponent<Background>()->Unload();
+	Engine::GetRender().ClearDrawCalls();
+	ui_manager->UnloadUI();
 	ClearGSComponents();
-    Engine::GetAudioManager().StopAllChannels();
-    Engine::Instance().ResetSlowDownFactor();
+	Engine::GetAudioManager().StopAllChannels();
+	Engine::Instance().ResetSlowDownFactor();
 }

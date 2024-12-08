@@ -181,6 +181,41 @@ void AudioManager::StopAllChannels()
 	sgpImplementation->mChannels.clear();
 }
 
+void AudioManager::RestartPlay(int nChannelId)
+{
+	// 주어진 채널 ID를 찾기
+	auto tFoundIt = sgpImplementation->mChannels.find(nChannelId);
+	if (tFoundIt == sgpImplementation->mChannels.end())
+	{
+		std::cerr << "Error: Channel not found!" << std::endl;
+		return;
+	}
+
+	// 해당 채널을 가져오기
+	FMOD::Channel* pChannel = tFoundIt->second;
+
+	// 현재 재생 위치를 0으로 설정 (처음부터 다시 시작)
+	ErrorCheck(pChannel->setPosition(0, FMOD_TIMEUNIT_MS));
+
+	// 채널이 일시 정지 상태라면 다시 재생
+	bool bIsPaused = false;
+	ErrorCheck(pChannel->getPaused(&bIsPaused));
+	if (bIsPaused)
+	{
+		ErrorCheck(pChannel->setPaused(false));
+	}
+}
+
+void AudioManager::StopPlaying(int nChannelId)
+{
+	auto tFoundIt = sgpImplementation->mChannels.find(nChannelId);
+	if (tFoundIt != sgpImplementation->mChannels.end()) {
+		// 채널을 일시 정지합니다.
+		ErrorCheck(tFoundIt->second->setPaused(true));
+	}
+}
+
+
 void AudioManager::Set3dListenerAndOrientation(const vec3& vPosition, const vec3& vLook, const vec3& vUp) {
 	if (!sgpImplementation->mpSystem)
 		return;
@@ -202,6 +237,26 @@ void AudioManager::SetChannel3dPosition(int nChannelId, const vec3& vPosition)
 	ErrorCheck(tFoundIt->second->set3DAttributes(&position, NULL));
 }
 
+void AudioManager::SetMode(const std::string& strSoundName, bool spatial_on)
+{
+	FMOD::Channel* pChannel = nullptr;
+	auto tFoundIt = sgpImplementation->mSounds.find(strSoundName);
+	ErrorCheck(sgpImplementation->mpSystem->playSound(tFoundIt->second, nullptr, true, &pChannel));
+	if (pChannel)
+	{
+		FMOD_MODE currMode;
+		tFoundIt->second->getMode(&currMode);
+		if (spatial_on)
+		{
+			pChannel->setMode(FMOD_3D);
+		}
+		else
+		{
+			pChannel->setMode(FMOD_2D);
+		}
+	}
+}
+
 void AudioManager::SetChannelVolume(int nChannelId, float fVolumedB)
 {
 	auto tFoundIt = sgpImplementation->mChannels.find(nChannelId);
@@ -209,6 +264,14 @@ void AudioManager::SetChannelVolume(int nChannelId, float fVolumedB)
 		return;
 
 	ErrorCheck(tFoundIt->second->setVolume(dbToVolume(fVolumedB)));
+}
+
+void AudioManager::SetMute(int nChannelId, bool mute)
+{
+	auto tFoundIt = sgpImplementation->mChannels.find(nChannelId);
+	if (tFoundIt != sgpImplementation->mChannels.end()) {
+		ErrorCheck(tFoundIt->second->setMute(mute));  // mute가 true이면 음소거, false이면 음소거 해제
+	}
 }
 
 bool AudioManager::IsPlaying(int nChannelId) const

@@ -87,7 +87,8 @@ private:
 	std::vector<int> Boss_procedural;
 	vec2 current_position;
 	float speed = 400;
-
+	int channelId = 1;
+	bool isPlaying = false;
 	std::array<int, 2> start_pos;
 };
 

@@ -54,7 +54,9 @@ private:
     Skillsys::Skill_Net* Net_ptr;
 
     bool Isboss = false;
-    std::vector< std::array<int, 2>> BossFirstPos;
+    bool playing = false;
+    std::vector<std::pair<int, int>> BossFirstPos;
     vec3 bossPosition;
-    int bossChannelID;
+    vec3 previousPosition = { 0,0,0 };
+    vec3 smoothShipPosition = { 0,0,0 };
 };

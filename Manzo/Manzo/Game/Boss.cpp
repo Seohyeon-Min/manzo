@@ -12,20 +12,17 @@ Boss::Boss(vec2 start_position, BossType type)
 	ReadBossJSON(type);
 	InitializeStates();
 	AddGOComponent(new CS230::Sprite("assets/images/ship.spt", this));
-	SetVelocity({start_position});
+	SetVelocity({ start_position });
 
 	// cutscean
 	
 	////////
 	current_state = &state_cutscene;
 	current_state->Enter(this);
-
-
 }
 
 void Boss::State_CutScene::Enter(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
-	Engine::GetAudioManager().StopChannel(0);
 	boss->beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
 	
 }
@@ -36,8 +33,9 @@ void Boss::State_CutScene::CheckExit(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
 
 	if (Engine::GetInput().KeyDown(CS230::Input::Keys::R)&& boss->beat->GetBeat()) {
-		Engine::GetAudioManager().LoadSound(boss->mp3_file_name, "E_Music");
-		Engine::GetAudioManager().PlaySounds(boss->mp3_file_name, vec3{ 0, 0, 0 }, Engine::GetAudioManager().VolumeTodB(1.0f));
+
+		Engine::GetAudioManager().SetMute(0,true);
+		Engine::GetAudioManager().PlaySounds(boss->mp3_file_name, vec3{ boss->GetPosition().x, boss->GetPosition().y, 0 });
 
 		boss->beat->SetBPM(boss->bpm);
 		boss->change_state(&boss->entry1);
@@ -51,6 +49,7 @@ void Boss::Entry1::Update(GameObject* object, double dt) {
 	Boss* boss = static_cast<Boss*>(object);
 	int targetEntryNum = 1; 
 	if (targetEntryNum - 1 < boss->parttern.size()) {
+		
 		const auto& entryVec = boss->parttern[targetEntryNum - 1]; 
 		for (const auto& entryData : entryVec) {
 			if (entryData.delay + 1 == boss->beat->GetDelayCount()) {
@@ -138,6 +137,7 @@ void Boss::Update(double dt) {
 
 	if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
 		if (GameObject::current_state->GetName() != Boss::state_cutscene.GetName()) {
+			
 			int barCount = beat->GetBarCount();
 			std::cout << barCount<< std::endl;
 			if(barCount <14){
@@ -152,6 +152,8 @@ void Boss::Update(double dt) {
 			else {
 				Destroy();
 				Engine::GetAudioManager().StopChannel(1);
+				Engine::GetAudioManager().RestartPlay(0);
+				Engine::GetAudioManager().SetMute(0, false);
 			}
 		}
 	}

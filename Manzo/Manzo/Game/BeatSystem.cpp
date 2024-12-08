@@ -25,11 +25,10 @@ void Beat::Update(double dt)
     //audio->GetCurrentMusicTime();
     if (!music_started && !music_name.empty()) {
         // 비트 시스템이 준비되었을 때 음악 재생 시작
-        channel_id = audio->PlaySounds(music_name); // 무한 루프 재생
         music_started = true;       // 음악 재생 상태 갱신
     }
 
-    double current_music_time = audio->GetCurrentMusicTime(channel_id);
+    double current_music_time = Engine::GetAudioManager().GetCurrentMusicTime(channel_id);
 
     if (current_music_time > 0.0) { 
         time_taken = current_music_time + sync; 
