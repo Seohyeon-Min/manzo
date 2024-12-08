@@ -232,8 +232,20 @@ bool CS230::MAP_SATCollision::IsCollidingWith(GameObject* other_object)
     }
 
     Polygon poly_1 = WorldBoundary_poly();
-    Polygon poly_2 = dynamic_cast<MAP_SATCollision*>(other_collider)->WorldBoundary_poly();
+    Polygon poly_temp;
+    
+    if (other_collider->Shape() == CollisionShape::Rect) {
+        Math::rect rectangle = dynamic_cast<RectCollision*>(other_collider)->WorldBoundary_rect();
+        poly_temp.vertexCount = 4;
+        poly_temp.polycount = 1;
+        poly_temp.vertices = { {rectangle.Left(), rectangle.Top()},
+            {rectangle.Left(), rectangle.Bottom()},
+            {rectangle.Right(), rectangle.Top()},
+            {rectangle.Right(), rectangle.Bottom()}};
+    }
 
+    Polygon poly_2 = MAP_SATCollision(poly_temp, other_object).WorldBoundary_poly();
+    //Polygon poly_2 = dynamic_cast<MAP_SATCollision*>(other_collider)->WorldBoundary_poly();
 
     for (int i = 0; i < poly_1.vertexCount; i++) {
         vec2 edge = { poly_1.vertices[(i + 1) % poly_1.vertexCount].x - poly_1.vertices[i].x,
@@ -273,7 +285,7 @@ bool CS230::MAP_SATCollision::IsCollidingWith(GameObject* other_object)
             return false;
         }
         else {
-            vec2 point_1 = poly_1.vertices[i];
+            vec2 point_1 = poly_1.vertices[i % poly_1.vertexCount];
             vec2 point_2 = poly_1.vertices[(i + 1) % poly_1.vertexCount];
             colliding_edge = { point_1 ,point_2 };
         }

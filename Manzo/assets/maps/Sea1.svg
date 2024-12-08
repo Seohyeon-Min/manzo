@@ -10,7 +10,7 @@
    inkscape:export-filename="비트맵.svg"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
-   sodipodi:docname="test2.svg"
+   sodipodi:docname="Sea1.svg"
    inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
    xml:space="preserve"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -26,24 +26,45 @@
    inkscape:pagecheckerboard="0"
    inkscape:deskcolor="#d1d1d1"
    inkscape:document-units="mm"
-   inkscape:zoom="0.17677671"
-   inkscape:cx="-941.86614"
-   inkscape:cy="890.95445"
-   inkscape:window-width="2880"
-   inkscape:window-height="1514"
-   inkscape:window-x="177"
-   inkscape:window-y="-11"
-   inkscape:window-maximized="1"
+   inkscape:zoom="0.02"
+   inkscape:cx="1025"
+   inkscape:cy="-5150"
+   inkscape:window-width="1436"
+   inkscape:window-height="1501"
+   inkscape:window-x="1590"
+   inkscape:window-y="0"
+   inkscape:window-maximized="0"
    inkscape:current-layer="g1" /><defs
    id="defs1" /><g
    inkscape:label="Layer 1"
-   inkscape:groupmode="layer">  
+   inkscape:groupmode="layer"
+   id="g1">  
    
    
      
-     <g
+     
+     
+     
+     
+     
+     
+   <rect
+   style="fill:#28bed7;stroke:#738823;stroke-width:0.781"
+   id="rect12"
+   width="40"
+   height="40"
+   x="94.441223"
+   y="-2858.6267"
+   ry="13.727403"
+   inkscape:label="ship" />
+   
+   
+   
+    
+   
+   <g
    id="g2-2-2"
-   transform="translate(-412.55588,549.2625)"
+   transform="translate(-352.23095,3901.3479)"
    inkscape:label="g2-2-2">
    <path
    style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
@@ -56,7 +77,7 @@
      </g>
      <g
    id="g2-1-2"
-   transform="translate(-865.52255,179.90417)"
+   transform="translate(6047.7691,301.34793)"
    inkscape:label="g2-1-2">
    <path
    style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
@@ -69,7 +90,7 @@
      </g>
      <g
    id="g2-2-1"
-   transform="translate(139.89405,123.81253)"
+   transform="translate(-352.23095,-3298.6522)"
    inkscape:label="g2-2-1">
    <path
    style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
@@ -82,32 +103,25 @@
      </g>
      <g
    id="g3-1-1"
-   transform="translate(-422.40491,-438.2821)"
+   transform="translate(-6863.9798,-42.212985)"
    inkscape:label="g3-1-1">
    <path
    style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
    d="M 670.52573,42.27102 463.97986,60.231532 532.82849,182.96169 Z"
-   id="path2-9-46-0" />
+   id="path2-9-46-0"
+   inkscape:label="path2-9-46-0" />
      <path
    style="fill:#c223bd;stroke:#000000;stroke-width:0;paint-order:fill markers stroke"
    d="m 669.65165,42.212986 -137.94353,140.142284 123.5066,47.8857 z"
-   id="path2-6-4-4-0" />
+   id="path2-6-4-4-0"
+   inkscape:label="path2-6-4-4-0" />
      </g>
      
-     <circle
-   style="fill:#28bed7;stroke:#738823;stroke-width:0.781"
-   id="path1"
-   cx="616.20673"
-   cy="177.77567"
-   r="5"
-   inkscape:label="g2-2-1" />
+   
+   
+   
+   
+   
    </g>
-  <circle
-   style="fill:#28bed7;stroke:#738823;stroke-width:0.781"
-   id="path1-2"
-   cx="-78.217804"
-   cy="153.55717"
-   r="5"
-   inkscape:label="g2-2-2" />
-   </g>
-       </svg>
+  
+   </svg>

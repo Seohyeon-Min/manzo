@@ -18,9 +18,6 @@ void CS230::GameObjectManager::Add(GameObject* object)
 
 void CS230::GameObjectManager::Unload()
 {
-	for (auto object : objects) {
-		delete object;
-	}
 	objects.clear();
 }
 
