@@ -106,7 +106,7 @@ std::vector<vec2> spline_points;
 void Ship::State_Hit::Enter(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
     std::cout << "state_hit_enter~~~~~~~~~~~~~\n";
-    //ship->HitWithReef(ship->normal);
+    ship->HitWithReef(ship->normal);
 }
 void Ship::State_Hit::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
     Ship* ship = static_cast<Ship*>(object);
