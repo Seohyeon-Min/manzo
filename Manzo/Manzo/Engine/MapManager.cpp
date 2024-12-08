@@ -307,9 +307,9 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                             rock_groups.back()->AddRock(rock);
                             rock->SetRockGroup(rock_groups.back());
                         }
-                    //}
+                    }
 
-                }
+                
 
 
                 
