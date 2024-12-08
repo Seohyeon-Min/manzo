@@ -169,14 +169,9 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 pathData = match[1].str();
                 std::replace(pathData.begin(), pathData.end(), ' ', ',');
 
-                std::cout << "PathData before parsePathData: " << pathData << std::endl;
-
-
                 std::vector<vec2> positions= parsePathData(pathData);
                 
 
-
-                
                 poly.vertices = positions;
                 poly.vertexCount = int(positions.size());
                 poly.polycount = pathCountInGroup > 0 ? pathCountInGroup : 0;
@@ -379,7 +374,6 @@ std::vector<Polygon> EarClipping(const std::vector<vec2>& points) {
 }
 
 std::vector<vec2> CS230::Map::parsePathData(const std::string& pathData) {
-    std::cout << "PathData before parsePathData: " << pathData << std::endl;
 
     std::istringstream stream(pathData);
     std::string data;
