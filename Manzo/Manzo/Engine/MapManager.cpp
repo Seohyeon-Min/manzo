@@ -383,52 +383,58 @@ std::vector<vec2> CS230::Map::parsePathData(const std::string& pathData) {
 
     std::istringstream stream(pathData);
     std::string data;
+
     
     float last_x = 0, last_y = 0; // 이전 좌표
     bool isRelative = false;
 
     std::vector<vec2> positions;
 
-    while (stream >> data) {
-        if (std::isalpha(data[0])) { // 명령어 확인
+    while (std::getline(stream, data, ',')) { // 쉼표 기준으로 분리
+        if (std::isalpha(data[0])) {  // 명령어 확인
             currentCommand = data[0];
-            isRelative = std::islower(currentCommand); // 소문자면 상대 명령어
+            isRelative = std::islower(currentCommand);  // 소문자면 상대 명령어
             continue;
         }
 
-        // 숫자 처리
-        if (currentCommand == 'm' || currentCommand == 'M') {
-            float x = std::stof(data);
-            if (stream >> data) {
-                float y = std::stof(data);
+        float x = 0.0f, y = 0.0f;
+
+        if (currentCommand == 'm' || currentCommand == 'M') {  // MoveTo 명령어
+            x = std::stof(data);  // 첫 번째 좌표
+            if (std::getline(stream, data, ',')) {  // 두 번째 좌표
+                
+                y = std::stof(data);
                 last_x = isRelative ? last_x + x : x;
                 last_y = isRelative ? last_y + y : y;
-                positions.push_back({ last_x, last_y });
-                currentCommand = isRelative ? 'l' : 'L'; // 이후에는 LineTo로 처리
+                positions.push_back({ last_x, -last_y });
+                currentCommand = isRelative ? 'l' : 'L';  // 이후는 LineTo로 처리
             }
         }
-        else if (currentCommand == 'l' || currentCommand == 'L') {
-            float x = std::stof(data);
-            if (stream >> data) {
-                float y = std::stof(data);
+        else if (currentCommand == 'l' || currentCommand == 'L') {  // LineTo 명령어
+            x = std::stof(data);
+            if (std::getline(stream, data, ',')) {
+                
+                y = std::stof(data);
                 last_x = isRelative ? last_x + x : x;
                 last_y = isRelative ? last_y + y : y;
-                positions.push_back({ last_x, last_y });
+                positions.push_back({ last_x, -last_y });
             }
         }
-        else if (currentCommand == 'v' || currentCommand == 'V') {
-            float y = std::stof(data);
+        else if (currentCommand == 'v' || currentCommand == 'V') {  // Vertical Line
+            
+            y = std::stof(data);
             last_y = isRelative ? last_y + y : y;
-            positions.push_back({ last_x, last_y }); // x는 그대로 유지
+            positions.push_back({ last_x, -last_y });  // x는 유지
         }
-        else if (currentCommand == 'h' || currentCommand == 'H') {
-            float x = std::stof(data);
+        else if (currentCommand == 'h' || currentCommand == 'H') {  // Horizontal Line
+            
+            x = std::stof(data);
             last_x = isRelative ? last_x + x : x;
-            positions.push_back({ last_x, last_y }); // y는 그대로 유지
+            positions.push_back({ last_x, -last_y });  // y는 유지
         }
-        else if (currentCommand == 'z' || currentCommand == 'Z') {
+        else if (currentCommand == 'z' || currentCommand == 'Z') {  // Close Path
             if (!positions.empty()) {
-                positions.push_back(positions.front()); // 경로 닫기
+                positions.push_back(positions.front());  // 경로 닫기
             }
         }
     }
