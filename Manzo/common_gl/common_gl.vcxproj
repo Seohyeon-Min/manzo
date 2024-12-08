@@ -93,6 +93,7 @@
     <ClCompile Include="source\stb_image_impl.cpp" />
     <ClCompile Include="source\vec2.cpp" />
     <ClCompile Include="source\GLVertexBufferLayout.cpp" />
+    <ClCompile Include="source\WindowState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\angles.h" />
@@ -119,6 +120,7 @@
     <ClInclude Include="include\vec2.h" />
     <ClInclude Include="include\vec3.h" />
     <ClInclude Include="include\GLVertexBufferLayout.h" />
+    <ClInclude Include="include\WindowState.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

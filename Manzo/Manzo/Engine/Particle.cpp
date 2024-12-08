@@ -35,10 +35,10 @@ void CS230::Particle::Update(double dt)
 
 
 
-void CS230::Particle::Draw(DrawLayer drawlayer)
+void CS230::Particle::Draw(DrawLayer dl)
 {
 	if(Alive())
-		if(shader == nullptr) GameObject::Draw();
+		if(shader == nullptr) GameObject::Draw(drawlayer);
 		else {
 			DrawSettings settings;
 			settings.do_blending = true;
@@ -53,7 +53,7 @@ void CS230::Particle::Draw(DrawLayer drawlayer)
 				settings
 			};
 
-			GameObject::Draw(draw_call);
+			GameObject::Draw(draw_call, drawlayer);
 		}
 }
 

@@ -78,8 +78,6 @@ Polygon CS230::MAP_SATCollision::WorldBoundary_poly() {
 
 
 void CS230::RectCollision::Draw() {
-    const float render_height = (float)Engine::window_height;
-
     Math::rect world_boundary = WorldBoundary_rect();
 
     vec2 bottom_left = vec2{ world_boundary.Left(), world_boundary.Bottom() };

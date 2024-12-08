@@ -45,7 +45,7 @@ private:
     static constexpr double speed = 6500.f;
     static constexpr float deceleration = 0.88f;
     static constexpr double skidding_speed = 150.f;
-    double slow_down_factor;
+    double slow_down_factor = 0.061;
     bool move;
     bool hit_with = false;
     vec2 force = {};
@@ -56,12 +56,15 @@ private:
     Skillsys* skill;
     Math::rect limit;
     const double fuel_bubble_time = 0.03;
+    const double collide_time = 1.1;
     CS230::Timer* fuel_bubble_timer;
+    CS230::RealTimeTimer* collide_timer;
 
     //for fuel
 
     bool isCollidingWithReef;
     bool FuelFlag = false;
+    bool can_dash = true;
     double fuel;
     double Maxfuel = 1000;
     double baseDecfuel = 2;

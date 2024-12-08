@@ -65,7 +65,8 @@ void Mode1::Load() {
     AddGSComponent(new CS230::ParticleManager<Particles::Plankton>());
     AddGSComponent(new CS230::ParticleManager<Particles::FuelBubble>());
     AddGSComponent(new CS230::ParticleManager<Particles::BubblePop>());
-
+    AddGSComponent(new CS230::ParticleManager<Particles::HitEffect>());
+    AddGSComponent(new CS230::ParticleManager<Particles::HitEffect2>());
 
     //// ship
     ship_ptr = new Ship({ 0, 0 });

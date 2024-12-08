@@ -27,7 +27,7 @@ namespace Particles {
     public:
         Plankton() : Particle("assets/images/Plankton.spt") { scale = util::random(0.5f, 4.6f); };
         std::string TypeName() override { return "Plankton Particle"; }
-        static constexpr int MaxCount = 60;
+        static constexpr int MaxCount = 40;
         static constexpr double MaxLife = 10.5;
         float scale;
     };
@@ -56,5 +56,30 @@ namespace Particles {
         float scale;
     };
 
+    class HitEffect : public CS230::Particle {
+    public:
+        HitEffect() : Particle("assets/images/hit_effect.spt")
+        {
+            scale = util::random(0.7f, 1.7f); shader = Engine::GetShaderManager().GetShader("change_alpha");
+            drawlayer = DrawLayer::DrawUI;
+        };
+        std::string TypeName() override { return "HitEffect Particle"; }
+        static constexpr int MaxCount = 20;
+        static constexpr double MaxLife = 0.05;
+        float scale;
+    };
+
+    class HitEffect2 : public CS230::Particle {
+    public:
+        HitEffect2() : Particle("assets/images/Plankton.spt")
+        {
+            scale = util::random(1.5f, 2.7f); shader = Engine::GetShaderManager().GetShader("change_alpha");
+            drawlayer = DrawLayer::DrawUI;
+        };
+        std::string TypeName() override { return "HitEffect Particle"; }
+        static constexpr int MaxCount = 20;
+        static constexpr double MaxLife = 0.05;
+        float scale;
+    };
 }
 

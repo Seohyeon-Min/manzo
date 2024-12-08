@@ -20,6 +20,7 @@ Created:    March 8, 2023
 #include "ShaderManager.h"
 #include "AudioManager.h"
 #include "FontManager.h"
+#include "WindowState.h"
 
 #include <chrono>
 #include <time.h>
@@ -75,8 +76,9 @@ public:
     void SetSlowDownFactor(double slow_down) { slow_down_factor = slow_down; }
     void ResetSlowDownFactor() { slow_down_factor = 1; }
     double GetDt() { return dt; }
-    static constexpr int window_width = 1280;
     static constexpr int window_height = 720;
+    static constexpr int window_width = 1280;
+
     static constexpr double TargetFPS = 240.0;
 
 private:

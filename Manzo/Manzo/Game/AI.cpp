@@ -6,7 +6,7 @@ float BackgroundFish::a, BackgroundFish::b, BackgroundFish::c, BackgroundFish::d
 
 BackgroundFish::BackgroundFish() : GameObject({ start_position })
 {
-    ivec2 windowSize = { Engine::window_width, Engine::window_height };
+    ivec2 windowSize = { (int)Engine::window_width, (int)Engine::window_height };
     int rangeIndex = rand() % yRanges.size();
     float yMin = yRanges[rangeIndex].first;
     float yMax = yRanges[rangeIndex].second;

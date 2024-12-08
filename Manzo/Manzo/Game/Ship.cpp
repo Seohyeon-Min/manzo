@@ -6,6 +6,7 @@
 #include "../Engine/MapManager.h"
 #include "angles.h"
 #include "DashEffect.h"
+#include "WindowState.h"
 
 #include <iostream>
 
@@ -26,6 +27,8 @@ Ship::Ship(vec2 start_position) :
         current_state->Enter(this);
         fuel_bubble_timer = new CS230::Timer(0.0);
         AddGOComponent(fuel_bubble_timer);
+        collide_timer = new CS230::RealTimeTimer(collide_time);
+        AddGOComponent(collide_timer);
         fuel_bubble_timer->Set(fuel_bubble_time);
     }
 }
@@ -38,8 +41,10 @@ void Ship::State_Idle::Enter(GameObject* object) {
 void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
     //get mouse pos and move to there
     Ship* ship = static_cast<Ship*>(object);
-    vec2 ship_position = ship->GetPosition();
 
+    Engine::GetInput().GetMousePos().mouseWorldSpaceX - Engine::window_width / 2 > ship->GetPosition().x ? ship->SetFlipX(true) : ship->SetFlipX(false);
+
+    vec2 ship_position = ship->GetPosition();
     vec2 window = { Engine::window_width / 2, Engine::window_height / 2 };
     vec2 mouse_pos = { (float)Engine::GetInput().GetMousePos().mouseWorldSpaceX, (float)Engine::GetInput().GetMousePos().mouseWorldSpaceY };
     vec2 pos = mouse_pos - window;
@@ -78,7 +83,6 @@ void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
 
     ship->SetVelocity(force);
     
-    std::cout << ship->GetFlipX() << std::endl;
     if (ship->fuel_bubble_timer->Remaining() == 0.0 && force_multiplier > 0.4) {
         Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::FuelBubble>>()->Emit(1, target_position, { 0,0 }, -force * 0.4f, 1.5);
         ship->fuel_bubble_timer->Reset();
@@ -89,7 +93,7 @@ void Ship::State_Idle::CheckExit(GameObject* object) {
     //if (ship->hit_with) {
     //    ship->change_state(&ship->state_hit);
     //}
-    if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT) && ship->beat->GetIsOnBeat()) {
+    if (ship->can_dash && Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT) && ship->beat->GetIsOnBeat()) {
         // Get mouse position relative to the center of the screen
         vec2 window = { Engine::window_width / 2, Engine::window_height / 2 };
         vec2 mouse_pos = { (float)Engine::GetInput().GetMousePos().mouseWorldSpaceX, (float)Engine::GetInput().GetMousePos().mouseWorldSpaceY };
@@ -138,36 +142,44 @@ std::vector<vec2> spline_points;
 
 void Ship::State_Hit::Enter(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
-
-    float maxSpeed = speed;
-    float minFactor = 10;
-    float maxFactor = 70;
-
-    float incoming_speed = ship->GetVelocity().Length();
-    ship->slow_down_factor = minFactor + (incoming_speed / maxSpeed) * (maxFactor - minFactor);
     Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
     ship->HitWithReef(ship->normal);
+    ship->collide_timer->Start();
+    
+    ship->force = ship->direction * 20200.f;
+    //Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::HitEffect>>()->EmitRound(20,ship->GetPosition(),900.f, 100.f);
+    Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::HitEffect2>>()->EmitRound(20, ship->GetPosition(), 1300.f, 300.f);
+
 }
 void Ship::State_Hit::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
     Ship* ship = static_cast<Ship*>(object);
-    Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
-    ship->slow_down_factor *= deceleration;
     //Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
     if (spline_points.size() > 2) {
         for (size_t i = 0; i < spline_points.size() - 1; ++i) {
             vec2 point_a = spline_points[i];
             vec2 point_b = spline_points[i + 1];
-
             Engine::GetRender().AddDrawCall(point_a, point_b, color3{ 0,255,0 });
         }
     }
 }
-void Ship::State_Hit::FixedUpdate(GameObject* object, double fixed_dt) {}
+void Ship::State_Hit::FixedUpdate(GameObject* object, double fixed_dt) {
+    Ship* ship = static_cast<Ship*>(object);
+    ship->SetVelocity(ship->direction*200.f);
+    if (ship->collide_timer->Remaining() <= 0.5) {
+        Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetCameraView().SetZoom(1.0f);
+        ship->SetVelocity(ship->force);
+        float base_dt = 1.0f / 240.f;
+        float adjusted_deceleration = (float)pow(ship->deceleration / 2, fixed_dt / base_dt);
+        ship->force *= adjusted_deceleration;
+    }
+}
 void Ship::State_Hit::CheckExit(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
-    if (ship->slow_down_factor <= 1) { // should be a timer?
+    if (ship->collide_timer->IsFinished()) { // should be a timer?
         ship->hit_with = false;
+        ship->SetVelocity(ship->direction * 2000.f);
         ship->change_state(&ship->state_idle);
+        ship->collide_timer->Reset();
         Engine::Instance().ResetSlowDownFactor();
     }
 }
@@ -176,9 +188,9 @@ void Ship::State_Hit::CheckExit(GameObject* object) {
 void Ship::Update(double dt)
 {
     GameObject::Update(dt);
-
-
+    can_dash = true;
     if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
+        Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetCamera().UpdateShake((float)dt);
         // World Boundary
         CS230::RectCollision* collider = GetGOComponent<CS230::RectCollision>();
 
@@ -203,8 +215,6 @@ void Ship::Update(double dt)
         {
             isCollidingWithReef = false;
         }
-
-        Engine::GetInput().GetMousePos().mouseWorldSpaceX - Engine::window_width / 2 > GetPosition().x ? SetFlipX(true) : SetFlipX(false);
     }
     //std::cout << Engine::GetInput().GetMousePos().mouseWorldSpaceX - Engine::window_width/ 2 << " " << Engine::GetInput().GetMousePosition().x << std::endl;
 }
@@ -345,6 +355,7 @@ void Ship::ResolveCollision(GameObject* other_object)
             if (GetVelocity().Length() <= skidding_speed + 30.f) { // if it was skidding, don't reflect
                 vec2 smallCorrection = -GetVelocity().Normalize(); // with this, ship should not able to move!
                 UpdatePosition(smallCorrection);
+                can_dash = false;
                 return;
             }
 
@@ -354,7 +365,6 @@ void Ship::ResolveCollision(GameObject* other_object)
             vec2 center = rock->GetRockGroup()->FindCenterPoly();
 
             normal = ComputeCollisionNormal(points, GetPosition(), center);
-
             auto* collision_edge = this->GetGOComponent<CS230::RectCollision>();
             if (collision_edge == nullptr) {
                 // maybe an error?
@@ -388,8 +398,9 @@ void Ship::HitWithReef(vec2 normal) {
         direction = { 1.0f, 0.0f }; 
     }
 
-    SetVelocity(direction * incoming_speed * 0.75f);
-
+    SetVelocity(direction * incoming_speed * 0.55f);
+    Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetCameraView().SetZoom(1.05f);
+    Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetCamera().StartShake(10, 5);
     move = false;
 
 }

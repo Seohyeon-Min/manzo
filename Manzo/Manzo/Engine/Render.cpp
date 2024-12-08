@@ -18,7 +18,7 @@
 const float WORLD_SIZE_MAX = (float)std::max(Engine::window_width, Engine::window_height);
 
 CS230::Render::Render()
-    : postProcessFramebuffer(Engine::window_width, Engine::window_height) { // 프레임 버퍼 생성
+    : postProcessFramebuffer((unsigned int)Engine::window_width, (unsigned int)Engine::window_height) { // 프레임 버퍼 생성
     CreatModel();  // 모델 생성
     CreatLineModel();
     CreateCircleLineModel();
@@ -126,10 +126,10 @@ void CS230::Render::ApplyPostProcessing()
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer.GetColorAttachment());
     bloomShader->SendUniform("uSceneTexture", 0);
-    bloomShader->SendUniform("uThreshold", 0.7f);
+    bloomShader->SendUniform("uThreshold", 0.70f);
     bloomShader->SendUniform("uBlurDirection", 1.0f, 0.0f); // 수평 블러
     bloomShader->SendUniform("uResolution", static_cast<float>(Engine::window_width));
-    bloomShader->SendUniform("uBloomIntensity", 1.0f);
+    bloomShader->SendUniform("uBloomIntensity", 1.2f);
 
     RenderQuad();
     bloomShader->Use(false);
@@ -388,6 +388,11 @@ mat3 CS230::Render::GetWorldtoNDC()
     return Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->world_to_ndc;
 }
 
+
+void CS230::Render::SetProjection(const mat3 proj)
+{
+    projection_matrix = proj;
+}
 
 void CS230::Render::CreatModel()
 {
