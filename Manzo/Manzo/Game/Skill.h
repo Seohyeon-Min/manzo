@@ -45,7 +45,7 @@ public:
 	Ship* GetShipPtr(); 
 	std::vector<Skill_list> GetSkill() { return skillslots; };
 	void AddSkill(Skill_list input, int money);
-	const std::vector<Skill_list> GetInventory() { return inventory; };
+	std::vector<Skill_list> GetInventory() { return inventory; };
 
 	void Active_skill(Skill_list skill);
 	void SkillNet();
