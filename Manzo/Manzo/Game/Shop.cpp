@@ -15,7 +15,7 @@ Shop::Shop()
 	defualt_icon_direction = { static_cast<float>(-shop_background->GetWidth()), static_cast<float>(Engine::window_height - (inven_background->GetHeight() * 0.9)) }; // 아이콘 기본값
 	inven_back_pos = { 200, static_cast<float>(Engine::window_height - (inven_background->GetHeight() * 1.3)) };
 	botton_pos = { static_cast<float>(-shop_background->GetWidth() + shop_button->GetWidth()), static_cast<float>(Engine::window_height - (inven_background->GetHeight() * 0.9)) };
-	back_matrix_defualt = { static_cast<float>(200 - shop_background->GetWidth() * 1.2), static_cast<float>(Engine::window_height - (inven_background->GetHeight() * 1.3)) };
+	back_matrix_defualt = { static_cast<float>(100 - shop_background->GetWidth()), static_cast<float>(Engine::window_height - (inven_background->GetHeight() * 1.3)) };
 	for (int i = 1; i < 4; i++)
 	{
 		icon_matrix.push_back(mat3::build_translation({ base_icon_direction.x , base_icon_direction.y - (float) (i*(shop_background->GetHeight()/4)) }) * mat3::build_scale(0.4f));
