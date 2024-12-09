@@ -112,7 +112,6 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                     scale.x = std::sqrt(a * a + c * c);  
                     scale.y = std::sqrt(b * b + d * d); 
 
-                    rotateAngle = -std::atan2(b, a);
                 }
 
                 // rotate
