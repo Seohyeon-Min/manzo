@@ -15,7 +15,7 @@ public:
 	std::string TypeName() override { return "Background Fish"; }
 
 	void Update(double dt);
-	void Draw();
+	void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
 
 	void AddBackgroundFishes(BackgroundFish* obj)
 	{

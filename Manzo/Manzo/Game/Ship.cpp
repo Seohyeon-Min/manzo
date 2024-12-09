@@ -148,7 +148,7 @@ void Ship::State_Hit::Enter(GameObject* object) {
     
     ship->force = ship->direction * 20200.f;
     //Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::HitEffect>>()->EmitRound(20,ship->GetPosition(),900.f, 100.f);
-    Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::HitEffect2>>()->EmitRound(20, ship->GetPosition(), 1300.f, 300.f);
+    Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::HitEffect>>()->EmitRound(20, ship->GetPosition(), 1300.f, 300.f);
 
 }
 void Ship::State_Hit::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
@@ -349,6 +349,9 @@ bool Ship::CanCollideWith(GameObjectTypes other_object)
 
 void Ship::ResolveCollision(GameObject* other_object)
 {
+    if (other_object->Type() == GameObjectTypes::Fish) {
+        change_state(&state_idle);
+    }
     if (!hit_with) { // is it needful?
         if (other_object->Type() == GameObjectTypes::Reef) {
 

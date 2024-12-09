@@ -61,7 +61,8 @@ void Mode1::Load() {
     //AddGSComponent(new Pump());
 
 
-    //Particle
+    // Mouse and Particle
+    AddGSComponent(new CS230::ParticleManager<Particles::MouseFollow>()); // wait, are we using it?
     AddGSComponent(new CS230::ParticleManager<Particles::Plankton>());
     AddGSComponent(new CS230::ParticleManager<Particles::FuelBubble>());
     AddGSComponent(new CS230::ParticleManager<Particles::BubblePop>());
@@ -83,8 +84,8 @@ void Mode1::Load() {
     AddGSComponent(background);    
 
     //// to generate fish
-    //fishGenerator = new FishGenerator();
-    //Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
+    fishGenerator = new FishGenerator();
+    Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
 
     background->Add("assets/images/background/temp_background.png", 0.0f);
     background->Add("assets/images/background/bg1.png", 0.3f);
@@ -93,11 +94,9 @@ void Mode1::Load() {
     background->Add("assets/images/background/bg4.png", 0.6f);
     background->Add("assets/images/background/bg5.png", 0.7f);
 
-    // Mouse and Particle
-    AddGSComponent(new CS230::ParticleManager<Particles::MouseFollow>());
+    //Boss
     Boss::LoadBossfile();
    
-
     // UI
     AddGSComponent(new UIManager());
     ui_manager = GetGSComponent<UIManager>();
@@ -157,7 +156,7 @@ void Mode1::Update(double dt) {
     camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
 
     // Update Fish Generator
-    //fishGenerator->GenerateFish(dt);
+    fishGenerator->GenerateFish(dt);
 
     // Update Skills
     skill_ptr->Update();
@@ -168,15 +167,6 @@ void Mode1::Update(double dt) {
         Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
     }
 
-    if (Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() >= 1000) {
-            Engine::GetGameStateManager().ClearNextGameState();
-            Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Clear));
-    }
-    if (ship_ptr->IsFuelZero()
-        || Engine::GetInput().KeyJustPressed(CS230::Input::Keys::M)) {
-        Engine::GetGameStateManager().ClearNextGameState();
-        Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::GameOver));
-    }
     if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::W)) {
         Engine::GetGameStateManager().ReloadState();
     }
@@ -220,9 +210,9 @@ void Mode1::Draw() {
 void Mode1::Unload() {
 
     ship_ptr = nullptr;
-    //fishGenerator->~FishGenerator();
-    //delete fishGenerator;
-    //fishGenerator = nullptr;
+    fishGenerator->~FishGenerator();
+    delete fishGenerator;
+    fishGenerator = nullptr;
 	GetGSComponent<CS230::GameObjectManager>()->Unload();
     GetGSComponent<Background>()->Unload();
     Engine::GetRender().ClearDrawCalls();

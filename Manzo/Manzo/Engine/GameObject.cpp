@@ -52,16 +52,11 @@ void CS230::GameObject::Draw(DrawLayer drawlayer) {
 	Sprite* sprite = GetGOComponent<Sprite>();
 	if (sprite != nullptr) {
 		if (shader == nullptr) {
-			//shader = Engine::GetShaderManager().GetDefaultShader();
 			if (IsPixelShaderApplicable(Type())) {
-				// 픽셀화 셰이더 적용
 				shader = Engine::GetShaderManager().GetShader("pixelate");
-				//SetGlobalShader(pixelShader);
 			}
 			else {
-				// 기본 셰이더 적용
 				shader = Engine::GetShaderManager().GetDefaultShader();
-				//SetGlobalShader(defaultShader);
 			}
 		}
 

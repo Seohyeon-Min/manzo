@@ -1,6 +1,7 @@
 #include "AI.h"
 #include "ScreenWrap.h"
 
+
 std::vector<BackgroundFish*> BackgroundFish::globalLeaders;
 float BackgroundFish::a, BackgroundFish::b, BackgroundFish::c, BackgroundFish::d = 0.f;
 
@@ -133,7 +134,18 @@ void BackgroundFish::Update(double dt) {
     if (pos.y <= -Engine::window_height || pos.y >= Engine::window_height) vel.y = -vel.y;*/
 }
 
-void BackgroundFish::Draw()
+void BackgroundFish::Draw(DrawLayer drawlayer)
 {
-    GameObject::Draw();
+    DrawSettings settings;
+    settings.do_blending = true;
+
+    CS230::DrawCall draw_call = {
+        GetGOComponent<CS230::Sprite>()->GetTexture(),                       // Texture to draw
+        &GetMatrix(),                          // Transformation matrix
+        Engine::GetShaderManager().GetDefaultShader(),
+        nullptr,
+        settings
+    };
+
+    GameObject::Draw(draw_call);
 }

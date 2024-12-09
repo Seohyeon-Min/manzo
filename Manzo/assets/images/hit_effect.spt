@@ -1,1 +1,5 @@
-assets/images/hit_effect.png
+assets/images/ani_test.png
+FrameSize 40 16
+HotSpot 20 8
+NumFrames 4
+Anim assets/images/ani_test.anm
