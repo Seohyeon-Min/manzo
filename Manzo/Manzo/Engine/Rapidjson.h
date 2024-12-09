@@ -18,7 +18,6 @@
 using namespace rapidjson;
 
 
-
 class JsonParser_boss : public Component {
 public:
     JsonParser_boss(std::string path);
@@ -34,7 +33,7 @@ public:
     inline std::vector<int> GetTotalEntry() { return total_entry; }
 
 private:
-       
+
     std::string boss_name;
     int index;
     bool is_boss_fight;
@@ -44,23 +43,16 @@ private:
     std::vector<std::vector<EntryData>> parttern;
     std::vector<int> total_entry;
 
-        Document document;
-    };
-
-    class JsonParser_dialog : public CS230::Component {
-    public:
-        JsonParser_dialog(const std::string& language);
-        const std::string& GetText(const std::string& id) const;
-        const std::string& GetCharacter(const std::string& id)const;
-    private:
-        std::unordered_map<std::string, std::string> translations;
-        std::unordered_map<std::string, std::string> characters;
-    };
+    Document document;
+};
 
 class JsonParser_dialog : public Component {
 public:
-    bool LoadLanguage_dialog(const std::string& language);
+    JsonParser_dialog(const std::string& language);
+    const std::string& GetText(const std::string& id) const;
+    const std::string& GetCharacter(const std::string& id)const;
 private:
-
+    std::unordered_map<std::string, std::string> translations;
+    std::unordered_map<std::string, std::string> characters;
 
 };

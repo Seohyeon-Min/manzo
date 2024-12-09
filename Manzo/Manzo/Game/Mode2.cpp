@@ -112,7 +112,7 @@ void Mode2::Update(double dt) {
     if (Engine::GetInput().KeyJustPressed(Input::Keys::W)) {
         Engine::GetGameStateManager().ReloadState();
     }
-    if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Space)) {
+    if (Engine::GetInput().KeyJustPressed(Input::Keys::Space)) {
        dialog->LoadDialog(1, 0.1);
     }
    

@@ -5,7 +5,7 @@
 Dialog::Dialog() 
 	:currentIndex(0), elapsedTime(0.0),typingSpeed(0.05),IsTyping(false)
 {
-	 dialog = new CS230::JsonParser_dialog("en");
+	 dialog = new JsonParser_dialog("en");
 	 DialogBox = Engine::GetTextureManager().Load("assets/images/temp_dial.png");
 	 boxposition = {50,100};
 }
