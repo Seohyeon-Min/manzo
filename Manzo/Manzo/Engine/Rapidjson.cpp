@@ -95,3 +95,47 @@ CS230::JsonParser_boss::JsonParser_boss(std::string path)
         }
     }
 }
+
+
+CS230::JsonParser_dialog::JsonParser_dialog(const std::string& language) {
+    std::string filePath = "assets/jsons/dialog/" + language + ".json";
+    FILE* fptr = nullptr;
+    errno_t err = fopen_s(&fptr, filePath.c_str(), "rb");
+    if (err != 0 || fptr == nullptr) {
+        std::cout<<"could not open the json file"<<std::endl;
+    }
+    char buffer[65536];
+    rapidjson::FileReadStream is(fptr, buffer, sizeof(buffer));
+    rapidjson::Document doc;
+    doc.ParseStream(is);
+
+    if (doc.HasParseError() || !doc.IsObject()) {
+        std::cout << "json dont work cheak file!" << std::endl;
+    }
+
+    translations.clear();
+    characters.clear();
+
+    const auto& dialogs = doc["dialogs"];
+    for (auto it = dialogs.MemberBegin(); it != dialogs.MemberEnd(); ++it) {
+        const std::string id = it->name.GetString();
+        const std::string character = it->value["character"].GetString();
+        const std::string text = it->value["text"].GetString();
+
+        characters[id] = character;
+        translations[id] = text;
+    }
+}
+
+const std::string& CS230::JsonParser_dialog::GetText(const std::string& id)const{
+
+    static const std::string empty = "";
+    auto it = translations.find(id);
+    return it != translations.end() ? it->second : empty;
+}
+
+const std::string& CS230::JsonParser_dialog::GetCharacter(const std::string& id)const {
+    static const std::string empty = "";
+    auto it = characters.find(id);
+    return it != characters.end() ? it->second : empty;
+}

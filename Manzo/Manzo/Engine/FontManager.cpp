@@ -28,19 +28,20 @@ void FontManager::AddFontType(const char* file_path)
 
 void FontManager::PrintText(int ft, const char* text, vec2 location, float angle, float size, vec3 color)
 {
-	shader = Engine::GetShaderManager().GetShader("font_shader");
+    shader = Engine::GetShaderManager().GetShader("font_shader");
 
-	shader->Use(true);
+    shader->Use(true);
+    shader->SendUniform("u_Texture", 0);
 
-	shader->SendUniform("u_Texture", 0);
+    std::string textStr(text);
 
-	auto it = std::find(text_list.begin(), text_list.end(), text);
-	if (it == text_list.end()) // Text not found
-	{
-		all_labels[ft].add_text(text, location, angle, size, color);
-		all_labels[ft].set_buffers();
-		text_list.push_back(text);
-	}
+    auto it = std::find(text_list.begin(), text_list.end(), textStr);
+    if (it == text_list.end()) 
+    {
+        all_labels[ft].add_text(textStr, location, angle, size, color);
+        all_labels[ft].set_buffers();
+        text_list.push_back(textStr);
+    }
 
-	all_labels[ft].paint_text();
+    all_labels[ft].paint_text();
 }

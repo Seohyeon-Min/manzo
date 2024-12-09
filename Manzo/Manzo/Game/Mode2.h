@@ -17,6 +17,7 @@ Created:    Sept 12, 2024
 #include "Fish.h"
 #include "Shop.h"
 #include "../Engine/UIManager.h"
+#include "DialogBox.h"
 
 class Fish;
 
@@ -44,6 +45,7 @@ private:
     Background* background;
     Skillsys* skill_ptr;
     UIManager* ui_manager;
+    Dialog* dialog;
 
     float y_limit = 15.0f;
     float frequency = 0.9f;

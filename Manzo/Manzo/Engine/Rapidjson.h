@@ -1,3 +1,5 @@
+#pragma once
+
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
@@ -44,14 +46,15 @@ namespace CS230 {
 
         Document document;
     };
-}
 
-namespace CS230 {
     class JsonParser_dialog : public CS230::Component {
     public:
-        bool LoadLanguage_dialog(const std::string& language);
+        JsonParser_dialog(const std::string& language);
+        const std::string& GetText(const std::string& id) const;
+        const std::string& GetCharacter(const std::string& id)const;
     private:
-
+        std::unordered_map<std::string, std::string> translations;
+        std::unordered_map<std::string, std::string> characters;
 
     };
 }

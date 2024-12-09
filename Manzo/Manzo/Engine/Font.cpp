@@ -160,7 +160,7 @@ void label_text_store::init(const char* file_path)
 	total_char_count = 0;
 }
 
-void label_text_store::add_text(const char* label, vec2 label_loc,	float label_angle, float font_size, vec3 label_color)
+void label_text_store::add_text(std::string label, vec2 label_loc,	float label_angle, float font_size, vec3 label_color)
 {
 	// Create a temporary element
 	label_text temp_label;
@@ -177,7 +177,7 @@ void label_text_store::add_text(const char* label, vec2 label_loc,	float label_a
 	labels.push_back(temp_label);
 
 	// Add to the char_count
-	total_char_count = total_char_count + static_cast<unsigned int>(strlen(label));
+	total_char_count = total_char_count + static_cast<unsigned int>(strlen(label.c_str()));
 }
 
 void label_text_store::set_buffers()

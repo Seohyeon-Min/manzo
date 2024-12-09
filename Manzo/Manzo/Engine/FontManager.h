@@ -20,7 +20,7 @@ public:
 private:
 	std::array<label_text_store, FontType::Count> all_labels;
 	const GLShader* shader;
-	std::vector<const char*> text_list;
+	std::vector<std::string> text_list;
 	bool added = false;
 	static int fontNum;
 };

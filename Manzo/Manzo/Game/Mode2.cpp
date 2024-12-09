@@ -20,11 +20,14 @@ Created:    March 8, 2023
 #include "Ship.h"
 #include "Mode2.h"
 #include "Mouse.h"
+#include "DialogBox.h"
 
 
 #include <iostream>     // for debug
 
 Mode2::Mode2() {}
+
+int dialog_test_int = 0;//Áö¿öµµ ¤¡¤º
 
 void Mode2::Load() {
 
@@ -32,6 +35,9 @@ void Mode2::Load() {
     AddGSComponent(new CS230::ShowCollision());
 #else
 #endif
+
+    
+    
     // compenent
     AddGSComponent(new CS230::GameObjectManager());
 
@@ -49,6 +55,11 @@ void Mode2::Load() {
     background = new Background();
     AddGSComponent(background);
     background->Add("assets/images/background/temp_back2.png", 0.25f);
+
+    /// Dialog
+    dialog = new Dialog();
+    AddGSComponent(dialog);
+    dialog->Unload();
 
 
     AddGSComponent(new UIManager());
@@ -88,6 +99,7 @@ void Mode2::Update(double dt) {
     GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
     GetGSComponent<CS230::Cam>()->Update(dt, ship_ptr->GetPosition(), false);
     skill_ptr->Update();
+    
 
     //float moving~
     time += float(dt);
@@ -99,8 +111,12 @@ void Mode2::Update(double dt) {
     }
     if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::W)) {
         Engine::GetGameStateManager().ReloadState();
-
     }
+    if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Space)) {
+       dialog->LoadDialog(1, 0.1);
+    }
+   
+
 }
 
 void Mode2::FixedUpdate(double dt)
@@ -112,6 +128,8 @@ void Mode2::Draw() {
     GetGSComponent<Background>()->Draw(*GetGSComponent<CS230::Cam>());
     GetGSComponent<CS230::GameObjectManager>()->DrawAll();
     ui_manager->AddDrawCalls();
+    dialog->Draw();
+    
 }
 
 void Mode2::Unload() {
@@ -122,4 +140,5 @@ void Mode2::Unload() {
     ship_ptr = nullptr;
     skill_ptr = nullptr;
     background = nullptr;
+    dialog->Unload();
 }
