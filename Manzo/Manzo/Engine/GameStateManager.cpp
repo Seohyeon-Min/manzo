@@ -13,34 +13,34 @@ Updated:    03/14/2024
 #include "Engine.h"
 #include "GameObjectManager.h"
 
-CS230::GameStateManager::GameStateManager() :
+GameStateManager::GameStateManager() :
     current_gamestate(nullptr),
     next_gamestate(nullptr),
     status(Status::STARTING)
 { }
 
-void CS230::GameStateManager::AddGameState(GameState& gamestate) {
+void GameStateManager::AddGameState(GameState& gamestate) {
     gamestates.push_back(&gamestate);
 }
 
-void CS230::GameStateManager::SetNextGameState(int index) {
+void GameStateManager::SetNextGameState(int index) {
     next_gamestate = gamestates[index];
 }
 
-void CS230::GameStateManager::ReloadState() {
+void GameStateManager::ReloadState() {
     status = Status::UNLOADING;
 }
 
-void CS230::GameStateManager::ClearNextGameState() {
+void GameStateManager::ClearNextGameState() {
     status = Status::UNLOADING;
     next_gamestate = nullptr;
 }
 
-bool CS230::GameStateManager::HasGameEnded() {
+bool GameStateManager::HasGameEnded() {
     return status == Status::EXIT;
 }
 
-void CS230::GameStateManager::Update(double dt) {
+void GameStateManager::Update(double dt) {
     static std::atomic<bool> isLoading{ false }; // 로딩 상태 플래그
     static std::thread loadingThread;
 
@@ -70,8 +70,8 @@ void CS230::GameStateManager::Update(double dt) {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             Engine::GetLogger().LogVerbose("Update" + current_gamestate->GetName());
             current_gamestate->Update(dt);
-            //if (current_gamestate->GetGSComponent<CS230::GameObjectManager>() != nullptr) {
-            //    current_gamestate->GetGSComponent<CS230::GameObjectManager>()->CollisionTest();
+            //if (current_gamestate->GetGSComponent<GameObjectManager>() != nullptr) {
+            //    current_gamestate->GetGSComponent<GameObjectManager>()->CollisionTest();
             //}
             current_gamestate->Draw();
         }
@@ -98,13 +98,13 @@ void CS230::GameStateManager::Update(double dt) {
     }
 }
 
-void CS230::GameStateManager::FixedUpdate(double dt)
+void GameStateManager::FixedUpdate(double dt)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     Engine::GetLogger().LogVerbose("FixedUpdate" + current_gamestate->GetName());
     current_gamestate->FixedUpdate(dt);
-    if (current_gamestate->GetGSComponent<CS230::GameObjectManager>() != nullptr) {
-        current_gamestate->GetGSComponent<CS230::GameObjectManager>()->CollisionTest();
+    if (current_gamestate->GetGSComponent<GameObjectManager>() != nullptr) {
+        current_gamestate->GetGSComponent<GameObjectManager>()->CollisionTest();
     }
 
 }

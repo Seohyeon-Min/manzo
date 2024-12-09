@@ -2,13 +2,13 @@
 #include "WindowState.h"
 #include <iostream>
 
-CS230::Cam::Cam()
+Cam::Cam()
 {
 	//this->player_zone = player_zone;
 	caminfo.camera_view.SetFramebufferSize((int)Engine::window_width, (int)Engine::window_height);
 }
 
-void CS230::Cam::Update(double dt, const vec2& player_position, bool playerMove)
+void Cam::Update(double dt, const vec2& player_position, bool playerMove)
 {
     caminfo.camera_view.SetFramebufferSize((int)Engine::window_width, (int)Engine::window_height);
     float lerpFactor = 0.03f; // (0.0 ~ 1.0)
@@ -39,17 +39,17 @@ void CS230::Cam::Update(double dt, const vec2& player_position, bool playerMove)
 }
 
 
-void CS230::Cam::SetPosition(vec2 new_position)
+void Cam::SetPosition(vec2 new_position)
 {
 	caminfo.camera.Position = new_position;
 }
 
-const vec2& CS230::Cam::GetPosition() const
+const vec2& Cam::GetPosition() const
 {
 	return caminfo.camera.Position;
 }
 
-void CS230::Cam::SetLimit(Math::rect new_limit)
+void Cam::SetLimit(Math::rect new_limit)
 {
 	limit = new_limit;
 }

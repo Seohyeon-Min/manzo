@@ -25,32 +25,31 @@ Created:    March 8, 2023
 #include <vector>
 
 
-namespace CS230 {
-    class Cam : public Component {
-    public:
-        Cam();
-        void Update(double dt, const vec2& player_position, bool playerMove);
-        void SetPosition(vec2 new_position);
-        const vec2& GetPosition() const;
-        void SetLimit(Math::rect new_limit);
-        CameraView& GetCameraView() { return caminfo.camera_view; }
-        Camera& GetCamera() { return caminfo.camera; }
 
-        mat3 world_to_cam;
-        mat3 cam_to_ndc;
-        mat3 world_to_ndc;
+class Cam : public Component {
+public:
+    Cam();
+    void Update(double dt, const vec2& player_position, bool playerMove);
+    void SetPosition(vec2 new_position);
+    const vec2& GetPosition() const;
+    void SetLimit(Math::rect new_limit);
+    CameraView& GetCameraView() { return caminfo.camera_view; }
+    Camera& GetCamera() { return caminfo.camera; }
 
-    private:
-        Math::rect limit;
+    mat3 world_to_cam;
+    mat3 cam_to_ndc;
+    mat3 world_to_ndc;
 
-        struct CamInfo
-        {
-            Camera     camera{};
-            CameraView camera_view{};
-            float      move_scalar = 0;
-            float      turn_scalar = 0;
-            float      strafe_scalar = 0;
-            float      move_speed = 240.0f;
-        } caminfo;
-    };
-}
+private:
+    Math::rect limit;
+
+    struct CamInfo
+    {
+        Camera     camera{};
+        CameraView camera_view{};
+        float      move_scalar = 0;
+        float      turn_scalar = 0;
+        float      strafe_scalar = 0;
+        float      move_speed = 240.0f;
+    } caminfo;
+};

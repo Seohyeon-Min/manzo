@@ -44,14 +44,14 @@ void ProjectPolygon(const Polygon& polygon, const vec2& axis, float& min, float&
 }
 ///////////////////////////////////////////////////////////////////////////////////////
 
-CS230::RectCollision::RectCollision(Math::irect boundary, GameObject* object) :
+RectCollision::RectCollision(Math::irect boundary, GameObject* object) :
     boundary(boundary),
     object(object)
 {
     Engine::GetShaderManager().LoadShader("default_collision", "assets/shaders/default_collision.vert", "assets/shaders/default_collision.frag");
 }
 
-Math::rect CS230::RectCollision::WorldBoundary_rect() {
+Math::rect RectCollision::WorldBoundary_rect() {
     //std::cout << object->GetMatrix().column2.x << std::endl;
     return {
         {(object->GetMatrix() * mat3::build_translation((vec2)boundary.point_1)).column2.x,
@@ -61,7 +61,7 @@ Math::rect CS230::RectCollision::WorldBoundary_rect() {
     };
 }
 
-Polygon CS230::MAP_SATCollision::WorldBoundary_poly() {
+Polygon MAP_SATCollision::WorldBoundary_poly() {
     Polygon boundary_poly;
     vec2 transformedPoint;
 
@@ -77,7 +77,7 @@ Polygon CS230::MAP_SATCollision::WorldBoundary_poly() {
 }
 
 
-void CS230::RectCollision::Draw() {
+void RectCollision::Draw() {
     Math::rect world_boundary = WorldBoundary_rect();
 
     vec2 bottom_left = vec2{ world_boundary.Left(), world_boundary.Bottom() };
@@ -92,7 +92,7 @@ void CS230::RectCollision::Draw() {
 }
 
 
-bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
+bool RectCollision::IsCollidingWith(GameObject* other_object) {
     Collision* other_collider = other_object->GetGOComponent<Collision>();
     Math::rect rectangle_1 = WorldBoundary_rect();
 
@@ -175,7 +175,7 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
 
 
 
-bool CS230::RectCollision::IsCollidingWith(vec2 point)
+bool RectCollision::IsCollidingWith(vec2 point)
 {
     Math::rect rectangle_1 = WorldBoundary_rect();
 
@@ -188,13 +188,13 @@ bool CS230::RectCollision::IsCollidingWith(vec2 point)
     return false;
 }
 
-CS230::MAP_SATCollision::MAP_SATCollision(Polygon boundary, GameObject* object) :
+MAP_SATCollision::MAP_SATCollision(Polygon boundary, GameObject* object) :
     boundary(boundary),
     object(object)
 {
 }
 
-bool CS230::MAP_SATCollision::IsCollidingWith(vec2 point) {
+bool MAP_SATCollision::IsCollidingWith(vec2 point) {
     Polygon poly_1 = WorldBoundary_poly();
     for (int i = 0; i < poly_1.vertexCount; i++) {
         vec2 edge = { poly_1.vertices[(i + 1) % poly_1.vertexCount].x - poly_1.vertices[i].x,
@@ -220,7 +220,7 @@ bool CS230::MAP_SATCollision::IsCollidingWith(vec2 point) {
     return true;
 }
 
-bool CS230::MAP_SATCollision::IsCollidingWith(GameObject* other_object)
+bool MAP_SATCollision::IsCollidingWith(GameObject* other_object)
 {
     Collision* other_collider = other_object->GetGOComponent<Collision>();
 
@@ -282,7 +282,7 @@ bool CS230::MAP_SATCollision::IsCollidingWith(GameObject* other_object)
 
 
 
-void CS230::MAP_SATCollision::Draw() {
+void MAP_SATCollision::Draw() {
     Polygon boundary = WorldBoundary_poly();
     for (int j = 1; j < boundary.vertexCount; ++j) {
         Engine::GetRender().AddDrawCall(vec2{ boundary.vertices[j - 1].x, boundary.vertices[j - 1].y },

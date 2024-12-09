@@ -19,7 +19,7 @@ class Beat;
 
 class Skillsys;
 
-class Ship : public CS230::GameObject {
+class Ship : public GameObject {
 public:
     Ship(vec2 start_position);
     GameObjectTypes Type() override { return GameObjectTypes::Ship; }
@@ -57,8 +57,8 @@ private:
     Math::rect limit;
     const double fuel_bubble_time = 0.03;
     const double collide_time = 1.1;
-    CS230::Timer* fuel_bubble_timer;
-    CS230::RealTimeTimer* collide_timer;
+    Timer* fuel_bubble_timer;
+    RealTimeTimer* collide_timer;
 
     //for fuel
 
@@ -107,7 +107,7 @@ private:
     State_Hit state_hit;
 };
 
-class Pump : public CS230::GameObject {
+class Pump : public GameObject {
 public:
     Pump();
     GameObjectTypes Type() override { return GameObjectTypes::Ship; }

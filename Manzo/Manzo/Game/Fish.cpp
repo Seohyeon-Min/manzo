@@ -2,6 +2,7 @@
 #include <random>
 #include <iostream>
 #include "../Engine/GameObjectManager.h"
+#include "DashEffect.h"
 
 std::mt19937 dre;
 std::vector<Fish::FishDex> Fish::fishBook;
@@ -9,7 +10,7 @@ std::vector<Fish::FishDex> Fish::fishBook;
 int Fish::money = 500;
 
 
-Fish::Fish(Fish* parent) : CS230::GameObject({ 0, 0 }) {
+Fish::Fish(Fish* parent) : GameObject({ 0, 0 }) {
 
 	std::uniform_int_distribution<int> fishIndex(0, static_cast<int>(fishBook.size() - 1));
 	int index = fishIndex(dre);
@@ -28,7 +29,7 @@ Fish::Fish(Fish* parent) : CS230::GameObject({ 0, 0 }) {
 		type = parent->type;
 	}
 
-	AddGOComponent(new CS230::Sprite(fishBook[index].filePath, this));
+	AddGOComponent(new Sprite(fishBook[index].filePath, this));
 }
 
 bool Fish::CanCollideWith(GameObjectTypes other_object)
@@ -47,6 +48,7 @@ void Fish::ResolveCollision(GameObject* other_object)
 	switch (other_object->Type()) {
 	case GameObjectTypes::Ship:
 	case GameObjectTypes::Net:
+		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new CaptureEffect(GetPosition()));
 		this->Destroy();
 		money++;
 		break;
@@ -58,7 +60,7 @@ void Fish::Update(double dt) {
 	GameObject::Update(dt);
 
 	//destroy outside world
-	if (GetPosition().x - GetGOComponent<CS230::Sprite>()->GetFrameSize().x / 2 > Engine::window_width * 0.5f)
+	if (GetPosition().x - GetGOComponent<Sprite>()->GetFrameSize().x / 2 > Engine::window_width * 0.5f)
 	{
 		Destroy();
 	}
@@ -73,7 +75,7 @@ void Fish::Update(double dt) {
 
 void Fish::Draw()
 {
-	CS230::GameObject::Draw();
+	GameObject::Draw();
 }
 
 void Fish::ReadFishCSV(const std::string& filename)

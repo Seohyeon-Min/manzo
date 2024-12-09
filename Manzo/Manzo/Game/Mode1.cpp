@@ -39,7 +39,7 @@ Mode1::Mode1()
 void Mode1::Load() {
 
 #ifdef _DEBUG
-    AddGSComponent(new CS230::ShowCollision());
+    AddGSComponent(new ShowCollision());
 #else
 #endif
 
@@ -52,30 +52,31 @@ void Mode1::Load() {
     Engine::GetShaderManager().LoadShader("change_alpha_no_texture", "assets/shaders/default.vert", "assets/shaders/change_alpha_no_texture.frag");
 
     // component
-    AddGSComponent(new CS230::GameObjectManager());
+    AddGSComponent(new GameObjectManager());
     beat_system = new Beat();
     AddGSComponent(beat_system);
-    AddGSComponent(new CS230::Map());
+    AddGSComponent(new Map());
     god_ray = new GodRay();
     AddGSComponent(god_ray);
     //AddGSComponent(new Pump());
 
 
     // Mouse and Particle
-    AddGSComponent(new CS230::ParticleManager<Particles::MouseFollow>()); // wait, are we using it?
-    AddGSComponent(new CS230::ParticleManager<Particles::Plankton>());
-    AddGSComponent(new CS230::ParticleManager<Particles::FuelBubble>());
-    AddGSComponent(new CS230::ParticleManager<Particles::BubblePop>());
-    AddGSComponent(new CS230::ParticleManager<Particles::HitEffect>());
-    AddGSComponent(new CS230::ParticleManager<Particles::HitEffect2>());
+    AddGSComponent(new ParticleManager<Particles::MouseFollow>()); // wait, are we using it?
+    AddGSComponent(new ParticleManager<Particles::Plankton>());
+    AddGSComponent(new ParticleManager<Particles::FuelBubble>());
+    AddGSComponent(new ParticleManager<Particles::BubblePop>());
+    AddGSComponent(new ParticleManager<Particles::HitEffect>());
+    AddGSComponent(new ParticleManager<Particles::HitEffect2>());
+    AddGSComponent(new ParticleManager<Particles::CaptureEffect>());
 
     //// ship
     ship_ptr = new Ship({ 0, 0 });
-    GetGSComponent<CS230::GameObjectManager>()->Add(ship_ptr);
+    GetGSComponent<GameObjectManager>()->Add(ship_ptr);
 
     //// camera
     Math::rect Boundary({ -640,-360 }, { 640,360 });
-    camera = new CS230::Cam();
+    camera = new Cam();
     AddGSComponent(camera);
     camera->SetLimit(Boundary);
 
@@ -104,7 +105,7 @@ void Mode1::Load() {
     ui_manager->AddUI(std::make_unique<Mouse>());
 
     // Map
-    GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/test2.svg");
+    GetGSComponent<Map>()->ParseSVG("assets/maps/test2.svg");
     //for (int i = 0; i < 25; i++)
     //{
     //    GetGSComponent<Boss>()->ReadBossJSON(static_cast<Boss::BossType>(i));
@@ -149,8 +150,8 @@ void Mode1::Load() {
 
 void Mode1::Update(double dt) {
     UpdateGSComponents(dt);
-    GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
-    Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::Plankton>>()->Spray();
+    GetGSComponent<GameObjectManager>()->UpdateAll(dt);
+    Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::Plankton>>()->Spray();
     //std::cout << "update: " << dt << std::endl;
     //camera postion update
     camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
@@ -162,17 +163,17 @@ void Mode1::Update(double dt) {
     skill_ptr->Update();
 
     // Handle Input
-    if (ship_ptr->IsShipUnder() && Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Q)) {
+    if (ship_ptr->IsShipUnder() && Engine::GetInput().KeyJustPressed(Input::Keys::Q)) {
         Engine::GetGameStateManager().ClearNextGameState();
         Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
     }
 
-    if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::W)) {
+    if (Engine::GetInput().KeyJustPressed(Input::Keys::W)) {
         Engine::GetGameStateManager().ReloadState();
     }
 
-    if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::E) && !Isboss) {
-        GetGSComponent<CS230::GameObjectManager>()->Add(boss_ptr);
+    if (Engine::GetInput().KeyJustPressed(Input::Keys::E) && !Isboss) {
+        GetGSComponent<GameObjectManager>()->Add(boss_ptr);
         Isboss = true;
     }
 
@@ -190,16 +191,16 @@ void Mode1::Update(double dt) {
 void Mode1::FixedUpdate(double dt)
 {
     //std::cout << "fixedupdate: " << dt << std::endl;
-    if (GetGSComponent<CS230::GameObjectManager>()) {
-        GetGSComponent<CS230::GameObjectManager>()->FixedUpdateAll(dt);
+    if (GetGSComponent<GameObjectManager>()) {
+        GetGSComponent<GameObjectManager>()->FixedUpdateAll(dt);
     }
 }
 
 void Mode1::Draw() {
-    GetGSComponent<Background>()->Draw(*GetGSComponent<CS230::Cam>());
-    GetGSComponent<CS230::Map>()->AddDrawCall();
+    GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
+    GetGSComponent<Map>()->AddDrawCall();
     god_ray->Draw();
-    GetGSComponent<CS230::GameObjectManager>()->DrawAll();
+    GetGSComponent<GameObjectManager>()->DrawAll();
     ui_manager->AddDrawCalls();
 
     // Draw Font
@@ -213,7 +214,7 @@ void Mode1::Unload() {
     fishGenerator->~FishGenerator();
     delete fishGenerator;
     fishGenerator = nullptr;
-	GetGSComponent<CS230::GameObjectManager>()->Unload();
+	GetGSComponent<GameObjectManager>()->Unload();
     GetGSComponent<Background>()->Unload();
     Engine::GetRender().ClearDrawCalls();
     ui_manager->UnloadUI();

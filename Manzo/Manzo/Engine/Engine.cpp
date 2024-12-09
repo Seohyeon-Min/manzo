@@ -23,9 +23,9 @@ Created:    March 8, 2023
 
 Engine::Engine() :
 #ifdef _DEBUG
-    logger(last_tick, CS230::Logger::Severity::Debug, true)
+    logger(last_tick, Logger::Severity::Debug, true)
 #else
-    logger(CS230::Logger::Severity::Event, false)
+    logger(Logger::Severity::Event, false)
 #endif
 {
 
@@ -122,7 +122,7 @@ void Engine::ImGuiDraw()
         if (!GetGameStateManager().IsNull()
             && GetGameStateManager().GetGSComponent<Beat>() != nullptr) {
             ImGui::LabelText("Is on beat?", "%s", GetGameStateManager().GetGSComponent<Beat>()->GetIsOnBeat() ? "true" : "false");
-            //ImGui::LabelText("Collision", "%s", GetGameStateManager().GetGSComponent<CS230::ShowCollision>()->Enabled() ? "true" : "false");
+            //ImGui::LabelText("Collision", "%s", GetGameStateManager().GetGSComponent<ShowCollision>()->Enabled() ? "true" : "false");
         }
     }
     ImGui::End();

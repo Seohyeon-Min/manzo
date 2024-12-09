@@ -4,7 +4,7 @@
 #include <vector>
 #include <memory>
 
-class UIManager : public CS230::Component{
+class UIManager : public Component{
 public:
     // UI 요소 추가
     void AddUI(std::unique_ptr<UI> ui) {

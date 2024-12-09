@@ -8,7 +8,7 @@
 #include "Fish.h"
 #include "Skill.h"
 
-class Dialog : public CS230::Component
+class Dialog : public Component
 {
 public:
 
@@ -37,11 +37,11 @@ private:
 	vec2 base_botton_direction;
 	vec2 defualt_botton_direction;
 	vec2 inven_back_pos;
-	CS230::DrawCall draw_call;
+	DrawCall draw_call;
 	std::vector<mat3> icon_matrix;
 	std::vector<mat3> inv_icon_matrix;
-	std::vector<CS230::DrawCall> icon_draw_calls;
-	std::vector<CS230::DrawCall> inv_icon_draw_calls; //for inventory icon
+	std::vector<DrawCall> icon_draw_calls;
+	std::vector<DrawCall> inv_icon_draw_calls; //for inventory icon
 	std::vector<vec2> icon_direction;
 
 };

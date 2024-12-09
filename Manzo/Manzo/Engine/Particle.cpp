@@ -10,23 +10,23 @@ Created:    June 8, 2024
 
 #include "Particle.h"
 
-CS230::Particle::Particle(const std::filesystem::path& sprite_file):
+Particle::Particle(const std::filesystem::path& sprite_file):
 	GameObject({0,0})
 {
-	AddGOComponent(new CS230::Sprite(sprite_file, this));
+	AddGOComponent(new Sprite(sprite_file, this));
 }
 
-void CS230::Particle::Start(vec2 position, vec2 velocity, double _max_life, vec2 scale)
+void Particle::Start(vec2 position, vec2 velocity, double _max_life, vec2 scale)
 {
 	SetPosition(position);
 	SetVelocity(velocity);
 	SetScale(scale);
 	life = _max_life;
 	max_life = _max_life;
-	//GetGOComponent<CS230::Sprite>()->Reset();
+	GetGOComponent<Sprite>()->Reset();
 }
 
-void CS230::Particle::Update(double dt)
+void Particle::Update(double dt)
 {
 	life -= dt;
 	if (Alive())
@@ -35,16 +35,17 @@ void CS230::Particle::Update(double dt)
 
 
 
-void CS230::Particle::Draw(DrawLayer dl)
+void Particle::Draw(DrawLayer dl)
 {
 	if(Alive())
 		if(shader == nullptr) GameObject::Draw(drawlayer);
 		else {
 			DrawSettings settings;
 			settings.do_blending = true;
+			Sprite* sprite = GetGOComponent<Sprite>();
 
-			CS230::DrawCall draw_call = {
-				GetGOComponent<Sprite>()->GetTexture(),                       // Texture to draw
+			DrawCall draw_call = {
+				sprite,                       // Texture to draw
 				&GetMatrix(),                          // Transformation matrix
 				Engine::GetShaderManager().GetShader("change_alpha"), // Shader to use
 				[this](const GLShader* shader) {
@@ -57,7 +58,7 @@ void CS230::Particle::Draw(DrawLayer dl)
 		}
 }
 
-void CS230::Particle::SetAlpha(const GLShader* shader)
+void Particle::SetAlpha(const GLShader* shader)
 {
 	float alpha = float(life / max_life);
 	shader->SendUniform("uAlpha", alpha);

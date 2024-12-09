@@ -15,37 +15,36 @@ Updated:    03/14/2024
 #include <vector>
 #include <thread>
 
-namespace CS230 {
-    class GameStateManager {
-    public:
-        GameStateManager();
 
-        void Update(double dt);
-        void FixedUpdate(double dt);
+class GameStateManager {
+public:
+    GameStateManager();
 
-        void AddGameState(GameState& gamestate);
-        void SetNextGameState(int index);
-        void ClearNextGameState();
-        void ReloadState();
-        bool HasGameEnded();
-        bool IsNull() { return current_gamestate == nullptr; }
-        std::string GetStateName() { return current_gamestate->GetName(); }
-        template<typename T>
-        T* GetGSComponent() { return current_gamestate->GetGSComponent<T>(); }
+    void Update(double dt);
+    void FixedUpdate(double dt);
 
-    private:
-        enum class Status {
-            STARTING,
-            LOADING,
-            UPDATING,
-            UNLOADING,
-            STOPPING,
-            EXIT
-        };
+    void AddGameState(GameState& gamestate);
+    void SetNextGameState(int index);
+    void ClearNextGameState();
+    void ReloadState();
+    bool HasGameEnded();
+    bool IsNull() { return current_gamestate == nullptr; }
+    std::string GetStateName() { return current_gamestate->GetName(); }
+    template<typename T>
+    T* GetGSComponent() { return current_gamestate->GetGSComponent<T>(); }
 
-        Status status;
-        std::vector<GameState*> gamestates;
-        GameState* current_gamestate;
-        GameState* next_gamestate;
+private:
+    enum class Status {
+        STARTING,
+        LOADING,
+        UPDATING,
+        UNLOADING,
+        STOPPING,
+        EXIT
     };
-}
+
+    Status status;
+    std::vector<GameState*> gamestates;
+    GameState* current_gamestate;
+    GameState* next_gamestate;
+};

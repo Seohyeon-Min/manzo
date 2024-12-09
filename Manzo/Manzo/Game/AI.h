@@ -6,7 +6,7 @@
 #include "../Engine/AABB.h"
 #include "WindowState.h"
 
-class BackgroundFish : public CS230::GameObject
+class BackgroundFish : public GameObject
 {
 public:
 	BackgroundFish();

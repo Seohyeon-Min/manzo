@@ -9,7 +9,7 @@
 #include <vector>
 class RockGroup;
 
-class Rock : public CS230::GameObject
+class Rock : public GameObject
 {
 public:
 	Rock(Polygon poly);
@@ -33,7 +33,7 @@ private:
 };
 
 
-class RockGroup : public CS230::GameObject //group of polys
+class RockGroup : public GameObject //group of polys
 {
 public:
 	RockGroup(const std::string& index);
@@ -66,25 +66,24 @@ private:
 };
 
 
-namespace CS230 {
-	class Map : public CS230::Component {
-	public:
-		~Map() {
-			objects.clear();
-			rock_groups.clear();
-		}
-		void ParseSVG(const std::string& filename);
-		void AddDrawCall();
 
-		std::vector<Rock> GetRock()
-		{
-			return objects;
-		}
+class Map : public Component {
+public:
+	~Map() {
+		objects.clear();
+		rock_groups.clear();
+	}
+	void ParseSVG(const std::string& filename);
+	void AddDrawCall();
 
-	private:
+	std::vector<Rock> GetRock()
+	{
+		return objects;
+	}
 
-		std::vector<Rock> objects;
-		std::vector<RockGroup*> rock_groups;		//vector for groups
+private:
 
-	};
-}
+	std::vector<Rock> objects;
+	std::vector<RockGroup*> rock_groups;		//vector for groups
+
+};

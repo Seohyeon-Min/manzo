@@ -24,7 +24,7 @@ class Ship;
 
 class Skillsys;
 
-class Mode2 : public CS230::GameState {
+class Mode2 : public GameState {
 public:
     Mode2();
     void Load() override;
@@ -38,7 +38,7 @@ public:
     }
 private:
     double counter = 0.0;
-    CS230::Timer* timer;
+    Timer* timer;
     double swimming_range = 15.0;
     Ship* ship_ptr;
     Background* background;

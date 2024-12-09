@@ -2,7 +2,7 @@
 
 ShaderManager::ShaderManager() {
     default_shader = std::make_shared<GLShader>("Default Shader", std::initializer_list<std::pair<GLShader::Type, std::filesystem::path>>{
-        {GLShader::VERTEX, "assets/shaders/default2.vert"},
+        {GLShader::VERTEX, "assets/shaders/default.vert"},
         { GLShader::FRAGMENT, "assets/shaders/default.frag" }
     });
 }

@@ -12,6 +12,6 @@ public:
 	std::vector<Fish*> fishList;
 
 private:
-	CS230::Timer* timer;
+	Timer* timer;
 	float height = Engine::window_height;
 };

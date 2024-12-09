@@ -32,7 +32,7 @@ void Background::Unload()
     backgrounds.clear();
 }
 
-void Background::Draw(const CS230::Cam& camera)
+void Background::Draw(const Cam& camera)
 {
     vec2 cameraPos = camera.GetPosition();
 
@@ -47,7 +47,7 @@ void Background::Draw(const CS230::Cam& camera)
         //background.matrix = mat3::build_translation({ 0 + cameraPos.x, 0 + cameraPos.y });
         background.matrix = mat3::build_translation({ (0 + cameraPos.x) * background.speed, (0 + cameraPos.y) * background.speed });
         //std::cout << parallax_matrix;
-        CS230::DrawCall draw_call = {
+        DrawCall draw_call = {
             background.texture,                       // Texture to draw
             &background.matrix,                          // Transformation matrix
             Engine::GetShaderManager().GetDefaultShader(),

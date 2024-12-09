@@ -13,7 +13,7 @@
 Ship::Ship(vec2 start_position) :
     GameObject(start_position), move(false)
 {
-    AddGOComponent(new CS230::Sprite("assets/images/ship.spt", this));
+    AddGOComponent(new Sprite("assets/images/ship.spt", this));
     beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
     skill = Engine::GetGameStateManager().GetGSComponent<Skillsys>();
 
@@ -22,12 +22,12 @@ Ship::Ship(vec2 start_position) :
     SetVelocity({ 0,0 });
 
     if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
-        Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(new Pump);
+        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new Pump);
         current_state = &state_idle;
         current_state->Enter(this);
-        fuel_bubble_timer = new CS230::Timer(0.0);
+        fuel_bubble_timer = new Timer(0.0);
         AddGOComponent(fuel_bubble_timer);
-        collide_timer = new CS230::RealTimeTimer(collide_time);
+        collide_timer = new RealTimeTimer(collide_time);
         AddGOComponent(collide_timer);
         fuel_bubble_timer->Set(fuel_bubble_time);
     }
@@ -84,7 +84,7 @@ void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
     ship->SetVelocity(force);
     
     if (ship->fuel_bubble_timer->Remaining() == 0.0 && force_multiplier > 0.4) {
-        Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::FuelBubble>>()->Emit(1, target_position, { 0,0 }, -force * 0.4f, 1.5);
+        Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::FuelBubble>>()->Emit(1, target_position, { 0,0 }, -force * 0.4f, 1.5);
         ship->fuel_bubble_timer->Reset();
     }
 }
@@ -112,7 +112,7 @@ void Ship::State_Move::Enter(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
     ship->move = true;
     vec2 dir = ship->GetVelocity().Normalize();
-    Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(new DashEffect());
+    Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new DashEffect());
     
 }
 void Ship::State_Move::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
@@ -147,8 +147,8 @@ void Ship::State_Hit::Enter(GameObject* object) {
     ship->collide_timer->Start();
     
     ship->force = ship->direction * 20200.f;
-    //Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::HitEffect>>()->EmitRound(20,ship->GetPosition(),900.f, 100.f);
-    Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::HitEffect>>()->EmitRound(20, ship->GetPosition(), 1300.f, 300.f);
+    //Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::HitEffect>>()->EmitRound(20,ship->GetPosition(),900.f, 100.f);
+    Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::HitEffect>>()->EmitRound(20, ship->GetPosition(), 1300.f, 300.f);
 
 }
 void Ship::State_Hit::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
@@ -166,7 +166,7 @@ void Ship::State_Hit::FixedUpdate(GameObject* object, double fixed_dt) {
     Ship* ship = static_cast<Ship*>(object);
     ship->SetVelocity(ship->direction*200.f);
     if (ship->collide_timer->Remaining() <= 0.5) {
-        Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetCameraView().SetZoom(1.0f);
+        Engine::GetGameStateManager().GetGSComponent<Cam>()->GetCameraView().SetZoom(1.0f);
         ship->SetVelocity(ship->force);
         float base_dt = 1.0f / 240.f;
         float adjusted_deceleration = (float)pow(ship->deceleration / 2, fixed_dt / base_dt);
@@ -190,24 +190,24 @@ void Ship::Update(double dt)
     GameObject::Update(dt);
     can_dash = true;
     if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
-        Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetCamera().UpdateShake((float)dt);
+        Engine::GetGameStateManager().GetGSComponent<Cam>()->GetCamera().UpdateShake((float)dt);
         // World Boundary
-        CS230::RectCollision* collider = GetGOComponent<CS230::RectCollision>();
+        RectCollision* collider = GetGOComponent<RectCollision>();
 
-        if (collider->WorldBoundary_rect().Left() < Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x - 640) {
-            UpdatePosition({ Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x - 640 - collider->WorldBoundary_rect().Left(), 0 });
+        if (collider->WorldBoundary_rect().Left() < Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition().x - 640) {
+            UpdatePosition({ Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition().x - 640 - collider->WorldBoundary_rect().Left(), 0 });
             SetVelocity({ 0, GetVelocity().y });
         }
-        if (collider->WorldBoundary_rect().Right() > Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x + 640) {
-            UpdatePosition({ Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x + 640 - collider->WorldBoundary_rect().Right(), 0 });
+        if (collider->WorldBoundary_rect().Right() > Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition().x + 640) {
+            UpdatePosition({ Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition().x + 640 - collider->WorldBoundary_rect().Right(), 0 });
             SetVelocity({ 0, GetVelocity().y });
         }
-        if (collider->WorldBoundary_rect().Bottom() < Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y - 360) {
-            UpdatePosition({ 0, Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y - 360 - collider->WorldBoundary_rect().Bottom() });
+        if (collider->WorldBoundary_rect().Bottom() < Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition().y - 360) {
+            UpdatePosition({ 0, Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition().y - 360 - collider->WorldBoundary_rect().Bottom() });
             SetVelocity({ GetVelocity().x, 0 });
         }
-        if (collider->WorldBoundary_rect().Top() > Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y + 360) {
-            UpdatePosition({ 0, Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y + 360 - collider->WorldBoundary_rect().Top() });
+        if (collider->WorldBoundary_rect().Top() > Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition().y + 360) {
+            UpdatePosition({ 0, Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition().y + 360 - collider->WorldBoundary_rect().Top() });
             SetVelocity({ GetVelocity().x, 0 });
         }
 
@@ -225,7 +225,7 @@ void Ship::FixedUpdate(double fixed_dt) {
 
 
 void Ship::Draw(DrawLayer drawlayer) {
-    CS230::GameObject::Draw(DrawLayer::DrawLast);
+    GameObject::Draw(DrawLayer::DrawLast);
 }
 
 vec2 CatmullRomSpline(const vec2& p0, const vec2& p1, const vec2& p2, const vec2& p3, float t) {
@@ -368,7 +368,7 @@ void Ship::ResolveCollision(GameObject* other_object)
             vec2 center = rock->GetRockGroup()->FindCenterPoly();
 
             normal = ComputeCollisionNormal(points, GetPosition(), center);
-            auto* collision_edge = this->GetGOComponent<CS230::RectCollision>();
+            auto* collision_edge = this->GetGOComponent<RectCollision>();
             if (collision_edge == nullptr) {
                 // maybe an error?
             }
@@ -402,8 +402,8 @@ void Ship::HitWithReef(vec2 normal) {
     }
 
     SetVelocity(direction * incoming_speed * 0.55f);
-    Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetCameraView().SetZoom(1.05f);
-    Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetCamera().StartShake(10, 5);
+    Engine::GetGameStateManager().GetGSComponent<Cam>()->GetCameraView().SetZoom(1.05f);
+    Engine::GetGameStateManager().GetGSComponent<Cam>()->GetCamera().StartShake(10, 5);
     move = false;
 
 }
@@ -514,11 +514,11 @@ void Pump::Update(double dt)
 
 void Pump::Draw(DrawLayer drawlayer)
 {
-    Ship* ship = Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->GetGOComponent<Ship>();
+    Ship* ship = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>();
     DrawSettings settings;
     settings.do_blending = true;
 
-    CS230::CircleDrawCall draw_call = {
+    CircleDrawCall draw_call = {
     min_pump_radius,                       // Texture to draw
     ship->GetPosition(),                          // Transformation matrix
     nullptr,
@@ -526,7 +526,7 @@ void Pump::Draw(DrawLayer drawlayer)
     settings
     };
 
-    CS230::CircleDrawCall draw_call2 = {
+    CircleDrawCall draw_call2 = {
     radius,                       // Texture to draw
     ship->GetPosition(),                          // Transformation matrix
     Engine::GetShaderManager().GetShader("change_alpha_no_texture"), // Shader to use

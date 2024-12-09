@@ -7,7 +7,7 @@ Clear::Clear()
 void Clear::Load()
 {
 	//camera
-	camera = new CS230::Cam();
+	camera = new Cam();
 	AddGSComponent(camera);
 
 	//background
@@ -19,7 +19,7 @@ void Clear::Load()
 void Clear::Update(double dt)
 {
 	UpdateGSComponents(dt);
-	GetGSComponent<CS230::Cam>()->Update(dt, { 0,0 }, false);
+	GetGSComponent<Cam>()->Update(dt, { 0,0 }, false);
 	time += dt;
 	if (time > 5)
 	{
@@ -30,7 +30,7 @@ void Clear::Update(double dt)
 
 void Clear::Draw()
 {
-	GetGSComponent<Background>()->Draw(*GetGSComponent<CS230::Cam>());
+	GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
 }
 
 void Clear::Unload()

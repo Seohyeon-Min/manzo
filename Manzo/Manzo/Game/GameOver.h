@@ -8,7 +8,7 @@
 #include "States.h"
 #include "Fish.h"
 
-class GameOver : public CS230::GameState {
+class GameOver : public GameState {
 public:
     GameOver();
     void Load() override;
@@ -20,6 +20,6 @@ public:
     }
 private:
     Background* background;
-    CS230::Cam* camera;
+    Cam* camera;
     double time;
 };

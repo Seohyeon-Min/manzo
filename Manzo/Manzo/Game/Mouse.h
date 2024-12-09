@@ -20,7 +20,7 @@ private:
     void UpdateTrail(const vec2& new_position);
     void DrawMouseCursor();
     void DrawLaserCurve();
-    CS230::DrawCall draw_call;
+    DrawCall draw_call;
     GLTexture* mouse_cursor;
     mat3 pos_matrix{};
     vec2 mouse_position{};

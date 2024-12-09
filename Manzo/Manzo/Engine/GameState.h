@@ -12,35 +12,34 @@ Created:    March 8, 2023
 #include <string>
 #include "ComponentManager.h"
 
-namespace CS230 {
-    class GameState {
-    public:
-        virtual void Load() = 0;
-        virtual void Update(double dt) = 0;
-        virtual void FixedUpdate(double dt) = 0;
-        virtual void Unload() = 0;
-        virtual std::string GetName() = 0;
-        virtual void Draw() = 0;
-        template<typename T>
-        T* GetGSComponent() {
-            return componentmanager.GetComponent<T>();
-        }
 
-    protected:
-        void AddGSComponent(Component* component) {
-            componentmanager.AddComponent(component);
-        }
-        void UpdateGSComponents(double dt) {
-            componentmanager.UpdateAll(dt);
-        }
-        template<typename T>
-        void RemoveGSComponent() {
-            componentmanager.RemoveComponent<T>();
-        }
-        void ClearGSComponents() {
-            componentmanager.Clear();
-        }
-    private:
-        ComponentManager componentmanager;
-    };
-}
+class GameState {
+public:
+    virtual void Load() = 0;
+    virtual void Update(double dt) = 0;
+    virtual void FixedUpdate(double dt) = 0;
+    virtual void Unload() = 0;
+    virtual std::string GetName() = 0;
+    virtual void Draw() = 0;
+    template<typename T>
+    T* GetGSComponent() {
+        return componentmanager.GetComponent<T>();
+    }
+
+protected:
+    void AddGSComponent(Component* component) {
+        componentmanager.AddComponent(component);
+    }
+    void UpdateGSComponents(double dt) {
+        componentmanager.UpdateAll(dt);
+    }
+    template<typename T>
+    void RemoveGSComponent() {
+        componentmanager.RemoveComponent<T>();
+    }
+    void ClearGSComponents() {
+        componentmanager.Clear();
+    }
+private:
+    ComponentManager componentmanager;
+};

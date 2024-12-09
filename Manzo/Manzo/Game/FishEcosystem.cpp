@@ -5,12 +5,12 @@
 
 FishGenerator::FishGenerator()
 {
-	timer = new CS230::Timer(2.0);
+	timer = new Timer(2.0);
 
 	for (int i = 0; i < 250; i++)
 	{
 		BackgroundFish* bg_fish = new BackgroundFish();
-		Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(bg_fish);
+		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bg_fish);
 		bg_fish->AddBackgroundFishes(bg_fish);
 	}
 }
@@ -23,7 +23,7 @@ void FishGenerator::GenerateFish(double dt)
 	{
 		Fish* newFish = new Fish();
 		fishList.push_back(newFish);
-		Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(newFish);
+		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(newFish);
 
 		timer->Reset();
 
@@ -48,7 +48,7 @@ void FishGenerator::GenerateFish(double dt)
 				additionalFish->SetVelocity(newFish->GetVelocity());
 
 				fishList.push_back(additionalFish);
-				Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(additionalFish);
+				Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(additionalFish);
 			}
 		}
 	}

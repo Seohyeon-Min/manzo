@@ -22,7 +22,7 @@ void Skillsys::SkillNet()
     if (!skill_net)
     {
         skill_net = new Skillsys::Skill_Net({ Ship_ptr->GetPosition() }, this);
-        Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(skill_net);
+        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(skill_net);
     }
 }
 
@@ -70,19 +70,19 @@ void Skillsys::Update()
 
         if (is_slot_selected == false)
         {
-            if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::A))
+            if (Engine::GetInput().KeyJustPressed(Input::Keys::A))
             {
                 Selected_slot = 0;
                 std::cout << "picked slot 1" << std::endl;
                 is_slot_selected = true;
             }
-            if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::S))
+            if (Engine::GetInput().KeyJustPressed(Input::Keys::S))
             {
                 Selected_slot = 1;
                 std::cout << "picked slot 2" << std::endl;
                 is_slot_selected = true;
             }
-            if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::D))
+            if (Engine::GetInput().KeyJustPressed(Input::Keys::D))
             {
                 Selected_slot = 2;
                 std::cout << "picked slot 3" << std::endl;
@@ -93,20 +93,20 @@ void Skillsys::Update()
         if (is_slot_selected == true)
         {
 
-            if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Num1))
+            if (Engine::GetInput().KeyJustPressed(Input::Keys::Num1))
             {
                 Selected_skill = Net;
                 std::cout << "picked Net" << std::endl;
 
                 Ready_to_set = true;
             }
-            if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Num2))
+            if (Engine::GetInput().KeyJustPressed(Input::Keys::Num2))
             {
                 Selected_skill = Light;
                 std::cout << "picked Light" << std::endl;
                 Ready_to_set = true;
             }
-            if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Num3))
+            if (Engine::GetInput().KeyJustPressed(Input::Keys::Num3))
             {
                 Selected_skill = Empty;
                 std::cout << "Cleared" << std::endl;
@@ -134,7 +134,7 @@ void Skillsys::Update()
             is_slot_selected = false;
         }
 
-        if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Z))
+        if (Engine::GetInput().KeyJustPressed(Input::Keys::Z))
         {
             skillprint();
         }
@@ -243,7 +243,7 @@ Skillsys::Skill_Net::Skill_Net(vec2 position, Skillsys* skillsys) : GameObject(p
     ship_ptr = skillsys->GetShipPtr();
     SetPosition({ ship_ptr->GetPosition() });
     SetScale({ ship_ptr->GetScale() });
-    AddGOComponent(new CS230::Sprite("assets/images/ship.spt", this));
+    AddGOComponent(new Sprite("assets/images/ship.spt", this));
 };
 
 
@@ -268,5 +268,5 @@ void Skillsys::Skill_Net::Update(double [[maybe_unused]] dt)
 
 void Skillsys::Skill_Net::Draw()
 {
-    CS230::GameObject::Draw();
+    GameObject::Draw();
 }

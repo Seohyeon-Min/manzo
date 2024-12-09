@@ -17,7 +17,7 @@
 #endif
 
 
-void CS230::Map::ParseSVG(const std::string& filename) {
+void Map::ParseSVG(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         std::cerr << "Error opening SVG file." << std::endl;
@@ -200,7 +200,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
 
                 objects.push_back(poly);
                 Rock* rock = new Rock(poly);
-                Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rock);
+                Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rock);
                 rock->AddGOComponent(new MAP_SATCollision(poly, rock));
 
                 pathCountInGroup++;
@@ -220,7 +220,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                     //rockgroup->SetScale();
 
                     rock->SetRockGroup(rockgroup);
-                    Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup);
+                    Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rockgroup);
                     rock_groups.push_back(rockgroup);
                 }
                 else {
@@ -231,7 +231,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                         //rockgroup->SetScale();
 
                         rock->SetRockGroup(rockgroup);
-                        Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup);
+                        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rockgroup);
                         rock_groups.push_back(rockgroup);
                     }
                     else {                                                              // if poly has same index
@@ -266,7 +266,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
 }
 
 
-void CS230::Map::AddDrawCall()
+void Map::AddDrawCall()
 {
     for (auto& object : objects) {
         object.Draw();
@@ -308,12 +308,12 @@ RockGroup::RockGroup(const std::string& index) :GameObject({ 0,0 }), index(index
 
 void RockGroup::Update(double dt)
 {
-    CS230::GameObject::Update(dt);
+    GameObject::Update(dt);
 }
 
 void RockGroup::Draw()
 {
-    CS230::GameObject::Draw();
+    GameObject::Draw();
 }
 
 bool RockGroup::MatchIndex()
@@ -336,7 +336,7 @@ bool RockGroup::MatchIndex()
             if (index == polyind) {
                 std::getline(linestream, file_path, ',');
                 SetPosition(FindCenterRect());
-                AddGOComponent(new CS230::Sprite(file_path, this));
+                AddGOComponent(new Sprite(file_path, this));
 
                 return true;
 
@@ -426,7 +426,7 @@ bool RockGroup::CanCollideWith(GameObjectTypes other_object)
 void RockGroup::ResolveCollision(GameObject* other_object)
 {
     if (other_object->Type() == GameObjectTypes::Ship) {
-        auto* collision_edge = this->GetGOComponent<CS230::RectCollision>();
+        auto* collision_edge = this->GetGOComponent<RectCollision>();
         if (collision_edge == nullptr) {
             // maybe an error?
         }

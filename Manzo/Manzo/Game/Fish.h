@@ -5,7 +5,7 @@
 #include "GameObjectTypes.h"
 #include "../Engine/MapManager.h"
 
-class Fish : public CS230::GameObject
+class Fish : public GameObject
 {
 public:
 	Fish() : Fish(nullptr) { };

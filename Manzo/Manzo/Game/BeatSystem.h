@@ -4,7 +4,7 @@
 #include "../Engine/Component.h"
 #include "../Engine/AudioManager.h"
 
-class Beat : public CS230::Component {
+class Beat : public Component {
 public:
     Beat();
     void LoadMusicToSync(std::string music_name);

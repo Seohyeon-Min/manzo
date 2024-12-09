@@ -35,23 +35,23 @@ public:
     static ShaderManager& GetShaderManager() {
         return Instance().shadermanager;
     }
-    static CS230::Logger& GetLogger() {
+    static Logger& GetLogger() {
         return Instance().logger;
     }
 
-    static CS230::GameStateManager& GetGameStateManager() {
+    static GameStateManager& GetGameStateManager() {
         return Instance().gamestatemanager;
     }
 
-    static CS230::Input& GetInput() {
+    static Input& GetInput() {
         return Instance().input;
     }
 
-    static CS230::TextureManager& GetTextureManager() {
+    static TextureManager& GetTextureManager() {
         return Instance().texturemanager;
     }
 
-    static CS230::Render& GetRender() {
+    static Render& GetRender() {
         return Instance().render;
     }
 
@@ -98,10 +98,10 @@ private:
 
     ShaderManager shadermanager;
     AudioManager audiomanager;
-    CS230::Logger logger;
-    CS230::GameStateManager gamestatemanager;
-    CS230::Input input;
-    CS230::TextureManager texturemanager;
-    CS230::Render render;
+    Logger logger;
+    GameStateManager gamestatemanager;
+    Input input;
+    TextureManager texturemanager;
+    Render render;
     FontManager fontmanager;
 };

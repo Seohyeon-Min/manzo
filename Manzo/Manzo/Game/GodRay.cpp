@@ -27,7 +27,7 @@ void GodRay::Draw()
     settings.do_blending = true;
     settings.is_UI = true;
 
-    CS230::DrawCall draw_call = {
+    DrawCall draw_call = {
     texture,                       // Texture to draw
     &mat,                          // Transformation matrix
     Engine::GetShaderManager().GetShader("under_water_god_ray"), // Shader to use
@@ -54,7 +54,7 @@ void GodRay::Draw()
 //    settings.is_UI = true;
 //
 //    const mat3 mat;
-//    CS230::DrawCall draw_call = {
+//    DrawCall draw_call = {
 //    texture,                       // Texture to draw
 //    &mat,                          // Transformation matrix
 //    Engine::GetShaderManager().GetShader("change_alpha"), // Shader to use

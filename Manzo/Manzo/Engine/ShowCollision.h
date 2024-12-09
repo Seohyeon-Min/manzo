@@ -11,13 +11,13 @@ Created:    March 8, 2023
 #include "Component.h"
 #include "Engine.h"
 #pragma once
-namespace CS230 {
-    class ShowCollision : public CS230::Component {
-    public:
-        ShowCollision();
-        void Update(double dt) override;
-        bool Enabled();
-    private:
-        bool enabled;
-    };
-}
+
+class ShowCollision : public Component {
+public:
+    ShowCollision();
+    void Update(double dt) override;
+    bool Enabled();
+private:
+    bool enabled;
+};
+

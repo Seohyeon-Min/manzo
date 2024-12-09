@@ -21,7 +21,7 @@ BackgroundFish::BackgroundFish() : GameObject({ start_position })
     SetPosition(start_position);
     SetVelocity({ 30,0 });
 
-    AddGOComponent(new CS230::Sprite("assets/images/BackgroundFish.spt", this));
+    AddGOComponent(new Sprite("assets/images/BackgroundFish.spt", this));
 
     if (globalLeaders.size() < 6) {
         if (std::find(globalLeaders.begin(), globalLeaders.end(), this) == globalLeaders.end()) {
@@ -139,8 +139,8 @@ void BackgroundFish::Draw(DrawLayer drawlayer)
     DrawSettings settings;
     settings.do_blending = true;
 
-    CS230::DrawCall draw_call = {
-        GetGOComponent<CS230::Sprite>()->GetTexture(),                       // Texture to draw
+    DrawCall draw_call = {
+        GetGOComponent<Sprite>()->GetTexture(),                       // Texture to draw
         &GetMatrix(),                          // Transformation matrix
         Engine::GetShaderManager().GetDefaultShader(),
         nullptr,

@@ -10,7 +10,7 @@
 #include <SDL2/SDL.h>
 #include  <stb_image.h>
 
-GLTexture* CS230::TextureManager::Load(const std::filesystem::path& file_name)
+GLTexture* TextureManager::Load(const std::filesystem::path& file_name)
 {
     auto texture_iterator = textures.find(file_name);
     if (texture_iterator != textures.end()) {
@@ -25,7 +25,7 @@ GLTexture* CS230::TextureManager::Load(const std::filesystem::path& file_name)
     }
 }
 
-void CS230::TextureManager::Unload()
+void TextureManager::Unload()
 {
     for (auto& pair : textures) {
         delete pair.second;

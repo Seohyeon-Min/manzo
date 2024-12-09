@@ -14,7 +14,7 @@ Created:    March 8, 2023
 
 #pragma once
 namespace Particles {
-    class MouseFollow : public CS230::Particle {
+    class MouseFollow : public Particle {
     public:
         MouseFollow() : Particle("assets/images/mouse_part.spt") {  };
         std::string TypeName() override { return "Mouse Particle"; }
@@ -23,7 +23,7 @@ namespace Particles {
         float scale = 1.f;
     };
 
-    class Plankton : public CS230::Particle {
+    class Plankton : public Particle {
     public:
         Plankton() : Particle("assets/images/Plankton.spt") { scale = util::random(0.5f, 4.6f); };
         std::string TypeName() override { return "Plankton Particle"; }
@@ -32,7 +32,7 @@ namespace Particles {
         float scale;
     };
 
-    class FuelBubble : public CS230::Particle {
+    class FuelBubble : public Particle {
     public:
         FuelBubble() : Particle("assets/images/Plankton.spt") 
         {
@@ -44,7 +44,7 @@ namespace Particles {
         float scale;
     };
 
-    class BubblePop : public CS230::Particle {
+    class BubblePop : public Particle {
     public:
         BubblePop() : Particle("assets/images/Plankton.spt") 
         { 
@@ -56,7 +56,7 @@ namespace Particles {
         float scale;
     };
 
-    class HitEffect : public CS230::Particle {
+    class HitEffect : public Particle {
     public:
         HitEffect() : Particle("assets/images/hit_effect.spt")
         {
@@ -69,7 +69,7 @@ namespace Particles {
         float scale;
     };
 
-    class HitEffect2 : public CS230::Particle {
+    class HitEffect2 : public Particle {
     public:
         HitEffect2() : Particle("assets/images/Plankton.spt")
         {
@@ -79,6 +79,19 @@ namespace Particles {
         std::string TypeName() override { return "HitEffect Particle"; }
         static constexpr int MaxCount = 20;
         static constexpr double MaxLife = 0.05;
+        float scale;
+    };
+
+    class CaptureEffect : public Particle {
+    public:
+        CaptureEffect() : Particle("assets/images/Capture_particle.spt")
+        {
+            scale = util::random(.15f, .25f); shader = Engine::GetShaderManager().GetShader("change_alpha");
+            drawlayer = DrawLayer::DrawUI;
+        };
+        std::string TypeName() override { return "CaptureEffect Particle"; }
+        static constexpr int MaxCount = 8;
+        static constexpr double MaxLife = 0.25;
         float scale;
     };
 }

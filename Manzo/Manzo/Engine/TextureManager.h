@@ -11,16 +11,15 @@
 //    {GLShader::VERTEX, "assets/shaders/tutorial-5.vert"}, 
 //    {GLShader::FRAGMENT, "assets/shaders/tutorial-5.frag"} });
 
-namespace CS230 {
 
-    class TextureManager {
-    public:
-        GLTexture* Load(const std::filesystem::path& file_name);
-        void Unload();
-        GLVertexArray* GetModel(const std::filesystem::path& file_name);
 
-    private:
-        std::map<std::filesystem::path, GLTexture*> textures;
-        std::vector<const GLShader*> shaders;
-    };
-}
+class TextureManager {
+public:
+    GLTexture* Load(const std::filesystem::path& file_name);
+    void Unload();
+    GLVertexArray* GetModel(const std::filesystem::path& file_name);
+
+private:
+    std::map<std::filesystem::path, GLTexture*> textures;
+    std::vector<const GLShader*> shaders;
+};

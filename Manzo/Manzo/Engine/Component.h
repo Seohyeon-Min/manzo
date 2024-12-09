@@ -10,11 +10,10 @@ Updated:    05/08/2024
 */
 #pragma once
 
-namespace CS230 {
-    class Component {
-    public:
-        virtual ~Component() {};
-        virtual void Update([[maybe_unused]] double dt) {};
 
-    };
-}
+class Component {
+public:
+    virtual ~Component() {};
+    virtual void Update([[maybe_unused]] double dt) {};
+
+};

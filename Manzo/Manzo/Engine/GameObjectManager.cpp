@@ -11,12 +11,12 @@ Created:    Aprill 29, 2023
 
 #include "GameObjectManager.h"
 
-void CS230::GameObjectManager::Add(GameObject* object)
+void GameObjectManager::Add(GameObject* object)
 {
 	objects.push_back(object);
 }
 
-void CS230::GameObjectManager::Unload()
+void GameObjectManager::Unload()
 {
 	for (auto object : objects) {
 		delete object;
@@ -24,7 +24,7 @@ void CS230::GameObjectManager::Unload()
 	objects.clear();
 }
 
-void CS230::GameObjectManager::UpdateAll(double dt)
+void GameObjectManager::UpdateAll(double dt)
 {
 	std::vector<GameObject*> destroy_objects;
 	for (auto object : objects) {
@@ -39,14 +39,14 @@ void CS230::GameObjectManager::UpdateAll(double dt)
 	}
 }
 
-void CS230::GameObjectManager::FixedUpdateAll(double dt)
+void GameObjectManager::FixedUpdateAll(double dt)
 {
 	for (auto object : objects) {
 		object->FixedUpdate(dt);
 	}
 }
 
-void CS230::GameObjectManager::DrawAll()
+void GameObjectManager::DrawAll()
 {
 	for (auto object : objects) {
 		object->Draw();
@@ -54,7 +54,7 @@ void CS230::GameObjectManager::DrawAll()
 	Engine::GetRender().RenderAll();
 }
 
-void CS230::GameObjectManager::CollisionTest() {
+void GameObjectManager::CollisionTest() {
 	for (auto object_1 : objects) {
 		for (auto object_2 : objects) {
 			if (object_1 != object_2 && object_1->CanCollideWith(object_2->Type())) {

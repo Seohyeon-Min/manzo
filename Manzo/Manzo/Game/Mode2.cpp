@@ -29,20 +29,20 @@ Mode2::Mode2() {}
 void Mode2::Load() {
 
 #ifdef _DEBUG
-    AddGSComponent(new CS230::ShowCollision());
+    AddGSComponent(new ShowCollision());
 #else
 #endif
     // compenent
-    AddGSComponent(new CS230::GameObjectManager());
+    AddGSComponent(new GameObjectManager());
 
     //// ship
     ship_ptr = new Ship({ 0, -250 });
-    GetGSComponent<CS230::GameObjectManager>()->Add(ship_ptr);
+    GetGSComponent<GameObjectManager>()->Add(ship_ptr);
 
     //// camera
-    AddGSComponent(new CS230::Cam());
+    AddGSComponent(new Cam());
     vec2 playerPosition = ship_ptr->GetPosition();
-    GetGSComponent<CS230::Cam>()->SetPosition({ playerPosition.x, 0 });
+    GetGSComponent<Cam>()->SetPosition({ playerPosition.x, 0 });
 
 
     //// background
@@ -85,19 +85,19 @@ void Mode2::Load() {
 
 void Mode2::Update(double dt) {
     UpdateGSComponents(dt);
-    GetGSComponent<CS230::GameObjectManager>()->UpdateAll(dt);
-    GetGSComponent<CS230::Cam>()->Update(dt, ship_ptr->GetPosition(), false);
+    GetGSComponent<GameObjectManager>()->UpdateAll(dt);
+    GetGSComponent<Cam>()->Update(dt, ship_ptr->GetPosition(), false);
     skill_ptr->Update();
 
     //float moving~
     time += float(dt);
     ship_ptr->SetVelocity({ 0, -(y_limit * frequency * std::cos(frequency * float(time))) });
 
-    if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Q)) {
+    if (Engine::GetInput().KeyJustPressed(Input::Keys::Q)) {
         Engine::GetGameStateManager().ClearNextGameState();
         Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode1));
     }
-    if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::W)) {
+    if (Engine::GetInput().KeyJustPressed(Input::Keys::W)) {
         Engine::GetGameStateManager().ReloadState();
 
     }
@@ -109,13 +109,13 @@ void Mode2::FixedUpdate(double dt)
 }
 
 void Mode2::Draw() {
-    GetGSComponent<Background>()->Draw(*GetGSComponent<CS230::Cam>());
-    GetGSComponent<CS230::GameObjectManager>()->DrawAll();
+    GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
+    GetGSComponent<GameObjectManager>()->DrawAll();
     ui_manager->AddDrawCalls();
 }
 
 void Mode2::Unload() {
-    GetGSComponent<CS230::GameObjectManager>()->Unload();
+    GetGSComponent<GameObjectManager>()->Unload();
     GetGSComponent<Background>()->Unload();
     ui_manager->UnloadUI();
     ClearGSComponents();

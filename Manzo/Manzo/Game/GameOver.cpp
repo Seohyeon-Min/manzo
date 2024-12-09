@@ -8,7 +8,7 @@ void GameOver::Load()
 	time = 0;
 
 	//camera
-	camera = new CS230::Cam();
+	camera = new Cam();
 	AddGSComponent(camera);
 
 	//background
@@ -19,7 +19,7 @@ void GameOver::Load()
 void GameOver::Update(double dt)
 {
 	UpdateGSComponents(dt);
-	GetGSComponent<CS230::Cam>()->Update(dt, {0,0}, false);
+	GetGSComponent<Cam>()->Update(dt, {0,0}, false);
 
 
 	time += dt;
@@ -32,7 +32,7 @@ void GameOver::Update(double dt)
 
 void GameOver::Draw()
 {
-	background->Draw(*GetGSComponent<CS230::Cam>());
+	background->Draw(*GetGSComponent<Cam>());
 }
 void GameOver::Unload()
 {

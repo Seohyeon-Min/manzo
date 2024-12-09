@@ -12,7 +12,7 @@ Updated:    April 17, 2023
 #include "Animation.h"
 
 
-CS230::Animation::Animation(const std::filesystem::path& animation_file) : current_command(0) {
+Animation::Animation(const std::filesystem::path& animation_file) : current_command(0) {
     if (animation_file.extension() != ".anm") {
         throw std::runtime_error(animation_file.generic_string() + " is not a .anm file");
     }
@@ -47,31 +47,31 @@ CS230::Animation::Animation(const std::filesystem::path& animation_file) : curre
     Reset();
 }
 
-CS230::Animation::Animation() : Animation("assets/images/None.anm") { }
+Animation::Animation() : Animation("assets/images/None.anm") { }
 
-CS230::Animation::~Animation() {
+Animation::~Animation() {
     for (Command* command : commands) {
         delete command;
     }
     commands.clear();
 }
 
-int CS230::Animation::CurrentFrame() {
+int Animation::CurrentFrame() {
     return current_frame->Frame();
 }
 
-void CS230::Animation::Reset(){
+void Animation::Reset(){
     current_command = 0;
     ended = false;
     current_frame = static_cast<PlayFrame*>(commands[current_command]);
     current_frame->ResetTime();
 }
 
-bool CS230::Animation::Ended() {
+bool Animation::Ended() {
     return ended;
 }
 
-void CS230::Animation::Update(double dt) {
+void Animation::Update(double dt) {
     current_frame->Update(dt);
     if (current_frame->Ended() == true) {
         current_frame->ResetTime();
@@ -100,26 +100,26 @@ void CS230::Animation::Update(double dt) {
     }
 }
 
-CS230::Animation::PlayFrame::PlayFrame(int frame, double duration) : frame(frame), target_time(duration){}
+Animation::PlayFrame::PlayFrame(int frame, double duration) : frame(frame), target_time(duration){}
 
-void CS230::Animation::PlayFrame::Update(double dt)
+void Animation::PlayFrame::Update(double dt)
 {
     if(timer <= target_time) 
         timer += dt;
 }
 
-bool CS230::Animation::PlayFrame::Ended()
+bool Animation::PlayFrame::Ended()
 {
     return (timer >= target_time);
 }
 
-void CS230::Animation::PlayFrame::ResetTime()
+void Animation::PlayFrame::ResetTime()
 {
     timer = 0;
 }
 
-int CS230::Animation::PlayFrame::Frame() { return frame; }
+int Animation::PlayFrame::Frame() { return frame; }
 
-CS230::Animation::Loop::Loop(int loop_index) : loop_index(loop_index) {}
+Animation::Loop::Loop(int loop_index) : loop_index(loop_index) {}
 
-int CS230::Animation::Loop::LoopIndex() { return loop_index; }
+int Animation::Loop::LoopIndex() { return loop_index; }

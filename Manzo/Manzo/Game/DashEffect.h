@@ -1,22 +1,23 @@
 #pragma once
 #include "..\Engine\GameObject.h"
 #include "GameObjectTypes.h"
+#include "Particles.h"
 #include "Ship.h"
 #include "../Engine/Sprite.h"
 
-class DashEffect : public CS230::GameObject {
+class DashEffect : public GameObject {
 public:
     DashEffect() :
-        GameObject({}), effect_timer(new CS230::Timer(effect_time)){
-        AddGOComponent(new CS230::Sprite("assets/images/dash_effect.spt", this));
-        ship = Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->GetGOComponent<Ship>();
+        GameObject({}), effect_timer(new Timer(effect_time)){
+        AddGOComponent(new Sprite("assets/images/dash_effect.spt", this));
+        ship = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>();
         vec2 dir = ship->GetVelocity().Normalize();
         float angle_radians = std::atan2(dir.y, dir.x);
         force = -dir * speed;
         SetPosition(ship->GetPosition());
         SetRotation(angle_radians);
         AddGOComponent(effect_timer);
-        Engine::GetGameStateManager().GetGSComponent<CS230::ParticleManager<Particles::BubblePop>>()->Emit(8, GetPosition(), force * 0.4f , dir * -100.f, 1.5);
+        Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::BubblePop>>()->Emit(8, GetPosition(), force * 0.4f , dir * -100.f, 1.5);
     }
     GameObjectTypes Type() override { return GameObjectTypes::Ship; }
     std::string TypeName() override { return "DashEffect Particle"; }
@@ -32,9 +33,10 @@ public:
     {
         DrawSettings settings;
         settings.do_blending = true;
+        Sprite* sprite = GetGOComponent<Sprite>();
 
-        CS230::DrawCall draw_call = {
-            GetGOComponent<CS230::Sprite>()->GetTexture(),
+        DrawCall draw_call = {
+            sprite,
             &GetMatrix(),
             Engine::GetShaderManager().GetShader("change_alpha"),
             [this](const GLShader* shader) {
@@ -58,5 +60,45 @@ private:
     static constexpr float deceleration = 0.95f;
     float speed = 1000;
     vec2 force = {};
-    CS230::Timer* effect_timer;
+    Timer* effect_timer;
+};
+
+
+class CaptureEffect : public GameObject {
+public:
+    CaptureEffect() :
+        GameObject({}) {};
+    CaptureEffect(vec2 pos) :
+        GameObject(pos) {
+        SetScale({ 0.6f,0.6f });
+        AddGOComponent(new Sprite("assets/images/Capture_effect.spt", this));
+        GetGOComponent<Sprite>()->PlayAnimation(0);
+    }
+    GameObjectTypes Type() override { return GameObjectTypes::Ship; }
+    std::string TypeName() override { return "CaptureEffect"; }
+    void Update(double dt) override {
+        GameObject::Update(dt);
+        if (GetGOComponent<Sprite>()->AnimationEnded()) {
+            Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::CaptureEffect>>()->EmitRound(8, GetPosition(), 100.f, 30.f);
+            Destroy();
+        }
+    }
+    void Draw(DrawLayer drawlayer = DrawLayer::Draw) override
+    {
+        DrawSettings settings;
+        settings.do_blending = true;
+        Sprite* sprite = GetGOComponent<Sprite>();
+
+        DrawCall draw_call = {
+            sprite,
+            &GetMatrix(),
+            Engine::GetShaderManager().GetDefaultShader(),
+            nullptr,
+            settings
+        };
+
+        GameObject::Draw(draw_call);
+    }
+private:
+
 };

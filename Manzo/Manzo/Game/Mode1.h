@@ -28,7 +28,7 @@ class Boss;
 
 class Skillsys;
 
-class Mode1 : public CS230::GameState {
+class Mode1 : public GameState {
 public:
     Mode1();
     void Load() override;
@@ -48,7 +48,7 @@ private:
     Background* background;
     Boss* boss_ptr;
     UIManager* ui_manager;
-    CS230::Cam* camera;
+    Cam* camera;
     Beat* beat_system;
     GodRay* god_ray;
     Skillsys* skill_ptr;

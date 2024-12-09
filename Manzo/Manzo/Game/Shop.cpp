@@ -25,7 +25,7 @@ Shop::Shop()
 
 void Shop::Update(double dt)
 {
-	if (Engine::GetInput().KeyJustPressed(CS230::Input::Keys::Y) && !shop_available)
+	if (Engine::GetInput().KeyJustPressed(Input::Keys::Y) && !shop_available)
 	{
 		shop_available = true;
 		std::cout << "Shop active" << std::endl;
@@ -41,7 +41,7 @@ void Shop::Update(double dt)
 
 		if (pick == First)
 		{
-			if (Engine::Instance().GetInput().KeyJustPressed(CS230::Input::Keys::Enter) || Ready_to_buy)
+			if (Engine::Instance().GetInput().KeyJustPressed(Input::Keys::Enter) || Ready_to_buy)
 			{
 				Buy(skill_ptr->Net, Net_Money);
 				Ready_to_buy = false;
@@ -50,7 +50,7 @@ void Shop::Update(double dt)
 
 		if (pick == Second)
 		{
-			if (Engine::Instance().GetInput().KeyJustPressed(CS230::Input::Keys::Enter) || Ready_to_buy)
+			if (Engine::Instance().GetInput().KeyJustPressed(Input::Keys::Enter) || Ready_to_buy)
 			{
 				Buy(skill_ptr->Light, Net_Money);
 				Ready_to_buy = false;
@@ -59,7 +59,7 @@ void Shop::Update(double dt)
 
 		if (pick == Third)
 		{
-			if (Engine::Instance().GetInput().KeyJustPressed(CS230::Input::Keys::Enter) || Ready_to_buy)
+			if (Engine::Instance().GetInput().KeyJustPressed(Input::Keys::Enter) || Ready_to_buy)
 			{
 				Buy(skill_ptr->GARRY, Net_Money);
 				Ready_to_buy = false;
@@ -236,7 +236,7 @@ void Shop::Shop_button_draw()
 
 	botton_matrix = mat3::build_translation({ static_cast<float>(270 - shop_background->GetWidth() / 2) , (Engine::window_height) / 2.2f - (float)(pick * 140) }) * mat3::build_scale(1.0f);
 
-	if (Engine::Instance().GetInput().KeyJustPressed(CS230::Input::Keys::Up))
+	if (Engine::Instance().GetInput().KeyJustPressed(Input::Keys::Up))
 	{
 			switch (pick)
 			{
@@ -252,7 +252,7 @@ void Shop::Shop_button_draw()
 			}
 	}
 
-	if (Engine::Instance().GetInput().KeyJustPressed(CS230::Input::Keys::Down))
+	if (Engine::Instance().GetInput().KeyJustPressed(Input::Keys::Down))
 	{
 			switch (pick)
 			{

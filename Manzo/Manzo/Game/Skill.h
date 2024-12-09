@@ -54,7 +54,7 @@ public:
 
 	//Class for each skill
 
-	class Skill_Net : public CS230::GameObject // Net
+	class Skill_Net : public GameObject // Net
 	{
 
 	public:

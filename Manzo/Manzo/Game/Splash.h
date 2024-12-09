@@ -12,7 +12,7 @@ Created:    March 8, 2023
 #include "../Engine/GameState.h"
 #include "../Engine/TextureManager.h"
 
-class Splash : public CS230::GameState {
+class Splash : public GameState {
 public:
     Splash();
     void Load() override;

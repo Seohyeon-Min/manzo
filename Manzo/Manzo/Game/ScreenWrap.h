@@ -14,10 +14,10 @@ Updated:    May 9, 2024
 #include "../Engine/Component.h"
 #include "../Engine/GameObject.h"
 
-class ScreenWrap : public CS230::Component {
+class ScreenWrap : public Component {
 public:
-    ScreenWrap(CS230::GameObject& object) : object(object) {}
+    ScreenWrap(GameObject& object) : object(object) {}
     void Update(double dt) override;
 private:
-    CS230::GameObject& object;
+    GameObject& object;
 };

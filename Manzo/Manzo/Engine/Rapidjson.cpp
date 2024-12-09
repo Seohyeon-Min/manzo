@@ -14,7 +14,7 @@
 // Namespace for rapidjson
 using namespace rapidjson;
 
-CS230::JsonParser_boss::JsonParser_boss(std::string path)
+JsonParser_boss::JsonParser_boss(std::string path)
     : boss_name(""), index(0), is_boss_fight(false), bpm(0), mp3(""),
     move_position({ 0, 0 }), parttern(), total_entry() {
 

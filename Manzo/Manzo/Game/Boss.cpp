@@ -3,7 +3,7 @@
 #include "Boss.h"
 
 
-std::vector<CS230::GameObject::State*> stateMap;
+std::vector<GameObject::State*> stateMap;
 std::vector<std::string> BossJSONfileMap;
 
 Boss::Boss(vec2 start_position, BossType type) 
@@ -11,7 +11,7 @@ Boss::Boss(vec2 start_position, BossType type)
 {
 	ReadBossJSON(type);
 	InitializeStates();
-	AddGOComponent(new CS230::Sprite("assets/images/ship.spt", this));
+	AddGOComponent(new Sprite("assets/images/ship.spt", this));
 	SetVelocity({start_position});
 
 	// cutscean
@@ -35,7 +35,7 @@ void Boss::State_CutScene::Update(GameObject* object, double dt) {
 void Boss::State_CutScene::CheckExit(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
 
-	if (Engine::GetInput().KeyDown(CS230::Input::Keys::R)&& boss->beat->GetBeat()) {
+	if (Engine::GetInput().KeyDown(Input::Keys::R)&& boss->beat->GetBeat()) {
 		Engine::GetAudioManager().LoadSound(boss->mp3_file_name, "E_Music");
 		Engine::GetAudioManager().PlaySounds(boss->mp3_file_name, vec3{ 0, 0, 0 }, Engine::GetAudioManager().VolumeTodB(1.0f));
 
@@ -192,7 +192,7 @@ void Boss::LoadBossfile() {
 
 void Boss::ReadBossJSON(BossType type)
 {
-	CS230::JsonParser_boss* ReadJson = new CS230::JsonParser_boss(BossJSONfileMap[type]);
+	JsonParser_boss* ReadJson = new JsonParser_boss(BossJSONfileMap[type]);
 	AddGOComponent(ReadJson);
 
 	boss_name = ReadJson->GetBossName();
@@ -214,7 +214,7 @@ void Boss::RunMusic()
 
 void Boss::Draw(DrawLayer drawlayer)
 {
-	CS230::GameObject::Draw();
+	GameObject::Draw();
 }
 
 bool Boss::CanCollideWith(GameObjectTypes other_object) {

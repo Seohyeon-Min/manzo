@@ -14,11 +14,11 @@ Created:    March 8, 2023
 #include "../Engine/Engine.h"
 #include "../Engine/Component.h"
 
-class Background : public CS230::Component {
+class Background : public Component {
 public:
     void Add(const std::filesystem::path& texture_path, float speed);
     void Unload();
-    void Draw(const CS230::Cam& camera);
+    void Draw(const Cam& camera);
     void SetUniforms(const GLShader* shader);
     ivec2 GetSize();
 private:

@@ -9,7 +9,7 @@
 #include "Fish.h"
 
 
-class Clear : public CS230::GameState {
+class Clear : public GameState {
 public:
     Clear();
     void Load() override;
@@ -21,6 +21,6 @@ public:
     }
 private:
     Background* background;
-    CS230::Cam* camera;
+    Cam* camera;
     double time;
 };

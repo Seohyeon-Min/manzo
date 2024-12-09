@@ -17,7 +17,7 @@
 
 const float WORLD_SIZE_MAX = (float)std::max(Engine::window_width, Engine::window_height);
 
-CS230::Render::Render()
+Render::Render()
     : postProcessFramebuffer((unsigned int)Engine::window_width, (unsigned int)Engine::window_height) { // 프레임 버퍼 생성
     CreatModel();  // 모델 생성
     CreatLineModel();
@@ -26,7 +26,7 @@ CS230::Render::Render()
 
 // Add a draw call to the corresponding vector based on the draw layer
 // Draw calls are grouped into first, normal, and late phases
-void CS230::Render::AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase) {
+void Render::AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase) {
     if (phase == DrawLayer::DrawFirst) {
         draw_first_calls.push_back(drawCall); // Add to early phase
     }
@@ -48,7 +48,7 @@ void CS230::Render::AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase
 
 // Overloaded function to add a line or collision draw call
 // depending on whether it is a collision line
-void CS230::Render::AddDrawCall
+void Render::AddDrawCall
 (vec2 start, vec2 end, color3 color,float width, float alpha ,const GLShader* shader, bool iscollision) {
     if (iscollision) {
         draw_collision_calls.push_back({ start, end, color, shader }); // Collision line
@@ -58,13 +58,13 @@ void CS230::Render::AddDrawCall
     }
 }
 
-void CS230::Render::AddDrawCall (const CircleDrawCall& drawcall, const DrawLayer& phase) {
+void Render::AddDrawCall (const CircleDrawCall& drawcall, const DrawLayer& phase) {
     draw_circle_calls.push_back(drawcall); // Regular line
 }
 
 // Render all stored draw calls, starting with early phase, normal phase, and then late phase
 // Also handles rendering of lines and collision shapes
-void CS230::Render::RenderAll() {
+void Render::RenderAll() {
     postProcessFramebuffer.Bind();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -102,8 +102,8 @@ void CS230::Render::RenderAll() {
     }
 
     // If collision debug mode is enabled, render collision lines
-    if (Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>() != nullptr &&
-        Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>()->Enabled()) {
+    if (Engine::GetGameStateManager().GetGSComponent<ShowCollision>() != nullptr &&
+        Engine::GetGameStateManager().GetGSComponent<ShowCollision>()->Enabled()) {
         for (const auto& draw_call : draw_collision_calls) {
             DrawLine(draw_call); // Collision lines
         }
@@ -115,7 +115,7 @@ void CS230::Render::RenderAll() {
     ClearDrawCalls();
 }
 
-void CS230::Render::ApplyPostProcessing()
+void Render::ApplyPostProcessing()
 {
     auto* bloomShader = Engine::GetShaderManager().GetShader("post_bloom");
     bloomShader->Use();
@@ -138,19 +138,45 @@ void CS230::Render::ApplyPostProcessing()
 
 // Draw an individual draw call (textured quad)
 // Converts world coordinates to normalized device coordinates (NDC)
-void CS230::Render::Draw(const DrawCall& draw_call) {
+void Render::Draw(const DrawCall& draw_call) {
     const GLShader* shader = draw_call.shader;
+    auto settings = draw_call.settings;
+    GLTexture* texture;
+    vec2 texture_size;
+    vec2 texel_position;
+    ivec2 frame_size;
+
+    std::visit([&](auto&& drawable) {
+        using T = std::decay_t<decltype(drawable)>;
+        if constexpr (std::is_same_v<T, Sprite*>) {
+            if (drawable != nullptr) {
+                Sprite* sprite = drawable;
+                texture = drawable->GetTexture(); // Sprite 텍스처
+                texel_position = (vec2)sprite->GetFrameTexel(sprite->GetCurrentFrame()); // 프레임 시작 좌표
+                frame_size = sprite->GetFrameSize(); // 프레임 크기
+
+            }
+        }
+        else if constexpr (std::is_same_v<T, GLTexture*>) {
+            if (drawable != nullptr) {
+                texture = drawable; // GLTexture 텍스처
+                texel_position = { 0, 0 }; // 기본값
+                frame_size = { texture->GetSize().x, texture->GetSize().y }; // 전체 텍스처 크기
+            }
+        }
+        }, draw_call.drawable);
+
     if (shader == nullptr) {
         shader = Engine::GetShaderManager().GetShader("default_collision");
     }
     shader->Use(); // Use the specified shader
-    auto settings = draw_call.settings;
 
     // Ensure the texture is valid, then use it and send it to the shader
-    if (draw_call.texture) {
+    if (texture) {
         //draw_call.texture->SetFiltering(GLTexture::Linear);
-        draw_call.texture->UseForSlot(0);
+        texture->UseForSlot(0);
         shader->SendUniform("uTex2d", 0);
+
     }
     else {
         throw std::runtime_error("no texture!"); // Error if no texture is assigned
@@ -173,13 +199,17 @@ void CS230::Render::Draw(const DrawCall& draw_call) {
         glCheck(glBlendFunc(GL_DST_COLOR, GL_ZERO));
     }
 
-    vec2 texture_size = (vec2)draw_call.texture->GetSize();
-    mat3 model_to_world = *draw_call.transform * mat3::build_scale(texture_size); // Scale the model based on texture size
+    const float left_u = texel_position.x / float(texture->GetSize().x);
+    const float right_u = (texel_position.x + frame_size.x) / float(texture->GetSize().x);
+    const float bottom_v = (texel_position.y + frame_size.y) / float(texture->GetSize().y);
+    const float top_v = texel_position.y / float(texture->GetSize().y);
 
+    shader->SendUniform("uUV", left_u, top_v, right_u, bottom_v);
+
+    mat3 model_to_world = *draw_call.transform * mat3::build_scale(vec2((float)frame_size.x, (float)frame_size.y)); // 프레임 크기 적용
     mat3 WORLD_TO_NDC = settings.is_UI
         ? mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height)
         : GetWorldtoNDC();
-
     const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
 
     shader->SendUniform("uModelToNDC", util::to_span(model_to_ndc)); // Send transformation matrix to shader
@@ -199,7 +229,7 @@ void CS230::Render::Draw(const DrawCall& draw_call) {
 }
 
 
-void CS230::Render::ClearDrawCalls()
+void Render::ClearDrawCalls()
 {
     draw_first_calls.clear();
     draw_calls.clear();
@@ -212,14 +242,30 @@ void CS230::Render::ClearDrawCalls()
 }
 
 
-void CS230::Render::DrawBackground(const DrawCall& draw_call)
+void Render::DrawBackground(const DrawCall& draw_call)
 {
     const GLShader* shader = draw_call.shader;
-    shader->Use();
     auto settings = draw_call.settings;
 
-    if (draw_call.texture) {
-        draw_call.texture->UseForSlot(1);
+    GLTexture* texture;
+    std::visit([&](auto&& drawable) {
+        using T = std::decay_t<decltype(drawable)>;
+        if constexpr (std::is_same_v<T, Sprite*>) {
+            if (drawable != nullptr) {
+                texture = drawable->GetTexture(); // sprite
+            }
+        }
+        else if constexpr (std::is_same_v<T, GLTexture*>) {
+            if (drawable != nullptr) {
+                texture = drawable; // texture
+            }
+        }
+        }, draw_call.drawable);
+
+    shader->Use();
+
+    if (texture) {
+        texture->UseForSlot(1);
         shader->SendUniform("uTex2d", 1);
     }
     else {
@@ -244,7 +290,7 @@ void CS230::Render::DrawBackground(const DrawCall& draw_call)
     }
 
 
-    vec2 texture_size = (vec2)draw_call.texture->GetSize();
+    vec2 texture_size = (vec2)texture->GetSize();
     mat3 model_to_world = *draw_call.transform * mat3::build_scale(texture_size);
 
     mat3 WORLD_TO_NDC = GetWorldtoNDC();
@@ -259,7 +305,7 @@ void CS230::Render::DrawBackground(const DrawCall& draw_call)
 }
 
 // Draw a line between two points for collision or debugging purposes
-void CS230::Render::DrawLine(LineDrawCall drawcall) {
+void Render::DrawLine(LineDrawCall drawcall) {
     vec2 start = drawcall.start;
     vec2 end = drawcall.end;
     color3 color = drawcall.color;
@@ -295,7 +341,7 @@ void CS230::Render::DrawLine(LineDrawCall drawcall) {
 }
 
 
-void CS230::Render::DrawLinePro(LineDrawCallPro drawcall)
+void Render::DrawLinePro(LineDrawCallPro drawcall)
 {
     vec2 start = drawcall.start;
     vec2 end = drawcall.end;
@@ -335,7 +381,7 @@ void CS230::Render::DrawLinePro(LineDrawCallPro drawcall)
     glCheck(glLineWidth(1.0f)); // Set line width
 }
 
-void CS230::Render::DrawCircleLine(CircleDrawCall draw_call) {
+void Render::DrawCircleLine(CircleDrawCall draw_call) {
     float radius = draw_call.radius;
     const GLShader* shader = draw_call.shader;
     color3 color = {255,255,255};
@@ -383,18 +429,18 @@ void CS230::Render::DrawCircleLine(CircleDrawCall draw_call) {
     shader->Use(false);
 }
 
-mat3 CS230::Render::GetWorldtoNDC()
+mat3 Render::GetWorldtoNDC()
 {
-    return Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->world_to_ndc;
+    return Engine::GetGameStateManager().GetGSComponent<Cam>()->world_to_ndc;
 }
 
 
-void CS230::Render::SetProjection(const mat3 proj)
+void Render::SetProjection(const mat3 proj)
 {
     projection_matrix = proj;
 }
 
-void CS230::Render::CreatModel()
+void Render::CreatModel()
 {
     float w = 0.5f, h = 0.5f;
     const std::array positions = { vec2{-w, -h}, vec2{w, -h}, vec2{w, h}, vec2{-w, h} };
@@ -445,7 +491,7 @@ void CS230::Render::CreatModel()
     model.SetIndexBuffer(std::move(index_buffer));
 }
 
-void CS230::Render::CreatLineModel()
+void Render::CreatLineModel()
 {
     const std::array positions = { vec2{0, 0}, vec2{1, 0} };
 
@@ -470,7 +516,7 @@ void CS230::Render::CreatLineModel()
 }
 
 
-void CS230::Render::CreateCircleLineModel() {
+void Render::CreateCircleLineModel() {
     int segments = 30;
     float radius = 0.5;
 
@@ -502,7 +548,7 @@ void CS230::Render::CreateCircleLineModel() {
     circle_line_model.SetPrimitivePattern(GLPrimitive::LineLoop);
 }
 
-void CS230::Render::RenderQuad()
+void Render::RenderQuad()
 {
     static unsigned int quadVAO = 0;
     static unsigned int quadVBO;

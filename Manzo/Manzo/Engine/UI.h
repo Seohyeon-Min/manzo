@@ -4,7 +4,7 @@
 #include "../Game/Ship.h"
 #include <memory>
 
-class UI : public CS230::Component { // ui (object)  button click(component) 
+class UI : public Component { // ui (object)  button click(component) 
 public:
     virtual void AddDrawCall() = 0;
 };
@@ -20,7 +20,7 @@ private:
     GLTexture* background_texture;
     GLTexture* foreground_texture;
     vec2 position;
-    CS230::DrawCall draw_call;
+    DrawCall draw_call;
     mat3 parallax_matrix;
     float scale = 0.34f;
     float y_padding = 24.f;

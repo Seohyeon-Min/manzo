@@ -1,7 +1,7 @@
 #include "../Engine/Component.h"
 #include "GLTexture.h"
 
-class GodRay : public CS230::Component {
+class GodRay : public Component {
 public:
     GodRay();
     void Draw();
@@ -11,7 +11,7 @@ private:
     mat3 mat;
 };
 
-//class Pump : public CS230::Component {
+//class Pump : public Component {
 //public:
 //    Pump();
 //    void Draw();

@@ -11,11 +11,11 @@ Created:    March 22, 2023
 
 #include "Sprite.h"
 
-CS230::Sprite::Sprite(const std::filesystem::path& sprite_file, GameObject* given_object) {
+Sprite::Sprite(const std::filesystem::path& sprite_file, GameObject* given_object) {
     Load(sprite_file, given_object);
 }
 
-CS230::Sprite::Sprite(Sprite&& temporary) noexcept :
+Sprite::Sprite(Sprite&& temporary) noexcept :
     texture(std::move(temporary.texture)),
     hotspots(std::move(temporary.hotspots)),
     current_animation(temporary.current_animation),
@@ -24,7 +24,7 @@ CS230::Sprite::Sprite(Sprite&& temporary) noexcept :
     animations(std::move(temporary.animations))
 { }
 
-CS230::Sprite& CS230::Sprite::operator=(Sprite&& temporary) noexcept {
+Sprite& Sprite::operator=(Sprite&& temporary) noexcept {
     std::swap(texture, temporary.texture);
     std::swap(hotspots, temporary.hotspots);
     std::swap(current_animation, temporary.current_animation);
@@ -34,7 +34,7 @@ CS230::Sprite& CS230::Sprite::operator=(Sprite&& temporary) noexcept {
     return *this;
 }
 
-CS230::Sprite::~Sprite()
+Sprite::~Sprite()
 {
     for (Animation* animation : animations) {
         delete animation;
@@ -42,7 +42,7 @@ CS230::Sprite::~Sprite()
     animations.clear();
 }
 
-void CS230::Sprite::Load(const std::filesystem::path& sprite_file, GameObject* object) {
+void Sprite::Load(const std::filesystem::path& sprite_file, GameObject* object) {
     
 
     if (sprite_file.extension() != ".spt") {
@@ -120,13 +120,13 @@ void CS230::Sprite::Load(const std::filesystem::path& sprite_file, GameObject* o
     }
 }
 
-void CS230::Sprite::Update(double dt)
+void Sprite::Update(double dt)
 {
     animations[current_animation]->Update(dt);
 
 }
 
-ivec2 CS230::Sprite::GetHotSpot(int index)
+ivec2 Sprite::GetHotSpot(int index)
 {
 	if (index < 0 || index >= hotspots.size()) {
 		//Engine::GetLogger().LogError("Error: wrong hotspot index.");
@@ -135,7 +135,7 @@ ivec2 CS230::Sprite::GetHotSpot(int index)
 	return ivec2(hotspots[index]);
 }
 
-void CS230::Sprite::PlayAnimation(int animation)
+void Sprite::PlayAnimation(int animation)
 {
     if (animation < 0 || animation > animations.size()) {
         Engine::GetLogger().LogError("the animation doesn't exist.");
@@ -147,7 +147,7 @@ void CS230::Sprite::PlayAnimation(int animation)
     }
 }
 
-bool CS230::Sprite::AnimationEnded()
+bool Sprite::AnimationEnded()
 {
     if (animations[current_animation]->Ended())
         return true;
@@ -155,12 +155,12 @@ bool CS230::Sprite::AnimationEnded()
         return false;
 }
 
-void CS230::Sprite::Reset()
+void Sprite::Reset()
 {
     animations[current_animation]->Reset();
 }
 
-ivec2 CS230::Sprite::GetFrameTexel(int index) const
+ivec2 Sprite::GetFrameTexel(int index) const
 {
 	if (index < 0 || index >= frame_texels.size()) {
 		return ivec2({ 0,0 });
@@ -168,7 +168,7 @@ ivec2 CS230::Sprite::GetFrameTexel(int index) const
 	return ivec2(frame_texels[index]);
 }
 
-//void CS230::Sprite::Draw() {
+//void Sprite::Draw() {
 //    //texture->Draw(display_matrix * mat3(-GetHotSpot(0)), GetFrameTexel(animations[current_animation]->CurrentFrame()), GetFrameSize());
 //
 //}

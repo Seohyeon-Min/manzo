@@ -10,19 +10,19 @@ Created:    May 15, 2023
 
 #include "Timer.h"
 
-CS230::Timer::Timer(double time_remaining)
+Timer::Timer(double time_remaining)
 {
 	Set(time_remaining);
 }
 
-void CS230::Timer::Set(double time_remaining)
+void Timer::Set(double time_remaining)
 {
 	timer_max = time_remaining;
 	pendulum = false;
 	Reset();
 }
 
-void CS230::Timer::Update(double dt)
+void Timer::Update(double dt)
 {
 	pendulum = !pendulum;
 	if (timer >= 0) {
@@ -34,44 +34,44 @@ void CS230::Timer::Update(double dt)
 	}
 }
 
-void CS230::Timer::Reset()
+void Timer::Reset()
 {
 	timer = timer_max;
 }
 
-double CS230::Timer::Remaining()
+double Timer::Remaining()
 {
 	return timer;
 }
 
-int CS230::Timer::RemainingInt()
+int Timer::RemainingInt()
 {
 	return (int)timer;
 }
 
-bool CS230::Timer::TickTock()
+bool Timer::TickTock()
 {
 	return pendulum;
 }
 
 
 
-CS230::RealTimeTimer::RealTimeTimer(double duration)
+RealTimeTimer::RealTimeTimer(double duration)
     : duration(duration), running(false), paused_time(0) {}
 
-void CS230::RealTimeTimer::Set(double duration) {
+void RealTimeTimer::Set(double duration) {
     this->duration = duration;
     Reset();
 }
 
-void CS230::RealTimeTimer::Start() {
+void RealTimeTimer::Start() {
     if (!running) {
         running = true;
         start_time = std::chrono::steady_clock::now();
     }
 }
 
-void CS230::RealTimeTimer::Pause() {
+void RealTimeTimer::Pause() {
     if (running) {
         running = false;
         auto now = std::chrono::steady_clock::now();
@@ -80,12 +80,12 @@ void CS230::RealTimeTimer::Pause() {
     }
 }
 
-void CS230::RealTimeTimer::Reset() {
+void RealTimeTimer::Reset() {
     running = false;
     paused_time = duration;
 }
 
-double CS230::RealTimeTimer::Remaining() const {
+double RealTimeTimer::Remaining() const {
     if (!running) {
         return paused_time;
     }
@@ -94,10 +94,10 @@ double CS230::RealTimeTimer::Remaining() const {
     return std::max(0.0, duration - elapsed);
 }
 
-bool CS230::RealTimeTimer::IsRunning() const {
+bool RealTimeTimer::IsRunning() const {
     return running;
 }
 
-bool CS230::RealTimeTimer::IsFinished() const {
+bool RealTimeTimer::IsFinished() const {
     return Remaining() <= 0.0;
 }

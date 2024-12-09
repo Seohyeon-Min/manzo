@@ -20,40 +20,39 @@ enum LoggerLogLevel {
     LOGINFO,
     LOGDEBUG
 };
-namespace CS230 {
-    class Logger {
-    public:
-        enum class Severity {
-            Verbose,  //Minor messages
-            Debug,    //Only used while actively debugging
-            Event,    //General event, like key press or state change
-            Error     //Errors, such as file load errors
-        };
-        Logger(Severity severity, bool use_console);
-        Logger(std::chrono::system_clock::time_point start_time, Severity severity, bool use_console);
-        ~Logger();
-        void LogError(std::string text) {
-            log(Severity::Error, text);
-        }
-        void LogEvent(std::string text) {
-            log(Severity::Event, text);
-        }
-        void LogDebug(std::string text) {
-            log(Severity::Debug, text);
-        }
-        void LogVerbose(std::string text) {
-            log(Severity::Verbose, text);
-        }
-        void SetTraceLogLevel(LoggerLogLevel level) {
-            currentLogLevel = level;
-        }
-    private:
-        const std::string word[4]{ "Verbose","Debug","Event","Error" };
-        Severity min_level;
-        std::ofstream out_stream;
-        std::chrono::system_clock::time_point start_time;
-        double seconds_since_start();
-        void log(Severity severity, std::string message);
-        LoggerLogLevel currentLogLevel = LOGINFO;
+
+class Logger {
+public:
+    enum class Severity {
+        Verbose,  //Minor messages
+        Debug,    //Only used while actively debugging
+        Event,    //General event, like key press or state change
+        Error     //Errors, such as file load errors
     };
-}
+    Logger(Severity severity, bool use_console);
+    Logger(std::chrono::system_clock::time_point start_time, Severity severity, bool use_console);
+    ~Logger();
+    void LogError(std::string text) {
+        log(Severity::Error, text);
+    }
+    void LogEvent(std::string text) {
+        log(Severity::Event, text);
+    }
+    void LogDebug(std::string text) {
+        log(Severity::Debug, text);
+    }
+    void LogVerbose(std::string text) {
+        log(Severity::Verbose, text);
+    }
+    void SetTraceLogLevel(LoggerLogLevel level) {
+        currentLogLevel = level;
+    }
+private:
+    const std::string word[4]{ "Verbose","Debug","Event","Error" };
+    Severity min_level;
+    std::ofstream out_stream;
+    std::chrono::system_clock::time_point start_time;
+    double seconds_since_start();
+    void log(Severity severity, std::string message);
+    LoggerLogLevel currentLogLevel = LOGINFO;
+};

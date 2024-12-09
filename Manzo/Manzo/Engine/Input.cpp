@@ -7,7 +7,7 @@
 
 #include <iostream>
 
-CS230::Input::Input() {
+Input::Input() {
     SDL_Init(SDL_INIT_EVERYTHING);
     current_key_state = SDL_GetKeyboardState(nullptr);
     previous_keys_down.fill(false);
@@ -16,11 +16,11 @@ CS230::Input::Input() {
     mouse_position = { 0, 0 };
 }
 
-void CS230::Input::SetKeyDown(Keys key, bool value) {
+void Input::SetKeyDown(Keys key, bool value) {
     previous_keys_down[static_cast<int>(key)] = value;
 }
 
-void CS230::Input::Update() {
+void Input::Update() {
     memcpy(previous_mouse_state.data(), current_mouse_state.data(), current_mouse_state.size() * sizeof(bool));
     for (int i = 0; i < SDL_NUM_SCANCODES; ++i) {
         previous_keys_down[i] = current_key_state[i];
@@ -43,22 +43,22 @@ void CS230::Input::Update() {
     current_mouse_state[4] = mouse_state & SDL_BUTTON(SDL_BUTTON_X2);
 }
 
-bool CS230::Input::KeyDown(Keys key) {
+bool Input::KeyDown(Keys key) {
     return current_key_state[static_cast<int>(key)];
 }
 
-bool CS230::Input::KeyJustPressed(Keys key) {
+bool Input::KeyJustPressed(Keys key) {
     return current_key_state[static_cast<int>(key)] && !previous_keys_down[static_cast<int>(key)];
 }
 
-bool CS230::Input::KeyJustReleased(Keys key) {
+bool Input::KeyJustReleased(Keys key) {
     return !current_key_state[static_cast<int>(key)] && previous_keys_down[static_cast<int>(key)];
 }
 
-void CS230::Input::compute_mouse_coordinates()
+void Input::compute_mouse_coordinates()
 {
-    if (!Engine::GetGameStateManager().IsNull() && Engine::GetGameStateManager().GetGSComponent<CS230::Cam>() != nullptr) {
-        CS230::Cam* camera = Engine::GetGameStateManager().GetGSComponent<CS230::Cam>();
+    if (!Engine::GetGameStateManager().IsNull() && Engine::GetGameStateManager().GetGSComponent<Cam>() != nullptr) {
+        Cam* camera = Engine::GetGameStateManager().GetGSComponent<Cam>();
         // use camera view buildwindowdevicetocamera to convert to camera space
         mat3 device_mouse = mat3::build_translation({ mouse_position });
 
@@ -77,29 +77,29 @@ void CS230::Input::compute_mouse_coordinates()
 
 
 
-void CS230::Input::SetMouseButtonDown(Uint8 button, bool value) {
+void Input::SetMouseButtonDown(Uint8 button, bool value) {
     if (button >= 1 && button <= 5) { 
         current_mouse_state[button - 1] = value;
     }
 }
 
-bool CS230::Input::MouseButtonDown(Uint8 button) {
+bool Input::MouseButtonDown(Uint8 button) {
     return (button >= 1 && button <= 5) ? current_mouse_state[button - 1] : false;
 }
 
-bool CS230::Input::MouseButtonJustPressed(Uint8 button) {
+bool Input::MouseButtonJustPressed(Uint8 button) {
     return MouseButtonDown(button) && !previous_mouse_state[button - 1];
 }
 
-bool CS230::Input::MouseButtonJustReleased(Uint8 button) {
+bool Input::MouseButtonJustReleased(Uint8 button) {
     return !MouseButtonDown(button) && previous_mouse_state[button - 1];
 }
 
-vec2 CS230::Input::GetMousePosition() const {
+vec2 Input::GetMousePosition() const {
     return mouse_position;
 }
 
-bool CS230::Input::IsMouseMoving() {
+bool Input::IsMouseMoving() {
     return (std::abs(mouse_position.x - previous_mouse_position.x) >= move_factor ||
         std::abs(mouse_position.y - previous_mouse_position.y) >= move_factor);
 }

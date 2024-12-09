@@ -13,11 +13,11 @@ Updated:    04/30/2024
 
 #include <optional> 
 
-CS230::GameObject::GameObject(vec2 position) :
+GameObject::GameObject(vec2 position) :
 	GameObject(position, 0, { 1, 1 }) {
 }
 
-CS230::GameObject::GameObject(vec2 position, double rotation, vec2 scale) :
+GameObject::GameObject(vec2 position, double rotation, vec2 scale) :
 	velocity({ 0,0 }),
 	position(position),
 	scale(scale),
@@ -28,13 +28,13 @@ CS230::GameObject::GameObject(vec2 position, double rotation, vec2 scale) :
 	current_state->Enter(this);
 }
 
-void CS230::GameObject::Update(double dt) {
+void GameObject::Update(double dt) {
 	current_state->Update(this, dt);
 	UpdateGOComponents(dt);
 	current_state->CheckExit(this);
 }
 
-void CS230::GameObject::FixedUpdate(double fixed_dt)
+void GameObject::FixedUpdate(double fixed_dt)
 {
 	current_state->FixedUpdate(this, fixed_dt);
 	if (velocity.x != 0 || velocity.y != 0) {
@@ -42,13 +42,13 @@ void CS230::GameObject::FixedUpdate(double fixed_dt)
 	}
 }
 
-void CS230::GameObject::change_state(State* new_state) {
+void GameObject::change_state(State* new_state) {
 	current_state = new_state;
 	current_state->Enter(this);
 }
 
 
-void CS230::GameObject::Draw(DrawLayer drawlayer) {
+void GameObject::Draw(DrawLayer drawlayer) {
 	Sprite* sprite = GetGOComponent<Sprite>();
 	if (sprite != nullptr) {
 		if (shader == nullptr) {
@@ -61,7 +61,7 @@ void CS230::GameObject::Draw(DrawLayer drawlayer) {
 		}
 
 		DrawCall draw_call = {
-			sprite->GetTexture(),
+			sprite,
 			&GetMatrix(),
 			shader
 		};
@@ -73,7 +73,7 @@ void CS230::GameObject::Draw(DrawLayer drawlayer) {
 			Engine::GetRender().AddDrawCall(draw_call);  // basic layer
 		}
 	}
-	if (Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>() != nullptr && Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>()->Enabled()) {
+	if (Engine::GetGameStateManager().GetGSComponent<ShowCollision>() != nullptr && Engine::GetGameStateManager().GetGSComponent<ShowCollision>()->Enabled()) {
 		Collision* collision = GetGOComponent<Collision>();
 		if (collision != nullptr) {
 			collision->Draw();
@@ -81,7 +81,7 @@ void CS230::GameObject::Draw(DrawLayer drawlayer) {
 	}
 }
 
-void CS230::GameObject::Draw(const DrawCall& draw_call, DrawLayer drawlayer)
+void GameObject::Draw(const DrawCall& draw_call, DrawLayer drawlayer)
 {
 	Sprite* sprite = GetGOComponent<Sprite>();
 	if (sprite != nullptr) {
@@ -96,7 +96,7 @@ void CS230::GameObject::Draw(const DrawCall& draw_call, DrawLayer drawlayer)
 
 		Engine::GetRender().AddDrawCall(draw_call, drawlayer);
 	}
-	if (Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>() != nullptr && Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>()->Enabled()) {
+	if (Engine::GetGameStateManager().GetGSComponent<ShowCollision>() != nullptr && Engine::GetGameStateManager().GetGSComponent<ShowCollision>()->Enabled()) {
 		Collision* collision = GetGOComponent<Collision>();
 		if (collision != nullptr) {
 			collision->Draw();
@@ -104,21 +104,21 @@ void CS230::GameObject::Draw(const DrawCall& draw_call, DrawLayer drawlayer)
 	}
 }
 
-bool CS230::GameObject::IsCollidingWith(GameObject* other_object) {
+bool GameObject::IsCollidingWith(GameObject* other_object) {
 	Collision* collider = GetGOComponent<Collision>();
 	return collider != nullptr && collider->IsCollidingWith(other_object);
 }
 
-bool CS230::GameObject::IsCollidingWith(vec2 point) {
+bool GameObject::IsCollidingWith(vec2 point) {
 	Collision* collider = GetGOComponent<Collision>();
 	return collider != nullptr && collider->IsCollidingWith(point);
 }
 
-bool CS230::GameObject::CanCollideWith([[maybe_unused]] GameObjectTypes other_object_type) {
+bool GameObject::CanCollideWith([[maybe_unused]] GameObjectTypes other_object_type) {
 	return false;
 }
 
-const mat3& CS230::GameObject::GetMatrix() {
+const mat3& GameObject::GetMatrix() {
 	if (matrix_outdated) {
 		object_matrix =
 			mat3::build_translation(position) *
@@ -129,60 +129,60 @@ const mat3& CS230::GameObject::GetMatrix() {
 	return object_matrix;
 }
 
-const vec2& CS230::GameObject::GetPosition() const
+const vec2& GameObject::GetPosition() const
 {
 	return position;
 }
 
-const vec2& CS230::GameObject::GetVelocity() const
+const vec2& GameObject::GetVelocity() const
 {
 	return velocity;
 }
 
-const vec2& CS230::GameObject::GetScale() const
+const vec2& GameObject::GetScale() const
 {
 	return scale;
 }
 
-const bool CS230::GameObject::GetFlipX() const
+const bool GameObject::GetFlipX() const
 {
 	return scale.x < 0;
 }
 
-double CS230::GameObject::GetRotation() const
+double GameObject::GetRotation() const
 {
 	return rotation;
 }
 
-void CS230::GameObject::SetPosition(vec2 new_position) {
+void GameObject::SetPosition(vec2 new_position) {
 	position = new_position;
 	//matrix_outdated = true;
 }
 
-void CS230::GameObject::UpdatePosition(vec2 delta) {
+void GameObject::UpdatePosition(vec2 delta) {
 	position += delta;
 	matrix_outdated = true;
 }
 
-void CS230::GameObject::SetVelocity(vec2 new_velocity)
+void GameObject::SetVelocity(vec2 new_velocity)
 {
 	velocity = new_velocity;
 	//matrix_outdated = true;
 }
 
-void CS230::GameObject::UpdateVelocity(vec2 delta)
+void GameObject::UpdateVelocity(vec2 delta)
 {
 	velocity += delta;
 	matrix_outdated = true;
 }
 
-void CS230::GameObject::SetScale(vec2 new_scale)
+void GameObject::SetScale(vec2 new_scale)
 {
 	scale = new_scale;
 	//matrix_outdated = true;
 }
 
-void CS230::GameObject::SetFlipX(bool flip) 
+void GameObject::SetFlipX(bool flip) 
 {
 	if ((flip && scale.x > 0) || (!flip && scale.x < 0)) 
 	{
@@ -190,19 +190,19 @@ void CS230::GameObject::SetFlipX(bool flip)
 	}
 }
 
-void CS230::GameObject::UpdateScale(vec2 delta)
+void GameObject::UpdateScale(vec2 delta)
 {
 	scale += delta;
 	matrix_outdated = true;
 }
 
-void CS230::GameObject::SetRotation(double new_rotation)
+void GameObject::SetRotation(double new_rotation)
 {
 	rotation = new_rotation;
 	matrix_outdated = true;
 }
 
-void CS230::GameObject::UpdateRotation(double delta)
+void GameObject::UpdateRotation(double delta)
 {
 	rotation += delta;
 	matrix_outdated = true;

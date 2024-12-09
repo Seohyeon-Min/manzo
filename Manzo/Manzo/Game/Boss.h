@@ -5,7 +5,7 @@
 
 #include <vector>
 
-class Boss : public CS230::GameObject
+class Boss : public GameObject
 {
 public:
 	enum BossType
