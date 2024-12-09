@@ -236,7 +236,32 @@ void Skillsys::AddSkill(Skill_list input, int money)
             std::cout << "Not enough money" << std::endl;
         }
     }
-};
+}
+void Skillsys::RemoveSkill(Skill_list input, int money)
+{
+    bool IsSell = false;
+    for (int i = 0; i < inventory.size(); i++)
+    {
+        if (inventory[i] == input)
+        {
+            inventory[i] = Empty;
+            Engine::GetGameStateManager().GetGSComponent<Fish>()->SetMoney(Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() + money);
+            std::cout << "Sell complete" << std::endl;
+            std::cout << "Left money: " << Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() << std::endl;
+            IsSell = true;
+        }
+    }
+    if (!IsSell)
+    {
+        std::cout << "Error from sell" << std::endl;
+    }
+
+}
+Skillsys::Skill_list Skillsys::Change_number_to_list(int input)
+{
+    return static_cast<Skill_list>(input);
+}
+;
 
 Skillsys::Skill_Net::Skill_Net(vec2 position, Skillsys* skillsys) : GameObject(position)
 {

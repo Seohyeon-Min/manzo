@@ -10,6 +10,8 @@
 
 class Skillsys;
 
+enum Skillsys::Skill_list;
+
 class Shop : public CS230::Component
 {
 public:
@@ -19,6 +21,11 @@ public:
 		First = 1,
 		Second,
 		Third,
+	};
+	struct Inventory_info // each Inventory's info
+	{
+		Skillsys::Skill_list skill; //set Empty
+		GLTexture* icon_texture = nullptr;
 	};
 	Shop();
 	void Update(double dt); // maybe not used dt..
@@ -57,5 +64,6 @@ private:
 	std::vector<CS230::DrawCall> icon_draw_calls;
 	std::vector<CS230::DrawCall> inv_icon_draw_calls; //for inventory icon
 	std::vector<vec2> icon_direction;
+	std::vector<Inventory_info> inv_info;
 
 };
