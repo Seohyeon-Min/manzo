@@ -170,9 +170,38 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 pathData = match[1].str();
                 std::replace(pathData.begin(), pathData.end(), ' ', ',');   //replace blank to ','
 
-                std::vector<vec2> positions= parsePathData(pathData);   // parse path
-                
+                std::vector<vec2> positions2= parsePathData(pathData);   // parse path
 
+                std::vector<vec2> positions;
+
+                for (auto& vec : positions2) {
+                    if (IsinGroup) {
+                        // scale
+                        if (IsScale) {
+                            vec.x += scale.x;
+                            vec.y += scale.y;
+                            std::cout << "Scaled!"<<std::endl;
+                        }
+                        //rotate
+                        if (IsRotate) {
+                            vec.x += rotatetranslate.x;
+                            vec.y += rotatetranslate.y;
+
+                            float rotatedX = vec.x * std::cos(rotateAngle) - vec.y * std::sin(rotateAngle);
+                            float rotatedY = vec.x * std::sin(rotateAngle) + vec.y * std::cos(rotateAngle);
+                            vec.x = rotatedX;
+                            vec.y = rotatedY;
+
+
+                        }
+                        // translate
+                        if (IsTranslate) {
+                            vec.x += translate.x;
+                            vec.y += translate.y;
+                        }
+                        positions.push_back(vec);
+                    }
+                }
                 
 
                 poly.vertices = positions;
@@ -208,8 +237,6 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                     if (rock_groups.empty()) {
                         RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new group
                         rockgroup->AddRock(rock);                                       //add poly into new group
-                        rockgroup->SetRotation(rotateAngle);
-                        //rockgroup->SetScale();
 
                         rock->SetRockGroup(rockgroup);
                         Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup);
@@ -219,8 +246,6 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                         if (rock_groups.back()->GetIndex() != poly.polyindex) {             // if poly has different index
                             RockGroup* rockgroup = new RockGroup(poly.polyindex);           // make new group
                             rockgroup->AddRock(rock);                                       //add poly into new group
-                            rockgroup->SetRotation(rotateAngle);
-                            //rockgroup->SetScale();
 
                             rock->SetRockGroup(rockgroup);
                             Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup);
@@ -446,30 +471,4 @@ std::vector<vec2> CS230::Map::parsePathData(const std::string& pathData) {
 }
 
 
-std::vector<vec2> CS230::Map::Transform(const std::vector<vec2>& positions, bool IsRotate, bool IsScale, bool IsTranslate) {
-    std::vector<vec2> positions = positions;
-    for (std::vector<vec2> position : positions) {
-        //rotate
-        if (IsRotate) {
-            vec.x += rotatetranslate.x;
-            vec.y += rotatetranslate.y;
-
-            float rotatedX = vec.x * std::cos(rotateAngle) - vec.y * std::sin(rotateAngle);
-            float rotatedY = vec.x * std::sin(rotateAngle) + vec.y * std::cos(rotateAngle);
-            vec.x = rotatedX;
-            vec.y = rotatedY;
-
-
-        }
-        // translate
-        if (IsTranslate) {
-            vec.x += translate.x;
-            vec.y += translate.y;
-        }
-    }
-    
-    
-    return positions;
-
-}
 
