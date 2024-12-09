@@ -45,8 +45,9 @@ private:
 	mat3 back_matrix; // shop background matrix
 	mat3 inv_back_matrix; // inventory background matrix
 	mat3 botton_matrix; // shop botton matrix
-	vec2 base_botton_direction;
-	vec2 defualt_botton_direction;
+	vec2 base_icon_direction;
+	vec2 defualt_icon_direction;
+	vec2 botton_pos;
 	vec2 inven_back_pos;
 	vec2 shop_back_pos;
 	vec2 back_matrix_defualt;

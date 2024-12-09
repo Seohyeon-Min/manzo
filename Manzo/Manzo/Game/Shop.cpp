@@ -11,13 +11,14 @@ Shop::Shop()
 	shop_button = Engine::GetTextureManager().Load("assets/images/temp_box3.png");
 	shop_icon = Engine::GetTextureManager().Load("assets/images/temp_box2.png");
 	inven_background = Engine::GetTextureManager().Load("assets/images/temp_box1.png");
-	base_botton_direction = { static_cast < float>(100 - shop_background->GetWidth() / 2), (Engine::window_height) / 2.2f };
-	defualt_botton_direction = { static_cast<float>(100 - shop_background->GetWidth() / 2), (Engine::window_height) / 2.2f }; // 아이콘 기본값
-	inven_back_pos = { 200, Engine::window_height / 13 };
-	back_matrix_defualt = { static_cast<float>(200 - shop_background->GetWidth() / 2), Engine::window_height / 13 };
+	base_icon_direction = { static_cast < float>(-shop_background->GetWidth()), static_cast<float>(Engine::window_height - (inven_background->GetHeight() * 0.9)) };
+	defualt_icon_direction = { static_cast<float>(-shop_background->GetWidth()), static_cast<float>(Engine::window_height - (inven_background->GetHeight() * 0.9)) }; // 아이콘 기본값
+	inven_back_pos = { 200, static_cast<float>(Engine::window_height - (inven_background->GetHeight() * 1.3)) };
+	botton_pos = { static_cast<float>(-shop_background->GetWidth() + shop_button->GetWidth()), static_cast<float>(Engine::window_height - (inven_background->GetHeight() * 0.9)) };
+	back_matrix_defualt = { static_cast<float>(200 - shop_background->GetWidth() * 1.2), static_cast<float>(Engine::window_height - (inven_background->GetHeight() * 1.3)) };
 	for (int i = 1; i < 4; i++)
 	{
-		icon_matrix.push_back(mat3::build_translation({ base_botton_direction.x , base_botton_direction.y - (float) (i*140) }) * mat3::build_scale(0.4f));
+		icon_matrix.push_back(mat3::build_translation({ base_icon_direction.x , base_icon_direction.y - (float) (i*(shop_background->GetHeight()/4)) }) * mat3::build_scale(0.4f));
 	}
 	icon_draw_calls.resize(3);
 	//Read save file?
@@ -106,7 +107,7 @@ void Shop::Shop_Back_draw()
 	settings.is_UI = true;
 	settings.do_blending = true;
 
-	back_matrix = mat3::build_translation({ back_matrix_defualt }) * mat3::build_scale(0.7f); //* mat3::build_rotation(3.141592f/2.0f);
+	back_matrix = mat3::build_translation({ back_matrix_defualt }) * mat3::build_scale(1.0f); //* mat3::build_rotation(3.141592f/2.0f);
 
 	draw_call = 
 	{
@@ -134,9 +135,9 @@ void Shop::Shop_icon_draw()
 
 	// 각 아이콘의 기준점 (아이콘별로 저장)
 	static std::vector<vec2> icon_positions = {
-		{ base_botton_direction.x, base_botton_direction.y - 140.0f },
-		{ base_botton_direction.x, base_botton_direction.y - 280.0f },
-		{ base_botton_direction.x, base_botton_direction.y - 420.0f }
+		{ base_icon_direction.x, base_icon_direction.y - (shop_background->GetHeight() / 4) },
+		{ base_icon_direction.x, base_icon_direction.y - (shop_background->GetHeight() / 4 * 2) },
+		{ base_icon_direction.x, base_icon_direction.y - (shop_background->GetHeight() / 4 * 3) }
 	};
 
 	float current_mouse_pos_x = Engine::Instance().GetInput().GetMousePos().mouseCamSpaceX;
@@ -175,8 +176,8 @@ void Shop::Shop_icon_draw()
 			// 드래그 종료 후 드래그한 아이콘의 기준점 갱신(일단 초기 위치로)
 			if (!is_on_inven)
 			{
-				icon_positions[dragging_icon_index].x = defualt_botton_direction.x;
-				icon_positions[dragging_icon_index].y = defualt_botton_direction.y - ((dragging_icon_index + 1) * 140);
+				icon_positions[dragging_icon_index].x = defualt_icon_direction.x;
+				icon_positions[dragging_icon_index].y = defualt_icon_direction.y - ((dragging_icon_index + 1) * (shop_background->GetHeight() / 4));
 			}
 			if (is_on_inven)
 			{
@@ -196,8 +197,8 @@ void Shop::Shop_icon_draw()
 				mat3::build_translation(icon_positions[dragging_icon_index].x + delta_x,
 					icon_positions[dragging_icon_index].y + delta_y) *
 				mat3::build_scale(0.4f);
-			if( (icon_positions[dragging_icon_index].x + delta_x >= inven_back_pos.x - (shop_background->GetHeight()/4) && icon_positions[dragging_icon_index].x + delta_x <= inven_back_pos.x + (shop_background->GetHeight()/4))
-				&& (icon_positions[dragging_icon_index].y + delta_y >= inven_back_pos.y - (shop_background->GetWidth()/3)&& icon_positions[dragging_icon_index].y + delta_y <= inven_back_pos.y + (shop_background->GetWidth()/3)))
+			if( (icon_positions[dragging_icon_index].x + delta_x >= inven_back_pos.x - (shop_background->GetWidth()/4) && icon_positions[dragging_icon_index].x + delta_x <= inven_back_pos.x + (shop_background->GetWidth()/4))
+				&& (icon_positions[dragging_icon_index].y + delta_y >= inven_back_pos.y - (shop_background->GetHeight()/2)&& icon_positions[dragging_icon_index].y + delta_y <= inven_back_pos.y + (shop_background->GetHeight()/2)))
 			{
 				is_on_inven = true;
 			}
@@ -235,7 +236,7 @@ void Shop::Shop_button_draw()
 	settings.is_UI = true;
 	settings.do_blending = true;
 
-	botton_matrix = mat3::build_translation({ static_cast<float>(270 - shop_background->GetWidth() / 2) , (Engine::window_height) / 2.2f - (float)(pick * 140) }) * mat3::build_scale(1.0f);
+	botton_matrix = mat3::build_translation({ botton_pos.x , botton_pos.y - (float)(pick * (shop_background->GetHeight()/4)) }) * mat3::build_scale(1.0f);
 
 	if (Engine::Instance().GetInput().KeyJustPressed(CS230::Input::Keys::Up))
 	{
@@ -287,7 +288,7 @@ void Shop::Inventory_Back_draw()
 	settings.is_UI = true;
 	settings.do_blending = true;
 
-	inv_back_matrix = mat3::build_translation({ inven_back_pos }) * mat3::build_scale(0.7f); // * mat3::build_rotation(3.141592f / 2.0f);
+	inv_back_matrix = mat3::build_translation({ inven_back_pos }) * mat3::build_scale(1.0f); // * mat3::build_rotation(3.141592f / 2.0f);
 
 	draw_call =
 	{
@@ -316,8 +317,8 @@ void Shop::Inventory_Icon_draw()
 		{
 			// 아이콘 위치 및 크기 설정
 			inv_icon_matrix.emplace_back(mat3::build_translation({
-				defualt_botton_direction.x + shop_background->GetHeight(),
-				defualt_botton_direction.y - ((i + 1) * 140)
+				defualt_icon_direction.x + shop_background->GetHeight() * 1.1f,
+				defualt_icon_direction.y - ((i + 1) * (shop_background->GetHeight() / 4))
 				}) * mat3::build_scale(0.4f));
 
 			// DrawCall 생성
