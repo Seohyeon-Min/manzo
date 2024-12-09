@@ -35,6 +35,7 @@ public:
 	void RunMusic();
 	void InitializeStates();
 	void AfterDied();
+	std::array<int, 2> GetFirstPosition() { return position; }
 
 
 private:
