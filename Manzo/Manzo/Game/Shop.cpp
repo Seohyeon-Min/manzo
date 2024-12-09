@@ -10,6 +10,7 @@ Shop::Shop()
 	shop_background = Engine::GetTextureManager().Load("assets/images/temp_box1.png");
 	shop_button = Engine::GetTextureManager().Load("assets/images/temp_box3.png");
 	shop_icon = Engine::GetTextureManager().Load("assets/images/temp_box2.png");
+	inven_background = Engine::GetTextureManager().Load("assets/images/temp_box1.png");
 	base_botton_direction = { static_cast < float>(100 - shop_background->GetWidth() / 2), (Engine::window_height) / 2.2f };
 	defualt_botton_direction = { static_cast<float>(100 - shop_background->GetWidth() / 2), (Engine::window_height) / 2.2f }; // 아이콘 기본값
 	inven_back_pos = { 200, Engine::window_height / 13 };
@@ -105,7 +106,7 @@ void Shop::Shop_Back_draw()
 	settings.is_UI = true;
 	settings.do_blending = true;
 
-	back_matrix = mat3::build_translation({ back_matrix_defualt }) * mat3::build_scale(0.7f) * mat3::build_rotation(3.141592f/2.0f);
+	back_matrix = mat3::build_translation({ back_matrix_defualt }) * mat3::build_scale(0.7f); //* mat3::build_rotation(3.141592f/2.0f);
 
 	draw_call = 
 	{
@@ -286,11 +287,11 @@ void Shop::Inventory_Back_draw()
 	settings.is_UI = true;
 	settings.do_blending = true;
 
-	inv_back_matrix = mat3::build_translation({ inven_back_pos }) * mat3::build_scale(0.7f) * mat3::build_rotation(3.141592f / 2.0f);
+	inv_back_matrix = mat3::build_translation({ inven_back_pos }) * mat3::build_scale(0.7f); // * mat3::build_rotation(3.141592f / 2.0f);
 
 	draw_call =
 	{
-		shop_background,                       // Texture to draw
+		inven_background,                       // Texture to draw
 		&inv_back_matrix,                          // Transformation matrix
 		Engine::GetShaderManager().GetDefaultShader(), // Shader to use
 		nullptr,

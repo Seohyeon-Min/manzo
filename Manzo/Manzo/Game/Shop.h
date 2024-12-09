@@ -39,6 +39,7 @@ private:
 	GLTexture* shop_background = nullptr; //texture
 	GLTexture* shop_icon = nullptr; //texture
 	GLTexture* shop_button = nullptr; //texture
+	GLTexture* inven_background = nullptr; //texture
 	shop_list pick = First; //player's pick
 	shop_list sell_pick = First;
 	mat3 back_matrix; // shop background matrix
