@@ -238,7 +238,7 @@ void Boss::Move(double dt) {
 	GameObject::Update(dt);
 	vec2 nearestRockpoint = gameobjectmanager->FindNearestRock(boss);
 
-	if (IsReefOutOfRange(currentTargetRock)) {
+	/*if (IsReefOutOfRange(currentTargetRock)) {
 		currentTargetRock = gameobjectmanager->FindNearestRock(boss);
 
 	}
@@ -248,7 +248,7 @@ void Boss::Move(double dt) {
 
 	if ((current_position - GetPosition()).Length() < 10.0f) {
 		lerp_factor = 0.0f; 
-	}
+	}*/
 }
 
 
@@ -275,78 +275,78 @@ void Boss::ReadBossJSON(BossName name)
 
 }
 
-void Boss::AvoidObstacle(float avoidDistance, float steerSpeed, float speed, vec2 obstaclePoint, vec2 targetPoint) {
-	vec2 bossPosition = GetPosition();
-	targetPoint = Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->GetGOComponent<Ship>()->GetPosition();
-
-	// ��ֹ��� ���� ���� �Ÿ� ���
-	float distanceFromObstacle = sqrtf((bossPosition.x - obstaclePoint.x) * (bossPosition.x - obstaclePoint.x) +
-		(bossPosition.y - obstaclePoint.y) * (bossPosition.y - obstaclePoint.y));
-
-	vec2 currentVelocity = GetVelocity(); // ���� �ӵ�
-
-
-	if (distanceFromObstacle < avoidDistance) {
-		// ��ֹ��� �������� ȸ�� ���� ���
-		vec2 directionToObstacle = { -(obstaclePoint.x - bossPosition.x), -(obstaclePoint.y - bossPosition.y) };
-		float magnitude = sqrtf(directionToObstacle.x * directionToObstacle.x + directionToObstacle.y * directionToObstacle.y);
-		//std::cout << magnitude << std::endl;
-
-		// ���� ����ȭ
-		if (magnitude > 0.0f) {
-			directionToObstacle.x /= magnitude;
-			directionToObstacle.y /= magnitude;
-		}
-
-		// ��ǥ ����Ʈ�� ���� ���� ���
-		vec2 directionToTarget = { targetPoint.x - bossPosition.x, targetPoint.y - bossPosition.y };
-		magnitude = sqrtf(directionToTarget.x * directionToTarget.x + directionToTarget.y * directionToTarget.y);
-		if (magnitude > 0.0f) {
-			directionToTarget.x /= magnitude;
-			directionToTarget.y /= magnitude;
-		}
-
-		// ȸ�� ����� ��ǥ ������ ������ �ڿ������� ��ȯ
-		vec2 avoidDirection = {
-			directionToObstacle.x + directionToTarget.x,
-			directionToObstacle.y + directionToTarget.y
-		};
-
-		magnitude = sqrtf(avoidDirection.x * avoidDirection.x + avoidDirection.y * avoidDirection.y);
-		if (magnitude > 0.0f) {
-			avoidDirection.x /= magnitude;
-			avoidDirection.y /= magnitude;
-		}
-
-		// ȸ�� �ӵ� ����
-		vec2 targetVelocity = { avoidDirection.x * speed, avoidDirection.y * speed };
-
-		// ���� �������� �ӵ� ��ȯ
-		currentVelocity = Lerp(currentVelocity, targetVelocity, steerSpeed);
-	}
-	else {
-		// ��ǥ �������� �̵�
-		vec2 directionToTarget = { targetPoint.x - bossPosition.x, targetPoint.y - bossPosition.y };
-		float magnitude = sqrtf(directionToTarget.x * directionToTarget.x + directionToTarget.y * directionToTarget.y);
-
-		if (magnitude > 0.0f) {
-			directionToTarget.x /= magnitude;
-			directionToTarget.y /= magnitude;
-		}
-
-		vec2 targetVelocity = { directionToTarget.x * speed, directionToTarget.y * speed };
-		currentVelocity = Lerp(currentVelocity, targetVelocity, steerSpeed);
-	}
-
-	// �ӵ� ����
-	float maxSpeed = speed * 1.5f;
-	if (sqrtf(currentVelocity.x * currentVelocity.x + currentVelocity.y * currentVelocity.y) > maxSpeed) {
-		currentVelocity = normalize(currentVelocity) * maxSpeed;
-	}
-
-	// ������ ���ο� ��ġ ����
-	SetVelocity({ bossPosition.x + currentVelocity.x, bossPosition.y + currentVelocity.y });
-}
+//void Boss::AvoidObstacle(float avoidDistance, float steerSpeed, float speed, vec2 obstaclePoint, vec2 targetPoint) {
+//	vec2 bossPosition = GetPosition();
+//	targetPoint = Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->GetGOComponent<Ship>()->GetPosition();
+//
+//	// ��ֹ��� ���� ���� �Ÿ� ���
+//	float distanceFromObstacle = sqrtf((bossPosition.x - obstaclePoint.x) * (bossPosition.x - obstaclePoint.x) +
+//		(bossPosition.y - obstaclePoint.y) * (bossPosition.y - obstaclePoint.y));
+//
+//	vec2 currentVelocity = GetVelocity(); // ���� �ӵ�
+//
+//
+//	if (distanceFromObstacle < avoidDistance) {
+//		// ��ֹ��� �������� ȸ�� ���� ���
+//		vec2 directionToObstacle = { -(obstaclePoint.x - bossPosition.x), -(obstaclePoint.y - bossPosition.y) };
+//		float magnitude = sqrtf(directionToObstacle.x * directionToObstacle.x + directionToObstacle.y * directionToObstacle.y);
+//		//std::cout << magnitude << std::endl;
+//
+//		// ���� ����ȭ
+//		if (magnitude > 0.0f) {
+//			directionToObstacle.x /= magnitude;
+//			directionToObstacle.y /= magnitude;
+//		}
+//
+//		// ��ǥ ����Ʈ�� ���� ���� ���
+//		vec2 directionToTarget = { targetPoint.x - bossPosition.x, targetPoint.y - bossPosition.y };
+//		magnitude = sqrtf(directionToTarget.x * directionToTarget.x + directionToTarget.y * directionToTarget.y);
+//		if (magnitude > 0.0f) {
+//			directionToTarget.x /= magnitude;
+//			directionToTarget.y /= magnitude;
+//		}
+//
+//		// ȸ�� ����� ��ǥ ������ ������ �ڿ������� ��ȯ
+//		vec2 avoidDirection = {
+//			directionToObstacle.x + directionToTarget.x,
+//			directionToObstacle.y + directionToTarget.y
+//		};
+//
+//		magnitude = sqrtf(avoidDirection.x * avoidDirection.x + avoidDirection.y * avoidDirection.y);
+//		if (magnitude > 0.0f) {
+//			avoidDirection.x /= magnitude;
+//			avoidDirection.y /= magnitude;
+//		}
+//
+//		// ȸ�� �ӵ� ����
+//		vec2 targetVelocity = { avoidDirection.x * speed, avoidDirection.y * speed };
+//
+//		// ���� �������� �ӵ� ��ȯ
+//		currentVelocity = Lerp(currentVelocity, targetVelocity, steerSpeed);
+//	}
+//	else {
+//		// ��ǥ �������� �̵�
+//		vec2 directionToTarget = { targetPoint.x - bossPosition.x, targetPoint.y - bossPosition.y };
+//		float magnitude = sqrtf(directionToTarget.x * directionToTarget.x + directionToTarget.y * directionToTarget.y);
+//
+//		if (magnitude > 0.0f) {
+//			directionToTarget.x /= magnitude;
+//			directionToTarget.y /= magnitude;
+//		}
+//
+//		vec2 targetVelocity = { directionToTarget.x * speed, directionToTarget.y * speed };
+//		currentVelocity = Lerp(currentVelocity, targetVelocity, steerSpeed);
+//	}
+//
+//	// �ӵ� ����
+//	float maxSpeed = speed * 1.5f;
+//	if (sqrtf(currentVelocity.x * currentVelocity.x + currentVelocity.y * currentVelocity.y) > maxSpeed) {
+//		currentVelocity = normalize(currentVelocity) * maxSpeed;
+//	}
+//
+//	// ������ ���ο� ��ġ ����
+//	SetVelocity({ bossPosition.x + currentVelocity.x, bossPosition.y + currentVelocity.y });
+//}
 
 
 void Boss::RunMusic()
