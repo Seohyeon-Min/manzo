@@ -18,7 +18,7 @@ void Background::Add(const std::filesystem::path& texture_path, float speed)
 }
 
 void Background::SetUniforms(const GLShader* shader) {
-    double currentTime = Engine::GetAudioManager().GetCurrentMusicTime(Engine::GetAudioManager().GetID("assets/audios/100BPM_edm_temp.wav"));
+    double currentTime = Engine::GetAudioManager().GetCurrentMusicTime(Engine::GetAudioManager().GetID("assets/audios/bgm_original.wav"));
     //counter += Engine::Instance().GetDt();
     float texelSizeX = 1.0f / GetSize().width-70.f;
     float texelSizeY = 1.0f / GetSize().height - 70.f;

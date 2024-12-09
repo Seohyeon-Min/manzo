@@ -53,7 +53,7 @@ void Mode1::Load() {
 	AddGSComponent(new CS230::GameObjectManager());
 
 	beat_system = new Beat();
-	beat_system->LoadMusicToSync("assets/audios/100BPM_edm_temp.wav");
+	beat_system->LoadMusicToSync("assets/audios/bgm_original.wav");
 
 	AddGSComponent(beat_system);
 	AddGSComponent(new CS230::Map());
@@ -90,7 +90,7 @@ void Mode1::Load() {
 	AddGSComponent(new CS230::ParticleManager<Particles::MouseFollow>());
 	Boss::LoadBossfile();
 
-	Engine::GetAudioManager().LoadMusic("assets/audios/100BPM_edm_temp.wav",true);
+	Engine::GetAudioManager().LoadMusic("assets/audios/bgm_original.wav",true);
 	Engine::GetAudioManager().Set3DMode(FMOD_3D_LINEARROLLOFF);
 
 	// UI
@@ -139,7 +139,7 @@ void Mode1::Update(double dt) {
 	//audio play
 	if (!playing)
 	{
-		Engine::GetAudioManager().PlayMusics("assets/audios/100BPM_edm_temp.wav");
+		Engine::GetAudioManager().PlayMusics("assets/audios/bgm_original.wav");
 		playing = true;
 	}
 
@@ -152,7 +152,7 @@ void Mode1::Update(double dt) {
 	camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
 
 	// Update Fish Generator
-	//fishGenerator->GenerateFish(dt);
+	fishGenerator->GenerateFish(dt);
 
 	// Update Skills
 	skill_ptr->Update();
@@ -171,7 +171,6 @@ void Mode1::Update(double dt) {
 		GetGSComponent<CS230::GameObjectManager>()->Add(boss_ptr);
 		Isboss = true;
 	}
-
 
 
 	// Update 3D Audio with smooth transition for ship position

@@ -4,7 +4,7 @@
 #include "../Engine/Engine.h"
 
 void GodRay::SetUniforms(const GLShader* shader) {
-    double currentTime = Engine::GetAudioManager().GetCurrentMusicTime(Engine::GetAudioManager().GetID("assets/audios/100BPM_edm_temp.wav"));
+    double currentTime = Engine::GetAudioManager().GetCurrentMusicTime(Engine::GetAudioManager().GetID("assets/audios/bgm_original.wav"));
     //counter += Engine::Instance().GetDt();
     shader->SendUniform("iResolution",Engine::window_width, Engine::window_height);
     shader->SendUniform("iTime", float(currentTime));
