@@ -108,7 +108,7 @@ void Mode1::Load() {
 		BossFirstPos.push_back(GetGSComponent<Boss>()->GetFirstPosition());
 	}*/
 
-	////ÀÓ½Ãfish
+	////ï¿½Ó½ï¿½fish
    Fish* fish = new Fish();
 	GetGSComponent<CS230::GameObjectManager>()->Add(fish);
 

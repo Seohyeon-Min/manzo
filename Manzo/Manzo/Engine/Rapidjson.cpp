@@ -84,7 +84,7 @@ CS230::JsonParser::JsonParser(std::string path)
                 for (const auto& pointsArray : entryList) {
                     if (pointsArray.IsArray() && pointsArray.Size() == 4) {
                         EntryData entryData;
-                        entryData.Isnotelong = pointsArray[0].GetFloat();
+                        entryData.attacktype = pointsArray[0].GetFloat();
                         entryData.position = vec2(pointsArray[1].GetFloat(), pointsArray[2].GetFloat());
                         entryData.delay = pointsArray[3].GetFloat();
                         entryVec.push_back(entryData);
