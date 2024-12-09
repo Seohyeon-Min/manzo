@@ -58,8 +58,9 @@ void CS230::Map::ParseSVG(const std::string& filename) {
     vec2 scale = { 1.0f, 1.0f };
 
     bool IsinG = false;
-    bool Istranslate = false;
+    bool IsTranslate = false;
     bool IsRotate = false;
+    bool IsScale = false;
     bool IsinGroup = false;
     std::string polyIndex;
     std::string circleIndex;
@@ -82,7 +83,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 translate = { 0, 0 };
                 rotateAngle = 0;
                 rotatetranslate = { 0, 0 };
-                Istranslate = false;
+                IsTranslate = false;
                 IsRotate = false;
                 currentTag.clear();
                 continue;
@@ -102,6 +103,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 
                 // scale
                 if (std::regex_search(transformStr, match, matrixRegex)) {
+                    IsScale = true;
                     float a = std::stof(match[1].str());
                     float b = std::stof(match[2].str());
                     float c = std::stof(match[3].str());
@@ -117,7 +119,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 // rotate
                 else if (std::regex_search(transformStr, match, rotateRegex)) {
                     translate = { 0, 0 };
-                    Istranslate = false;
+                    IsTranslate = false;
                     IsRotate = true;
                     rotateAngle = -std::stof(match[1].str()) * static_cast<float>(M_PI) / 180.0f;
                     rotatetranslate.x = std::stof(match[2].str());
@@ -131,7 +133,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                     rotatetranslate = { 0, 0 };
                     translate.x = std::stof(match[1].str());
                     translate.y = -std::stof(match[2].str());
-                    Istranslate = true;
+                    IsTranslate = true;
                     IsRotate = false;
                 }
 
@@ -164,11 +166,13 @@ void CS230::Map::ParseSVG(const std::string& filename) {
 
             //poly position
             std::string pathData;
-            while (std::regex_search(currentTag, match, pathRegex)) {
+            while (std::regex_search(currentTag, match, pathRegex)) {   // path parsing
                 pathData = match[1].str();
-                std::replace(pathData.begin(), pathData.end(), ' ', ',');
+                std::replace(pathData.begin(), pathData.end(), ' ', ',');   //replace blank to ','
 
-                std::vector<vec2> positions= parsePathData(pathData);
+                std::vector<vec2> positions= parsePathData(pathData);   // parse path
+                
+
                 
 
                 poly.vertices = positions;
@@ -284,7 +288,7 @@ void CS230::Map::AddDrawCall()
     }
 }
 
-
+// Ear Clipping
 constexpr bool IsConvex(const vec2& a, const vec2& b, const vec2& c) noexcept {
     vec2 ab = b - a;
     vec2 bc = c - b;
@@ -372,38 +376,40 @@ std::vector<Polygon> EarClipping(const std::vector<vec2>& points) {
 
 }
 
+
+// Map Parsing
 std::vector<vec2> CS230::Map::parsePathData(const std::string& pathData) {
 
     std::istringstream stream(pathData);
     std::string data;
 
     
-    float last_x = 0, last_y = 0; // 이전 좌표
+    float last_x = 0, last_y = 0; // former position
     bool isRelative = false;
 
     std::vector<vec2> positions;
 
-    while (std::getline(stream, data, ',')) { // 쉼표 기준으로 분리
-        if (std::isalpha(data[0])) {  // 명령어 확인
+    while (std::getline(stream, data, ',')) {
+        if (std::isalpha(data[0])) {  // check is command
             currentCommand = data[0];
-            isRelative = std::islower(currentCommand);  // 소문자면 상대 명령어
+            isRelative = std::islower(currentCommand);  // is Relative?
             continue;
         }
 
         float x = 0.0f, y = 0.0f;
 
-        if (currentCommand == 'm' || currentCommand == 'M') {  // MoveTo 명령어
-            x = std::stof(data);  // 첫 번째 좌표
-            if (std::getline(stream, data, ',')) {  // 두 번째 좌표
+        if (currentCommand == 'm' || currentCommand == 'M') {  
+            x = std::stof(data);  
+            if (std::getline(stream, data, ',')) { 
                 
                 y = std::stof(data);
                 last_x = isRelative ? last_x + x : x;
                 last_y = isRelative ? last_y + y : y;
                 positions.push_back({ last_x, -last_y });
-                currentCommand = isRelative ? 'l' : 'L';  // 이후는 LineTo로 처리
+                currentCommand = isRelative ? 'l' : 'L';  // Treat as L or l
             }
         }
-        else if (currentCommand == 'l' || currentCommand == 'L') {  // LineTo 명령어
+        else if (currentCommand == 'l' || currentCommand == 'L') {  
             x = std::stof(data);
             if (std::getline(stream, data, ',')) {
                 
@@ -413,29 +419,57 @@ std::vector<vec2> CS230::Map::parsePathData(const std::string& pathData) {
                 positions.push_back({ last_x, -last_y });
             }
         }
-        else if (currentCommand == 'v' || currentCommand == 'V') {  // Vertical Line
+        else if (currentCommand == 'v' || currentCommand == 'V') { 
             
             y = std::stof(data);
             last_y = isRelative ? last_y + y : y;
-            positions.push_back({ last_x, -last_y });  // x는 유지
+            positions.push_back({ last_x, -last_y });  
         }
-        else if (currentCommand == 'h' || currentCommand == 'H') {  // Horizontal Line
+        else if (currentCommand == 'h' || currentCommand == 'H') {  
             
             x = std::stof(data);
             last_x = isRelative ? last_x + x : x;
-            positions.push_back({ last_x, -last_y });  // y는 유지
+            positions.push_back({ last_x, -last_y });  
         }
-        else if (currentCommand == 'z' || currentCommand == 'Z') {  // Close Path
+        else if (currentCommand == 'z' || currentCommand == 'Z') {  
             if (!positions.empty()) {
-                positions.push_back(positions.front());  // 경로 닫기
+                positions.push_back(positions.front());  //close
             }
         }
     }
-
-    // 결과 출력
+    /*
     for (const auto& pos : positions) {
         std::cout << "Position: (" << pos.x << ", " << pos.y << ")" << std::endl;
-    }
+    }*/
 
     return positions;
 }
+
+
+std::vector<vec2> CS230::Map::Transform(const std::vector<vec2>& positions, bool IsRotate, bool IsScale, bool IsTranslate) {
+    std::vector<vec2> positions = positions;
+    for (std::vector<vec2> position : positions) {
+        //rotate
+        if (IsRotate) {
+            vec.x += rotatetranslate.x;
+            vec.y += rotatetranslate.y;
+
+            float rotatedX = vec.x * std::cos(rotateAngle) - vec.y * std::sin(rotateAngle);
+            float rotatedY = vec.x * std::sin(rotateAngle) + vec.y * std::cos(rotateAngle);
+            vec.x = rotatedX;
+            vec.y = rotatedY;
+
+
+        }
+        // translate
+        if (IsTranslate) {
+            vec.x += translate.x;
+            vec.y += translate.y;
+        }
+    }
+    
+    
+    return positions;
+
+}
+

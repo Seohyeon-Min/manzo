@@ -29,7 +29,8 @@ namespace CS230 {
 			rock_groups.clear();
 		}
 		void ParseSVG(const std::string& filename);
-		std::vector<vec2> parsePathData(const std::string& pathData);
+		std::vector<vec2> parsePathData(const std::string& pathData);	// path parsing
+		std::vector<vec2> Transform(const std::vector<vec2>& positions, bool IsRotate, bool IsScale, bool IsTranslate);		// apply scaling and rotating
 		void AddDrawCall();
 
 		std::vector<Rock> GetRock()
