@@ -1,0 +1,6 @@
+{
+    "dialogs":{
+        "1":{"character":"Man", "text":"한국어 파일명 테스트."},
+        "2":{"character":"Man", "text":"테스트 파일입니다.."}
+    }
+}

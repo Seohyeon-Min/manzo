@@ -1,3 +1,5 @@
+#pragma once
+
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
@@ -42,10 +44,18 @@ private:
     std::vector<std::vector<EntryData>> parttern;
     std::vector<int> total_entry;
 
-    Document document;
-};
+        Document document;
+    };
 
-
+    class JsonParser_dialog : public CS230::Component {
+    public:
+        JsonParser_dialog(const std::string& language);
+        const std::string& GetText(const std::string& id) const;
+        const std::string& GetCharacter(const std::string& id)const;
+    private:
+        std::unordered_map<std::string, std::string> translations;
+        std::unordered_map<std::string, std::string> characters;
+    };
 
 class JsonParser_dialog : public Component {
 public:

@@ -48,7 +48,7 @@ public:
 struct label_text
 {
 	// Store the individual label
-	const char* label;
+	std::string label;
 	vec2 label_loc;
 	float label_angle;
 	float label_size; 
@@ -67,7 +67,7 @@ public:
 	label_text_store();
 	~label_text_store();
 	void init(const char* file_path);
-	void add_text(const char* text, vec2 text_loc, float font_angle, float font_size, vec3 label_color);
+	void add_text(std::string text, vec2 text_loc, float font_angle, float font_size, vec3 label_color);
 	void set_buffers();
 	void paint_text();
 private:
