@@ -32,6 +32,11 @@ struct [[nodiscard]] vec2
         return std::sqrt(x * x + y * y);
     }
 
+    float LengthSquared() const
+    {
+        return (x * x + y * y);
+    }
+
     vec2 Clamp(float max) const {
         float length = Length();
         if (length > max) {

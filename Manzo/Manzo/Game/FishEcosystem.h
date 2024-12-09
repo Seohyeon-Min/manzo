@@ -1,6 +1,9 @@
 #pragma once
 #include "../Engine/Timer.h"
 #include "Fish.h"
+#include "AI.h"
+
+static Quadtree quadtree(AABB{ {-Engine::window_width, -Engine::window_height}, {Engine::window_width, Engine::window_height} });
 
 class FishGenerator
 {
@@ -13,7 +16,6 @@ public:
 
 private:
 	CS230::Timer* timer;
-	float height = Engine::window_height;
 
 	struct Formation {
 		std::vector<vec2> offsets;

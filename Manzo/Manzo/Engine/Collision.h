@@ -28,6 +28,7 @@ namespace CS230 {
     public:
         enum class CollisionShape {
             Rect,
+            Circle,
             Poly
         };
         virtual CollisionShape Shape() = 0;

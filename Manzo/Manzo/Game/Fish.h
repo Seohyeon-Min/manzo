@@ -40,10 +40,15 @@ public:
 
 	void Update(double dt);
 	void Draw();
+	vec2 AvoidRock(vec2 thisPos, vec2 rockPos);
+	bool IsRockInfront(vec2 thisPos, vec2 rockPos);
 
 private:
-	double swimming_range = 15.0;
 	static int money;
+	bool IsAvoided = false;
+	float angleRadians;
+	double coolTime = 1.5f;
+	Fish* parentFish = nullptr;
 };
 
 #endif

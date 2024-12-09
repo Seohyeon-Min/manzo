@@ -108,7 +108,7 @@ void Mode1::Load() {
 	}*/
 
 	////¿”Ω√fish
-   /* Fish* fish = new Fish();
+   /*Fish* fish = new Fish();
 	GetGSComponent<CS230::GameObjectManager>()->Add(fish);*/
 
 	boss_ptr = new Boss({ 750,500 }, Boss::BossType::e);
@@ -152,7 +152,7 @@ void Mode1::Update(double dt) {
 	camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
 
 	// Update Fish Generator
-	fishGenerator->GenerateFish(dt);
+	//fishGenerator->GenerateFish(dt);
 
 	// Update Skills
 	skill_ptr->Update();
