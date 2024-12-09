@@ -28,6 +28,7 @@ namespace CS230 {
         void Start(vec2 position, vec2 velocity, double max_life, vec2 scale = vec2{1.f,1.f});
         void Update(double dt) override;
         void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
+        void SetAlpha(const GLShader* shader);
         bool Alive() {
             return  life > 0;
         }
@@ -35,6 +36,10 @@ namespace CS230 {
         std::string TypeName() override { return "Particle"; }
     private:
         double life;
+        double max_life;
+    protected:
+        GLShader* shader = nullptr;
+        DrawLayer drawlayer = DrawLayer::Draw;
     };
 
     template<typename T>
@@ -43,6 +48,7 @@ namespace CS230 {
         ParticleManager();
         ~ParticleManager();
         void Emit(int count, vec2 emitter_position, vec2 emitter_velocity, vec2 direction, double spread);
+        void EmitRound(int count, vec2 emitter_position, float emitter_velocity, float speed_variation);
         void Spray();
     private:
         std::vector<T*> particles;
@@ -84,6 +90,40 @@ namespace CS230 {
             float scale = plankton->scale; // 개별 Plankton 객체의 scale 값 사용
             particles[index]->Start(emitter_position, particle_velocity, T::MaxLife, { scale , scale });
 
+            index++;
+            if (index < 0 || index >= particles.size())
+                index = 0;
+        }
+    }
+
+    template<typename T>
+    inline void ParticleManager<T>::EmitRound(int count, vec2 emitter_position, float speed, float speed_variation) {
+        mat3 m;
+        for (int i = 0; i < count; i++) {
+            if (particles[index]->Alive())
+                continue;
+
+            // 360도 각도 계산 (0 ~ 2π 범위)
+            double angle = ((rand() % 1024) / 1024.0) * 2.0 * util::PI<double>;
+
+            // 방향 벡터 계산
+            vec2 direction = { (float)std::cos(angle), (float)std::sin(angle) };
+
+            // 속도에 무작위 오차 추가
+            float random_speed = speed + ((rand() % 1024) / 1024.0f * 2.0f - 1.0f) * speed_variation;
+
+            // 속도 적용
+            vec2 particle_velocity = direction * random_speed;
+
+            // 파티클 초기화 및 방향 설정
+            T* plankton = static_cast<T*>(particles[index]);
+            float scale = plankton->scale;
+            float angle_radians = std::atan2(direction.y, direction.x);
+
+            particles[index]->Start(emitter_position, particle_velocity, T::MaxLife, { scale, scale });
+            particles[index]->SetRotation(angle_radians);
+
+            // 인덱스 갱신
             index++;
             if (index < 0 || index >= particles.size())
                 index = 0;

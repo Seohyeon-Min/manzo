@@ -12,6 +12,9 @@
 #include <filesystem>
 #include <memory>
 #include <functional>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 //struct DrawSettings {
 //    bool enableBlending;
 //    GLenum drawMode;  // GL_TRIANGLES, GL_LINES µî
@@ -93,6 +96,7 @@ namespace CS230 {
         void ApplyPostProcessing();
         void RenderQuad();
 
+        void SetProjection(const mat3 proj);
         void CreatModel();
         void CreatLineModel();
         void CreateCircleLineModel();
@@ -126,5 +130,7 @@ namespace CS230 {
         GLVertexArray line_model;
         GLVertexArray circle_line_model;
         GLFrameBuffer postProcessFramebuffer;
+
+        mat3 projection_matrix;
     };
 }

@@ -6,7 +6,7 @@
 std::mt19937 dre;
 std::vector<Fish::FishDex> Fish::fishBook;
 
-int Fish::money = 0;
+int Fish::money = 500;
 
 
 Fish::Fish(Fish* parent) : CS230::GameObject({ 0, 0 }) {
@@ -15,7 +15,7 @@ Fish::Fish(Fish* parent) : CS230::GameObject({ 0, 0 }) {
 	int index = fishIndex(dre);
 
 	if (parent == nullptr) {
-		ivec2 windowSize = { Engine::window_width, Engine::window_height };
+		ivec2 windowSize = { (int)Engine::window_width, (int)Engine::window_height };
 		start_position = { -640 ,((float)rand() / RAND_MAX) * 2.0f * windowSize.y - windowSize.y }; //outside of window
 		SetPosition(start_position);
 		SetVelocity(fishBook[index].velocity);

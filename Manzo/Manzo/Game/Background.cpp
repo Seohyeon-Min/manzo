@@ -50,7 +50,9 @@ void Background::Draw(const CS230::Cam& camera)
         CS230::DrawCall draw_call = {
             background.texture,                       // Texture to draw
             &background.matrix,                          // Transformation matrix
-            Engine::GetShaderManager().GetDefaultShader()
+            Engine::GetShaderManager().GetDefaultShader(),
+            nullptr,
+            settings
         };
 
         Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawBackground);

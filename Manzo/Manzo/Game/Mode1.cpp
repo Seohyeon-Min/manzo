@@ -48,6 +48,8 @@ void Mode1::Load() {
     Engine::GetShaderManager().LoadShader("post_process", "assets/shaders/post_default.vert", "assets/shaders/post_default.frag");
     Engine::GetShaderManager().LoadShader("post_bloom", "assets/shaders/post_default.vert", "assets/shaders/post_bloom.frag");
     Engine::GetShaderManager().LoadShader("blur", "assets/shaders/default.vert", "assets/shaders/blur.frag");
+    Engine::GetShaderManager().LoadShader("change_alpha", "assets/shaders/default.vert", "assets/shaders/change_alpha.frag");
+    Engine::GetShaderManager().LoadShader("change_alpha_no_texture", "assets/shaders/default.vert", "assets/shaders/change_alpha_no_texture.frag");
 
     // component
     AddGSComponent(new CS230::GameObjectManager());
@@ -59,11 +61,13 @@ void Mode1::Load() {
     //AddGSComponent(new Pump());
 
 
-    //Particle
+    // Mouse and Particle
+    AddGSComponent(new CS230::ParticleManager<Particles::MouseFollow>()); // wait, are we using it?
     AddGSComponent(new CS230::ParticleManager<Particles::Plankton>());
     AddGSComponent(new CS230::ParticleManager<Particles::FuelBubble>());
     AddGSComponent(new CS230::ParticleManager<Particles::BubblePop>());
-
+    AddGSComponent(new CS230::ParticleManager<Particles::HitEffect>());
+    AddGSComponent(new CS230::ParticleManager<Particles::HitEffect2>());
 
     //// ship
     ship_ptr = new Ship({ 0, 0 });
@@ -90,11 +94,9 @@ void Mode1::Load() {
     background->Add("assets/images/background/bg4.png", 0.6f);
     background->Add("assets/images/background/bg5.png", 0.7f);
 
-    // Mouse and Particle
-    AddGSComponent(new CS230::ParticleManager<Particles::MouseFollow>());
+    //Boss
     Boss::LoadBossfile();
    
-
     // UI
     AddGSComponent(new UIManager());
     ui_manager = GetGSComponent<UIManager>();
@@ -154,7 +156,7 @@ void Mode1::Update(double dt) {
     camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
 
     // Update Fish Generator
-    //fishGenerator->GenerateFish(dt);
+    fishGenerator->GenerateFish(dt);
 
     // Update Skills
     skill_ptr->Update();

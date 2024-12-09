@@ -18,6 +18,8 @@ Created:    March 8, 2023
 #include <imgui.h>
 #include <GL/glew.h>
 #include "GameObject.h"
+#include "WindowState.h"
+
 
 Engine::Engine() :
 #ifdef _DEBUG
@@ -26,6 +28,8 @@ Engine::Engine() :
     logger(CS230::Logger::Severity::Event, false)
 #endif
 {
+
+
     unsigned int seed = static_cast<unsigned int>(std::time(NULL));
     std::srand(seed);
     logger.LogEvent("Random seed :" + std::to_string(seed));
@@ -38,16 +42,17 @@ void Engine::Stop() {
 }
 
 void Engine::Update() {
-    using namespace std::chrono;
 
+
+    using namespace std::chrono;
     system_clock::time_point now = system_clock::now();
     dt = duration<double>(now - last_tick).count();
-    dt /= slow_down_factor;
+    dt *= slow_down_factor;
     last_tick = now;
 
     accumulator += dt;
     double fixed_delta_time = 1.0 / TargetFPS;
-    fixed_delta_time /= slow_down_factor;
+    fixed_delta_time *=  slow_down_factor; // it is not correct to devide them but looks nice
 
     if (!gamestatemanager.IsNull()) {
         while (accumulator >= fixed_delta_time) {
@@ -55,7 +60,6 @@ void Engine::Update() {
             accumulator -= fixed_delta_time;
         }
     }
-
     gamestatemanager.Update(dt);
     input.Update();
 

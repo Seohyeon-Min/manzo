@@ -16,7 +16,7 @@ Created:    March 8, 2023
 namespace Particles {
     class MouseFollow : public CS230::Particle {
     public:
-        MouseFollow() : Particle("assets/images/mouse_part.spt") { };
+        MouseFollow() : Particle("assets/images/mouse_part.spt") {  };
         std::string TypeName() override { return "Mouse Particle"; }
         static constexpr int MaxCount = 30;
         static constexpr double MaxLife = 0.5;
@@ -27,14 +27,17 @@ namespace Particles {
     public:
         Plankton() : Particle("assets/images/Plankton.spt") { scale = util::random(0.5f, 4.6f); };
         std::string TypeName() override { return "Plankton Particle"; }
-        static constexpr int MaxCount = 60;
+        static constexpr int MaxCount = 40;
         static constexpr double MaxLife = 10.5;
         float scale;
     };
 
     class FuelBubble : public CS230::Particle {
     public:
-        FuelBubble() : Particle("assets/images/Plankton.spt") { scale = util::random(0.5f, 1.f); };
+        FuelBubble() : Particle("assets/images/Plankton.spt") 
+        {
+            scale = util::random(0.5f, 1.f); shader = Engine::GetShaderManager().GetShader("change_alpha");
+        };
         std::string TypeName() override { return "FuelBubble Particle"; }
         static constexpr int MaxCount = 7;
         static constexpr double MaxLife = 0.38;
@@ -43,10 +46,39 @@ namespace Particles {
 
     class BubblePop : public CS230::Particle {
     public:
-        BubblePop() : Particle("assets/images/Plankton.spt") { scale = util::random(1.f, 2.f); };
+        BubblePop() : Particle("assets/images/Plankton.spt") 
+        { 
+            scale = util::random(1.f, 2.2f); shader = Engine::GetShaderManager().GetShader("change_alpha");
+        };
         std::string TypeName() override { return "BubblePop Particle"; }
-        static constexpr int MaxCount = 12;
-        static constexpr double MaxLife = 0.6;
+        static constexpr int MaxCount = 8;
+        static constexpr double MaxLife = 0.3;
+        float scale;
+    };
+
+    class HitEffect : public CS230::Particle {
+    public:
+        HitEffect() : Particle("assets/images/hit_effect.spt")
+        {
+            scale = util::random(0.7f, 1.7f); shader = Engine::GetShaderManager().GetShader("change_alpha");
+            drawlayer = DrawLayer::DrawUI;
+        };
+        std::string TypeName() override { return "HitEffect Particle"; }
+        static constexpr int MaxCount = 20;
+        static constexpr double MaxLife = 0.05;
+        float scale;
+    };
+
+    class HitEffect2 : public CS230::Particle {
+    public:
+        HitEffect2() : Particle("assets/images/Plankton.spt")
+        {
+            scale = util::random(1.5f, 2.7f); shader = Engine::GetShaderManager().GetShader("change_alpha");
+            drawlayer = DrawLayer::DrawUI;
+        };
+        std::string TypeName() override { return "HitEffect Particle"; }
+        static constexpr int MaxCount = 20;
+        static constexpr double MaxLife = 0.05;
         float scale;
     };
 }

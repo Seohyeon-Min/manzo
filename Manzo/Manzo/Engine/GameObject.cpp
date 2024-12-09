@@ -52,16 +52,11 @@ void CS230::GameObject::Draw(DrawLayer drawlayer) {
 	Sprite* sprite = GetGOComponent<Sprite>();
 	if (sprite != nullptr) {
 		if (shader == nullptr) {
-			//shader = Engine::GetShaderManager().GetDefaultShader();
 			if (IsPixelShaderApplicable(Type())) {
-				// ÇÈ¼¿È­ ¼ÎÀÌ´õ Àû¿ë
 				shader = Engine::GetShaderManager().GetShader("pixelate");
-				//SetGlobalShader(pixelShader);
 			}
 			else {
-				// ±âº» ¼ÎÀÌ´õ Àû¿ë
 				shader = Engine::GetShaderManager().GetDefaultShader();
-				//SetGlobalShader(defaultShader);
 			}
 		}
 
@@ -77,6 +72,29 @@ void CS230::GameObject::Draw(DrawLayer drawlayer) {
 		else {
 			Engine::GetRender().AddDrawCall(draw_call);  // basic layer
 		}
+	}
+	if (Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>() != nullptr && Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>()->Enabled()) {
+		Collision* collision = GetGOComponent<Collision>();
+		if (collision != nullptr) {
+			collision->Draw();
+		}
+	}
+}
+
+void CS230::GameObject::Draw(const DrawCall& draw_call, DrawLayer drawlayer)
+{
+	Sprite* sprite = GetGOComponent<Sprite>();
+	if (sprite != nullptr) {
+		if (shader == nullptr) {
+			if (IsPixelShaderApplicable(Type())) {
+				shader = Engine::GetShaderManager().GetShader("pixelate");
+			}
+			else {
+				shader = Engine::GetShaderManager().GetDefaultShader();
+			}
+		}
+
+		Engine::GetRender().AddDrawCall(draw_call, drawlayer);
 	}
 	if (Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>() != nullptr && Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>()->Enabled()) {
 		Collision* collision = GetGOComponent<Collision>();

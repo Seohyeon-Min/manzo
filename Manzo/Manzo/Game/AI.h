@@ -4,6 +4,7 @@
 #include "GameObjectTypes.h"
 #include "../Engine/MapManager.h"
 #include "../Engine/AABB.h"
+#include "WindowState.h"
 
 class BackgroundFish : public CS230::GameObject
 {
@@ -14,7 +15,7 @@ public:
 	std::string TypeName() override { return "Background Fish"; }
 
 	void Update(double dt);
-	void Draw();
+	void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
 
 	void AddBackgroundFishes(BackgroundFish* obj)
 	{
@@ -36,7 +37,7 @@ private:
     float minDistance = 20.0f; 
     float separationStrength = 20.0f;
 
-    ivec2 windowSize = { Engine::window_width, Engine::window_height };
+    ivec2 windowSize = { (int)Engine::window_width, (int)Engine::window_height };
 
     std::array<std::pair<float, float>, 3> yRanges = { std::make_pair(-800.0f, -500.0f), std::make_pair(-150.0f, 150.0f), std::make_pair(400.0f, 700.0f) };
 };

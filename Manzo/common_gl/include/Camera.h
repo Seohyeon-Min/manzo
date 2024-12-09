@@ -35,6 +35,10 @@ public:
         return orientation;
     }
 
+    // shaking
+    void StartShake(float intensity, float duration) noexcept;
+    void UpdateShake(float dt) noexcept;
+    vec2 GetShakingPosition() const noexcept;
     void SetUp(vec2 camera_up = {0, 1}) noexcept;
     void SetOrientation(float angle_radians) noexcept;
 
@@ -50,4 +54,8 @@ private:
     vec2  up{0, 1};
     vec2  right{1, 0};
     float orientation{0};
+
+    // shaking
+    float shake_intensity{ 0.0f };
+    float shake_duration{ 0.0f };
 };
