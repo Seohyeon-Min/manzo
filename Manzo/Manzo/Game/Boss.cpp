@@ -17,7 +17,7 @@ Boss::Boss(vec2 start_position, BossType type)
 
 	// cutscean
 
-	Engine::GetAudioManager().LoadMusic(mp3_file_name, false);
+	Engine::GetAudioManager().LoadMusic(mp3_file_name, false, false);
 	////////
 	current_state = &state_cutscene;
 	current_state->Enter(this);
@@ -37,6 +37,7 @@ void Boss::State_CutScene::CheckExit(GameObject* object) {
 	if (Engine::GetInput().KeyDown(CS230::Input::Keys::R)&& boss->beat->GetBeat()) {
 
 		Engine::GetAudioManager().SetMute(0,true);
+		Engine::GetAudioManager().SetMute(1, true);
 		Engine::GetAudioManager().PlayMusics(boss->mp3_file_name, vec3{ boss->GetPosition().x, boss->GetPosition().y, 0 });
 
 		boss->beat->SetBPM(boss->bpm);
@@ -163,7 +164,7 @@ void Boss::Update(double dt) {
 
 void Boss::AfterDied()
 {
-	Engine::GetAudioManager().StopChannel(1);
+	Engine::GetAudioManager().StopChannel(2);
 	Engine::GetGameStateManager().GetGSComponent<Beat>()->CleartoOriginal();
 
 	auto pump = Engine::GetGameStateManager().GetGSComponent<Pump>();

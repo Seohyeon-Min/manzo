@@ -109,8 +109,8 @@ void Mode1::Load() {
 	}*/
 
 	////¿”Ω√fish
-   /*Fish* fish = new Fish();
-	GetGSComponent<CS230::GameObjectManager>()->Add(fish);*/
+   Fish* fish = new Fish();
+	GetGSComponent<CS230::GameObjectManager>()->Add(fish);
 
 	boss_ptr = new Boss({ 750,500 }, Boss::BossType::e);
 	boss_ptr->ReadBossJSON(Boss::BossType::e);
