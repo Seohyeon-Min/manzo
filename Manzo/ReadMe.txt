@@ -61,9 +61,11 @@ Play:
 * Instruction of Keys & Buttons
   + MOUSE_BUTTON_LEFT : main keys for moving the ship just to click (double click is fine)
   + KEY_TAB : Hide or Show the collision lines when you run at debug mode
-  + KEY_Q : Load next game state (change mode from sea into player's house)
+  + KEY_Q : Load next game state (change mode from sea into player's house) 
   + KEY_W : Reload the game state
-  + KEY_A : Print out ‘pick slot 1’
+  + E : creat the boss
+  + R : start the boss fight, hold a key for a short time
+  + KEY_A : Print out ‘pick slot 1’ 
   + KEY_S : Print out ‘pick slot 2’
   + KEY_D : Print out ‘pick slot 3’
   + KEY_Z : Print out skill

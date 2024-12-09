@@ -13,13 +13,13 @@ Created:    March 8, 2023
 #include "../Engine/Sprite.h"
 #include "..\Engine\GameObjectManager.h"
 #include "../Engine/UIManager.h"
-//#include "../Engine/Fonts.h"
 #include "../Engine/Timer.h"
 #include "FishEcosystem.h"
 #include "../Engine/Camera.h"
 #include "Background.h"
 #include "Skill.h"
 #include "Fish.h"
+#include "GodRay.h"
 #include "Shop.h"
 
 class Reef;
@@ -33,6 +33,7 @@ public:
     Mode1();
     void Load() override;
     void Update(double dt) override;
+    void FixedUpdate(double dt) override;
     void Unload() override;
     void Draw() override;
 
@@ -48,8 +49,13 @@ private:
     Boss* boss_ptr;
     UIManager* ui_manager;
     CS230::Cam* camera;
+    Beat* beat_system;
+    GodRay* god_ray;
     Skillsys* skill_ptr;
     Skillsys::Skill_Net* Net_ptr;
 
     bool Isboss = false;
+    std::vector< std::array<int, 2>> BossFirstPos;
+    vec3 bossPosition;
+    int bossChannelID;
 };

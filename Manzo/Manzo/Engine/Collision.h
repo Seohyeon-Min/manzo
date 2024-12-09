@@ -46,10 +46,12 @@ namespace CS230 {
         void Draw();
         bool IsCollidingWith(GameObject* other_object) override;
         bool IsCollidingWith(vec2 point) override;
+        float GetT() { return t; }
         Math::rect WorldBoundary_rect();
         std::pair<vec2, vec2> GetCollidingEdge() { return colliding_edge; }
 
     private:
+        float t;
         GameObject* object;
         Math::irect boundary;
         std::pair<vec2, vec2> colliding_edge{};

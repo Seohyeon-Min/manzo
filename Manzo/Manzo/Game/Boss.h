@@ -26,6 +26,7 @@ public:
 	void ReadBossJSON(BossType type);
 	void RunMusic();
 	void InitializeStates();
+	std::array<int, 2> GetFirstPosition() { return position; }
 
 private:
 	class State_CutScene : public State {
@@ -86,5 +87,7 @@ private:
 	std::vector<int> Boss_procedural;
 	vec2 current_position;
 	float speed = 400;
+
+	std::array<int, 2> start_pos;
 };
 

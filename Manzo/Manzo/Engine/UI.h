@@ -4,7 +4,7 @@
 #include "../Game/Ship.h"
 #include <memory>
 
-class UI : public CS230::Component {
+class UI : public CS230::Component { // ui (object)  button click(component) 
 public:
     virtual void AddDrawCall() = 0;
 };

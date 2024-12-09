@@ -29,6 +29,7 @@ public:
     Mode2();
     void Load() override;
     void Update(double dt) override;
+    void FixedUpdate(double dt) override;
     void Unload() override;
     void Draw() override;
 

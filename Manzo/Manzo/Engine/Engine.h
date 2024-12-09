@@ -14,12 +14,13 @@ Created:    March 8, 2023
 #include "GameStateManager.h"
 #include "Input.h"
 #include "TextureManager.h"
-//#include "Font.h"
 #include "IProgram.h"
 #include "GLApp.h"
 #include "Render.h"
 #include "ShaderManager.h"
 #include "AudioManager.h"
+#include "FontManager.h"
+#include "WindowState.h"
 
 #include <chrono>
 #include <time.h>
@@ -31,6 +32,9 @@ public:
         return instance;
     }
 
+    static ShaderManager& GetShaderManager() {
+        return Instance().shadermanager;
+    }
     static CS230::Logger& GetLogger() {
         return Instance().logger;
     }
@@ -51,18 +55,15 @@ public:
         return Instance().render;
     }
 
-    static ShaderManager& GetShaderManager() {
-        return Instance().shadermanager;
-    }
 
     static AudioManager& GetAudioManager() {
         return Instance().audiomanager;
     }
-    //static CS230::Font& GetFont(int index) {
-    //    return Instance().fonts[index];
-    //}
 
-    //void AddFont(const std::filesystem::path& file_name);
+    static FontManager& GetFontManager() {
+        return Instance().fontmanager;
+    }
+
     void Start(std::string window_title);
     void Stop();
     void Update();
@@ -72,9 +73,13 @@ public:
     void SetTmpPtr(void* tmp);
     void* GetTmpPtr();
     void UnloadTmpPtr();
-
-    static constexpr int window_width = 1280;
+    void SetSlowDownFactor(double slow_down) { slow_down_factor = slow_down; }
+    void ResetSlowDownFactor() { slow_down_factor = 1; }
+    double GetDt() { return dt; }
     static constexpr int window_height = 720;
+    static constexpr int window_width = 1280;
+
+    static constexpr double TargetFPS = 240.0;
 
 private:
     Engine();
@@ -83,21 +88,20 @@ private:
     std::chrono::system_clock::time_point last_test;
 
     int frame_count = 0;
-
-    static constexpr double TargetFPS = 240.0;
+    double slow_down_factor = 1;
     static constexpr int FPSDuration = 5;
     static constexpr int FPSTargetFrames = static_cast<int>(FPSDuration * TargetFPS);
     double dt;
     double FPS;
+    double accumulator;
     void* tmp_ptr = nullptr;
 
-    //std::vector<CS230::Font> fonts;
+    ShaderManager shadermanager;
+    AudioManager audiomanager;
     CS230::Logger logger;
     CS230::GameStateManager gamestatemanager;
     CS230::Input input;
     CS230::TextureManager texturemanager;
     CS230::Render render;
-    ShaderManager shadermanager;
-    AudioManager audiomanager;
-
+    FontManager fontmanager;
 };

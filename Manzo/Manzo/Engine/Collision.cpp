@@ -18,6 +18,7 @@ Created:    March 8, 2023
 #include <iostream>
 #include <array>
 #define GREEN color3(0,255,0)
+#define RED color3(255, 0, 0)
 
 /// /////////////////////////////////////////////////////////////////////////////////////
 vec2 GetPerpendicular(const vec2& v) {
@@ -77,8 +78,6 @@ Polygon CS230::MAP_SATCollision::WorldBoundary_poly() {
 
 
 void CS230::RectCollision::Draw() {
-    const float render_height = (float)Engine::window_height;
-
     Math::rect world_boundary = WorldBoundary_rect();
 
     vec2 bottom_left = vec2{ world_boundary.Left(), world_boundary.Bottom() };
@@ -122,9 +121,9 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
             {rectangle_1.Left(), rectangle_1.Top()}
         };
 
-        float min_distance = std::numeric_limits<float>::max(); 
-        int closest_index = -1; 
-        bool is_colliding = true; 
+        float min_distance = std::numeric_limits<float>::max();
+        int closest_index = -1;
+        bool is_colliding = true;
 
         for (int i = 0; i < other_poly.vertexCount; i++) {
             vec2 edge = { other_poly.vertices[(i + 1) % other_poly.vertexCount].x - other_poly.vertices[i].x,
@@ -138,15 +137,15 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
             ProjectPolygon(other_poly, axis, minB, maxB);
 
             if (maxA < minB || maxB < minA) {
-                is_colliding = false;  
-                break;  
+                is_colliding = false;
+                break;
             }
 
             float distance = std::min(std::abs(maxA - minB), std::abs(maxB - minA));
 
             if (distance < min_distance) {
                 min_distance = distance;
-                closest_index = i; 
+                closest_index = i;
             }
         }
 
@@ -159,40 +158,14 @@ bool CS230::RectCollision::IsCollidingWith(GameObject* other_object) {
         float expanded_bottom = rectangle_1.Bottom() - 15;
         float expanded_top = rectangle_1.Top() + 15;
 
-        bool isCornerCollision = false;
-        for (const vec2& poly_vertex : other_poly.vertices) {
-            bool within_x_bounds = (poly_vertex.x >= expanded_left && poly_vertex.x <= expanded_right);
-            bool within_y_bounds = (poly_vertex.y >= expanded_bottom && poly_vertex.y <= expanded_top);
 
-            if (within_x_bounds && within_y_bounds) {
-                isCornerCollision = true;
-                break;
-            }
-        }
-
-        if (isCornerCollision && closest_index != -1) {
-
-            vec2 CollidingVertex = other_poly.vertices[closest_index];
-            vec2 CollidingSide_1 = other_poly.vertices[(closest_index + 1) % other_poly.vertexCount];
-            vec2 CollidingSide_2 = other_poly.vertices[(closest_index - 1 + other_poly.vertexCount) % other_poly.vertexCount];
-
-
-            vec2 direction1 = CollidingSide_1 - CollidingVertex;
-            vec2 direction2 = CollidingSide_2 - CollidingVertex;
-            vec2 midpoint_direction = NormalizeVector2(direction1 + direction2);
-
-
-            colliding_edge = { CollidingVertex, CollidingVertex + midpoint_direction };
-            std::cout << "It's Corner" << std::endl;
-        }
-        else if (!isCornerCollision && closest_index != -1) {
+        {
             vec2 CollidingSide_1 = other_poly.vertices[closest_index];
             vec2 CollidingSide_2 = other_poly.vertices[(closest_index + 1) % other_poly.vertexCount];
 
             colliding_edge = { CollidingSide_1, CollidingSide_2 };
         }
-
-        return true;
+        return true; // basic calculation
     }
 
     return false;
@@ -240,7 +213,7 @@ bool CS230::MAP_SATCollision::IsCollidingWith(vec2 point) {
         else {
             vec2 point_1 = poly_1.vertices[i];
             vec2 point_2 = poly_1.vertices[(i + 1) % poly_1.vertexCount];
-            colliding_edge = { point_1 ,point_2 }; 
+            colliding_edge = { point_1 ,point_2 };
         }
     }
 
@@ -277,7 +250,7 @@ bool CS230::MAP_SATCollision::IsCollidingWith(GameObject* other_object)
         else {
             vec2 point_1 = poly_1.vertices[i];
             vec2 point_2 = poly_1.vertices[(i + 1) % poly_1.vertexCount];
-            colliding_edge = { point_1 ,point_2 }; 
+            colliding_edge = { point_1 ,point_2 };
         }
     }
 
@@ -310,15 +283,15 @@ bool CS230::MAP_SATCollision::IsCollidingWith(GameObject* other_object)
 
 
 void CS230::MAP_SATCollision::Draw() {
-
+    Polygon boundary = WorldBoundary_poly();
     for (int j = 1; j < boundary.vertexCount; ++j) {
         Engine::GetRender().AddDrawCall(vec2{ boundary.vertices[j - 1].x, boundary.vertices[j - 1].y },
             vec2{ boundary.vertices[j].x, boundary.vertices[j].y },
-            GREEN);
+            RED);
     }
     Engine::GetRender().AddDrawCall(vec2{ boundary.vertices.back().x, boundary.vertices.back().y },
         vec2{ boundary.vertices.front().x, boundary.vertices.front().y },
-        GREEN);
+        RED);
 
 
 }

@@ -11,11 +11,15 @@ Created:    March 8, 2023
 #include "Engine.h"
 #include "ShowCollision.h"
 #include "../Game/BeatSystem.h"
+#include "../Game/AI.h"
 
 #include <SDL2/SDL.h>
 #include <iostream>
 #include <imgui.h>
 #include <GL/glew.h>
+#include "GameObject.h"
+#include "WindowState.h"
+
 
 Engine::Engine() :
 #ifdef _DEBUG
@@ -24,53 +28,58 @@ Engine::Engine() :
     logger(CS230::Logger::Severity::Event, false)
 #endif
 {
+
+
     unsigned int seed = static_cast<unsigned int>(std::time(NULL));
     std::srand(seed);
     logger.LogEvent("Random seed :" + std::to_string(seed));
     logger.LogEvent("Engine Started");
-    //window.Start(window_title);
-    //Start other services
     last_test = last_tick;
 }
 
 void Engine::Stop() {
-    //Stop all services
     logger.LogEvent("Engine Stopped");
 }
 
 void Engine::Update() {
 
-    std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-    dt = std::chrono::duration<double>(now - last_tick).count();
 
-    if (dt > (1 / TargetFPS))
-    {
-        frame_count++;
-        logger.LogVerbose("Engine Update");
-        last_tick = now;
+    using namespace std::chrono;
+    system_clock::time_point now = system_clock::now();
+    dt = duration<double>(now - last_tick).count();
+    dt *= slow_down_factor;
+    last_tick = now;
 
-        gamestatemanager.Update(dt);
-        input.Update();
+    accumulator += dt;
+    double fixed_delta_time = 1.0 / TargetFPS;
+    fixed_delta_time *=  slow_down_factor; // it is not correct to devide them but looks nice
+
+    if (!gamestatemanager.IsNull()) {
+        while (accumulator >= fixed_delta_time) {
+            gamestatemanager.FixedUpdate(fixed_delta_time);
+            accumulator -= fixed_delta_time;
+        }
     }
+    gamestatemanager.Update(dt);
+    input.Update();
 
+    frame_count++;
     if (frame_count >= FPSTargetFrames) {
-        double actual_time = std::chrono::duration<double>(now - last_test).count();
+        double actual_time = duration<double>(now - last_test).count();
         FPS = frame_count / actual_time;
         logger.LogDebug("FPS: " + std::to_string(FPS));
         frame_count = 0;
         last_test = now;
     }
-
 }
 
-void Engine::HandleEvent(SDL_Window& sdl_window, const SDL_Event& event)
-{
+
+void Engine::HandleEvent(SDL_Window& sdl_window, const SDL_Event& event) {
     switch (event.type)
     {
     case SDL_QUIT << '\n':
         break;
     case SDL_MOUSEMOTION:
-        // make sure we only save mouse positions for the main window and not some ImGui window
         if (event.motion.windowID == SDL_GetWindowID(&sdl_window))
         {
             // get the mouse device positions from event.motion.x/event.motion.y
@@ -80,25 +89,7 @@ void Engine::HandleEvent(SDL_Window& sdl_window, const SDL_Event& event)
         }
         break;
     }
-
 }
-
-//void Engine::compute_mouse_coordinates() noexcept
-//{
-//    // Use camera view BuildWindowDeviceToCamera to convert to camera space
-//    mat3 device_mouse = mat3::build_translation({ (float)environment.mouseX,(float)environment.mouseY });
-//
-//    //mat3 cam_mouse = caminfo.camera_view.BuildWindowDeviceToCamera() * device_mouse;
-//    //// save to environment.mouseCamSpaceX/environment.mouseCamSpaceY
-//    //environment.mouseCamSpaceX = cam_mouse.column2.x;
-//    //environment.mouseCamSpaceY = cam_mouse.column2.y;
-//
-//    //// Use camera BuildCameraToWorld to convert to world space
-//    //mat3 world_mouse = device_mouse * caminfo.camera.BuildCameraToWorld();
-//    //// save to environment.mouseWorldSpaceX/environment.mouseWorldSpaceY
-//    //environment.mouseWorldSpaceX = world_mouse.column2.x;
-//    //environment.mouseWorldSpaceY = world_mouse.column2.y;
-//}
 
 void Engine::ImGuiDraw()
 {
@@ -118,17 +109,16 @@ void Engine::ImGuiDraw()
             static_cast<double>(camX), static_cast<double>(camY),    // in Camera Space
             static_cast<double>(WorldX), static_cast<double>(WorldY) // in World Space
         );
-        //const auto cam_pos = caminfo.camera.Position;
-        //ImGui::LabelText("Camera World Position", "(%.1f,%.1f)", static_cast<double>(cam_pos.x), static_cast<double>(cam_pos.y));
-        //const auto cam_orientation = int(util::to_degrees(caminfo.camera.GetOrientation()) + 360) % 360;
-        //ImGui::LabelText("Camera World Orientation", "%d degrees", cam_orientation);
-        //const auto cam_size = caminfo.camera_view.CalcViewSizeWithZoom();
-        //ImGui::LabelText("Camera View Size", "%.1f x %.1f", static_cast<double>(cam_size.width), static_cast<double>(cam_size.height));
-        //auto zoom = caminfo.camera_view.GetZoom() * 100.0f;
-        //if (ImGui::SliderFloat("Zoom", &zoom, 25.0f, 400.0f, "%.0f%%"))
-        //{
-        //    caminfo.camera_view.SetZoom(zoom / 100.0f);
-        //}
+        
+        if (!GetGameStateManager().IsNull())
+        {
+
+            ImGui::SliderFloat("alignment", &BackgroundFish::a, 0.0f, 5.0f, "%.4f");
+            ImGui::SliderFloat("cohesion", &BackgroundFish::b, 0.0f, 5.0f, "%.4f");
+            ImGui::SliderFloat("separate", &BackgroundFish::c, 0.0f, 5.0f, "%.4f");
+            ImGui::SliderFloat("wanderForce", &BackgroundFish::d, 0.0f, 5.0f, "%.4f");
+        }
+
         if (!GetGameStateManager().IsNull()
             && GetGameStateManager().GetGSComponent<Beat>() != nullptr) {
             ImGui::LabelText("Is on beat?", "%s", GetGameStateManager().GetGSComponent<Beat>()->GetIsOnBeat() ? "true" : "false");

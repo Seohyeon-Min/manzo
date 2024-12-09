@@ -41,6 +41,9 @@ bool CS230::GameStateManager::HasGameEnded() {
 }
 
 void CS230::GameStateManager::Update(double dt) {
+    static std::atomic<bool> isLoading{ false }; // 로딩 상태 플래그
+    static std::thread loadingThread;
+
     switch (status) {
     case Status::STARTING:
 
@@ -56,6 +59,7 @@ void CS230::GameStateManager::Update(double dt) {
         Engine::GetLogger().LogEvent("Load " + current_gamestate->GetName());
         current_gamestate->Load();
         Engine::GetLogger().LogEvent("Load Complete");
+
         status = Status::UPDATING;
         break;
     case Status::UPDATING:
@@ -66,9 +70,9 @@ void CS230::GameStateManager::Update(double dt) {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             Engine::GetLogger().LogVerbose("Update" + current_gamestate->GetName());
             current_gamestate->Update(dt);
-            if (current_gamestate->GetGSComponent<CS230::GameObjectManager>() != nullptr) {
-                current_gamestate->GetGSComponent<CS230::GameObjectManager>()->CollisionTest();
-            }
+            //if (current_gamestate->GetGSComponent<CS230::GameObjectManager>() != nullptr) {
+            //    current_gamestate->GetGSComponent<CS230::GameObjectManager>()->CollisionTest();
+            //}
             current_gamestate->Draw();
         }
 
@@ -92,4 +96,15 @@ void CS230::GameStateManager::Update(double dt) {
     case Status::EXIT:
         break;
     }
+}
+
+void CS230::GameStateManager::FixedUpdate(double dt)
+{
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    Engine::GetLogger().LogVerbose("FixedUpdate" + current_gamestate->GetName());
+    current_gamestate->FixedUpdate(dt);
+    if (current_gamestate->GetGSComponent<CS230::GameObjectManager>() != nullptr) {
+        current_gamestate->GetGSComponent<CS230::GameObjectManager>()->CollisionTest();
+    }
+
 }

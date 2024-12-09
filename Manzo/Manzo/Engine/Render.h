@@ -5,12 +5,16 @@
 #include "mat3.h"
 #include "color3.h"
 #include "DrawSetting.h"
+#include "GLFrameBuffer.h"
 
 #include <vector>
 #include <unordered_map>
 #include <filesystem>
 #include <memory>
 #include <functional>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 //struct DrawSettings {
 //    bool enableBlending;
 //    GLenum drawMode;  // GL_TRIANGLES, GL_LINES 등
@@ -44,12 +48,13 @@ enum class DrawLayer {
 
 namespace CS230 {
 
+    //이건 그래도 굿! 유저 프랜들리 하다네요
     struct DrawCall {
         GLTexture* texture;
         const mat3* transform;
         const GLShader* shader;
         std::function<void(const GLShader*)> SetUniforms = nullptr;
-         DrawSettings settings; // later, change it to pointer
+        DrawSettings settings; // later, change it to pointer
     };
 
     struct LineDrawCall {
@@ -68,17 +73,33 @@ namespace CS230 {
         const GLShader* shader;
     };
 
+    struct CircleDrawCall {
+        float radius;
+        vec2 pos;
+        const GLShader* shader;
+        std::function<void(const GLShader*)> SetUniforms = nullptr;
+        DrawSettings settings;
+    };
+
     class Render {
     public:
-        Render() { CreatModel(); CreatLineModel(); };
+        Render();
+
+        // 매개변수를 스트럭트로 넘길수도 있다!!! 그게 더 좋을거같다!!!
 
         void AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase = DrawLayer::Draw);
         void AddDrawCall
         (vec2 start, vec2 end, color3 color, float width = 1.0f, float alpha = 255.0f, const GLShader* shader = nullptr, bool iscollision = true);
+        void AddDrawCall(const CircleDrawCall& drawcall, const DrawLayer& phase = DrawLayer::Draw);
         void RenderAll();
+
+        void ApplyPostProcessing();
+        void RenderQuad();
+
+        void SetProjection(const mat3 proj);
         void CreatModel();
         void CreatLineModel();
-        void RenderBackgrounds();
+        void CreateCircleLineModel();
         void ClearDrawCalls();
 
     private:
@@ -87,11 +108,15 @@ namespace CS230 {
         void DrawBackground(const DrawCall& draw_call);
         void DrawLine(LineDrawCall drawcall);
         void DrawLinePro(LineDrawCallPro drawcall);
+        void DrawCircleLine(CircleDrawCall drawcall);
 
         mat3 GetWorldtoNDC();
 
 
         // Vectors for draw calls
+        // z 발류 갖고있는 스트럭트로 불투명 리스트 하나, 투명 리스트 하나 할 수 있다!!
+        // 이게 더 좋을듯
+
         std::vector<DrawCall> draw_background_calls;
         std::vector<DrawCall> draw_first_calls;
         std::vector<DrawCall> draw_calls;
@@ -99,8 +124,13 @@ namespace CS230 {
         std::vector<DrawCall> draw_ui_calls;
         std::vector<LineDrawCallPro> draw_line_calls;
         std::vector<LineDrawCall> draw_collision_calls;
+        std::vector<CircleDrawCall> draw_circle_calls;
 
         GLVertexArray model;
         GLVertexArray line_model;
+        GLVertexArray circle_line_model;
+        GLFrameBuffer postProcessFramebuffer;
+
+        mat3 projection_matrix;
     };
 }

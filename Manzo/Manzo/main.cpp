@@ -19,18 +19,14 @@ int main() {
         GLApp OpenGLAPPlication("Manzo");
         Engine& engine = Engine::Instance();
 
+        engine.GetFontManager().AddFontType("assets/fonts/Font1.ttf");
+        engine.GetFontManager().AddFontType("assets/fonts/Font2.ttf");
 
         Mode1 mode1;
         engine.GetGameStateManager().AddGameState(mode1);
 
         Mode2 mode2;
         engine.GetGameStateManager().AddGameState(mode2);
-
-        GameOver gameover;
-        engine.GetGameStateManager().AddGameState(gameover);
-
-        Clear clear;
-        engine.GetGameStateManager().AddGameState(clear);
 
         SDL_GL_SetSwapInterval(1);
 

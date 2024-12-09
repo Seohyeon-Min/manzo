@@ -76,9 +76,6 @@
     <ClCompile Include="Game\Mode1.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Reef.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Ship.cpp">
       <Filter>Game</Filter>
     </ClCompile>
@@ -112,12 +109,26 @@
     <ClCompile Include="Game\GameOver.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Shop.cpp">
+    <ClCompile Include="Game\GameObjectTypes.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="Game\DialogBox.cpp">
+    <ClCompile Include="Engine\Font.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\FontManager.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\AI.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Game\GodRay.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\ScreenWrap.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\DialogBox.cpp" />
+    <ClCompile Include="Game\Shop.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h">
@@ -201,9 +212,6 @@
     <ClInclude Include="Game\Mode1.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Reef.h">
-      <Filter>Game</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Ship.h">
       <Filter>Game</Filter>
     </ClInclude>
@@ -221,9 +229,6 @@
     </ClInclude>
     <ClInclude Include="Engine\AudioManager.h">
       <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Reef.h">
-      <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Game\Fish.h">
       <Filter>Game</Filter>
@@ -276,10 +281,27 @@
     <ClInclude Include="Game\GameOver.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Shop.h">
+    <ClInclude Include="Engine\Font.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\FontManager.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\AI.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Game\DialogBox.h">
+    <ClInclude Include="Engine\AABB.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GodRay.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\ScreenWrap.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\DialogBox.h" />
+    <ClInclude Include="Game\Shop.h" />
+    <ClInclude Include="Game\DashEffect.h">
       <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>

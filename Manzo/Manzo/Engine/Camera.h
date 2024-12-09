@@ -33,8 +33,8 @@ namespace CS230 {
         void SetPosition(vec2 new_position);
         const vec2& GetPosition() const;
         void SetLimit(Math::rect new_limit);
-        const CameraView GetCameraView() { return caminfo.camera_view; }
-        const Camera GetCamera() { return caminfo.camera; }
+        CameraView& GetCameraView() { return caminfo.camera_view; }
+        Camera& GetCamera() { return caminfo.camera; }
 
         mat3 world_to_cam;
         mat3 cam_to_ndc;

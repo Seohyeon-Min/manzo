@@ -53,3 +53,51 @@ bool CS230::Timer::TickTock()
 {
 	return pendulum;
 }
+
+
+
+CS230::RealTimeTimer::RealTimeTimer(double duration)
+    : duration(duration), running(false), paused_time(0) {}
+
+void CS230::RealTimeTimer::Set(double duration) {
+    this->duration = duration;
+    Reset();
+}
+
+void CS230::RealTimeTimer::Start() {
+    if (!running) {
+        running = true;
+        start_time = std::chrono::steady_clock::now();
+    }
+}
+
+void CS230::RealTimeTimer::Pause() {
+    if (running) {
+        running = false;
+        auto now = std::chrono::steady_clock::now();
+        double elapsed = std::chrono::duration<double>(now - start_time).count();
+        paused_time = std::max(0.0, duration - elapsed);
+    }
+}
+
+void CS230::RealTimeTimer::Reset() {
+    running = false;
+    paused_time = duration;
+}
+
+double CS230::RealTimeTimer::Remaining() const {
+    if (!running) {
+        return paused_time;
+    }
+    auto now = std::chrono::steady_clock::now();
+    double elapsed = std::chrono::duration<double>(now - start_time).count();
+    return std::max(0.0, duration - elapsed);
+}
+
+bool CS230::RealTimeTimer::IsRunning() const {
+    return running;
+}
+
+bool CS230::RealTimeTimer::IsFinished() const {
+    return Remaining() <= 0.0;
+}

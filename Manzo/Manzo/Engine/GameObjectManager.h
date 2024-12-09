@@ -16,14 +16,24 @@ Created:    March 8, 2023
 namespace Math { class TransformationMatrix; }
 
 namespace CS230 {
-    class GameObjectManager : public Component{
+    class GameObjectManager : public Component {
     public:
         void Add(GameObject* object);
         void Unload();
-
         void UpdateAll(double dt);
+        void FixedUpdateAll(double dt);
         void DrawAll();
         void CollisionTest();
+        template<typename T>
+        T* GetGOComponent() {
+            for (GameObject* object : objects) {
+                T* ptr = dynamic_cast<T*>(object);
+                if (ptr != nullptr) {
+                    return ptr;
+                }
+            }
+            return nullptr;
+        }
     private:
         std::list<GameObject*> objects;
     };

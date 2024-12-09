@@ -25,47 +25,104 @@ public:
     GameObjectTypes Type() override { return GameObjectTypes::Ship; }
     std::string TypeName() override { return "Ship:Dal"; }
     void Update(double dt) override;
+    void FixedUpdate(double fixed_dt) override;
     void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
-    void Move(double dt);
-    void SetDest();
     bool IsShipMoving() { return move; }
     bool CanCollideWith(GameObjectTypes) override;
     void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
     const vec2& GetPosition() const { return GameObject::GetPosition(); }
     //for fuel
     float GetFuel() { return (float)fuel; }
+    float GetMaxFuel() { return (float)Maxfuel; }
     void FuelUpdate(double dt);
     void SetMaxFuel(double input);
-    void HitWithReef(CS230::RectCollision* collision_edge);
+    void HitWithReef(vec2 normal);
     bool IsTouchingReef();
     bool IsFuelZero();
     bool IsShipUnder();
 
 private:
-    static constexpr double speed = 6000.f;
-    static constexpr float deceleration = 0.80f;
-    static constexpr double skidding_speed = 20.f;
-    bool moving;
-    bool set_dest;
-    bool ready_to_move;
+    static constexpr double speed = 6500.f;
+    static constexpr float deceleration = 0.88f;
+    static constexpr double skidding_speed = 150.f;
+    double slow_down_factor = 0.061;
     bool move;
-    bool clickable = true;
     bool hit_with = false;
     vec2 force = {};
     vec2 destination;
     vec2 direction = { 0,0 };
+    vec2 normal;
     Beat* beat;
     Skillsys* skill;
     Math::rect limit;
+    const double fuel_bubble_time = 0.03;
+    const double collide_time = 1.1;
+    CS230::Timer* fuel_bubble_timer;
+    CS230::RealTimeTimer* collide_timer;
 
     //for fuel
 
     bool isCollidingWithReef;
     bool FuelFlag = false;
+    bool can_dash = true;
     double fuel;
     double Maxfuel = 1000;
     double baseDecfuel = 2;
     double MoveDecfuel = 0.5;
     double HitDecFuel = 50;
     double fuelcounter = 0;
+
+    //
+
+
+
+    class State_Idle : public State {
+    public:
+        virtual void Enter(GameObject* object) override;
+        virtual void Update(GameObject* object, double dt) override;
+        virtual void CheckExit(GameObject* object) override;
+        std::string GetName() override { return "State_Idle"; }
+    };
+
+    class State_Move : public State {
+    public:
+        virtual void Enter(GameObject* object) override;
+        virtual void Update(GameObject* object, double dt) override;
+        virtual void FixedUpdate(GameObject* object, double fixed_dt) override;
+        virtual void CheckExit(GameObject* object) override;
+        std::string GetName() override { return "State_Move"; }
+    };
+
+    class State_Hit : public State {
+    public:
+        virtual void Enter(GameObject* object) override;
+        virtual void Update(GameObject* object, double dt) override;
+        virtual void FixedUpdate(GameObject* object, double fixed_dt) override;
+        virtual void CheckExit(GameObject* object) override;
+        std::string GetName() override { return "State_Hit"; }
+    };
+
+    State_Idle state_idle;
+    State_Move state_move;
+    State_Hit state_hit;
+};
+
+class Pump : public CS230::GameObject {
+public:
+    Pump();
+    GameObjectTypes Type() override { return GameObjectTypes::Ship; }
+    std::string TypeName() override { return "Ship:Dal"; }
+    void Update(double dt) override;
+    void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
+    float GetRadius() { return radius; }
+    void SetUniforms(const GLShader* shader);
+
+private:
+    Beat* beat;
+    float max_pump_radius = 100;
+    float min_pump_radius = 55;
+    float radius = 0;
+    float alpha = 0.0;
+    bool wait = false;
+    bool has_done = false;
 };

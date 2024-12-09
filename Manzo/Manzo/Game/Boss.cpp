@@ -25,7 +25,7 @@ Boss::Boss(vec2 start_position, BossType type)
 
 void Boss::State_CutScene::Enter(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
-	Engine::GetAudioManager().StopMusic();
+	Engine::GetAudioManager().StopChannel(0);
 	boss->beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
 	
 }
@@ -36,10 +36,9 @@ void Boss::State_CutScene::CheckExit(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
 
 	if (Engine::GetInput().KeyDown(CS230::Input::Keys::R)&& boss->beat->GetBeat()) {
-		Mix_Music* e_music = Engine::GetAudioManager().LoadMusic(boss->mp3_file_name, "E_Music");
-		if (e_music) {
-			Engine::GetAudioManager().PlayMusic(e_music, -1);
-		}
+		Engine::GetAudioManager().LoadSound(boss->mp3_file_name, "E_Music");
+		Engine::GetAudioManager().PlaySounds(boss->mp3_file_name, vec3{ 0, 0, 0 }, Engine::GetAudioManager().VolumeTodB(1.0f));
+
 		boss->beat->SetBPM(boss->bpm);
 		boss->change_state(&boss->entry1);
 	}
@@ -152,7 +151,7 @@ void Boss::Update(double dt) {
 			}
 			else {
 				Destroy();
-				Engine::GetAudioManager().StopMusic();
+				Engine::GetAudioManager().StopChannel(1);
 			}
 		}
 	}

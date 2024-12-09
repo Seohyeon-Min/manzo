@@ -14,7 +14,8 @@ Updated:    04/30/2024
 #include <optional> 
 
 CS230::GameObject::GameObject(vec2 position) :
-	GameObject(position, 0, { 1, 1 }) {}
+	GameObject(position, 0, { 1, 1 }) {
+}
 
 CS230::GameObject::GameObject(vec2 position, double rotation, vec2 scale) :
 	velocity({ 0,0 }),
@@ -29,11 +30,16 @@ CS230::GameObject::GameObject(vec2 position, double rotation, vec2 scale) :
 
 void CS230::GameObject::Update(double dt) {
 	current_state->Update(this, dt);
-	if (velocity.x != 0 || velocity.y != 0) {
-		UpdatePosition(velocity * (float)dt);
-	}
 	UpdateGOComponents(dt);
 	current_state->CheckExit(this);
+}
+
+void CS230::GameObject::FixedUpdate(double fixed_dt)
+{
+	current_state->FixedUpdate(this, fixed_dt);
+	if (velocity.x != 0 || velocity.y != 0) {
+		UpdatePosition(velocity * (float)fixed_dt);
+	}
 }
 
 void CS230::GameObject::change_state(State* new_state) {
@@ -46,7 +52,17 @@ void CS230::GameObject::Draw(DrawLayer drawlayer) {
 	Sprite* sprite = GetGOComponent<Sprite>();
 	if (sprite != nullptr) {
 		if (shader == nullptr) {
-			shader = Engine::GetShaderManager().GetDefaultShader();
+			//shader = Engine::GetShaderManager().GetDefaultShader();
+			if (IsPixelShaderApplicable(Type())) {
+				// 픽셀화 셰이더 적용
+				shader = Engine::GetShaderManager().GetShader("pixelate");
+				//SetGlobalShader(pixelShader);
+			}
+			else {
+				// 기본 셰이더 적용
+				shader = Engine::GetShaderManager().GetDefaultShader();
+				//SetGlobalShader(defaultShader);
+			}
 		}
 
 		DrawCall draw_call = {
@@ -55,13 +71,35 @@ void CS230::GameObject::Draw(DrawLayer drawlayer) {
 			shader
 		};
 
-		// DrawLayer가 기본값이 아니면 `AddDrawCall`에 추가
 		if (drawlayer != DrawLayer::Draw) {
 			Engine::GetRender().AddDrawCall(draw_call, drawlayer);
 		}
 		else {
 			Engine::GetRender().AddDrawCall(draw_call);  // basic layer
 		}
+	}
+	if (Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>() != nullptr && Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>()->Enabled()) {
+		Collision* collision = GetGOComponent<Collision>();
+		if (collision != nullptr) {
+			collision->Draw();
+		}
+	}
+}
+
+void CS230::GameObject::Draw(const DrawCall& draw_call, DrawLayer drawlayer)
+{
+	Sprite* sprite = GetGOComponent<Sprite>();
+	if (sprite != nullptr) {
+		if (shader == nullptr) {
+			if (IsPixelShaderApplicable(Type())) {
+				shader = Engine::GetShaderManager().GetShader("pixelate");
+			}
+			else {
+				shader = Engine::GetShaderManager().GetDefaultShader();
+			}
+		}
+
+		Engine::GetRender().AddDrawCall(draw_call, drawlayer);
 	}
 	if (Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>() != nullptr && Engine::GetGameStateManager().GetGSComponent<CS230::ShowCollision>()->Enabled()) {
 		Collision* collision = GetGOComponent<Collision>();
@@ -111,6 +149,11 @@ const vec2& CS230::GameObject::GetScale() const
 	return scale;
 }
 
+const bool CS230::GameObject::GetFlipX() const
+{
+	return scale.x < 0;
+}
+
 double CS230::GameObject::GetRotation() const
 {
 	return rotation;
@@ -142,6 +185,14 @@ void CS230::GameObject::SetScale(vec2 new_scale)
 {
 	scale = new_scale;
 	//matrix_outdated = true;
+}
+
+void CS230::GameObject::SetFlipX(bool flip) 
+{
+	if ((flip && scale.x > 0) || (!flip && scale.x < 0)) 
+	{
+		scale.x = -scale.x;
+	}
 }
 
 void CS230::GameObject::UpdateScale(vec2 delta)

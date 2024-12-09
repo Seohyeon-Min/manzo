@@ -12,4 +12,5 @@ struct DrawSettings {
     bool                  do_blending = false;
     bool                  animate_procedural_texture = false;
     bool                  is_UI = false;
+    bool                  glow = false;
 };
