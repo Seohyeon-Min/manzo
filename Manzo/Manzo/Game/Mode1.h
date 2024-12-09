@@ -54,6 +54,8 @@ private:
     Skillsys::Skill_Net* Net_ptr;
 
     bool Isboss = false;
+    bool soundPlaying = false;
+    bool replay = false;
     bool playing = false;
     const float maxDistance = 350.0f;
     std::vector<std::pair<int, int>> BossFirstPos;

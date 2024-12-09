@@ -90,7 +90,8 @@ void Mode1::Load() {
 	AddGSComponent(new CS230::ParticleManager<Particles::MouseFollow>());
 	Boss::LoadBossfile();
 
-	Engine::GetAudioManager().LoadMusic("assets/audios/bgm_original.wav",true);
+	Engine::GetAudioManager().LoadMusic("assets/audios/bgm_original.wav",false);
+	Engine::GetAudioManager().LoadMusic("assets/audios/e.wav", true);
 	Engine::GetAudioManager().Set3DMode(FMOD_3D_LINEARROLLOFF);
 
 	// UI
@@ -186,26 +187,35 @@ void Mode1::Update(double dt) {
 	// Check if within the max distance and apply 3D audio accordingly
 	bool isWithinRange = distance < maxDistance;
 
-	Engine::GetAudioManager().Set3dListenerAndOrientation(
-		isWithinRange ? smoothShipPosition : vec3{ 0.0f, 0.0f, 0.0f },
-		vec3{ 0.0f, -1.0f, 0.0f },
-		vec3{ 0.0f, 0.0f, 1.0f }
-	);
+	Engine::GetAudioManager().Set3dListenerAndOrientation(smoothShipPosition,vec3{ 0.0f, -1.0f, 0.0f },vec3{ 0.0f, 0.0f, 1.0f }	);
 
 	// Apply 3D position for the boss and calculate volume based on the distance
 	if (isWithinRange) {
-		Engine::GetAudioManager().SetChannel3dPosition(0, bossPosition);
+		if (!soundPlaying)
+		{
+			Engine::GetAudioManager().PlayMusics("assets/audios/e.wav");
+			soundPlaying = true;
+		}
+		else
+		{
+			if(!replay)
+			{
+				Engine::GetAudioManager().RestartPlayMusic(1);
+				replay = true;
+			}
+		}
+		Engine::GetAudioManager().SetChannel3dPosition(1, bossPosition);
 
 		// Calculate the volume based on the distance
 		float volumeFactor = 1.0f - std::clamp(distance / 300.0f, 0.0f, 1.0f);
-		float volume = std::lerp(-20.0f, 0.0f, volumeFactor);
+		float volume = std::lerp(0.0f, 1.0f, volumeFactor);
 		Engine::GetAudioManager().SetChannelVolume(0, volume);
 	}
-	else {
-		Engine::GetAudioManager().SetChannel3dPosition(0, vec3{ 0.0f, 0.0f, 0.0f });
-		Engine::GetAudioManager().SetChannelVolume(0, -20.0f);  // Default volume if out of range
+	else
+	{
+		Engine::GetAudioManager().StopPlayingMusic(1);
+		replay = false;
 	}
-
 }
 
 void Mode1::FixedUpdate(double dt)
