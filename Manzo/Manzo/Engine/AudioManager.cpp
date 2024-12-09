@@ -286,6 +286,14 @@ void AudioManager::SetMute(int nChannelId, bool mute)
 	auto tFoundIt = sgpImplementation->mChannels.find(nChannelId);
 	if (tFoundIt != sgpImplementation->mChannels.end()) {
 		ErrorCheck(tFoundIt->second->setMute(mute));  // if true sound = 0
+		if (mute == true)
+		{
+			isMute = true;
+		}
+		else
+		{
+			isMute = false;
+		}
 	}
 }
 

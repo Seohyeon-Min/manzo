@@ -60,6 +60,10 @@ public:
 	
 	void SetChannelVolume(int nChannelId, float fVolumedB);
 	void SetMute(int nChannelId, bool mute); //if true, mute
+	const bool GetMute() {
+		return isMute;
+	}
+
 	float dbToVolume(float dB);
 	float VolumeTodB(float volume);
 	FMOD_VECTOR VectorToFmod(const vec3& vPosition);
@@ -67,4 +71,5 @@ public:
 	// sound
 
 private:
+	bool isMute = false;
 };
