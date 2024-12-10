@@ -33,7 +33,7 @@ void FishGenerator::GenerateFish(double dt)
 {
 	timer->Update(dt);
 
-	if (timer->Remaining() == 0)
+	if (timer->Remaining() == 0 && fishList.size() < 15)
 	{
 		Fish* newFish = new Fish();
 		fishList.push_back(newFish);

@@ -28,7 +28,7 @@ void BackgroundFish::Update(double dt)
 {
 	GameObject::Update(dt);
 
-	SetFlipX(GetVelocity().x < 0);
+	SetFlipX(GetVelocity().x <= 0);
 }
 
 void BackgroundFish::Draw()

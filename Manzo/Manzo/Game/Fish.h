@@ -49,6 +49,7 @@ private:
 	float angleRadians;
 	double coolTime = 1.5f;
 	Fish* parentFish = nullptr;
+	vec2 findRock;
 };
 
 #endif
