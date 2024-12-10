@@ -16,7 +16,7 @@ Created:    March 8, 2023
 
 class Background : public Component {
 public:
-    void Add(const std::filesystem::path& texture_path, float speed);
+    void Add(const std::filesystem::path& texture_path, float speed, DrawLayer = DrawLayer::DrawBackground);
     void Unload();
     void Draw(const Cam& camera);
     void SetUniforms(const GLShader* shader);
@@ -26,6 +26,7 @@ private:
         GLTexture* texture;
         float speed = 1.f;
         mat3 matrix;
+        DrawLayer drawlayer;
     };
     std::vector<ParallaxLayer> backgrounds;
 };

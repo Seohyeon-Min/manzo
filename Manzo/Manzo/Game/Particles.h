@@ -94,5 +94,6 @@ namespace Particles {
         static constexpr double MaxLife = 0.25;
         float scale;
     };
+
 }
 

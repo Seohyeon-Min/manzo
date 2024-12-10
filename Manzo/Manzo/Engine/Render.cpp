@@ -43,7 +43,7 @@ void Render::AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase) {
     }
     else if (phase == DrawLayer::DrawDialog)
     {
-        draw_ui_calls.push_back(drawCall);
+        draw_dialog_calls.push_back(drawCall);
     }
     else {
         draw_calls.push_back(drawCall); // Add to normal phase
@@ -75,7 +75,7 @@ void Render::RenderAll() {
     }
 
     for (const auto& draw_call : draw_background_calls) {
-        Draw(draw_call);
+        DrawBackground(draw_call);
     }
     // Draw calls in the early phase
     for (const auto& draw_call : draw_first_calls) {

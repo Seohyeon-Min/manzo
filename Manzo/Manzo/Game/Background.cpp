@@ -12,9 +12,10 @@ Updated:    March 29, 2023
 #include "Background.h"
 #include <iostream>
 
-void Background::Add(const std::filesystem::path& texture_path, float speed)
+
+void Background::Add(const std::filesystem::path& texture_path, float speed, DrawLayer draw_layer)
 {
-    backgrounds.push_back(ParallaxLayer({ Engine::GetTextureManager().Load(texture_path), speed }));
+    backgrounds.push_back(ParallaxLayer({ Engine::GetTextureManager().Load(texture_path), speed, mat3{},draw_layer }));
 }
 
 void Background::SetUniforms(const GLShader* shader) {
@@ -55,7 +56,7 @@ void Background::Draw(const Cam& camera)
             settings
         };
 
-        Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawBackground);
+        Engine::GetRender().AddDrawCall(draw_call, background.drawlayer);
     }
 }
 
