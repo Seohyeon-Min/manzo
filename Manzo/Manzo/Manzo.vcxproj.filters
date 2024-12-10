@@ -305,5 +305,6 @@
     <ClInclude Include="Game\DialogBox.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="Game\DashEffect.h" />
   </ItemGroup>
 </Project>

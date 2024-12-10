@@ -67,9 +67,23 @@ bool Fish::CanCollideWith(GameObjectTypes other_object) {
 void Fish::ResolveCollision(GameObject* other_object) {
     switch (other_object->Type()) {
     case GameObjectTypes::Ship:
+        this->Destroy();
+        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new CaptureEffect(GetPosition()));
+        if (!collided)
+        {
+            collided = true;
+            money++;
+        }
+        break;
+
     case GameObjectTypes::Net:
         this->Destroy();
         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new CaptureEffect(GetPosition()));
+        if (!collided)
+        {
+            collided = true;
+            money++;
+        }
         money++;
         break;
 

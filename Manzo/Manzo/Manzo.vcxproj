@@ -166,8 +166,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)external\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Opengl32.lib;glew32.lib;imgui.lib;SDL2.lib;freetype.lib;fmod_vc.lib;fmodstudio_vc.lib;fsbank_vc.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
