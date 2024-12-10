@@ -56,29 +56,29 @@ namespace Particles {
         float scale;
     };
 
-    class HitEffect : public Particle {
+    class HitPraticle : public Particle {
     public:
-        HitEffect() : Particle("assets/images/hit_effect.spt")
+        HitPraticle() : Particle("assets/images/Smoke.spt")
         {
-            scale = util::random(0.7f, 1.7f); shader = Engine::GetShaderManager().GetShader("change_alpha");
+            scale = util::random(0.26f, 0.36f); shader = Engine::GetShaderManager().GetShader("change_alpha");
             drawlayer = DrawLayer::DrawUI;
         };
         std::string TypeName() override { return "HitEffect Particle"; }
         static constexpr int MaxCount = 20;
-        static constexpr double MaxLife = 0.05;
+        static constexpr double MaxLife = 0.027;
         float scale;
     };
 
-    class HitEffect2 : public Particle {
+    class HitPraticle2 : public Particle {
     public:
-        HitEffect2() : Particle("assets/images/Plankton.spt")
+        HitPraticle2() : Particle("assets/images/Particle_black.spt")
         {
-            scale = util::random(1.5f, 2.7f); shader = Engine::GetShaderManager().GetShader("change_alpha");
-            drawlayer = DrawLayer::DrawUI;
+            scale = util::random(0.2f, 0.5f); shader = Engine::GetShaderManager().GetShader("change_alpha");
+            drawlayer = DrawLayer::DrawLast;
         };
-        std::string TypeName() override { return "HitEffect Particle"; }
-        static constexpr int MaxCount = 20;
-        static constexpr double MaxLife = 0.05;
+        std::string TypeName() override { return "HitPraticle2 Particle"; }
+        static constexpr int MaxCount = 10;
+        static constexpr double MaxLife = 0.21;
         float scale;
     };
 

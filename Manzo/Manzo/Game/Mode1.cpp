@@ -68,19 +68,20 @@ void Mode1::Load() {
     AddGSComponent(new ParticleManager<Particles::Plankton>());
     AddGSComponent(new ParticleManager<Particles::FuelBubble>());
     AddGSComponent(new ParticleManager<Particles::BubblePop>());
-    AddGSComponent(new ParticleManager<Particles::HitEffect>());
-    AddGSComponent(new ParticleManager<Particles::HitEffect2>());
+    AddGSComponent(new ParticleManager<Particles::HitPraticle>());
+	AddGSComponent(new ParticleManager<Particles::HitPraticle2>());
     AddGSComponent(new ParticleManager<Particles::CaptureEffect>());
-
-    //// ship
-    ship_ptr = new Ship({ 0, 0 });
-    GetGSComponent<GameObjectManager>()->Add(ship_ptr);
 
     //// camera
     Math::rect Boundary({ -BoundaryX, -BoundaryY }, { BoundaryX, BoundaryY });
     camera = new Cam();
     AddGSComponent(camera);
     camera->SetLimit(Boundary);
+
+    //// ship
+    ship_ptr = new Ship({ 0, 0 });
+    GetGSComponent<GameObjectManager>()->Add(ship_ptr);
+
 
 	//// ship
 	ship_ptr = new Ship({ 0, 0 });

@@ -27,7 +27,7 @@ Created:    March 8, 2023
 
 Mode2::Mode2() {}
 
-int dialog_test_int = 0;//Áö¿öµµ ¤¡¤º
+int dialog_test_int = 0;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 void Mode2::Load() {
 

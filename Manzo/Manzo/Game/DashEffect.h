@@ -101,3 +101,43 @@ private:
     CaptureEffect() :
         GameObject({}) {};
 };
+
+class   HitEffect : public GameObject {
+public:
+    HitEffect(vec2 pos) :
+        GameObject(pos) {
+        SetScale({ 0.6f,0.6f });
+        AddGOComponent(new Sprite("assets/images/Hit_effect.spt", this));
+        GetGOComponent<Sprite>()->PlayAnimation(0);
+        Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::HitPraticle>>()->EmitRound(20, GetPosition(), 1800.f, 600.f);
+        //Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::CaptureEffect>>()->EmitRound(8, GetPosition(), 1000.f, 600.f);
+        Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::HitPraticle2>>()->EmitRound(10, GetPosition(), 1500.f, 600.f);
+    }
+    GameObjectTypes Type() override { return GameObjectTypes::Ship; }
+    std::string TypeName() override { return "HitEffect"; }
+    void Update(double dt) override {
+        GameObject::Update(dt);
+        if (GetGOComponent<Sprite>()->AnimationEnded()) {
+            Destroy();
+        }
+    }
+    void Draw(DrawLayer drawlayer = DrawLayer::Draw) override
+    {
+        DrawSettings settings;
+        settings.do_blending = true;
+        Sprite* sprite = GetGOComponent<Sprite>();
+
+        DrawCall draw_call = {
+            sprite,
+            &GetMatrix(),
+            Engine::GetShaderManager().GetDefaultShader(),
+            nullptr,
+            settings
+        };
+
+        GameObject::Draw(draw_call, DrawLayer::Draw);
+    }
+private:
+    HitEffect() :
+        GameObject({}) {};
+};
