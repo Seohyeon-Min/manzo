@@ -84,7 +84,6 @@ void Fish::ResolveCollision(GameObject* other_object) {
             collided = true;
             money++;
         }
-        money++;
         break;
 
     case GameObjectTypes::ReefBoundary:
