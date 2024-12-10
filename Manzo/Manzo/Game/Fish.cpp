@@ -1,5 +1,6 @@
 #include "Fish.h"
 #include "DashEffect.h"
+#include "ScreenWrap.h"
 
 #include "../Engine/GameObjectManager.h"
 #include "../Engine/AABB.h"
@@ -54,6 +55,8 @@ Fish::Fish(Fish* parent) : GameObject({ 0, 0 }) {
 
     AddGOComponent(new Sprite(fishBook[index].filePath, this));
     fishCnt++;
+
+    AddGOComponent(new ScreenWrap(*this));
 }
 
 bool Fish::CanCollideWith(GameObjectTypes other_object) {
