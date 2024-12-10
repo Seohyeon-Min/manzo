@@ -91,21 +91,12 @@ void Mode1::Load() {
 	background = new Background();
 	AddGSComponent(background);
     
-
-    // UI
-    AddGSComponent(new UIManager());
-    ui_manager = GetGSComponent<UIManager>();
-    ui_manager->AddUI(std::make_unique<FuelUI>(ship_ptr));
-    ui_manager->AddUI(std::make_unique<Mouse>());
-
-    // Map
-    GetGSComponent<Map>()->ParseSVG("assets/maps/map6.svg");
 	//// to generate fish
 	fishGenerator = new FishGenerator();
 	Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
 
 	//background
-    background->Add("assets/images/background/temp_background3.png", 0.0f);
+	background->Add("assets/images/background/temp_background3.png", 0.0f);
     background->Add("assets/images/background/bg1.png", 0.3f);
     background->Add("assets/images/background/bg2.png", 0.4f);
     background->Add("assets/images/background/bg3.png", 0.5f);
@@ -117,7 +108,7 @@ void Mode1::Load() {
     ui_manager->AddUI(std::make_unique<Mouse>());
 
     // Map
-    GetGSComponent<Map>()->ParseSVG("assets/maps/map6.svg");
+    //GetGSComponent<Map>()->ParseSVG("assets/maps/map7.svg");
 
 	Engine::GetAudioManager().LoadMusic("assets/audios/bgm_original.wav",false);
 	Engine::GetAudioManager().LoadMusic("assets/audios/e.wav", true);
