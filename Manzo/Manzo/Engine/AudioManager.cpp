@@ -121,6 +121,34 @@ float AudioManager::GetCurrentMusicTime(const std::string& alias) {
 	return 0.0f;
 }
 
+float AudioManager::GetMusicLength(const std::string& alias) {
+	auto it = sgpImplementation->mChannels.find(alias);
+	if (it != sgpImplementation->mChannels.end()) {
+		FMOD::Channel* channel = it->second;
+		FMOD::Sound* sound = nullptr;
+
+		// Get the associated sound object from the channel
+		FMOD_RESULT result = channel->getCurrentSound(&sound);
+		if (ErrorCheck(result) != 0 || sound == nullptr) {
+			std::cerr << "Error: Failed to retrieve sound from channel." << std::endl;
+			return 0.0f;
+		}
+
+		// Get the total length of the sound in milliseconds
+		unsigned int length = 0;
+		result = sound->getLength(&length, FMOD_TIMEUNIT_MS);
+		if (ErrorCheck(result) == 0) {
+			return length / 1000.0f; // Convert milliseconds to seconds
+		}
+		else {
+			std::cerr << "Error: Failed to retrieve music length." << std::endl;
+		}
+	}
+	else {
+		std::cerr << "Error: Channel with alias '" << alias << "' not found." << std::endl;
+	}
+	return 0.0f;
+}
 
 std::string AudioManager::GetID(const std::string& alias)
 {
@@ -303,6 +331,25 @@ bool AudioManager::IsPlayingMusic(const std::string& alias) const
 	}
 	return false;
 }
+
+//bool AudioManager::IsMusicFinished(const std::string& alias) {
+//	auto tFoundIt = sgpImplementation->mChannels.find(alias);
+//	if (tFoundIt != sgpImplementation->mChannels.end()) {
+//		bool bIsPlaying = false;
+//		FMOD_RESULT result = tFoundIt->second->isPlaying(&bIsPlaying);
+//		if (ErrorCheck(result) == 0) {
+//			return !bIsPlaying;
+//		}
+//		else {
+//			std::cerr << "Error: Failed to check if music is finished." << std::endl;
+//		}
+//	}
+//	else {
+//		std::cerr << "Error: Channel with alias " << alias << " not found." << std::endl;
+//	}
+//
+//	return false;
+//}
 
 FMOD_VECTOR AudioManager::VectorToFmod(const vec3& vPosition) {
 	FMOD_VECTOR fVec;

@@ -17,7 +17,7 @@ Boss::Boss(vec2 start_position, BossName name, BossType type)
 	current_position = start_position;
 	// cutscean
 
-	Engine::GetAudioManager().LoadMusic(mp3_file_name,"e boss",false,false);
+	Engine::GetAudioManager().LoadMusic(mp3_file_name, "e boss", false, false);
 	////////
 	current_state = &state_cutscene;
 	current_state->Enter(this);
@@ -50,10 +50,10 @@ void Boss::Chasingplayer_fun(int targetEntryNum, Boss* boss) {
 				vec2 bossPosition = boss->GetPosition();
 				vec2 directionToPlayer = playerPosition - bossPosition;
 
-				float distanceToPlayer = directionToPlayer.Length();				
+				float distanceToPlayer = directionToPlayer.Length();
 				if (distanceToPlayer > (boss->speed / 4)) {
-					directionToPlayer = directionToPlayer.Normalize(); 
-					boss->current_position = bossPosition + (directionToPlayer * (boss->speed/4));
+					directionToPlayer = directionToPlayer.Normalize();
+					boss->current_position = bossPosition + (directionToPlayer * (boss->speed / 4));
 				}
 				else {
 					boss->current_position = playerPosition;
@@ -75,11 +75,11 @@ void Boss::MultiInstance_fun(int targetEntryNum, Boss* object) {
 
 void Boss::Check_BossBehavior(int targetEntryNum, GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
-	if (boss->bossType == Boss::BossType::MovingToLocation) 
+	if (boss->bossType == Boss::BossType::MovingToLocation)
 	{
 		Movingtolocation_fun(targetEntryNum, boss);
 	}
-	else if (boss->bossType == Boss::BossType::ChasingPlayer) 
+	else if (boss->bossType == Boss::BossType::ChasingPlayer)
 	{
 		Chasingplayer_fun(targetEntryNum, boss);
 	}
@@ -100,7 +100,7 @@ void Boss::Check_BossBehavior(int targetEntryNum, GameObject* object) {
 void Boss::State_CutScene::Enter(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
 	boss->beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
-	
+
 }
 void Boss::State_CutScene::Update(GameObject* object, double dt) {
 	Boss* boss = static_cast<Boss*>(object);
@@ -108,13 +108,13 @@ void Boss::State_CutScene::Update(GameObject* object, double dt) {
 void Boss::State_CutScene::CheckExit(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
 
-	if (Engine::GetInput().KeyDown(Input::Keys::R)&& boss->beat->GetBeat()) {
-		Engine::GetAudioManager().SetMute("background1",true);
+	if (Engine::GetInput().KeyDown(Input::Keys::R) && boss->beat->GetBeat()) {
+		Engine::GetAudioManager().SetMute("background1", true);
 		Engine::GetAudioManager().StopChannel("e morse");
 		Engine::GetAudioManager().PlayMusics("e boss");
 
 		boss->beat->SetBPM(boss->bpm);
-		std::cout <<"boss bpm:" << boss->bpm << std::endl;
+		std::cout << "boss bpm:" << boss->bpm << std::endl;
 		boss->change_state(&boss->entry1);
 	}
 }
@@ -123,7 +123,7 @@ void Boss::Entry1::Enter(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
 }
 void Boss::Entry1::Update(GameObject* object, double dt) {
-	int targetEntryNum = 1; 
+	int targetEntryNum = 1;
 	Check_BossBehavior(targetEntryNum, object);
 }
 void Boss::Entry1::CheckExit(GameObject* object) {
@@ -180,23 +180,23 @@ void Boss::Update(double dt) {
 
 	if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
 		if (GameObject::current_state->GetName() != Boss::state_cutscene.GetName()) {
-			
+
 			int barCount = beat->GetBarCount();
-			std::cout << barCount<< std::endl;
-			if(barCount <14){
+			std::cout << barCount << std::endl;
+			if (barCount < 14) {
 				if (barCount < total_entry.size() && total_entry[barCount] - 1 < stateMap.size()) {
 					change_state(stateMap[total_entry[barCount] - 1]);
 				}
-				else  {
-				
+				else {
+
 					std::cerr << "Invalid barCount or index out of range: " << barCount << std::endl;
 					Destroy();
 					AfterDied();
 				}
 			}
 		}
-	
-	Move(dt);
+
+		Move(dt);
 	}
 }
 
@@ -210,34 +210,34 @@ void Boss::AfterDied()
 		pump->Reset();
 	}
 	Engine::GetAudioManager().RestartPlayMusic("background1");
-	Engine::GetAudioManager().SetMute("background1",false);
+	Engine::GetAudioManager().SetMute("background1", false);
 }
 
 vec2 Lerp(const vec2& start, const vec2& end, float t) {
-	return start + t * (end - start);  
+	return start + t * (end - start);
 }
 
 void Boss::Move(double dt) {
 	Boss* boss = static_cast<Boss*>(this);
 
 	vec2 direction = current_position - GetPosition();
-	direction = direction.Normalize(); 
+	direction = direction.Normalize();
 
 	vec2 force = direction * speed;
 
-	static float lerp_factor = 0.0f;  
-	lerp_factor += (float)dt * 0.1f;  
-	lerp_factor = std::min(lerp_factor, 5.0f); 
+	static float lerp_factor = 0.0f;
+	lerp_factor += (float)dt * 0.1f;
+	lerp_factor = std::min(lerp_factor, 5.0f);
 
 	vec2 lerped_position = Lerp(GetPosition(), current_position, lerp_factor);
 
-	SetVelocity((lerped_position - GetPosition()) / (float)dt);  
+	SetVelocity((lerped_position - GetPosition()) / (float)dt);
 	GameObjectManager* gameobjectmanager = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>();
 	GameObject::Update(dt);
 	vec2 nearestRockpoint = gameobjectmanager->FindNearestRock(boss);
 
 	if ((current_position - GetPosition()).Length() < 10.0f) {
-		lerp_factor = 0.0f; 
+		lerp_factor = 0.0f;
 	}
 }
 

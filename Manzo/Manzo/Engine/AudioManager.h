@@ -41,6 +41,7 @@ public:
 	void UnLoadMusic(const std::string& alias);
 	FMOD::Sound* GetMusic(const std::string& alias);
 	float GetCurrentMusicTime(const std::string& alias);
+	float GetMusicLength(const std::string& alias);
 	std::string GetID(const std::string& alias);
 
 	std::string PlayMusics(const std::string& alias, const vec3& vPos = vec3{ 0, 0, 0 }, float fVolumedB = 0.0f);
@@ -49,6 +50,8 @@ public:
 	void RestartPlayMusic(const std::string& alias);
 	void StopPlayingMusic(const std::string& alias);
 	bool IsPlayingMusic(const std::string& alias) const;
+
+	bool IsMusicFinished(const std::string& alias);
 
 	void Set3dListenerAndOrientation(const vec3& vPosition, const vec3& vLook, const vec3& vUp);
 	void SetChannel3dPosition(const std::string& alias, const vec3& vPosition);
