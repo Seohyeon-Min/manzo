@@ -86,7 +86,7 @@ void Fish::Update(double dt) {
 
     if (parentFish != nullptr) {
         if (parentFish->Destroyed()) {
-            parentFish = nullptr; 
+            parentFish = nullptr;
         }
         else {
             SetVelocity(parentFish->GetVelocity());
@@ -96,22 +96,38 @@ void Fish::Update(double dt) {
     }
 
     vec2 currentPosition = GetPosition();
-    vec2 nearestRock = { Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->FindNearestRock(this).x - 20,
+    vec2 nearestRock = { (GetVelocity().x <= 0 ? Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->FindNearestRock(this).x + 20 : Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->FindNearestRock(this).x - 20),
                           Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->FindNearestRock(this).y - 20 };
+
+    float safeDistance = 155.0f;  // safety distance
+
+    // if it's avoiding some rock
+    if (AvoidanceActive) {
+        SetVelocity((GetVelocity() + AvoidanceVelocity) * 0.5f);
+
+        // clear avoid state
+        if ((currentPosition - nearestRock).LengthSquared() > safeDistance * safeDistance) {
+            AvoidanceActive = false;
+            IsAvoided = false;
+            coolTime = 1.5f;  // reset cooltime
+        }
+        return;  // if it's avoiding, continue
+    }
 
     if (IsRockInfront(currentPosition, nearestRock)) {
         if (!IsAvoided) {
-            vec2 avoidanceVelocity = AvoidRock(currentPosition, nearestRock);
-            SetVelocity((GetVelocity() + avoidanceVelocity) * 0.5f);
+            AvoidanceVelocity = AvoidRock(currentPosition, nearestRock);  // avoidance vector
+            SetVelocity((GetVelocity() + AvoidanceVelocity) * 0.5f);
 
             IsAvoided = true;
+            AvoidanceActive = true;  // avoiding now
 
             const float maxSpeed = 100.0f;
             if (GetVelocity().Length() > maxSpeed) {
                 SetVelocity(GetVelocity().Normalize() * maxSpeed);
             }
 
-            if(GetVelocity().x > 0) SetRotation(GetVelocity().y > 0 ? PIover3 : -PIover3);
+            if (GetVelocity().x > 0) SetRotation(GetVelocity().y > 0 ? PIover3 : -PIover3);
             else SetRotation(GetVelocity().y <= 0 ? PIover3 : -PIover3);
         }
     }
@@ -124,32 +140,6 @@ void Fish::Update(double dt) {
         SetRotation(0);
         IsAvoided = false;
     }
-
-    // Destroy outside of the window
-    CS230::RectCollision* collider = GetGOComponent<CS230::RectCollision>();
-
-    /*if (collider->WorldBoundary_rect().Left() < Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x - 640 && GetVelocity().x > 0) {
-        Destroy();
-    }
-    if (collider->WorldBoundary_rect().Right() > Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().x + 640 && GetVelocity().x <= 0) {
-        Destroy();
-    }
-    if ((collider->WorldBoundary_rect().Bottom() < Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y - 360) 
-        || (collider->WorldBoundary_rect().Top() > Engine::GetGameStateManager().GetGSComponent<CS230::Cam>()->GetPosition().y + 360)) {
-        Destroy();
-    }*/
-}
-
-void Fish::Draw() {
-    CS230::GameObject::Draw();
-}
-
-vec2 Fish::AvoidRock(vec2 thisPos, vec2 rockPos) {
-    vec2 distanceVec = rockPos - thisPos;
-    vec2 avoidanceVec = { 0, -distanceVec.y };
-
-    const float avoidanceStrength = 200.0f;
-    return avoidanceVec.Normalize() * avoidanceStrength;
 }
 
 bool Fish::IsRockInfront(vec2 thisPos, vec2 rockPos) {
@@ -167,6 +157,18 @@ bool Fish::IsRockInfront(vec2 thisPos, vec2 rockPos) {
     return dot(forwardVec, toRockVec) >= detectionCosAngle;
 }
 
+vec2 Fish::AvoidRock(vec2 thisPos, vec2 rockPos) {
+    vec2 distanceVec = rockPos - thisPos;
+    vec2 avoidanceVec = { 0, -distanceVec.y};
+
+    const float avoidanceStrength = 180.0f;
+    return avoidanceVec.Normalize() * avoidanceStrength;
+}
+
+
+void Fish::Draw() {
+    CS230::GameObject::Draw();
+}
 void Fish::ReadFishCSV(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {

@@ -39,6 +39,7 @@ public:
 	bool collided = false;
 
 	void Update(double dt);
+	float LerpRotation(float currentRotation, float targetRotation, float lerpSpeed);
 	void Draw();
 	vec2 AvoidRock(vec2 thisPos, vec2 rockPos);
 	bool IsRockInfront(vec2 thisPos, vec2 rockPos);
@@ -50,6 +51,8 @@ private:
 	double coolTime = 1.5f;
 	Fish* parentFish = nullptr;
 	vec2 findRock;
+	vec2 AvoidanceVelocity;
+	bool AvoidanceActive = false;
 };
 
 #endif
