@@ -1,0 +1,4 @@
+assets/images/rock/g12.png
+HotSpot 32 24
+Anim assets/images/None.anm
+RectCollision -32 -24 32 24

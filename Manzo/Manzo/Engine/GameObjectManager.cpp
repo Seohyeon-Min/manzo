@@ -19,9 +19,6 @@ void GameObjectManager::Add(GameObject* object)
 
 void GameObjectManager::Unload()
 {
-	for (auto object : objects) {
-		delete object;
-	}
 	objects.clear();
 }
 

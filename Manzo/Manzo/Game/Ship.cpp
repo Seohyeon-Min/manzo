@@ -124,7 +124,7 @@ void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_
     ship->FuelUpdate(fixed_dt);
     ship->SetVelocity(ship->force);
     float base_dt = 1.0f / 240.f;
-    float adjusted_deceleration = (float)pow(deceleration, fixed_dt / base_dt); 
+    float adjusted_deceleration = (float)pow(deceleration, fixed_dt / base_dt);
     ship->force *= adjusted_deceleration;
 }
 void Ship::State_Move::CheckExit(GameObject* object) {
@@ -245,7 +245,7 @@ std::vector<vec2> SortPointsCounterClockwise(const std::vector<vec2>& points, co
         [&center](const vec2& a, const vec2& b) {
             float angle_a = atan2(a.y - center.y, a.x - center.x);
             float angle_b = atan2(b.y - center.y, b.x - center.x);
-            return angle_a > angle_b; 
+            return angle_a > angle_b;
         });
 
     return sorted_points;
@@ -306,7 +306,7 @@ vec2 ComputeNormalAtPoint(const vec2& p0, const vec2& p1) {
     vec2 normal = { -tangent.y, tangent.x };
     float length = normal.Length();
     if (length > 0.0f) {
-        normal = { normal.x / length, normal.y / length }; 
+        normal = { normal.x / length, normal.y / length };
 
         if (normal.x < 0.0f) {
             normal.x = -normal.x;
@@ -338,7 +338,7 @@ bool Ship::CanCollideWith(GameObjectTypes other_object)
 {
     switch (other_object) {
     case GameObjectTypes::Fish:
-    case GameObjectTypes::Reef:
+    case GameObjectTypes::Rock:
         if (!hit_with) return true;
         else return false;
         break;
@@ -353,7 +353,7 @@ void Ship::ResolveCollision(GameObject* other_object)
         change_state(&state_idle);
     }
     if (!hit_with) { // is it needful?
-        if (other_object->Type() == GameObjectTypes::Reef) {
+        if (other_object->Type() == GameObjectTypes::Rock) {
 
             if (GetVelocity().Length() <= skidding_speed + 30.f) { // if it was skidding, don't reflect
                 vec2 smallCorrection = -GetVelocity().Normalize(); // with this, ship should not able to move!
@@ -383,7 +383,7 @@ void Ship::HitWithReef(vec2 normal) {
         fuel = 0.0f;
     }
 
-    vec2 velocity = GetVelocity(); 
+    vec2 velocity = GetVelocity();
 
     float dot_product = velocity.x * normal.x + velocity.y * normal.y;
 
@@ -392,13 +392,13 @@ void Ship::HitWithReef(vec2 normal) {
         velocity.y - 2 * dot_product * normal.y
     };
 
-    float incoming_speed = velocity.Length(); 
+    float incoming_speed = velocity.Length();
 
     if (reflection.Length() > 0.0f) {
         direction = reflection.Normalize();
     }
     else {
-        direction = { 1.0f, 0.0f }; 
+        direction = { 1.0f, 0.0f };
     }
 
     SetVelocity(direction * incoming_speed * 0.55f);

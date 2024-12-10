@@ -6,9 +6,9 @@
 struct [[nodiscard]] Polygon
 {
 	std::vector<vec2> vertices;
-	int vertexCount;
-	int polycount;
-	std::string polyindex;
+	int vertexCount = 3;
+	int polycount = 0;
+	std::string polyindex = "";
 
 	vec2 FindCenter() {			// calculate center of polygon
 		vec2 center = { 0, 0 };
