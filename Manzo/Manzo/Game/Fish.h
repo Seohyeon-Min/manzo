@@ -55,4 +55,6 @@ private:
 	bool AvoidanceActive = false;
 };
 
+extern int fishCnt;
+
 #endif
