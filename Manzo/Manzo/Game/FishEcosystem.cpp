@@ -18,7 +18,7 @@ FishGenerator::FishGenerator()
 	}
 
 	//non leader fish
-	for (int i = 0; i < 240; i++)
+	for (int i = 0; i < 60; i++)
 	{
 		BackgroundFish* bg_fish = new BackgroundFish();
 		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bg_fish);

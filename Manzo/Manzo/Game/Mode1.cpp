@@ -95,7 +95,7 @@ void Mode1::Load() {
 	Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
 
 	//background
-	background->Add("assets/images/background/temp_background3.png", 0.0f);
+	background->Add("assets/images/background/temp_background4.png", 0.0f);
     background->Add("assets/images/background/bg1.png", 0.3f);
     background->Add("assets/images/background/bg2.png", 0.4f);
     background->Add("assets/images/background/bg3.png", 0.5f);
