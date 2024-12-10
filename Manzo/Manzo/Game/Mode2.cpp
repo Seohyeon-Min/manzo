@@ -54,7 +54,7 @@ void Mode2::Load() {
     //// background
     background = new Background();
     AddGSComponent(background);
-    background->Add("assets/images/background/temp_back2.png", 0.25f);
+    background->Add("assets/images/background/house.png", 1.f);
 
     /// Dialog
     dialog = new Dialog();
