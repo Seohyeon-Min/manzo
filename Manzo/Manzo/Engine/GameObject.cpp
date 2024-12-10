@@ -54,12 +54,10 @@ void CS230::GameObject::Draw(DrawLayer drawlayer) {
 		if (shader == nullptr) {
 			//shader = Engine::GetShaderManager().GetDefaultShader();
 			if (IsPixelShaderApplicable(Type())) {
-				// ÇÈ¼¿È­ ¼ÎÀÌ´õ Àû¿ë
 				shader = Engine::GetShaderManager().GetShader("pixelate");
 				//SetGlobalShader(pixelShader);
 			}
 			else {
-				// ±âº» ¼ÎÀÌ´õ Àû¿ë
 				shader = Engine::GetShaderManager().GetDefaultShader();
 				//SetGlobalShader(defaultShader);
 			}
@@ -159,9 +157,9 @@ void CS230::GameObject::SetScale(vec2 new_scale)
 	//matrix_outdated = true;
 }
 
-void CS230::GameObject::SetFlipX(bool flip) 
+void CS230::GameObject::SetFlipX(bool flip)
 {
-	if ((flip && scale.x > 0) || (!flip && scale.x < 0)) 
+	if ((flip && scale.x > 0) || (!flip && scale.x < 0))
 	{
 		scale.x = -scale.x;
 	}
@@ -184,4 +182,3 @@ void CS230::GameObject::UpdateRotation(double delta)
 	rotation += delta;
 	matrix_outdated = true;
 }
-
