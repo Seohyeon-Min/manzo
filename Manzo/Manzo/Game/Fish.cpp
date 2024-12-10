@@ -73,7 +73,7 @@ void Fish::ResolveCollision(GameObject* other_object) {
         money++;
         break;
 
-    case GameObjectTypes::ReefBoundary:
+    case GameObjectTypes::RockBoundary:
         vec2 avoidanceVelocity = AvoidRock(GetPosition(),
             { Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRock(this).x - 20,
               Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRock(this).y - 20 });

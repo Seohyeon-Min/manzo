@@ -79,7 +79,7 @@ void Mode1::Load() {
 
     //// camera
     Math::rect Boundary({ -BoundaryX, -BoundaryY }, { BoundaryX, BoundaryY });
-    camera = new CS230::Cam();
+    camera = new Cam();
     AddGSComponent(camera);
     camera->SetLimit(Boundary);
 
@@ -99,7 +99,7 @@ void Mode1::Load() {
     ui_manager->AddUI(std::make_unique<Mouse>());
 
     // Map
-    GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/map6.svg");
+    GetGSComponent<Map>()->ParseSVG("assets/maps/map6.svg");
 	//// to generate fish
 	fishGenerator = new FishGenerator();
 	Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
@@ -117,7 +117,7 @@ void Mode1::Load() {
     ui_manager->AddUI(std::make_unique<Mouse>());
 
     // Map
-    GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/map6.svg");
+    GetGSComponent<Map>()->ParseSVG("assets/maps/map6.svg");
 
 	Engine::GetAudioManager().LoadMusic("assets/audios/bgm_original.wav",false);
 	Engine::GetAudioManager().LoadMusic("assets/audios/e.wav", true);

@@ -20,7 +20,7 @@ Created:    November 25, 2024
 #include "RockGroup.h"
 
 #include <vector>
-class RockPoint : public CS230::GameObject {
+class RockPoint : public GameObject {
 public:
 	RockPoint(vec2 position, std::string index);
 	GameObjectTypes Type() override { return GameObjectTypes::RockPoint; }

@@ -12,17 +12,17 @@ Created:    November 25, 2024
 
 RockPoint::RockPoint(vec2 position, std::string index) :GameObject(position), index(index)
 {
-    AddGOComponent(new CS230::Sprite("assets/images/rockpoint_temp.spt", this));
+    AddGOComponent(new Sprite("assets/images/rockpoint_temp.spt", this));
 }
 
 void RockPoint::Update(double dt)
 {
-    CS230::GameObject::Update(dt);
+    GameObject::Update(dt);
 }
 
 void RockPoint::Draw()
 {
-    CS230::GameObject::Draw();
+    GameObject::Draw();
 }
 
 bool RockPoint::CanCollideWith(GameObjectTypes other_object)
@@ -41,7 +41,7 @@ void RockPoint::ResolveCollision(GameObject* other_object)
     if (other_object->Type() == GameObjectTypes::MovingRock) {
         MovingRock* moving_rock = static_cast<MovingRock*>(other_object);
         if (this->GetIndex() == moving_rock->GetPolygon().polyindex) {
-            auto* collision_edge = this->GetGOComponent<CS230::MAP_SATCollision>();
+            auto* collision_edge = this->GetGOComponent<MAP_SATCollision>();
             if (collision_edge == nullptr) {
                 // maybe an error?
             }

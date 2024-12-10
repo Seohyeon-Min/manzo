@@ -22,7 +22,7 @@ Created:    November 25, 2024
 #include <vector>
 
 class RockGroup;
-class Rock : public CS230::GameObject
+class Rock : public GameObject
 {
 public:
 	Rock(Polygon poly);

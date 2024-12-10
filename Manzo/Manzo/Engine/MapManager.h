@@ -21,7 +21,7 @@ Created:    September 12, 2024
 
 #include <vector>
 
-class Map : public CS230::Component {
+class Map : public Component {
 public:
 	~Map() {
 		objects.clear();
@@ -39,7 +39,5 @@ private:
 	std::vector<RockGroup*> rock_groups;
 	vec2 circle_position{ 0,0 };
 
-std::vector<Rock> objects;
-std::vector<RockGroup*> rock_groups;		//vector for groups
 
 };

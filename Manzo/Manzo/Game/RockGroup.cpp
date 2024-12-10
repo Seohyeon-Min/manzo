@@ -20,12 +20,12 @@ RockGroup::~RockGroup() {
 
 void RockGroup::Update(double dt)
 {
-    CS230::GameObject::Update(dt);
+    GameObject::Update(dt);
 }
 
 void RockGroup::Draw()
 {
-    CS230::GameObject::Draw();
+    GameObject::Draw();
 }
 
 bool RockGroup::MatchIndex()
@@ -48,7 +48,7 @@ bool RockGroup::MatchIndex()
             if (index == polyind) {
                 std::getline(linestream, file_path, ',');
                 SetPosition(FindCenterRect());
-                AddGOComponent(new CS230::Sprite(file_path, this));
+                AddGOComponent(new Sprite(file_path, this));
 
                 return true;
 
@@ -163,7 +163,7 @@ bool RockGroup::CanCollideWith(GameObjectTypes other_object)
 void RockGroup::ResolveCollision(GameObject* other_object)
 {
     if (other_object->Type() == GameObjectTypes::Ship) {
-        auto* collision_edge = this->GetGOComponent<CS230::RectCollision>();
+        auto* collision_edge = this->GetGOComponent<RectCollision>();
         if (collision_edge == nullptr) {
             // maybe an error?
         }

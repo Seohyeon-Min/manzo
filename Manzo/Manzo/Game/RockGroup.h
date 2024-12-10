@@ -24,7 +24,7 @@ class Rock;
 class MovingRock;
 class RockPoint;
 
-class RockGroup : public CS230::GameObject
+class RockGroup : public GameObject
 {
 public:
 	RockGroup(const std::string& index);
