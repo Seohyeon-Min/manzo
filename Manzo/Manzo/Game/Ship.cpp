@@ -540,6 +540,13 @@ void Pump::Draw(DrawLayer drawlayer)
     Engine::GetRender().AddDrawCall(draw_call2);
 }
 
+void Pump::Reset() {
+    radius = max_pump_radius;
+    alpha = 0.0f;
+    wait = false;
+}
+
+
 void Pump::SetUniforms(const GLShader* shader)
 {
     shader->SendUniform("uAlpha", alpha);

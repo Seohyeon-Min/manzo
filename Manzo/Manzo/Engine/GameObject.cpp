@@ -184,7 +184,7 @@ void GameObject::SetScale(vec2 new_scale)
 
 void GameObject::SetFlipX(bool flip) 
 {
-	if ((flip && scale.x > 0) || (!flip && scale.x < 0)) 
+	if ((flip && scale.x > 0) || (!flip && scale.x < 0))
 	{
 		scale.x = -scale.x;
 	}

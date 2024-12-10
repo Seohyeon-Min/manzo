@@ -17,10 +17,18 @@ Implementation::Implementation() {
 	));
 
 	AudioManager::ErrorCheck(mpStudioSystem->getCoreSystem(&mpSystem));
+	AudioManager::ErrorCheck(mpSystem->createChannelGroup("SFX", &mSFXGroup));
 
 	int driverCount = 0;
 	AudioManager::ErrorCheck(mpSystem->getNumDrivers(&driverCount));
 	std::cout << "Available audio drivers: " << driverCount << std::endl;
+
+
+	FMOD::ChannelGroup* masterGroup = nullptr;
+	AudioManager::ErrorCheck(mpSystem->getMasterChannelGroup(&masterGroup));
+
+
+	AudioManager::ErrorCheck(masterGroup->addGroup(mSFXGroup));
 }
 
 Implementation::~Implementation() {
@@ -62,7 +70,7 @@ void AudioManager::Update() {
 	sgpImplementation->Update();
 }
 
-void AudioManager::LoadSound(const std::string& strSoundName, bool b3d, bool bLooping, bool bStream)
+void AudioManager::LoadMusic(const std::string& strSoundName, bool b3d, bool bLooping, bool bStream)
 {
 	auto tFoundIt = sgpImplementation->mSounds.find(strSoundName);
 	if (tFoundIt != sgpImplementation->mSounds.end())
@@ -78,7 +86,7 @@ void AudioManager::LoadSound(const std::string& strSoundName, bool b3d, bool bLo
 	}
 }
 
-void AudioManager::UnLoadSound(const std::string& strSoundName)
+void AudioManager::UnLoadMusic(const std::string& strSoundName)
 {
 	auto tFoundIt = sgpImplementation->mSounds.find(strSoundName);
 	if (tFoundIt == sgpImplementation->mSounds.end())
@@ -134,13 +142,13 @@ int AudioManager::GetID(const std::string& soundName)
 	return -1; // Return -1 if the sound is not found
 }
 
-int AudioManager::PlaySounds(const std::string& strSoundName, const vec3& vPosition, float fVolumedB)
+int AudioManager::PlayMusics(const std::string& strSoundName, const vec3& vPosition, float fVolumedB)
 {
 	int nChannelId = sgpImplementation->mnNextChannelId++;
 	auto tFoundIt = sgpImplementation->mSounds.find(strSoundName);
 	if (tFoundIt == sgpImplementation->mSounds.end())
 	{
-		LoadSound(strSoundName);
+		//LoadMusic(strSoundName);
 		tFoundIt = sgpImplementation->mSounds.find(strSoundName);
 		if (tFoundIt == sgpImplementation->mSounds.end())
 		{
@@ -181,6 +189,41 @@ void AudioManager::StopAllChannels()
 	sgpImplementation->mChannels.clear();
 }
 
+void AudioManager::RestartPlayMusic(int nChannelId)
+{
+	// 주어진 채널 ID를 찾기
+	auto tFoundIt = sgpImplementation->mChannels.find(nChannelId);
+	if (tFoundIt == sgpImplementation->mChannels.end())
+	{
+		std::cerr << "Error: Channel not found!" << std::endl;
+		return;
+	}
+
+	// 해당 채널을 가져오기
+	FMOD::Channel* pChannel = tFoundIt->second;
+
+	// 현재 재생 위치를 0으로 설정 (처음부터 다시 시작)
+	ErrorCheck(pChannel->setPosition(0, FMOD_TIMEUNIT_MS));
+
+	// 채널이 일시 정지 상태라면 다시 재생
+	bool bIsPaused = false;
+	ErrorCheck(pChannel->getPaused(&bIsPaused));
+	if (bIsPaused)
+	{
+		ErrorCheck(pChannel->setPaused(false));
+	}
+}
+
+void AudioManager::StopPlayingMusic(int nChannelId)
+{
+	auto tFoundIt = sgpImplementation->mChannels.find(nChannelId);
+	if (tFoundIt != sgpImplementation->mChannels.end()) {
+		// 채널을 일시 정지합니다.
+		ErrorCheck(tFoundIt->second->setPaused(true));
+	}
+}
+
+
 void AudioManager::Set3dListenerAndOrientation(const vec3& vPosition, const vec3& vLook, const vec3& vUp) {
 	if (!sgpImplementation->mpSystem)
 		return;
@@ -202,6 +245,33 @@ void AudioManager::SetChannel3dPosition(int nChannelId, const vec3& vPosition)
 	ErrorCheck(tFoundIt->second->set3DAttributes(&position, NULL));
 }
 
+void AudioManager::SetMode(const std::string& strSoundName, bool spatial_on)
+{
+	FMOD::Channel* pChannel = nullptr;
+	auto tFoundIt = sgpImplementation->mSounds.find(strSoundName);
+	ErrorCheck(sgpImplementation->mpSystem->playSound(tFoundIt->second, nullptr, true, &pChannel));
+	if (pChannel)
+	{
+		FMOD_MODE currMode;
+		tFoundIt->second->getMode(&currMode);
+		if (spatial_on)
+		{
+			pChannel->setMode(FMOD_3D);
+		}
+		else
+		{
+			pChannel->setMode(FMOD_2D);
+		}
+	}
+}
+
+void AudioManager::Set3DMode(FMOD_MODE mode) {
+	for (auto& sound : sgpImplementation->mSounds) {
+		sound.second->setMode(mode);
+	}
+}
+
+
 void AudioManager::SetChannelVolume(int nChannelId, float fVolumedB)
 {
 	auto tFoundIt = sgpImplementation->mChannels.find(nChannelId);
@@ -211,7 +281,23 @@ void AudioManager::SetChannelVolume(int nChannelId, float fVolumedB)
 	ErrorCheck(tFoundIt->second->setVolume(dbToVolume(fVolumedB)));
 }
 
-bool AudioManager::IsPlaying(int nChannelId) const
+void AudioManager::SetMute(int nChannelId, bool mute)
+{
+	auto tFoundIt = sgpImplementation->mChannels.find(nChannelId);
+	if (tFoundIt != sgpImplementation->mChannels.end()) {
+		ErrorCheck(tFoundIt->second->setMute(mute));  // if true sound = 0
+		if (mute == true)
+		{
+			isMute = true;
+		}
+		else
+		{
+			isMute = false;
+		}
+	}
+}
+
+bool AudioManager::IsPlayingMusic(int nChannelId) const
 {
 	auto tFoundIt = sgpImplementation->mChannels.find(nChannelId);
 	if (tFoundIt != sgpImplementation->mChannels.end()) {

@@ -15,6 +15,7 @@ public:
     int GetBarCount() { return bar_count; }
     int GetDelayCount() { return delay_count; }
     double GetFixedDuration() { return fixed_duration; }
+    void CleartoOriginal();
 
 private:
     int BPM = 100;
@@ -31,6 +32,6 @@ private:
     bool is_on_beat = false;
     bool music_started = false;
     AudioManager* audio;
-    int channel_id;
+    int channel_id = 0;
     std::string music_name;
 };

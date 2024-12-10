@@ -32,8 +32,10 @@ public:
                 return ptr;
             }
         }
-        return nullptr;
-    }
-private:
-    std::list<GameObject*> objects;
-};
+
+        vec2 FindNearestRock(GameObject* object);
+
+    private:
+        std::list<GameObject*> objects;
+    };
+}

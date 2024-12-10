@@ -101,7 +101,13 @@ void Engine::ImGuiDraw()
         float camY = GetInput().GetMousePos().mouseCamSpaceY;
         float WorldX = GetInput().GetMousePos().mouseWorldSpaceX;
         float WorldY = GetInput().GetMousePos().mouseWorldSpaceY;
+        bool mute = GetAudioManager().GetMute();
 
+        if (ImGui::Checkbox("Mute BGM", &mute)) { 
+            GetAudioManager().SetMute(0,mute); 
+        }
+
+        ImGui::Separator();
         ImGui::LabelText("FPS", "%.1f", (FPS));
         ImGui::LabelText("Delta time", "%.4f seconds", static_cast<float>(dt));
         ImGui::LabelText("Mouse Positions", "Device(%4.0f,%4.0f)\nCamera(%4.0f,%4.0f)\nWorld (%4.0f,%4.0f)",
@@ -109,7 +115,7 @@ void Engine::ImGuiDraw()
             static_cast<double>(camX), static_cast<double>(camY),    // in Camera Space
             static_cast<double>(WorldX), static_cast<double>(WorldY) // in World Space
         );
-        
+        ImGui::Separator();
         if (!GetGameStateManager().IsNull())
         {
 
@@ -118,7 +124,7 @@ void Engine::ImGuiDraw()
             ImGui::SliderFloat("separate", &BackgroundFish::c, 0.0f, 5.0f, "%.4f");
             ImGui::SliderFloat("wanderForce", &BackgroundFish::d, 0.0f, 5.0f, "%.4f");
         }
-
+        ImGui::Separator();
         if (!GetGameStateManager().IsNull()
             && GetGameStateManager().GetGSComponent<Beat>() != nullptr) {
             ImGui::LabelText("Is on beat?", "%s", GetGameStateManager().GetGSComponent<Beat>()->GetIsOnBeat() ? "true" : "false");

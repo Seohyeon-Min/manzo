@@ -1,17 +1,31 @@
 
+#include "../Engine/GameObjectManager.h"
 #include "FishEcosystem.h"
 #include "AI.h"
-#include "../Engine/GameObjectManager.h"
 
 FishGenerator::FishGenerator()
 {
 	timer = new Timer(2.0);
 
-	for (int i = 0; i < 250; i++)
+	//leader fish
+	for (int i = 0; i < 6; i++)
 	{
 		BackgroundFish* bg_fish = new BackgroundFish();
 		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bg_fish);
-		bg_fish->AddBackgroundFishes(bg_fish);
+		//bg_fish->change_state(&bg_fish->state_leader);
+		bg_fish->current_state = &bg_fish->state_leader;
+		bg_fish->current_state->Enter(bg_fish);
+	}
+
+	//non leader fish
+	for (int i = 0; i < 240; i++)
+	{
+		BackgroundFish* bg_fish = new BackgroundFish();
+		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bg_fish);
+		//bg_fish->change_state(&bg_fish->state_nonleader);
+
+		bg_fish->current_state = &bg_fish->state_nonleader;
+		bg_fish->current_state->Enter(bg_fish);
 	}
 }
 
@@ -19,7 +33,7 @@ void FishGenerator::GenerateFish(double dt)
 {
 	timer->Update(dt);
 
-	if (timer->Remaining() == 0)
+	if (timer->Remaining() == 0 && fishList.size() < 15)
 	{
 		Fish* newFish = new Fish();
 		fishList.push_back(newFish);
@@ -30,21 +44,21 @@ void FishGenerator::GenerateFish(double dt)
 		//generate object fishes
 		if (newFish->type == Fish::FishType::Fish3)
 		{
-			for (int i = 0; i < 4; i++)
+			int shape_index = rand() % formations.size();
+			const auto& selectedFormation = formations[shape_index];
+
+			for (const auto& offset : selectedFormation.offsets)
 			{
 				Fish* additionalFish = new Fish(newFish);
 
-				int formation_index = i + 1;
-				vec2 offset;
-				switch (formation_index) {
-				case 1: offset = { -30, -30 }; break;
-				case 2: offset = { -30, 30 }; break;
-				case 3: offset = { -60, -60 }; break;
-				case 4: offset = { -60, 60 }; break;
-				default: offset = { 0, 0 }; break;
-				}
+				float randomX = rand() % (int)(selectedFormation.randomOffsetMaxX - selectedFormation.randomOffsetMinX)
+					+ selectedFormation.randomOffsetMinX;
+				float randomY = rand() % (int)(selectedFormation.randomOffsetMaxY - selectedFormation.randomOffsetMinY)
+					+ selectedFormation.randomOffsetMinY;
 
-				additionalFish->SetPosition(newFish->GetPosition() + offset);
+				vec2 randomOffset = { randomX, randomY };
+
+				additionalFish->SetPosition(newFish->GetPosition() + offset + randomOffset);
 				additionalFish->SetVelocity(newFish->GetVelocity());
 
 				fishList.push_back(additionalFish);
@@ -53,12 +67,16 @@ void FishGenerator::GenerateFish(double dt)
 		}
 	}
 
-	//generate background fish
+	quadtree.clear();
+	for (auto& fish : backgroundFishList) {
+		quadtree.insert(fish);
+	}
 }
 
 FishGenerator::~FishGenerator()
 {
-    delete timer;
-    timer = nullptr;
-    fishList.clear();
+	delete timer;
+	timer = nullptr;
+	fishList.clear();
+	backgroundFishList.clear();
 }

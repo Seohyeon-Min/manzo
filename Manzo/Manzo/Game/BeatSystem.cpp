@@ -25,11 +25,10 @@ void Beat::Update(double dt)
     //audio->GetCurrentMusicTime();
     if (!music_started && !music_name.empty()) {
         // 비트 시스템이 준비되었을 때 음악 재생 시작
-        channel_id = audio->PlaySounds(music_name); // 무한 루프 재생
         music_started = true;       // 음악 재생 상태 갱신
     }
 
-    double current_music_time = audio->GetCurrentMusicTime(channel_id);
+    double current_music_time = Engine::GetAudioManager().GetCurrentMusicTime(channel_id);
 
     if (current_music_time > 0.0) { 
         time_taken = current_music_time + sync; 
@@ -83,6 +82,23 @@ void Beat::SetBPM(int set_BPM)
     bar_count = 0;
     beat_count = 0;
     delay_count = 0;
+    beat = false;
+    is_on_beat = false;
+    music_started = false;
+    music_name.clear();
+}
+
+void Beat::CleartoOriginal() {
+    fixed_duration = 60.0 / BPM;
+    duration = fixed_duration;
+    delay_duration = fixed_duration / 4;
+    current_delay_duration = delay_duration;
+
+    time_taken = 0;
+    bar_count = 0;
+    beat_count = 0;
+    delay_count = 0;
+
     beat = false;
     is_on_beat = false;
     music_started = false;
