@@ -19,9 +19,6 @@ void GameObjectManager::Add(GameObject* object)
 
 void GameObjectManager::Unload()
 {
-	for (auto object : objects) {
-		delete object;
-	}
 	objects.clear();
 }
 
@@ -81,7 +78,7 @@ vec2 GameObjectManager::FindNearestRock(GameObject* object) {
 	vec2 object_Position = object->GetPosition();
 
 	for (GameObject* gameObj : gameObjectManager->objects) {
-		if (gameObj->Type() == GameObjectTypes::Reef) {
+		if (gameObj->Type() == GameObjectTypes::Rock) {
 			Rock* rock = static_cast<Rock*>(gameObj);
 			std::vector<vec2> rockPoints = rock->GetRockGroup()->GetPoints();
 

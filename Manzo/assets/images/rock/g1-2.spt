@@ -1,4 +1,4 @@
-assets/images/rock/g2-2.png
-HotSpot 81 144
+assets/images/rock/g1.png
+HotSpot 367 203
 Anim assets/images/None.anm
-RectCollision -125 -175 125 175
+RectCollision -367 -203 367 203

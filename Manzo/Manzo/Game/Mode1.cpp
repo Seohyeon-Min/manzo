@@ -58,7 +58,6 @@ void Mode1::Load() {
     AddGSComponent(beat_system);
 	beat_system->LoadMusicToSync("assets/audios/bgm_original.wav");///////////////////////
 
-    AddGSComponent(new Map());
     god_ray = new GodRay();
     AddGSComponent(god_ray);
     //AddGSComponent(new Pump());
@@ -78,7 +77,7 @@ void Mode1::Load() {
     GetGSComponent<GameObjectManager>()->Add(ship_ptr);
 
     //// camera
-    Math::rect Boundary({ -640,-360 }, { 640,360 });
+    Math::rect Boundary({ -BoundaryX, -BoundaryY }, { BoundaryX, BoundaryY });
     camera = new Cam();
     AddGSComponent(camera);
     camera->SetLimit(Boundary);
@@ -90,18 +89,16 @@ void Mode1::Load() {
 	//// background
 	background = new Background();
 	AddGSComponent(background);
-
+    
 	//// to generate fish
 	fishGenerator = new FishGenerator();
 	Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
 
 	//background
-	background->Add("assets/images/background/temp_background.png", 0.0f);
-	background->Add("assets/images/background/bg1.png", 0.3f);
-	background->Add("assets/images/background/bg2.png", 0.4f);
-	background->Add("assets/images/background/bg3.png", 0.5f);
-	background->Add("assets/images/background/bg4.png", 0.6f);
-	background->Add("assets/images/background/bg5.png", 0.7f);
+	background->Add("assets/images/background/temp_background3.png", 0.0f);
+    background->Add("assets/images/background/bg1.png", 0.3f);
+    background->Add("assets/images/background/bg2.png", 0.4f);
+    background->Add("assets/images/background/bg3.png", 0.5f);
 
     // UI
     AddGSComponent(new UIManager());
@@ -110,7 +107,8 @@ void Mode1::Load() {
     ui_manager->AddUI(std::make_unique<Mouse>());
 
     // Map
-    GetGSComponent<Map>()->ParseSVG("assets/maps/test2.svg");
+	AddGSComponent(new Map());
+    GetGSComponent<Map>()->ParseSVG("assets/maps/mapLittle.svg");
 
 	Engine::GetAudioManager().LoadMusic("assets/audios/bgm_original.wav",false);
 	Engine::GetAudioManager().LoadMusic("assets/audios/e.wav", true);
@@ -119,6 +117,7 @@ void Mode1::Load() {
 	//Boss
 	Boss::LoadBossfile();
 	//for (int i = 0; i < 25; i++)
+    //for (int i = 0; i < 25; i++)
     //{
     //    GetGSComponent<Boss>()->ReadBossJSON(static_cast<Boss::BossType>(i));
     //    BossFirstPos.push_back(GetGSComponent<Boss>()->GetFirstPosition());
@@ -235,7 +234,7 @@ void Mode1::FixedUpdate(double dt)
 
 void Mode1::Draw() {
     GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
-    GetGSComponent<Map>()->AddDrawCall();
+    //GetGSComponent<Map>()->AddDrawCall();
     god_ray->Draw();
     GetGSComponent<GameObjectManager>()->DrawAll();
     ui_manager->AddDrawCalls();
