@@ -69,8 +69,8 @@ void GameObjectManager::CollisionTest() {
 }
 
 
-vec2 CS230::GameObjectManager::FindNearestRock(GameObject* object) {
-	CS230::GameObjectManager* gameObjectManager = Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>();
+vec2 GameObjectManager::FindNearestRock(GameObject* object) {
+	GameObjectManager* gameObjectManager = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>();
 	if (gameObjectManager == nullptr) {
 		Engine::GetLogger().LogError("GameObjectManager not found");
 		return { 0,0 };
@@ -80,7 +80,7 @@ vec2 CS230::GameObjectManager::FindNearestRock(GameObject* object) {
 	float nearestDistance = std::numeric_limits<float>::max();
 	vec2 object_Position = object->GetPosition();
 
-	for (CS230::GameObject* gameObj : gameObjectManager->objects) {
+	for (GameObject* gameObj : gameObjectManager->objects) {
 		if (gameObj->Type() == GameObjectTypes::Reef) {
 			Rock* rock = static_cast<Rock*>(gameObj);
 			std::vector<vec2> rockPoints = rock->GetRockGroup()->GetPoints();

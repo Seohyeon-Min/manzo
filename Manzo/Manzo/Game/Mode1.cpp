@@ -85,13 +85,7 @@ void Mode1::Load() {
 
 	//// ship
 	ship_ptr = new Ship({ 0, 0 });
-	GetGSComponent<CS230::GameObjectManager>()->Add(ship_ptr);
-
-	//// camera
-	Math::rect Boundary({ -640,-360 }, { 640,360 });
-	camera = new CS230::Cam();
-	AddGSComponent(camera);
-	camera->SetLimit(Boundary);
+	GetGSComponent<GameObjectManager>()->Add(ship_ptr);
 
 	//// background
 	background = new Background();
@@ -101,6 +95,7 @@ void Mode1::Load() {
 	fishGenerator = new FishGenerator();
 	Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
 
+	//background
 	background->Add("assets/images/background/temp_background.png", 0.0f);
 	background->Add("assets/images/background/bg1.png", 0.3f);
 	background->Add("assets/images/background/bg2.png", 0.4f);
@@ -253,15 +248,15 @@ void Mode1::Draw() {
 void Mode1::Unload() {
 
 	ship_ptr = nullptr;
-	playing = false;
-	ui_manager->UnloadUI();
-	fishGenerator = nullptr;
 	fishGenerator->~FishGenerator();
 	delete fishGenerator;
+	playing = false;
+	fishGenerator = nullptr;
 	GetGSComponent<GameObjectManager>()->Unload();
 	GetGSComponent<Background>()->Unload();
-	ClearGSComponents();
 	Engine::GetRender().ClearDrawCalls();
+	ui_manager->UnloadUI();
+	ClearGSComponents();
 	Engine::GetAudioManager().StopAllChannels();
 	Engine::Instance().ResetSlowDownFactor();
 }

@@ -24,6 +24,8 @@ public:
     void FixedUpdateAll(double dt);
     void DrawAll();
     void CollisionTest();
+    vec2 FindNearestRock(GameObject* object);
+
     template<typename T>
     T* GetGOComponent() {
         for (GameObject* object : objects) {
@@ -32,10 +34,9 @@ public:
                 return ptr;
             }
         }
+        return nullptr;
+    }
 
-        vec2 FindNearestRock(GameObject* object);
-
-    private:
-        std::list<GameObject*> objects;
-    };
-}
+private:
+    std::list<GameObject*> objects;
+};

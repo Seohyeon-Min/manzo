@@ -40,7 +40,7 @@ void Boss::Chasingplayer_fun(int targetEntryNum, Boss* boss) {
 		const auto& entryVec = boss->parttern[targetEntryNum - 1];
 		for (const auto& entryData : entryVec) {
 			if (entryData.delay + 1 == boss->beat->GetDelayCount()) {
-				Ship* ship = Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->GetGOComponent<Ship>();
+				Ship* ship = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>();
 				if (ship == nullptr) {
 					Engine::GetLogger().LogError("Ship component not found");
 					return;
@@ -109,8 +109,8 @@ void Boss::State_CutScene::CheckExit(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
 
 	if (Engine::GetInput().KeyDown(Input::Keys::R)&& boss->beat->GetBeat()) {
-		Engine::GetAudioManager().LoadSound(boss->mp3_file_name, "E_Music");
-		Engine::GetAudioManager().PlaySounds(boss->mp3_file_name, vec3{ 0, 0, 0 }, Engine::GetAudioManager().VolumeTodB(1.0f));
+		Engine::GetAudioManager().LoadMusic(boss->mp3_file_name, "E_Music");
+		Engine::GetAudioManager().PlayMusics(boss->mp3_file_name, vec3{ 0, 0, 0 }, Engine::GetAudioManager().VolumeTodB(1.0f));
 
 		boss->beat->SetBPM(boss->bpm);
 		std::cout <<"boss bpm:" << boss->bpm << std::endl;
@@ -230,7 +230,7 @@ void Boss::Move(double dt) {
 	vec2 lerped_position = Lerp(GetPosition(), current_position, lerp_factor);
 
 	SetVelocity((lerped_position - GetPosition()) / (float)dt);  
-	CS230::GameObjectManager* gameobjectmanager = Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>();
+	GameObjectManager* gameobjectmanager = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>();
 	GameObject::Update(dt);
 	vec2 nearestRockpoint = gameobjectmanager->FindNearestRock(boss);
 
@@ -272,7 +272,18 @@ void Boss::RunMusic()
 
 void Boss::Draw(DrawLayer drawlayer)
 {
-	GameObject::Draw();
+	DrawSettings settings;
+	settings.do_blending = true;
+
+	DrawCall draw_call = {
+		GetGOComponent<Sprite>()->GetTexture(),// Texture to draw
+		&GetMatrix(),                          // Transformation matrix
+		Engine::GetShaderManager().GetDefaultShader(),
+		nullptr,
+		settings
+	};
+
+	GameObject::Draw(draw_call);
 }
 
 bool Boss::CanCollideWith(GameObjectTypes other_object) {

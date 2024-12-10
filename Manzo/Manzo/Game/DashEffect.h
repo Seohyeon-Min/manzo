@@ -66,8 +66,6 @@ private:
 
 class CaptureEffect : public GameObject {
 public:
-    CaptureEffect() :
-        GameObject({}) {};
     CaptureEffect(vec2 pos) :
         GameObject(pos) {
         SetScale({ 0.6f,0.6f });
@@ -100,5 +98,6 @@ public:
         GameObject::Draw(draw_call);
     }
 private:
-
+    CaptureEffect() :
+        GameObject({}) {};
 };

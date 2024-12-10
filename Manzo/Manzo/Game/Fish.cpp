@@ -1,10 +1,14 @@
 #include "Fish.h"
+#include "DashEffect.h"
+
+#include "../Engine/GameObjectManager.h"
+#include "../Engine/AABB.h"
+#include "../Engine/Camera.h"
+
 #include <random>
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include "../Engine/GameObjectManager.h"
-#include "../Engine/AABB.h"
 #include <queue>
 #include <cmath>
 #include <algorithm>
@@ -12,7 +16,6 @@
 #ifndef PIover3
 #define PIover3  (3.1415926535987932f / 3.0f)
 #endif
-#include "../Engine/Camera.h"
 #ifndef PIover6
 #define PIover6  (3.1415926535987932f / 6.0f)
 #endif
@@ -21,7 +24,7 @@ std::mt19937 dre;
 std::vector<Fish::FishDex> Fish::fishBook;
 int Fish::money = 0;
 
-Fish::Fish(Fish* parent) : CS230::GameObject({ 0, 0 }) {
+Fish::Fish(Fish* parent) : GameObject({ 0, 0 }) {
     std::uniform_int_distribution<int> fishIndex(0, static_cast<int>(fishBook.size() - 1));
     int index = fishIndex(dre);
 
@@ -48,7 +51,7 @@ Fish::Fish(Fish* parent) : CS230::GameObject({ 0, 0 }) {
         parentFish = parent;
     }
 
-    AddGOComponent(new CS230::Sprite(fishBook[index].filePath, this));
+    AddGOComponent(new Sprite(fishBook[index].filePath, this));
 }
 
 bool Fish::CanCollideWith(GameObjectTypes other_object) {
@@ -66,13 +69,14 @@ void Fish::ResolveCollision(GameObject* other_object) {
     case GameObjectTypes::Ship:
     case GameObjectTypes::Net:
         this->Destroy();
+        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new CaptureEffect(GetPosition()));
         money++;
         break;
 
     case GameObjectTypes::ReefBoundary:
         vec2 avoidanceVelocity = AvoidRock(GetPosition(),
-            { Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->FindNearestRock(this).x - 20,
-              Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->FindNearestRock(this).y - 20 });
+            { Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRock(this).x - 20,
+              Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRock(this).y - 20 });
         SetVelocity(GetVelocity() + avoidanceVelocity);
         IsAvoided = true;
         break;
@@ -96,8 +100,8 @@ void Fish::Update(double dt) {
     }
 
     vec2 currentPosition = GetPosition();
-    vec2 nearestRock = { (GetVelocity().x <= 0 ? Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->FindNearestRock(this).x + 20 : Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->FindNearestRock(this).x - 20),
-                          Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->FindNearestRock(this).y - 20 };
+    vec2 nearestRock = { (GetVelocity().x <= 0 ? Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRock(this).x + 20 : Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRock(this).x - 20),
+                          Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRock(this).y - 20 };
 
     float safeDistance = 155.0f;  // safety distance
 
@@ -167,7 +171,7 @@ vec2 Fish::AvoidRock(vec2 thisPos, vec2 rockPos) {
 
 
 void Fish::Draw() {
-    CS230::GameObject::Draw();
+    GameObject::Draw();
 }
 void Fish::ReadFishCSV(const std::string& filename) {
     std::ifstream file(filename);
