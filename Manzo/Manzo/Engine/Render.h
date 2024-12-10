@@ -22,7 +22,8 @@ enum class DrawLayer {
     DrawFirst,
     Draw,
     DrawLast,
-    DrawUI
+    DrawUI,
+    DrawDialog
 };
 
 
@@ -102,6 +103,7 @@ private:
     std::vector<DrawCall> draw_calls;
     std::vector<DrawCall> draw_late_calls;
     std::vector<DrawCall> draw_ui_calls;
+    std::vector<DrawCall> draw_dialog_calls;
     std::vector<LineDrawCallPro> draw_line_calls;
     std::vector<LineDrawCall> draw_collision_calls;
     std::vector<CircleDrawCall> draw_circle_calls;

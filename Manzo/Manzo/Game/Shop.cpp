@@ -14,7 +14,7 @@ Shop::Shop()
 	inven_background = Engine::GetTextureManager().Load("assets/images/temp_box1.png");
 	base_icon_direction = { static_cast < float>(-shop_background->GetWidth()), static_cast<float>(Engine::window_height - (inven_background->GetHeight() * 0.9)) };
 	defualt_icon_direction = { static_cast<float>(-shop_background->GetWidth()), static_cast<float>(Engine::window_height - (inven_background->GetHeight() * 0.9)) }; // 아이콘 기본값
-	inven_back_pos = { 200, static_cast<float>(Engine::window_height - (inven_background->GetHeight() * 1.3)) };
+	inven_back_pos = { 300, static_cast<float>(Engine::window_height - (inven_background->GetHeight() * 1.3)) };
 	botton_pos = { static_cast<float>(-shop_background->GetWidth() + shop_button->GetWidth()), static_cast<float>(Engine::window_height - (inven_background->GetHeight() * 0.9)) };
 	back_matrix_defualt = { static_cast<float>(100 - shop_background->GetWidth()), static_cast<float>(Engine::window_height - (inven_background->GetHeight() * 1.3)) };
 	for (int i = 1; i < 4; i++)
@@ -100,7 +100,7 @@ void Shop::Shop_Back_draw()
 		settings
 	};
 
-	Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawUI);
+	Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawFirst);
 }
 
 void Shop::Shop_icon_draw()
@@ -205,9 +205,9 @@ void Shop::Shop_icon_draw()
 		};
 	}
 
-	Engine::GetRender().AddDrawCall(icon_draw_calls[0], DrawLayer::DrawUI);
-	Engine::GetRender().AddDrawCall(icon_draw_calls[1], DrawLayer::DrawUI);
-	Engine::GetRender().AddDrawCall(icon_draw_calls[2], DrawLayer::DrawUI);
+	Engine::GetRender().AddDrawCall(icon_draw_calls[0], DrawLayer::DrawFirst);
+	Engine::GetRender().AddDrawCall(icon_draw_calls[1], DrawLayer::DrawFirst);
+	Engine::GetRender().AddDrawCall(icon_draw_calls[2], DrawLayer::DrawFirst);
 }
 
 
@@ -263,7 +263,7 @@ void Shop::Shop_button_draw()
 		settings
 	};
 
-	Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawUI);
+	Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawFirst);
 }
 
 void Shop::Inventory_Back_draw()
@@ -283,7 +283,7 @@ void Shop::Inventory_Back_draw()
 		settings
 	};
 
-	Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawUI);
+	Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawFirst);
 }
 
 void Shop::Inventory_Icon_draw()
@@ -392,7 +392,7 @@ void Shop::Inventory_Icon_draw()
 					nullptr,
 					settings
 				};
-				Engine::GetRender().AddDrawCall(icon_draw_calls[i], DrawLayer::DrawUI);
+				Engine::GetRender().AddDrawCall(icon_draw_calls[i], DrawLayer::DrawFirst);
 			}
 		}
 	}

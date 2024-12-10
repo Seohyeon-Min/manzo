@@ -22,8 +22,17 @@ public:
 
 private:
     GLTexture* DialogBox = nullptr;
+    GLTexture* Box_effect = nullptr;
+    GLTexture* Me = nullptr;
+    GLTexture* Sellerkeeper_1 = nullptr;
+    GLTexture* Perry = nullptr;
+
     vec2 boxposition;
     mat3 back_matrix;
+    mat3 effect_matrix;
+    mat3 me_matrix;
+    mat3 seller_martix;
+    mat3 perry_martix;
 
     DrawCall draw_call;
 

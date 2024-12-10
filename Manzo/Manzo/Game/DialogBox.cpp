@@ -7,6 +7,32 @@ Dialog::Dialog()
 {
 	 dialog = new JsonParser_dialog("en");
 	 DialogBox = Engine::GetTextureManager().Load("assets/images/temp_dial.png");
+	 Box_effect = Engine::GetTextureManager().Load("assets/images/box_effect.png");
+	 Me = Engine::GetTextureManager().Load("assets/images/Me.png");
+	 Sellerkeeper_1 = Engine::GetTextureManager().Load("assets/images/shopkeeper.png");
+	 Perry = Engine::GetTextureManager().Load("assets/images/perry.png");
+
+
+	 back_matrix = mat3::build_translation({ 0, -(Engine::window_height) / 3 })
+		 * mat3::build_scale(1.f)
+		 * mat3::build_rotation(3.141592f / 1.0f);
+
+	 effect_matrix = mat3::build_translation({ 0, (-(Engine::window_height) / 2) + 50 })
+		 * mat3::build_scale(1.f)
+		 * mat3::build_rotation(0.0f);
+
+	 me_matrix = mat3::build_translation({ ((Engine::window_width) / 3)+60, (-(Engine::window_height) / 3) + 50 })
+		 * mat3::build_scale(0.2f)
+		 * mat3::build_rotation(0.0f);
+
+	 seller_martix = mat3::build_translation({ -((Engine::window_width) / 3) - 60, (-(Engine::window_height) / 3) + 50 })
+		 * mat3::build_scale(0.2f)
+		 * mat3::build_rotation(0.0f);
+
+	 perry_martix = mat3::build_translation({ -((Engine::window_width) / 3) - 60, (-(Engine::window_height) / 3) + 50 })
+		 * mat3::build_scale(0.2f)
+		 * mat3::build_rotation(0.0f);
+
 	 boxposition = {50,100};
 }
 
@@ -48,11 +74,9 @@ void Dialog::Draw() {
 	settings.is_UI = true;
 	settings.do_blending = true;
 
-	back_matrix = mat3::build_translation({ 0, -(Engine::window_height)/3}) 
-		* mat3::build_scale(1.f)
-		* mat3::build_rotation(3.141592f / 1.0f);
 
-	draw_call =
+
+	DrawCall draw_call_box =
 	{
 		DialogBox,
 		&back_matrix,
@@ -60,10 +84,47 @@ void Dialog::Draw() {
 		nullptr,
 		settings
 	};
-	Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawUI);
+	DrawCall draw_call_effect =
+	{
+		Box_effect,
+		& effect_matrix,
+		Engine::GetShaderManager().GetDefaultShader(),
+		nullptr,
+		settings
+	};
+
+	DrawCall draw_call_Me =
+	{
+		Me,
+		& me_matrix,
+		Engine::GetShaderManager().GetDefaultShader(),
+		nullptr,
+		settings
+	};
+	DrawCall draw_call_Sellerkeeper =
+	{
+		Sellerkeeper_1,
+		& seller_martix,
+		Engine::GetShaderManager().GetDefaultShader(),
+		nullptr,
+		settings
+	};
+	DrawCall draw_call_Perry =
+	{
+		Perry,
+		& perry_martix,
+		Engine::GetShaderManager().GetDefaultShader(),
+		nullptr,
+		settings
+	};
+	
 
 	if (displayedText != "") {
-		Engine::GetFontManager().PrintText(FontType::Thin, displayedText.c_str(), {-0.5f,-0.62f}, 0.0f, 0.00013f, {1.0f,1.0f,1.0f});
+		Engine::GetRender().AddDrawCall(draw_call_Me, DrawLayer::DrawDialog);
+		Engine::GetRender().AddDrawCall(draw_call_Perry, DrawLayer::DrawDialog);
+		Engine::GetRender().AddDrawCall(draw_call_effect, DrawLayer::DrawDialog);
+		Engine::GetRender().AddDrawCall(draw_call_box, DrawLayer::DrawDialog);
+		Engine::GetFontManager().PrintText(FontType::Thin, displayedText.c_str(), {-0.5f,-0.62f}, 0.0f, 0.00012f, {1.0f,1.0f,1.0f});
 		Engine::GetFontManager().PrintText(FontType::Bold, character.c_str(), { -0.5f,-0.52f }, 0.0f, 0.0001f, { 1.0f,1.0f,1.0f });		
 	}
 }

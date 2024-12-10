@@ -41,6 +41,10 @@ void Render::AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase) {
     {
         draw_ui_calls.push_back(drawCall);
     }
+    else if (phase == DrawLayer::DrawDialog)
+    {
+        draw_ui_calls.push_back(drawCall);
+    }
     else {
         draw_calls.push_back(drawCall); // Add to normal phase
     }
@@ -65,11 +69,13 @@ void Render::AddDrawCall (const CircleDrawCall& drawcall, const DrawLayer& phase
 // Render all stored draw calls, starting with early phase, normal phase, and then late phase
 // Also handles rendering of lines and collision shapes
 void Render::RenderAll() {
-    postProcessFramebuffer.Bind();
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
+        postProcessFramebuffer.Bind();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
 
     for (const auto& draw_call : draw_background_calls) {
-        DrawBackground(draw_call);
+        Draw(draw_call);
     }
     // Draw calls in the early phase
     for (const auto& draw_call : draw_first_calls) {
@@ -94,6 +100,9 @@ void Render::RenderAll() {
     for (const auto& draw_call : draw_ui_calls) {
         Draw(draw_call);
     }
+    for (const auto& draw_call : draw_dialog_calls) {
+        Draw(draw_call);
+    }
 
     // Draw lines
     float line_width = 2.0f;
@@ -109,8 +118,11 @@ void Render::RenderAll() {
         }
     }
 
-    postProcessFramebuffer.Unbind();
-    ApplyPostProcessing();
+    if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
+        postProcessFramebuffer.Unbind();
+        ApplyPostProcessing();
+    }
+
     // Clear draw call vectors for the next frame
     ClearDrawCalls();
 }

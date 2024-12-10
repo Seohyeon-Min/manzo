@@ -1,6 +1,6 @@
 {
     "dialogs":{
-        "1":{"character":"Me", "text":"Ready to go on."},
+        "1":{"character":"Me", "text":"I don't have any candy, alright? Just go home."},
         "2":{"character":"Man", "text":"This is fun."}
     }
 }
