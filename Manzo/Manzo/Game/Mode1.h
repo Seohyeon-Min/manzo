@@ -53,8 +53,8 @@ private:
     GodRay* god_ray;
     Skillsys* skill_ptr;
     Skillsys::Skill_Net* Net_ptr;
-    float BoundaryX = 6400;
-    float BoundaryY = 3600;
+    float BoundaryX = 1860;
+    float BoundaryY = 1040;
 
     bool Isboss = false;
     std::vector< std::array<int, 2>> BossFirstPos;
