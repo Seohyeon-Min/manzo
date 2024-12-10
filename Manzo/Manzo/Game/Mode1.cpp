@@ -29,6 +29,7 @@ Created:    March 8, 2023
 #include "Boss.h"
 
 
+#include <utility>
 #include <iostream>
 
 Mode1::Mode1()
@@ -108,10 +109,14 @@ void Mode1::Load() {
 		BossFirstPos.push_back(GetGSComponent<Boss>()->GetFirstPosition());
 	}*/
 
-	boss_ptr = new Boss({ 750,500 }, Boss::BossType::e);
-	boss_ptr->ReadBossJSON(Boss::BossType::e);
+	////�ӽ�fish
+   Fish* fish = new Fish();
+	GetGSComponent<CS230::GameObjectManager>()->Add(fish);
+	
+	boss_ptr = new Boss({ 750,500 }, Boss::BossName::e, Boss::BossType::MovingToLocation);
+	boss_ptr->ReadBossJSON(Boss::BossName::e);
 	BossFirstPos.push_back(std::make_pair(boss_ptr->GetFirstPosition()[0], boss_ptr->GetFirstPosition()[1]));
-
+	
 	bossPosition = { static_cast<float>(BossFirstPos[0].first), static_cast<float>(BossFirstPos[0].second), 0.0f };
 
 	//Particle
@@ -149,7 +154,7 @@ void Mode1::Update(double dt) {
 	camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
 
 	// Update Fish Generator
-	fishGenerator->GenerateFish(dt);
+	//fishGenerator->GenerateFish(dt);
 
 	// Update Skills
 	skill_ptr->Update();

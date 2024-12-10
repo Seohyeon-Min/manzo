@@ -184,3 +184,4 @@ void CS230::GameObject::UpdateRotation(double delta)
 	rotation += delta;
 	matrix_outdated = true;
 }
+

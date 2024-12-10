@@ -39,7 +39,7 @@ struct [[nodiscard]] Polygon
 
 
 struct [[nodiscard]] EntryData {
-	float Isnotelong;
+	float attacktype;
 	vec2 position;
 	float delay;
 
