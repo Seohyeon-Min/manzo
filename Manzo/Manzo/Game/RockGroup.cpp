@@ -62,16 +62,36 @@ bool RockGroup::MatchIndex()
 
 vec2 RockGroup::FindCenterRect() {  // Calculate texture's position.
     vec2 center = { 0, 0 };
-    vec2 minPoint = rocks[0]->GetPolygon().vertices[0];
-    vec2 maxPoint = rocks[0]->GetPolygon().vertices[0];
+    vec2 minPoint;
+    vec2 maxPoint;
+    if (!rocks.empty()) {
 
-    for (auto& rock : rocks) {
-        Polygon poly = rock->GetPolygon();
-        minPoint.x = std::min(minPoint.x, poly.FindBoundary().Left());
-        minPoint.y = std::min(minPoint.y, poly.FindBoundary().Bottom());
-        maxPoint.x = std::max(maxPoint.x, poly.FindBoundary().Right());
-        maxPoint.y = std::max(maxPoint.y, poly.FindBoundary().Top());
+        minPoint = rocks[0]->GetPolygon().vertices[0];
+        maxPoint = rocks[0]->GetPolygon().vertices[0];
+
+        for (auto& rock : rocks) {
+            Polygon poly = rock->GetPolygon();
+            minPoint.x = std::min(minPoint.x, poly.FindBoundary().Left());
+            minPoint.y = std::min(minPoint.y, poly.FindBoundary().Bottom());
+            maxPoint.x = std::max(maxPoint.x, poly.FindBoundary().Right());
+            maxPoint.y = std::max(maxPoint.y, poly.FindBoundary().Top());
+        }
     }
+    else if (!moving_rocks.empty()) {
+
+        minPoint = moving_rocks[0]->GetPolygon().vertices[0];
+        maxPoint = moving_rocks[0]->GetPolygon().vertices[0];
+
+        for (MovingRock* rock : moving_rocks) {
+            Polygon poly = rock->GetPolygon();
+            minPoint.x = std::min(minPoint.x, poly.FindBoundary().Left());
+            minPoint.y = std::min(minPoint.y, poly.FindBoundary().Bottom());
+            maxPoint.x = std::max(maxPoint.x, poly.FindBoundary().Right());
+            maxPoint.y = std::max(maxPoint.y, poly.FindBoundary().Top());
+        }
+    }
+
+    
     center.x = (minPoint.x + maxPoint.x) / 2;
     center.y = (minPoint.y + maxPoint.y) / 2;
     this->start_position = center;
@@ -82,23 +102,49 @@ vec2 RockGroup::FindCenterPoly() {  // Calculate Polygon's position
     vec2 center = { 0, 0 };
     vec2 poly_center = { 0, 0 };
 
-    for (auto& rock : rocks) {
-        Polygon poly = rock->GetPolygon();
-        poly_center = poly.FindCenter();
+    if (!rocks.empty()) {
+        for (auto& rock : rocks) {
+            Polygon poly = rock->GetPolygon();
+            poly_center = poly.FindCenter();
 
-        center.x += poly_center.x;
-        center.y += poly_center.y;
+            center.x += poly_center.x;
+            center.y += poly_center.y;
+        }
+
+        center.x /= rocks.size();
+        center.y /= rocks.size();
     }
-    center.x /= rocks.size();
-    center.y /= rocks.size();
+    else if (!moving_rocks.empty()) {
+        for (MovingRock* rock : moving_rocks) {
+            Polygon poly = rock->GetPolygon();
+            poly_center = poly.FindCenter();
 
+            center.x += poly_center.x;
+            center.y += poly_center.y;
+        }
+
+        center.x /= moving_rocks.size();
+        center.y /= moving_rocks.size();
+    }
+
+    
     return center;
 }
 void RockGroup::SetPoints() {
-    for (auto& rock : rocks) {
-        Polygon poly = rock->GetPolygon();
-        for (int i = 0; i < poly.vertexCount; i++) {
-            points.push_back(poly.vertices[i]);
+    if (!rocks.empty()) {
+        for (auto& rock : rocks) {
+            Polygon poly = rock->GetPolygon();
+            for (int i = 0; i < poly.vertexCount; i++) {
+                points.push_back(poly.vertices[i]);
+            }
+        }
+    }
+    else if (!moving_rocks.empty()) {
+        for (MovingRock* rock : moving_rocks) {
+            Polygon poly = rock->GetPolygon();
+            for (int i = 0; i < poly.vertexCount; i++) {
+                points.push_back(poly.vertices[i]);
+            }
         }
     }
 }
@@ -122,9 +168,8 @@ void RockGroup::ResolveCollision(GameObject* other_object)
             // maybe an error?
         }
         if (this->can_collide) {
-            for (auto& rock : this->GetRocks()) {
+            for (MovingRock* rock : this->GetMovingRocks()) {
                 rock->Hit(true);    // rock changes state to State_Pop
-                
             }
         }
         this->can_collide = false;

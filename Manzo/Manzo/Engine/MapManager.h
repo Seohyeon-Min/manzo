@@ -30,6 +30,8 @@ namespace CS230 {
 		}
 		void ParseSVG(const std::string& filename);
 		std::vector<vec2> parsePathData(const std::string& pathData);	// path parsing
+		void MakeRockGroups(Rock* rock, Polygon poly);
+		void MakeMovingRockGroups(MovingRock* moving_rock, Polygon poly);
 		void AddDrawCall();
 
 		std::vector<Rock> GetRock()

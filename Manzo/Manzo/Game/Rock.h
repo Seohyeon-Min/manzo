@@ -30,17 +30,10 @@ public:
 	GameObjectTypes Type() override { return GameObjectTypes::Rock; }
 	std::string TypeName() override { return "Rock"; }
 	void Update(double dt);
-	void Draw();/*
-	bool CanCollideWith(GameObjectTypes) override;
-	void ResolveCollision(GameObject* other_object);*/
+	void Draw();
 
 	//position & moving
 	void SetCenter();
-	vec2 Normalize(const vec2& vec);
-	void Hit(bool hit) { this->hit = hit; }
-	bool IsRange(const vec2& current_position);
-	void Pop(const vec2& direction, float speed);
-	void PopBack(const vec2& direction, float speed);
 
 	//polygon
 	const Polygon& GetPolygon() { return poly; }
@@ -48,6 +41,26 @@ public:
 	//group
 	void SetRockGroup(RockGroup* rockgroup) { this->rockgroup = rockgroup; }
 	RockGroup* GetRockGroup() { return rockgroup; }
+private:
+	RockGroup* rockgroup;
+	Polygon poly;
+};
+
+class MovingRock : public Rock {
+public:
+	MovingRock(Polygon poly);
+	~MovingRock() {};
+	GameObjectTypes Type() override { return GameObjectTypes::MovingRock; }
+	std::string TypeName() override { return "Rock"; }
+	
+	//position & moving
+	vec2 Normalize(const vec2& vec);
+	void Hit(bool hit) { this->hit = hit; }
+	bool IsRange(const vec2& current_position);
+	void Pop(const vec2& direction, float speed);
+	void PopBack(const vec2& direction, float speed);
+
+
 private:
 	bool hit = false;
 	float pop_speed = 300;

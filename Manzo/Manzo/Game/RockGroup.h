@@ -21,6 +21,7 @@ Created:    November 25, 2024
 
 #include <vector>
 class Rock;
+class MovingRock;
 class RockPoint;
 
 class RockGroup : public CS230::GameObject
@@ -39,7 +40,9 @@ public:
 	RockPoint* GetRockPoint() { return rockpoint; }
 
 	void AddRock(Rock* rock) { rocks.push_back(rock); }
+	void AddMovingRock(MovingRock* moving_rock) { moving_rocks.push_back(moving_rock); }
 	std::vector<Rock*> GetRocks() { return rocks; }
+	std::vector<MovingRock*> GetMovingRocks() { return moving_rocks; }
 	bool MatchIndex();
 	vec2 FindCenterRect();
 	vec2 FindCenterPoly();
@@ -55,6 +58,7 @@ private:
 	mat3 matrix;
 	RockPoint* rockpoint;
 	std::vector<Rock*> rocks;
+	std::vector<MovingRock*> moving_rocks;
 	std::string index = "";
 	std::vector<vec2> points;	// All polygon's points
 };

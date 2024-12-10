@@ -228,33 +228,18 @@ void CS230::Map::ParseSVG(const std::string& filename) {
                 // Rock Point
 
                 //std::vector<Polygon> Polys = EarClipping(positions);
-                //for (Polygon& poly : Polys) {
-                    Rock* rock = new Rock(poly);
-                    Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rock);
-                    rock->AddGOComponent(new MAP_SATCollision(poly, rock));
-
-                    // Making RockGroups
-                    if (rock_groups.empty()) {
-                        RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new group
-                        rockgroup->AddRock(rock);                                       //add poly into new group
-
-                        rock->SetRockGroup(rockgroup);
-                        Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup);
-                        rock_groups.push_back(rockgroup);
+                std::cout << (poly.polyindex).substr(4, 1) << std::endl;
+                    if ((poly.polyindex).substr(4, 1) == "2") {
+                        MovingRock* moving_rock = new MovingRock(poly);
+                        Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(moving_rock);
+                        moving_rock->AddGOComponent(new MAP_SATCollision(poly, moving_rock));
+                        MakeMovingRockGroups(moving_rock, poly);
                     }
                     else {
-                        if (rock_groups.back()->GetIndex() != poly.polyindex) {             // if poly has different index
-                            RockGroup* rockgroup = new RockGroup(poly.polyindex);           // make new group
-                            rockgroup->AddRock(rock);                                       //add poly into new group
-
-                            rock->SetRockGroup(rockgroup);
-                            Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup);
-                            rock_groups.push_back(rockgroup);
-                        }
-                        else {                                                              // if poly has same index
-                            rock_groups.back()->AddRock(rock);
-                            rock->SetRockGroup(rock_groups.back());
-                        }
+                        Rock* rock = new Rock(poly);
+                        Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rock);
+                        rock->AddGOComponent(new MAP_SATCollision(poly, rock));
+                        MakeRockGroups(rock, poly);
                     }
 
                 
@@ -295,6 +280,7 @@ void CS230::Map::ParseSVG(const std::string& filename) {
         std::cout << "Group Position: " << r_group->GetPosition().x << "," << r_group->GetPosition().y << "\n";
         std::cout << "Group Index : " << r_group->GetIndex() << "\n";
         std::cout << "Group Rocks Size : " << r_group->GetRocks().size() << "\n";
+        std::cout << "Group Moving Rocks Size : " << r_group->GetMovingRocks().size() << "\n";
         r_group->MatchIndex();
         r_group->SetPoints();
         
@@ -469,6 +455,57 @@ std::vector<vec2> CS230::Map::parsePathData(const std::string& pathData) {
     }*/
 
     return positions;
+}
+
+void CS230::Map::MakeRockGroups(Rock* rock, Polygon poly) {// Making RockGroups
+    if (rock_groups.empty()) {
+        RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new group
+        rockgroup->AddRock(rock);                                       //add poly into new group
+
+        rock->SetRockGroup(rockgroup);
+        Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup);
+        rock_groups.push_back(rockgroup);
+    }
+    else {
+        if (rock_groups.back()->GetIndex() != poly.polyindex) {             // if poly has different index
+            RockGroup* rockgroup = new RockGroup(poly.polyindex);           // make new group
+            rockgroup->AddRock(rock);                                       //add poly into new group
+
+            rock->SetRockGroup(rockgroup);
+            Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup);
+            rock_groups.push_back(rockgroup);
+        }
+        else {                                                              // if poly has same index
+            rock_groups.back()->AddRock(rock);
+            rock->SetRockGroup(rock_groups.back());
+        }
+    }
+}
+void CS230::Map::MakeMovingRockGroups(MovingRock* moving_rock, Polygon poly) {
+
+    // Making RockGroups
+    if (rock_groups.empty()) {
+        RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new group
+        rockgroup->AddMovingRock(moving_rock);                                       //add poly into new group
+
+        moving_rock->SetRockGroup(rockgroup);
+        Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup);
+        rock_groups.push_back(rockgroup);
+    }
+    else {
+        if (rock_groups.back()->GetIndex() != poly.polyindex) {             // if poly has different index
+            RockGroup* rockgroup = new RockGroup(poly.polyindex);           // make new group
+            rockgroup->AddMovingRock(moving_rock);                                       //add poly into new group
+
+            moving_rock->SetRockGroup(rockgroup);
+            Engine::GetGameStateManager().GetGSComponent<CS230::GameObjectManager>()->Add(rockgroup);
+            rock_groups.push_back(rockgroup);
+        }
+        else {                                                              // if poly has same index
+            rock_groups.back()->AddMovingRock(moving_rock);
+            moving_rock->SetRockGroup(rock_groups.back());
+        }
+    }
 }
 
 

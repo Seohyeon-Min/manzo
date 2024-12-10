@@ -28,23 +28,24 @@ void RockPoint::Draw()
 bool RockPoint::CanCollideWith(GameObjectTypes other_object)
 {
     switch (other_object) {
-    case GameObjectTypes::Rock:
+    case GameObjectTypes::MovingRock:
         return true;
         break;
     }
+    
     return false;
 }
 
 void RockPoint::ResolveCollision(GameObject* other_object)
 {
-    if (other_object->Type() == GameObjectTypes::Rock) {
-        Rock* rock = static_cast<Rock*>(other_object);
-        if (this->GetIndex() == rock->GetPolygon().polyindex) {
+    if (other_object->Type() == GameObjectTypes::MovingRock) {
+        MovingRock* moving_rock = static_cast<MovingRock*>(other_object);
+        if (this->GetIndex() == moving_rock->GetPolygon().polyindex) {
             auto* collision_edge = this->GetGOComponent<CS230::MAP_SATCollision>();
             if (collision_edge == nullptr) {
                 // maybe an error?
             }
-            for (auto& rock : rock->GetRockGroup()->GetRocks()) {
+            for (auto& rock : moving_rock->GetRockGroup()->GetMovingRocks()) {
                 rock->Hit(true);    // rock changes state to State_Pop
 
             }
