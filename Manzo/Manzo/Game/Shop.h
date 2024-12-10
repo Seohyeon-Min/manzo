@@ -8,7 +8,9 @@
 #include "Fish.h"
 #include "Skill.h"
 
-class Skillsys;
+// class Skillsys;
+
+enum Skillsys::Skill_list;
 
 class Shop : public Component
 {
@@ -19,6 +21,11 @@ public:
 		First = 1,
 		Second,
 		Third,
+	};
+	struct Inventory_info // each Inventory's info
+	{
+		Skillsys::Skill_list skill; //set Empty
+		GLTexture* icon_texture = nullptr;
 	};
 	Shop();
 	void Update(double dt); // maybe not used dt..
@@ -39,13 +46,15 @@ private:
 	GLTexture* shop_background = nullptr; //texture
 	GLTexture* shop_icon = nullptr; //texture
 	GLTexture* shop_button = nullptr; //texture
+	GLTexture* inven_background = nullptr; //texture
 	shop_list pick = First; //player's pick
 	shop_list sell_pick = First;
 	mat3 back_matrix; // shop background matrix
 	mat3 inv_back_matrix; // inventory background matrix
 	mat3 botton_matrix; // shop botton matrix
-	vec2 base_botton_direction;
-	vec2 defualt_botton_direction;
+	vec2 base_icon_direction;
+	vec2 defualt_icon_direction;
+	vec2 botton_pos;
 	vec2 inven_back_pos;
 	vec2 shop_back_pos;
 	vec2 back_matrix_defualt;
@@ -55,5 +64,6 @@ private:
 	std::vector<DrawCall> icon_draw_calls;
 	std::vector<DrawCall> inv_icon_draw_calls; //for inventory icon
 	std::vector<vec2> icon_direction;
+	std::vector<Inventory_info> inv_info;
 
 };
