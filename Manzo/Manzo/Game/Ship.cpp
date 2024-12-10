@@ -145,10 +145,8 @@ void Ship::State_Hit::Enter(GameObject* object) {
     Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
     ship->HitWithReef(ship->normal);
     ship->collide_timer->Start();
-    
     ship->force = ship->direction * 20200.f;
-    //Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::HitEffect>>()->EmitRound(20,ship->GetPosition(),900.f, 100.f);
-    Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::HitEffect>>()->EmitRound(20, ship->GetPosition(), 1300.f, 300.f);
+    Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new HitEffect(ship->GetPosition()));
 
 }
 void Ship::State_Hit::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
@@ -402,8 +400,10 @@ void Ship::HitWithReef(vec2 normal) {
     }
 
     SetVelocity(direction * incoming_speed * 0.55f);
-    Engine::GetGameStateManager().GetGSComponent<Cam>()->GetCameraView().SetZoom(1.05f);
-    Engine::GetGameStateManager().GetGSComponent<Cam>()->GetCamera().StartShake(10, 5);
+
+    auto cam = Engine::GetGameStateManager().GetGSComponent<Cam>();
+    cam->GetCameraView().SetZoom(1.05f);
+    cam->GetCamera().StartShake(10, 5);
     move = false;
 
 }

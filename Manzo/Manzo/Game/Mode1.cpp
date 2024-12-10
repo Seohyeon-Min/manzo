@@ -73,15 +73,16 @@ void Mode1::Load() {
     AddGSComponent(new ParticleManager<Particles::HitEffect2>());
     AddGSComponent(new ParticleManager<Particles::CaptureEffect>());
 
-    //// ship
-    ship_ptr = new Ship({ 0, 0 });
-    GetGSComponent<GameObjectManager>()->Add(ship_ptr);
-
     //// camera
     Math::rect Boundary({ -640,-360 }, { 640,360 });
     camera = new Cam();
     AddGSComponent(camera);
     camera->SetLimit(Boundary);
+
+    //// ship
+    ship_ptr = new Ship({ 0, 0 });
+    GetGSComponent<GameObjectManager>()->Add(ship_ptr);
+
 
 	//// ship
 	ship_ptr = new Ship({ 0, 0 });
@@ -97,11 +98,11 @@ void Mode1::Load() {
 
 	//background
 	background->Add("assets/images/background/temp_background.png", 0.0f);
-	background->Add("assets/images/background/bg1.png", 0.3f);
-	background->Add("assets/images/background/bg2.png", 0.4f);
-	background->Add("assets/images/background/bg3.png", 0.5f);
-	background->Add("assets/images/background/bg4.png", 0.6f);
-	background->Add("assets/images/background/bg5.png", 0.7f);
+	background->Add("assets/images/background/bg1.png", 0.1f);
+	background->Add("assets/images/background/bg2.png", 0.12f);
+	background->Add("assets/images/background/bg3.png", 0.14f);
+	background->Add("assets/images/background/bg4.png", 0.16f);
+	background->Add("assets/images/background/bg5.png", 0.18f);
 
     // UI
     AddGSComponent(new UIManager());
@@ -173,6 +174,7 @@ void Mode1::Update(double dt) {
 
 	//camera postion update
 	camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
+	camera->GetCamera().UpdateShake((float)dt);
 
 	// Update Fish Generator
 	fishGenerator->GenerateFish(dt);

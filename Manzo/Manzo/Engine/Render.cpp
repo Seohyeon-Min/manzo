@@ -69,7 +69,7 @@ void Render::RenderAll() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     for (const auto& draw_call : draw_background_calls) {
-        DrawBackground(draw_call);
+        Draw(draw_call);
     }
     // Draw calls in the early phase
     for (const auto& draw_call : draw_first_calls) {
