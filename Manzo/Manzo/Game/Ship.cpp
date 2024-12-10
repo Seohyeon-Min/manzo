@@ -403,7 +403,7 @@ void Ship::HitWithReef(vec2 normal) {
 
     auto cam = Engine::GetGameStateManager().GetGSComponent<Cam>();
     cam->GetCameraView().SetZoom(1.05f);
-    cam->GetCamera().StartShake(10, 5);
+    cam->GetCamera().StartShake(40, 5);
     move = false;
 
 }

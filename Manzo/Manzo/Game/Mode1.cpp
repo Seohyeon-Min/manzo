@@ -69,8 +69,8 @@ void Mode1::Load() {
     AddGSComponent(new ParticleManager<Particles::Plankton>());
     AddGSComponent(new ParticleManager<Particles::FuelBubble>());
     AddGSComponent(new ParticleManager<Particles::BubblePop>());
-    AddGSComponent(new ParticleManager<Particles::HitEffect>());
-    AddGSComponent(new ParticleManager<Particles::HitEffect2>());
+    AddGSComponent(new ParticleManager<Particles::HitPraticle>());
+	AddGSComponent(new ParticleManager<Particles::HitPraticle2>());
     AddGSComponent(new ParticleManager<Particles::CaptureEffect>());
 
     //// camera
@@ -174,7 +174,6 @@ void Mode1::Update(double dt) {
 
 	//camera postion update
 	camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
-	camera->GetCamera().UpdateShake((float)dt);
 
 	// Update Fish Generator
 	fishGenerator->GenerateFish(dt);
