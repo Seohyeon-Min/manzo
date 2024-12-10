@@ -334,7 +334,7 @@ bool PointInTriangle(const vec2& p, const vec2& a, const vec2& b, const vec2& c)
 std::vector<Polygon> EarClipping(const std::vector<vec2>& points) {
 
     // for convex polygon
-    std::vector<Polygon> triangles;
+    /*std::vector<Polygon> triangles;
 
     for (size_t i = 1; i < points.size() - 1; ++i) {
         Polygon triangle;
@@ -342,10 +342,10 @@ std::vector<Polygon> EarClipping(const std::vector<vec2>& points) {
         triangles.push_back(triangle);
     }
 
-    return triangles;
+    return triangles;*/
 
     // for the concave polygon
-    /*
+    
     std::vector<vec2> remaining_points = points;
     std::vector<Polygon> triangles;
 
@@ -397,7 +397,7 @@ std::vector<Polygon> EarClipping(const std::vector<vec2>& points) {
     triangle.vertices = { remaining_points[0], remaining_points[1], remaining_points[2] };
     triangles.push_back(triangle);
 
-    return triangles;*/
+    return triangles;
 
 }
 
