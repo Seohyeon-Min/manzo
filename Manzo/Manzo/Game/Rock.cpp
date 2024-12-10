@@ -117,7 +117,7 @@ void MovingRock::State_PopBack::Enter(GameObject* object) {
     rock->Hit(false);
 }
 void MovingRock::State_PopBack::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
-    std::cout << "popping" << "\n";
+    //std::cout << "popping" << "\n";
     MovingRock* rock = static_cast<MovingRock*>(object);
     RockGroup* rockgroup = rock->GetRockGroup();
 

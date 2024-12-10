@@ -150,7 +150,7 @@ void Map::ParseSVG(const std::string& filename) {
                 if (std::regex_search(currentTag, match, cyRegex)) {
                     y = std::stof(match[1].str());
                     
-                    std::cout << "Circle position || cx: " << circle_position.x << ", cy: " << circle_position.y << std::endl;
+                    //std::cout << "Circle position || cx: " << circle_position.x << ", cy: " << circle_position.y << std::endl;
                 }
                 else {
                     //std::cerr << "Error: cy not found for circle with cx: " << circle_position.x << std::endl;
@@ -180,7 +180,7 @@ void Map::ParseSVG(const std::string& filename) {
                         if (IsScale) {
                             vec.x += scale.x;
                             vec.y += scale.y;
-                            std::cout << "Scaled!"<<std::endl;
+                            //std::cout << "Scaled!"<<std::endl;
                         }
                         //rotate
                         if (IsRotate) {
@@ -256,12 +256,12 @@ void Map::ParseSVG(const std::string& filename) {
             if (circle_position.x != 0.f && circle_position.y != 0.f && circleIndex != "") {
                 RockPoint* rockpoint = new RockPoint(circle_position, circleIndex);
                 Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rockpoint);
-                std::cout << "New Circle! " << "\n";
+                //std::cout << "New Circle! " << "\n";
 
                 for (auto& group : rock_groups) {
                     if (group->GetIndex() == circleIndex) {//if index is equal
                         group->AddRockPoint(rockpoint);     //add point to the group
-                        std::cout << "Circle Added to" << group->GetIndex() << "\n";
+                        //std::cout << "Circle Added to" << group->GetIndex() << "\n";
                     }
                 }
             }
@@ -277,10 +277,10 @@ void Map::ParseSVG(const std::string& filename) {
 
 
     for (auto& r_group : rock_groups) {
-        std::cout << "Group Position: " << r_group->GetPosition().x << "," << r_group->GetPosition().y << "\n";
+        /*std::cout << "Group Position: " << r_group->GetPosition().x << "," << r_group->GetPosition().y << "\n";
         std::cout << "Group Index : " << r_group->GetIndex() << "\n";
         std::cout << "Group Rocks Size : " << r_group->GetRocks().size() << "\n";
-        std::cout << "Group Moving Rocks Size : " << r_group->GetMovingRocks().size() << "\n";
+        std::cout << "Group Moving Rocks Size : " << r_group->GetMovingRocks().size() << "\n";*/
         r_group->MatchIndex();
         r_group->SetPoints();
         
