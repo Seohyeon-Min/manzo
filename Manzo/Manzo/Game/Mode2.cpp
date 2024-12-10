@@ -112,8 +112,9 @@ void Mode2::Update(double dt) {
     if (Engine::GetInput().KeyJustPressed(Input::Keys::W)) {
         Engine::GetGameStateManager().ReloadState();
     }
-    if (Engine::GetInput().KeyJustPressed(Input::Keys::Space)) {
+    if (Engine::GetInput().KeyJustPressed(Input::Keys::Space) && !isLoaded) {
        dialog->LoadDialog(1, 0.1);
+       isLoaded = true;
     }
    
 

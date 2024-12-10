@@ -223,7 +223,6 @@ void Mode1::Update(double dt) {
 		Engine::GetAudioManager().StopPlayingMusic(1);
 		replay = false;
 	}
-	std::cout << fish->GetMoney() << std::endl;
 }
 
 void Mode1::FixedUpdate(double dt)
