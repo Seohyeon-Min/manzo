@@ -292,11 +292,12 @@ void CS230::Map::ParseSVG(const std::string& filename) {
 
 
     for (auto& r_group : rock_groups) {
+        std::cout << "Group Position: " << r_group->GetPosition().x << "," << r_group->GetPosition().y << "\n";
+        std::cout << "Group Index : " << r_group->GetIndex() << "\n";
+        std::cout << "Group Rocks Size : " << r_group->GetRocks().size() << "\n";
         r_group->MatchIndex();
         r_group->SetPoints();
-        std::cout <<"Group Position: " << r_group->GetPosition().x << "," << r_group->GetPosition().y<<"\n";
-        std::cout <<"Group Index : " << r_group->GetIndex()<<"\n";
-        std::cout <<"Group Rocks Size : " << r_group->GetRocks().size() <<"\n";
+        
         //std::cout <<"How Many Points? : " << r_group->GetPoints().size() <<"\n";
     }
     file.close();

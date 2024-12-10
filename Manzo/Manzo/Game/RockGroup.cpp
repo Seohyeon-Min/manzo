@@ -43,7 +43,7 @@ bool RockGroup::MatchIndex()
             std::string index, x_str, y_str, file_path;
 
             std::getline(linestream, index, ',');
-            std::string polyind = (this->index).substr(0, 4);
+            std::string polyind = (this->index).substr(0, 5);
 
             if (index == polyind) {
                 std::getline(linestream, file_path, ',');

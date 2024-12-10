@@ -104,7 +104,7 @@ void Mode1::Load() {
     ui_manager->AddUI(std::make_unique<Mouse>());
 
     // Map
-    GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/map5.svg");
+    GetGSComponent<CS230::Map>()->ParseSVG("assets/maps/map6.svg");
     //for (int i = 0; i < 25; i++)
     //{
     //    GetGSComponent<Boss>()->ReadBossJSON(static_cast<Boss::BossType>(i));
