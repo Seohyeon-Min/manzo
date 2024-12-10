@@ -17,7 +17,7 @@ Boss::Boss(vec2 start_position, BossName name, BossType type)
 	current_position = start_position;
 	// cutscean
 
-	Engine::GetAudioManager().LoadMusic(mp3_file_name, false, false);
+	Engine::GetAudioManager().LoadMusic(mp3_file_name,"e boss",false,false);
 	////////
 	current_state = &state_cutscene;
 	current_state->Enter(this);
@@ -109,8 +109,8 @@ void Boss::State_CutScene::CheckExit(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
 
 	if (Engine::GetInput().KeyDown(Input::Keys::R)&& boss->beat->GetBeat()) {
-		Engine::GetAudioManager().LoadMusic(boss->mp3_file_name, "E_Music");
-		Engine::GetAudioManager().PlayMusics(boss->mp3_file_name, vec3{ 0, 0, 0 }, Engine::GetAudioManager().VolumeTodB(1.0f));
+		Engine::GetAudioManager().LoadMusic(boss->mp3_file_name, "e boss");
+		Engine::GetAudioManager().PlayMusics("e boss");
 
 		boss->beat->SetBPM(boss->bpm);
 		std::cout <<"boss bpm:" << boss->bpm << std::endl;
@@ -198,17 +198,18 @@ void Boss::Update(double dt) {
 	Move(dt);
 	}
 }
+
 void Boss::AfterDied()
 {
-	Engine::GetAudioManager().StopChannel(2);
+	Engine::GetAudioManager().StopChannel("e boss");
 	Engine::GetGameStateManager().GetGSComponent<Beat>()->CleartoOriginal();
 
 	auto pump = Engine::GetGameStateManager().GetGSComponent<Pump>();
 	if (pump) {
 		pump->Reset();
 	}
-	Engine::GetAudioManager().RestartPlayMusic(0);
-	Engine::GetAudioManager().SetMute(0, false);
+	Engine::GetAudioManager().RestartPlayMusic("background1");
+	Engine::GetAudioManager().SetMute("background1", false);
 }
 
 vec2 Lerp(const vec2& start, const vec2& end, float t) {

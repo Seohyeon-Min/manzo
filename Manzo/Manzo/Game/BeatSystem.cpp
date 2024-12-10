@@ -28,7 +28,7 @@ void Beat::Update(double dt)
         music_started = true;       // 음악 재생 상태 갱신
     }
 
-    double current_music_time = Engine::GetAudioManager().GetCurrentMusicTime(channel_id);
+    double current_music_time = Engine::GetAudioManager().GetCurrentMusicTime(music_name);
 
     if (current_music_time > 0.0) { 
         time_taken = current_music_time + sync; 
