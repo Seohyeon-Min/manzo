@@ -17,7 +17,6 @@ Implementation::Implementation() {
 	));
 
 	AudioManager::ErrorCheck(mpStudioSystem->getCoreSystem(&mpSystem));
-	AudioManager::ErrorCheck(mpSystem->createChannelGroup("SFX", &mSFXGroup));
 
 	int driverCount = 0;
 	AudioManager::ErrorCheck(mpSystem->getNumDrivers(&driverCount));
@@ -26,9 +25,6 @@ Implementation::Implementation() {
 
 	FMOD::ChannelGroup* masterGroup = nullptr;
 	AudioManager::ErrorCheck(mpSystem->getMasterChannelGroup(&masterGroup));
-
-
-	AudioManager::ErrorCheck(masterGroup->addGroup(mSFXGroup));
 }
 
 Implementation::~Implementation() {

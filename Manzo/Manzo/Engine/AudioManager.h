@@ -19,8 +19,6 @@ struct Implementation {
 	FMOD::Studio::System* mpStudioSystem;
 	FMOD::System* mpSystem;
 
-	FMOD::ChannelGroup* mSFXGroup;
-
 	std::string mChannelId;
 
 	typedef std::map<std::string, FMOD::Sound*> SoundMap;

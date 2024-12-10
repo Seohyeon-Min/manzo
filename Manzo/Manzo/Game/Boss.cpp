@@ -109,7 +109,8 @@ void Boss::State_CutScene::CheckExit(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
 
 	if (Engine::GetInput().KeyDown(Input::Keys::R)&& boss->beat->GetBeat()) {
-		Engine::GetAudioManager().LoadMusic(boss->mp3_file_name, "e boss");
+		Engine::GetAudioManager().SetMute("background1",true);
+		Engine::GetAudioManager().StopChannel("e morse");
 		Engine::GetAudioManager().PlayMusics("e boss");
 
 		boss->beat->SetBPM(boss->bpm);
@@ -209,7 +210,7 @@ void Boss::AfterDied()
 		pump->Reset();
 	}
 	Engine::GetAudioManager().RestartPlayMusic("background1");
-	Engine::GetAudioManager().SetMute("background1", false);
+	Engine::GetAudioManager().SetMute("background1",false);
 }
 
 vec2 Lerp(const vec2& start, const vec2& end, float t) {

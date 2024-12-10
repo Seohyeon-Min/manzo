@@ -85,7 +85,7 @@ void Beat::SetBPM(int set_BPM)
     beat = false;
     is_on_beat = false;
     music_started = false;
-    music_name.clear();
+    //music_name.clear();
 }
 
 void Beat::CleartoOriginal() {
@@ -102,5 +102,5 @@ void Beat::CleartoOriginal() {
     beat = false;
     is_on_beat = false;
     music_started = false;
-    music_name.clear();
+    //music_name.clear();
 }

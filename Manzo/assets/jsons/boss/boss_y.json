@@ -3,7 +3,7 @@
     "Index" : 2,
     "Isbossfight" : false,
     "BPM" : 100,
-    "Mp3" : "assets/audios/e_temp_morse_1.wav",
+    "Mp3" : "assets/audios/boss/e.wav",
     "Position" : [100,100],
     "Total entry" : [1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4],
     "Parttern" : [
