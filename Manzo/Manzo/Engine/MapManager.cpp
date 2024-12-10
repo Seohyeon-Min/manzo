@@ -315,7 +315,7 @@ bool PointInTriangle(const vec2& p, const vec2& a, const vec2& b, const vec2& c)
     float cross2 = cross(bc, bp);
     float cross3 = cross(ca, cp);
 
-   
+    
     return (cross1 < 0 && cross2 < 0 && cross3 < 0) || (cross1 > 0 && cross2 > 0 && cross3 > 0);
 }
 std::vector<Polygon> EarClipping(const std::vector<vec2>& points) {

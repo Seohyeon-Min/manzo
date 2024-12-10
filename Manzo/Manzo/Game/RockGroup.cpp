@@ -15,6 +15,7 @@ RockGroup::RockGroup(const std::string& index) :GameObject({ 0,0 }), index(index
 
 RockGroup::~RockGroup() {
     rocks.clear();
+    moving_rocks.clear();
     delete this->rockpoint;
 }
 

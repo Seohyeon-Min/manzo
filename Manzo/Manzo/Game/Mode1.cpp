@@ -58,7 +58,6 @@ void Mode1::Load() {
     AddGSComponent(beat_system);
 	beat_system->LoadMusicToSync("assets/audios/bgm_original.wav");///////////////////////
 
-    AddGSComponent(new Map());
     god_ray = new GodRay();
     AddGSComponent(god_ray);
     //AddGSComponent(new Pump());
@@ -108,7 +107,8 @@ void Mode1::Load() {
     ui_manager->AddUI(std::make_unique<Mouse>());
 
     // Map
-    //GetGSComponent<Map>()->ParseSVG("assets/maps/map7.svg");
+	AddGSComponent(new Map());
+    GetGSComponent<Map>()->ParseSVG("assets/maps/mapLittle.svg");
 
 	Engine::GetAudioManager().LoadMusic("assets/audios/bgm_original.wav",false);
 	Engine::GetAudioManager().LoadMusic("assets/audios/e.wav", true);
@@ -234,7 +234,7 @@ void Mode1::FixedUpdate(double dt)
 
 void Mode1::Draw() {
     GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
-    GetGSComponent<Map>()->AddDrawCall();
+    //GetGSComponent<Map>()->AddDrawCall();
     god_ray->Draw();
     GetGSComponent<GameObjectManager>()->DrawAll();
     ui_manager->AddDrawCalls();

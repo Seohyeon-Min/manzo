@@ -56,7 +56,7 @@ private:
 	bool can_collide = true;
 	vec2 start_position;
 	mat3 matrix;
-	RockPoint* rockpoint;
+	RockPoint* rockpoint = nullptr;
 	std::vector<Rock*> rocks;
 	std::vector<MovingRock*> moving_rocks;
 	std::string index = "";
