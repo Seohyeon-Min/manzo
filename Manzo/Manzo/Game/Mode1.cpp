@@ -108,7 +108,7 @@ void Mode1::Load() {
 
     // Map
 	AddGSComponent(new Map());
-    GetGSComponent<Map>()->ParseSVG("assets/maps/mapLittle.svg");
+    GetGSComponent<Map>()->ParseSVG("assets/maps/map6.svg");
 
 	Engine::GetAudioManager().LoadMusic("assets/audios/bgm_original.wav",false);
 	Engine::GetAudioManager().LoadMusic("assets/audios/e.wav", true);
