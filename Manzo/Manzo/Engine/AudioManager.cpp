@@ -121,32 +121,15 @@ float AudioManager::GetCurrentMusicTime(const std::string& alias) {
 	return 0.0f;
 }
 
-float AudioManager::GetMusicLength(const std::string& alias) {
-	auto it = sgpImplementation->mChannels.find(alias);
-	if (it != sgpImplementation->mChannels.end()) {
-		FMOD::Channel* channel = it->second;
-		FMOD::Sound* sound = nullptr;
-
-		// Get the associated sound object from the channel
-		FMOD_RESULT result = channel->getCurrentSound(&sound);
-		if (ErrorCheck(result) != 0 || sound == nullptr) {
-			std::cerr << "Error: Failed to retrieve sound from channel." << std::endl;
-			return 0.0f;
-		}
-
-		// Get the total length of the sound in milliseconds
-		unsigned int length = 0;
-		result = sound->getLength(&length, FMOD_TIMEUNIT_MS);
-		if (ErrorCheck(result) == 0) {
-			return length / 1000.0f; // Convert milliseconds to seconds
-		}
-		else {
-			std::cerr << "Error: Failed to retrieve music length." << std::endl;
-		}
+float AudioManager::GetMusicLength(const std::string& alias)
+{
+	FMOD::Sound* sound = GetMusic(alias);
+	if (sound) {
+		unsigned int length_ms = 0;
+		sound->getLength(&length_ms, FMOD_TIMEUNIT_MS);
+		return length_ms / 1000.0f; // Convert to seconds
 	}
-	else {
-		std::cerr << "Error: Channel with alias '" << alias << "' not found." << std::endl;
-	}
+	std::cerr << "Error: Music with name " << alias << " not found." << std::endl;
 	return 0.0f;
 }
 

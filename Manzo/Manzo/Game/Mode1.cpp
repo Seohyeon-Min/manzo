@@ -53,7 +53,7 @@ void Mode1::Load() {
     Engine::GetShaderManager().LoadShader("change_alpha_no_texture", "assets/shaders/default.vert", "assets/shaders/change_alpha_no_texture.frag");
 
 	// audio
-	Engine::GetAudioManager().LoadMusic("assets/audios/morse/e.wav", "background1", false);
+	Engine::GetAudioManager().LoadMusic("assets/audios/bgm_original.wav", "background1", false);
 	Engine::GetAudioManager().LoadMusic("assets/audios/morse/e.wav", "e morse", true);
 	Engine::GetAudioManager().Set3DMode(FMOD_3D_LINEARROLLOFF);
 

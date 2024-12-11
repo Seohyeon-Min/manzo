@@ -27,6 +27,7 @@ private:
     double delay_duration = 0;
     double current_delay_duration = 0;
     double time_taken = 0;
+    double total_music_length = 0;
     static constexpr double judge_offset = 0.2;
     bool beat = false;
     bool is_on_beat = false;
