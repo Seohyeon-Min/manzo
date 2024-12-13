@@ -26,20 +26,9 @@ WITH THE RHYTHM GUIDED BY THE SEA​
 - Extract `Manzo` folder and double click.
 - Double click `Manzo` folder.
 - Double click `Manzo.sln` file.
-
-(Release Mode)
-- Check configuration to be set `Release` and `x64`.
-
-(Debug Mode)
-- Check configuration to be set `Debug` and `x64`.
+- Please run at "RELEASE MODE" !!
 
 <Run/Build Code>
-(Debug Mode)
-- Click `Build - Build Solution` or type keyboard `Ctrl + Shift + B`.
-- After Build succeeded, check `Manzo/Manzo/x64/Debug` folder.
-- Paste `assets' folders into this path if it doesn't included.
-- Double click `Manzo.exe` file.
-
 (Release Mode)
 - Click `Build - Build Solution` or type keyboard `Ctrl + Shift + B`.
 - After Build succeeded, check `Manzo/Manzo/x64/Release` folder.

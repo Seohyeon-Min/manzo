@@ -41,7 +41,7 @@ void main() {
     vec2 fragCoord = gl_FragCoord.xy;
     vec2 uv = fragCoord / iResolution.xy;
 
-    // UV 좌표 변환
+    // UV 
     vec2 p = uv;
     p.x *= iResolution.x / iResolution.y;
 
@@ -52,17 +52,17 @@ void main() {
     uv /= 50.0;
     uv = cart2polar(uv);
 
-    // Voronoi 노이즈 계산
+    // Voronoi
     float n1 = voronoi2d((vec2(uv.x, 0.0) + 0.04 * iTime) * 1.0);
     float n2 = voronoi2d((vec2(0.1, uv.x) + 0.04 * iTime * 1.5) * 4.0);
     float n3 = min(n1, n2);
 
-    // Alpha 및 밝기 계산
+    // Alpha
     float mask = smoothstep(.15, .96, p.y);
-    float brightness = n3 * mask * 0.4;         // 밝기 증가
-    float alpha = n3 * mask * 1.;               // 투명도 증가
+    float brightness = n3 * mask * 0.4;         // increase light
+    float alpha = n3 * mask * 1.;               // increase oqaque
 
-    // 빛 효과 색상
+    // light color
     vec3 glowColor = vec3(1.0, 0.9, 0.8) * brightness;
     vec3 baseColor = mix(vec3(0.2,0.4,0.5), vec3(1.0), alpha);
 

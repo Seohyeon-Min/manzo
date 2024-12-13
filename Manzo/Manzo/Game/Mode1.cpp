@@ -128,7 +128,7 @@ void Mode1::Load() {
 	boss_ptr = new Boss({ 750,500 }, Boss::BossName::e, Boss::BossType::MovingToLocation);
 	boss_ptr->ReadBossJSON(Boss::BossName::e);
 	BossFirstPos.push_back(std::make_pair(boss_ptr->GetFirstPosition()[0], boss_ptr->GetFirstPosition()[1]));
-	bossPosition = { static_cast<float>(BossFirstPos[0].first), static_cast<float>(BossFirstPos[0].second), 0.0f };
+	bossPosition = { 750,500, 0.0f };
 
 
 	// Skill
