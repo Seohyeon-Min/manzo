@@ -19,12 +19,10 @@ struct Implementation {
 	FMOD::Studio::System* mpStudioSystem;
 	FMOD::System* mpSystem;
 
-	FMOD::ChannelGroup* mSFXGroup;
-
-	int mnNextChannelId = 0;
+	std::string mChannelId;
 
 	typedef std::map<std::string, FMOD::Sound*> SoundMap;
-	typedef std::map<int, FMOD::Channel*> ChannelMap;
+	typedef std::map<std::string, FMOD::Channel*> ChannelMap;
 
 	SoundMap mSounds;
 	ChannelMap mChannels;
@@ -39,27 +37,30 @@ public:
 	static int ErrorCheck(FMOD_RESULT result);
 
 	// music
-	void LoadMusic(const std::string& strSoundName, bool b3d = false, bool bLooping = true, bool bStream = false);
-	void UnLoadMusic(const std::string& strSoundName);
-	FMOD::Sound* GetMusic(const std::string& strMusicName);
-	float GetCurrentMusicTime(int nChannelId);
-	int GetID(const std::string& soundName);
+	void LoadMusic(const std::string& filePath, const std::string& alias, bool b3d = false, bool bLooping = true, bool bStream = false);
+	void UnLoadMusic(const std::string& alias);
+	FMOD::Sound* GetMusic(const std::string& alias);
+	float GetCurrentMusicTime(const std::string& alias);
+	float GetMusicLength(const std::string& alias);
+	std::string GetID(const std::string& alias);
 
-	int PlayMusics(const std::string& strSoundName, const vec3& vPos = vec3{ 0, 0, 0 }, float fVolumedB = 0.0f);
-	void StopChannel(int nChannelId);
+	std::string PlayMusics(const std::string& alias, const vec3& vPos = vec3{ 0, 0, 0 }, float fVolumedB = 0.0f);
+	void StopChannel(const std::string& alias);
 	void StopAllChannels();
-	void RestartPlayMusic(int nChannelId);
-	void StopPlayingMusic(int nChannelId);
-	bool IsPlayingMusic(int nChannelId) const;
+	void RestartPlayMusic(const std::string& alias);
+	void StopPlayingMusic(const std::string& alias);
+	bool IsPlayingMusic(const std::string& alias) const;
+
+	bool IsMusicFinished(const std::string& alias);
 
 	void Set3dListenerAndOrientation(const vec3& vPosition, const vec3& vLook, const vec3& vUp);
-	void SetChannel3dPosition(int nChannelId, const vec3& vPosition);
-	void SetMode(const std::string& strSoundName, bool spatial_on);
+	void SetChannel3dPosition(const std::string& alias, const vec3& vPosition);
+	void SetMode(const std::string& alias, bool spatial_on);
 
 	void Set3DMode(FMOD_MODE mode);
 	
-	void SetChannelVolume(int nChannelId, float fVolumedB);
-	void SetMute(int nChannelId, bool mute); //if true, mute
+	void SetChannelVolume(const std::string& alias, float fVolumedB);
+	void SetMute(const std::string& alias, bool mute); //if true, mute
 	const bool GetMute() {
 		return isMute;
 	}

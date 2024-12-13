@@ -17,7 +17,6 @@ Implementation::Implementation() {
 	));
 
 	AudioManager::ErrorCheck(mpStudioSystem->getCoreSystem(&mpSystem));
-	AudioManager::ErrorCheck(mpSystem->createChannelGroup("SFX", &mSFXGroup));
 
 	int driverCount = 0;
 	AudioManager::ErrorCheck(mpSystem->getNumDrivers(&driverCount));
@@ -26,9 +25,6 @@ Implementation::Implementation() {
 
 	FMOD::ChannelGroup* masterGroup = nullptr;
 	AudioManager::ErrorCheck(mpSystem->getMasterChannelGroup(&masterGroup));
-
-
-	AudioManager::ErrorCheck(masterGroup->addGroup(mSFXGroup));
 }
 
 Implementation::~Implementation() {
@@ -70,9 +66,9 @@ void AudioManager::Update() {
 	sgpImplementation->Update();
 }
 
-void AudioManager::LoadMusic(const std::string& strSoundName, bool b3d, bool bLooping, bool bStream)
+void AudioManager::LoadMusic(const std::string& filePath, const std::string& alias, bool b3d, bool bLooping, bool bStream)
 {
-	auto tFoundIt = sgpImplementation->mSounds.find(strSoundName);
+	auto tFoundIt = sgpImplementation->mSounds.find(alias);
 	if (tFoundIt != sgpImplementation->mSounds.end())
 		return;
 	FMOD_MODE eMode = FMOD_DEFAULT;
@@ -80,34 +76,34 @@ void AudioManager::LoadMusic(const std::string& strSoundName, bool b3d, bool bLo
 	eMode |= bLooping ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF;
 	eMode |= bStream ? FMOD_CREATESTREAM : FMOD_CREATECOMPRESSEDSAMPLE;
 	FMOD::Sound* pSound = nullptr;
-	ErrorCheck(sgpImplementation->mpSystem->createSound(strSoundName.c_str(), eMode, nullptr, &pSound));
+	ErrorCheck(sgpImplementation->mpSystem->createSound(filePath.c_str(), eMode, nullptr, &pSound));
 	if (pSound) {
-		sgpImplementation->mSounds[strSoundName] = pSound;
+		sgpImplementation->mSounds[alias] = pSound;
 	}
 }
 
-void AudioManager::UnLoadMusic(const std::string& strSoundName)
+void AudioManager::UnLoadMusic(const std::string& alias)
 {
-	auto tFoundIt = sgpImplementation->mSounds.find(strSoundName);
+	auto tFoundIt = sgpImplementation->mSounds.find(alias);
 	if (tFoundIt == sgpImplementation->mSounds.end())
 		return;
 	ErrorCheck(tFoundIt->second->release());
 	sgpImplementation->mSounds.erase(tFoundIt);
 }
 
-FMOD::Sound* AudioManager::GetMusic(const std::string& strMusicName) {
-	auto it = sgpImplementation->mSounds.find(strMusicName);
+FMOD::Sound* AudioManager::GetMusic(const std::string& alias) {
+	auto it = sgpImplementation->mSounds.find(alias);
 	if (it != sgpImplementation->mSounds.end()) {
 		return it->second;
 	}
 	else {
-		std::cerr << "Error: Music with name " << strMusicName << " not found." << std::endl;
+		std::cerr << "Error: Music with name " << alias << " not found." << std::endl;
 		return nullptr;
 	}
 }
 
-float AudioManager::GetCurrentMusicTime(int nChannelId) {
-	auto it = sgpImplementation->mChannels.find(nChannelId);
+float AudioManager::GetCurrentMusicTime(const std::string& alias) {
+	auto it = sgpImplementation->mChannels.find(alias);
 	if (it != sgpImplementation->mChannels.end()) {
 		FMOD::Channel* channel = it->second;
 		unsigned int currentPosition = 0;
@@ -120,61 +116,72 @@ float AudioManager::GetCurrentMusicTime(int nChannelId) {
 		}
 	}
 	else {
-		std::cerr << "Error: Channel with ID " << nChannelId << " not found." << std::endl;
+		std::cerr << "Error: Channel with ID " << alias << " not found." << std::endl;
 	}
 	return 0.0f;
 }
 
+float AudioManager::GetMusicLength(const std::string& alias)
+{
+	FMOD::Sound* sound = GetMusic(alias);
+	if (sound) {
+		unsigned int length_ms = 0;
+		sound->getLength(&length_ms, FMOD_TIMEUNIT_MS);
+		return length_ms / 1000.0f; // Convert to seconds
+	}
+	std::cerr << "Error: Music with name " << alias << " not found." << std::endl;
+	return 0.0f;
+}
 
-int AudioManager::GetID(const std::string& soundName)
+std::string AudioManager::GetID(const std::string& alias)
 {
 	// Find the sound in the channels map
 	for (const auto& pair : sgpImplementation->mChannels) {
 		FMOD::Channel* channel = pair.second;
 		FMOD::Sound* sound;
 		if (channel->getCurrentSound(&sound) == FMOD_OK) {
-			if (sgpImplementation->mSounds[soundName] == sound) {
+			if (sgpImplementation->mSounds[alias] == sound) {
 				return pair.first; // Return the channel ID
 			}
 		}
 	}
-	std::cerr << "Error: Sound with name " << soundName << " not found in any channel." << std::endl;
-	return -1; // Return -1 if the sound is not found
+	std::cerr << "Error: Sound with name " << alias << " not found in any channel." << std::endl;
+	return nullptr; // Return -1 if the sound is not found
 }
 
-int AudioManager::PlayMusics(const std::string& strSoundName, const vec3& vPosition, float fVolumedB)
-{
-	int nChannelId = sgpImplementation->mnNextChannelId++;
-	auto tFoundIt = sgpImplementation->mSounds.find(strSoundName);
-	if (tFoundIt == sgpImplementation->mSounds.end())
-	{
-		//LoadMusic(strSoundName);
-		tFoundIt = sgpImplementation->mSounds.find(strSoundName);
-		if (tFoundIt == sgpImplementation->mSounds.end())
-		{
-			return nChannelId;
-		}
+std::string AudioManager::PlayMusics(const std::string& alias, const vec3& vPosition, float fVolumedB) {
+	auto tFoundIt = sgpImplementation->mSounds.find(alias);
+	if (tFoundIt == sgpImplementation->mSounds.end()) {
+		// Load music if it hasn't been loaded yet
+		std::cerr << "Error: Sound with alias " << alias << " not found. Please load it first." << std::endl;
+		return "";
 	}
+
 	FMOD::Channel* pChannel = nullptr;
 	ErrorCheck(sgpImplementation->mpSystem->playSound(tFoundIt->second, nullptr, true, &pChannel));
-	if (pChannel)
-	{
+	if (pChannel) {
 		FMOD_MODE currMode;
 		tFoundIt->second->getMode(&currMode);
+
 		if (currMode & FMOD_3D) {
 			FMOD_VECTOR position = VectorToFmod(vPosition);
 			ErrorCheck(pChannel->set3DAttributes(&position, nullptr));
 		}
+
 		ErrorCheck(pChannel->setVolume(dbToVolume(fVolumedB)));
 		ErrorCheck(pChannel->setPaused(false));
-		sgpImplementation->mChannels[nChannelId] = pChannel;
+
+		// Use alias as the channel ID
+		sgpImplementation->mChannels[alias] = pChannel;
 	}
-	return nChannelId;
+
+	return alias;
 }
 
-void AudioManager::StopChannel(int nChannelId)
+
+void AudioManager::StopChannel(const std::string& alias)
 {
-	auto tFoundIt = sgpImplementation->mChannels.find(nChannelId);
+	auto tFoundIt = sgpImplementation->mChannels.find(alias);
 	if (tFoundIt != sgpImplementation->mChannels.end()) {
 		ErrorCheck(tFoundIt->second->stop());
 		sgpImplementation->mChannels.erase(tFoundIt);
@@ -189,10 +196,10 @@ void AudioManager::StopAllChannels()
 	sgpImplementation->mChannels.clear();
 }
 
-void AudioManager::RestartPlayMusic(int nChannelId)
+void AudioManager::RestartPlayMusic(const std::string& alias)
 {
 	// 주어진 채널 ID를 찾기
-	auto tFoundIt = sgpImplementation->mChannels.find(nChannelId);
+	auto tFoundIt = sgpImplementation->mChannels.find(alias);
 	if (tFoundIt == sgpImplementation->mChannels.end())
 	{
 		std::cerr << "Error: Channel not found!" << std::endl;
@@ -214,9 +221,9 @@ void AudioManager::RestartPlayMusic(int nChannelId)
 	}
 }
 
-void AudioManager::StopPlayingMusic(int nChannelId)
+void AudioManager::StopPlayingMusic(const std::string& alias)
 {
-	auto tFoundIt = sgpImplementation->mChannels.find(nChannelId);
+	auto tFoundIt = sgpImplementation->mChannels.find(alias);
 	if (tFoundIt != sgpImplementation->mChannels.end()) {
 		// 채널을 일시 정지합니다.
 		ErrorCheck(tFoundIt->second->setPaused(true));
@@ -235,9 +242,9 @@ void AudioManager::Set3dListenerAndOrientation(const vec3& vPosition, const vec3
 	ErrorCheck(sgpImplementation->mpSystem->set3DListenerAttributes(0, &position, nullptr, &forward, &up));
 }
 
-void AudioManager::SetChannel3dPosition(int nChannelId, const vec3& vPosition)
+void AudioManager::SetChannel3dPosition(const std::string& alias, const vec3& vPosition)
 {
-	auto tFoundIt = sgpImplementation->mChannels.find(nChannelId);
+	auto tFoundIt = sgpImplementation->mChannels.find(alias);
 	if (tFoundIt == sgpImplementation->mChannels.end())
 		return;
 
@@ -245,10 +252,10 @@ void AudioManager::SetChannel3dPosition(int nChannelId, const vec3& vPosition)
 	ErrorCheck(tFoundIt->second->set3DAttributes(&position, NULL));
 }
 
-void AudioManager::SetMode(const std::string& strSoundName, bool spatial_on)
+void AudioManager::SetMode(const std::string& alias, bool spatial_on)
 {
 	FMOD::Channel* pChannel = nullptr;
-	auto tFoundIt = sgpImplementation->mSounds.find(strSoundName);
+	auto tFoundIt = sgpImplementation->mSounds.find(alias);
 	ErrorCheck(sgpImplementation->mpSystem->playSound(tFoundIt->second, nullptr, true, &pChannel));
 	if (pChannel)
 	{
@@ -272,18 +279,18 @@ void AudioManager::Set3DMode(FMOD_MODE mode) {
 }
 
 
-void AudioManager::SetChannelVolume(int nChannelId, float fVolumedB)
+void AudioManager::SetChannelVolume(const std::string& alias, float fVolumedB)
 {
-	auto tFoundIt = sgpImplementation->mChannels.find(nChannelId);
+	auto tFoundIt = sgpImplementation->mChannels.find(alias);
 	if (tFoundIt == sgpImplementation->mChannels.end())
 		return;
 
 	ErrorCheck(tFoundIt->second->setVolume(dbToVolume(fVolumedB)));
 }
 
-void AudioManager::SetMute(int nChannelId, bool mute)
+void AudioManager::SetMute(const std::string& alias, bool mute)
 {
-	auto tFoundIt = sgpImplementation->mChannels.find(nChannelId);
+	auto tFoundIt = sgpImplementation->mChannels.find(alias);
 	if (tFoundIt != sgpImplementation->mChannels.end()) {
 		ErrorCheck(tFoundIt->second->setMute(mute));  // if true sound = 0
 		if (mute == true)
@@ -297,9 +304,9 @@ void AudioManager::SetMute(int nChannelId, bool mute)
 	}
 }
 
-bool AudioManager::IsPlayingMusic(int nChannelId) const
+bool AudioManager::IsPlayingMusic(const std::string& alias) const
 {
-	auto tFoundIt = sgpImplementation->mChannels.find(nChannelId);
+	auto tFoundIt = sgpImplementation->mChannels.find(alias);
 	if (tFoundIt != sgpImplementation->mChannels.end()) {
 		bool bIsPlaying = false;
 		ErrorCheck(tFoundIt->second->isPlaying(&bIsPlaying));
@@ -307,6 +314,25 @@ bool AudioManager::IsPlayingMusic(int nChannelId) const
 	}
 	return false;
 }
+
+//bool AudioManager::IsMusicFinished(const std::string& alias) {
+//	auto tFoundIt = sgpImplementation->mChannels.find(alias);
+//	if (tFoundIt != sgpImplementation->mChannels.end()) {
+//		bool bIsPlaying = false;
+//		FMOD_RESULT result = tFoundIt->second->isPlaying(&bIsPlaying);
+//		if (ErrorCheck(result) == 0) {
+//			return !bIsPlaying;
+//		}
+//		else {
+//			std::cerr << "Error: Failed to check if music is finished." << std::endl;
+//		}
+//	}
+//	else {
+//		std::cerr << "Error: Channel with alias " << alias << " not found." << std::endl;
+//	}
+//
+//	return false;
+//}
 
 FMOD_VECTOR AudioManager::VectorToFmod(const vec3& vPosition) {
 	FMOD_VECTOR fVec;

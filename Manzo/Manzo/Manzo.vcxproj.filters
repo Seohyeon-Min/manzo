@@ -109,15 +109,6 @@
     <ClCompile Include="Game\GameOver.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Rock.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\RockGroup.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\RockPoint.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
     <ClCompile Include="Game\GameObjectTypes.cpp">
       <Filter>Game</Filter>
     </ClCompile>
@@ -136,8 +127,10 @@
     <ClCompile Include="Game\ScreenWrap.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Shop.cpp" />
     <ClCompile Include="Game\DialogBox.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Shop.cpp">
       <Filter>Game</Filter>
     </ClCompile>
   </ItemGroup>
@@ -292,15 +285,6 @@
     <ClInclude Include="Game\GameOver.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Rock.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\RockGroup.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\RockPoint.h">
-      <Filter>Game</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Font.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -319,10 +303,14 @@
     <ClInclude Include="Game\ScreenWrap.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Shop.h" />
     <ClInclude Include="Game\DialogBox.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Game\DashEffect.h" />
+    <ClInclude Include="Game\Shop.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\DashEffect.h">
+      <Filter>Game</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

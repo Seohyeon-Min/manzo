@@ -33,36 +33,43 @@ void FishGenerator::GenerateFish(double dt)
 {
 	timer->Update(dt);
 
-	if (timer->Remaining() == 0 && fishList.size() < 15)
+	if (timer->Remaining() == 0)
 	{
-		Fish* newFish = new Fish();
-		fishList.push_back(newFish);
-		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(newFish);
+		fishList.resize(fishCnt);
+		fishList.shrink_to_fit();
 
-		timer->Reset();
-
-		//generate object fishes
-		if (newFish->type == Fish::FishType::Fish3)
+		if (fishList.size() < 15) //limit of fish num
 		{
-			int shape_index = rand() % formations.size();
-			const auto& selectedFormation = formations[shape_index];
 
-			for (const auto& offset : selectedFormation.offsets)
+			Fish* newFish = new Fish();
+			fishList.push_back(newFish);
+			Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(newFish);
+
+			timer->Reset();
+
+			//generate object fishes
+			if (newFish->type == Fish::FishType::Fish3)
 			{
-				Fish* additionalFish = new Fish(newFish);
+				int shape_index = rand() % formations.size();
+				const auto& selectedFormation = formations[shape_index];
 
-				float randomX = rand() % (int)(selectedFormation.randomOffsetMaxX - selectedFormation.randomOffsetMinX)
-					+ selectedFormation.randomOffsetMinX;
-				float randomY = rand() % (int)(selectedFormation.randomOffsetMaxY - selectedFormation.randomOffsetMinY)
-					+ selectedFormation.randomOffsetMinY;
+				for (const auto& offset : selectedFormation.offsets)
+				{
+					Fish* additionalFish = new Fish(newFish);
 
-				vec2 randomOffset = { randomX, randomY };
+					float randomX = rand() % (int)(selectedFormation.randomOffsetMaxX - selectedFormation.randomOffsetMinX)
+						+ selectedFormation.randomOffsetMinX;
+					float randomY = rand() % (int)(selectedFormation.randomOffsetMaxY - selectedFormation.randomOffsetMinY)
+						+ selectedFormation.randomOffsetMinY;
 
-				additionalFish->SetPosition(newFish->GetPosition() + offset + randomOffset);
-				additionalFish->SetVelocity(newFish->GetVelocity());
+					vec2 randomOffset = { randomX, randomY };
 
-				fishList.push_back(additionalFish);
-				Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(additionalFish);
+					additionalFish->SetPosition(newFish->GetPosition() + offset + randomOffset);
+					additionalFish->SetVelocity(newFish->GetVelocity());
+
+					fishList.push_back(additionalFish);
+					Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(additionalFish);
+				}
 			}
 		}
 	}

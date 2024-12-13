@@ -52,11 +52,16 @@ void Mode1::Load() {
     Engine::GetShaderManager().LoadShader("change_alpha", "assets/shaders/default.vert", "assets/shaders/change_alpha.frag");
     Engine::GetShaderManager().LoadShader("change_alpha_no_texture", "assets/shaders/default.vert", "assets/shaders/change_alpha_no_texture.frag");
 
+	// audio
+	Engine::GetAudioManager().LoadMusic("assets/audios/bgm_original.wav", "background1", false);
+	Engine::GetAudioManager().LoadMusic("assets/audios/morse/e.wav", "e morse", true);
+	Engine::GetAudioManager().Set3DMode(FMOD_3D_LINEARROLLOFF);
+
     // component
     AddGSComponent(new GameObjectManager());
     beat_system = new Beat();
     AddGSComponent(beat_system);
-	beat_system->LoadMusicToSync("assets/audios/bgm_original.wav");///////////////////////
+	beat_system->LoadMusicToSync("background1");///////////////////////
 
     god_ray = new GodRay();
     AddGSComponent(god_ray);
@@ -112,10 +117,6 @@ void Mode1::Load() {
 	AddGSComponent(new Map());
     GetGSComponent<Map>()->ParseSVG("assets/maps/map6.svg");
 
-	Engine::GetAudioManager().LoadMusic("assets/audios/bgm_original.wav",false);
-	Engine::GetAudioManager().LoadMusic("assets/audios/e.wav", true);
-	Engine::GetAudioManager().Set3DMode(FMOD_3D_LINEARROLLOFF);
-
 	//Boss
 	Boss::LoadBossfile();
 	//for (int i = 0; i < 25; i++)
@@ -148,7 +149,7 @@ void Mode1::Update(double dt) {
 	//audio play
 	if (!playing)
 	{
-		Engine::GetAudioManager().PlayMusics("assets/audios/bgm_original.wav");
+		Engine::GetAudioManager().PlayMusics("background1");
 		playing = true;
 	}
 
@@ -201,27 +202,27 @@ void Mode1::Update(double dt) {
 	if (isWithinRange) {
 		if (!soundPlaying)
 		{
-			Engine::GetAudioManager().PlayMusics("assets/audios/e.wav");
+			Engine::GetAudioManager().PlayMusics("e morse");
 			soundPlaying = true;
 		}
 		else
 		{
 			if(!replay)
 			{
-				Engine::GetAudioManager().RestartPlayMusic(1);
+				Engine::GetAudioManager().RestartPlayMusic("e morse");
 				replay = true;
 			}
 		}
-		Engine::GetAudioManager().SetChannel3dPosition(1, bossPosition);
+		Engine::GetAudioManager().SetChannel3dPosition("e morse", bossPosition);
 
 		// Calculate the volume based on the distance
 		float volumeFactor = 1.0f - std::clamp(distance / 300.0f, 0.0f, 1.0f);
 		float volume = std::lerp(0.0f, 1.0f, volumeFactor);
-		Engine::GetAudioManager().SetChannelVolume(0, volume);
+		Engine::GetAudioManager().SetChannelVolume("e morse", volume);
 	}
 	else
 	{
-		Engine::GetAudioManager().StopPlayingMusic(1);
+		Engine::GetAudioManager().StopPlayingMusic("e morse");
 		replay = false;
 	}
 }
@@ -252,6 +253,8 @@ void Mode1::Unload() {
 	fishGenerator->~FishGenerator();
 	delete fishGenerator;
 	playing = false;
+	soundPlaying = false;
+	replay = false;
 	fishGenerator = nullptr;
 	GetGSComponent<GameObjectManager>()->Unload();
 	GetGSComponent<Background>()->Unload();

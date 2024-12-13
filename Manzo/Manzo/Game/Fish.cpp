@@ -1,5 +1,6 @@
 #include "Fish.h"
 #include "DashEffect.h"
+#include "ScreenWrap.h"
 
 #include "../Engine/GameObjectManager.h"
 #include "../Engine/AABB.h"
@@ -23,6 +24,7 @@
 std::mt19937 dre;
 std::vector<Fish::FishDex> Fish::fishBook;
 int Fish::money = 0;
+int fishCnt = 0;
 
 Fish::Fish(Fish* parent) : GameObject({ 0, 0 }) {
     std::uniform_int_distribution<int> fishIndex(0, static_cast<int>(fishBook.size() - 1));
@@ -52,6 +54,9 @@ Fish::Fish(Fish* parent) : GameObject({ 0, 0 }) {
     }
 
     AddGOComponent(new Sprite(fishBook[index].filePath, this));
+    fishCnt++;
+
+    AddGOComponent(new ScreenWrap(*this));
 }
 
 bool Fish::CanCollideWith(GameObjectTypes other_object) {
@@ -67,10 +72,25 @@ bool Fish::CanCollideWith(GameObjectTypes other_object) {
 void Fish::ResolveCollision(GameObject* other_object) {
     switch (other_object->Type()) {
     case GameObjectTypes::Ship:
-    case GameObjectTypes::Net:
-        this->Destroy();
         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new CaptureEffect(GetPosition()));
-        money++;
+        if (!collided)
+        {
+            collided = true;
+            fishCnt--;
+            money++;
+        }
+        this->Destroy();
+        break;
+
+    case GameObjectTypes::Net:
+        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new CaptureEffect(GetPosition()));
+        if (!collided)
+        {
+            collided = true;
+            fishCnt--;
+            money++;
+        }
+        this->Destroy();
         break;
 
     case GameObjectTypes::RockBoundary:
