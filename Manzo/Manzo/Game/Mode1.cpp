@@ -108,7 +108,9 @@ void Mode1::Load() {
 	//background->Add("assets/images/background/bubble.png", 1.5f, DrawLayer::DrawUI);
 
     // UI
-    AddGSComponent(new UIManager());
+	if (!GetGSComponent<UIManager>()) {
+		AddGSComponent(new UIManager());
+	}
     ui_manager = GetGSComponent<UIManager>();
     ui_manager->AddUI(std::make_unique<FuelUI>(ship_ptr));
     ui_manager->AddUI(std::make_unique<Mouse>());
@@ -250,8 +252,8 @@ void Mode1::Draw() {
 void Mode1::Unload() {
 
 	ship_ptr = nullptr;
-	fishGenerator->~FishGenerator();
 	delete fishGenerator;
+	fishGenerator = nullptr;
 	playing = false;
 	soundPlaying = false;
 	replay = false;

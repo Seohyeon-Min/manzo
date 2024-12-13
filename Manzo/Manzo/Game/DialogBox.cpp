@@ -130,5 +130,11 @@ void Dialog::Draw() {
 }
 
 void Dialog::Unload() {
-	displayedText = "";
+	//displayedText = "";
+	DialogBox = nullptr;
+	Box_effect = nullptr;
+	Me = nullptr;
+	Sellerkeeper_1 = nullptr;
+	Perry = nullptr;
+	dialog = nullptr;
 }
