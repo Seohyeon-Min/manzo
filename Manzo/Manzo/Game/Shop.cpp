@@ -211,9 +211,6 @@ void Shop::Shop_icon_draw()
 }
 
 
-
-
-
 void Shop::Shop_button_draw()
 {
 	DrawSettings settings;
