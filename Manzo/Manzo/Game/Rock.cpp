@@ -47,26 +47,17 @@ void Rock::SetCenter() {
     center.y /= vertices.size();
     
 }
-vec2 MovingRock::Normalize(const vec2& vec) {
-    float length = std::sqrt(vec.x * vec.x + vec.y * vec.y);
-    vec2 normalized_vec = {0.f, 0.f};
 
-    if (length == 0) { return vec; }
-
-    normalized_vec.x = vec.x / length;
-    normalized_vec.y = vec.y / length;
-
-    return normalized_vec;
-}
 void MovingRock::Pop(const vec2& direction, float speed) {
-    vec2 normVec = Normalize(direction);
+    vec2 normVec = direction.Normalize();
     vec2 velo = { normVec.x * speed, normVec.y * speed };
     SetVelocity(velo);
     this->GetRockGroup()->SetVelocity(velo);
 }
 
 void MovingRock::PopBack(const vec2& direction, float speed) {
-    vec2 velo = { Normalize(direction).x * speed, Normalize(direction).y * speed };
+    vec2 normVec = direction.Normalize();
+    vec2 velo = { normVec.x * speed, normVec.y * speed };
     SetVelocity(velo);
     this->GetRockGroup()->SetVelocity(velo);
 

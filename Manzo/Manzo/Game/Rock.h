@@ -54,7 +54,6 @@ public:
 	std::string TypeName() override { return "Rock"; }
 	
 	//position & moving
-	vec2 Normalize(const vec2& vec);
 	void Hit(bool hit) { this->hit = hit; }
 	bool IsRange(const vec2& current_position);
 	void Pop(const vec2& direction, float speed);

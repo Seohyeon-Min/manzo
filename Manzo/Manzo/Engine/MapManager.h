@@ -31,7 +31,7 @@ public:
 	std::vector<vec2> parsePathData(const std::string& pathData);	// path parsing
 	void MakeRockGroups(Rock* rock, Polygon poly);
 	void MakeMovingRockGroups(MovingRock* moving_rock, Polygon poly);
-	void AddDrawCall();
+	//void AddDrawCall(); currently not using
 
 private:
 	char currentCommand = '\0';
