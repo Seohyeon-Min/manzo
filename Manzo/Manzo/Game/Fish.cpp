@@ -1,5 +1,5 @@
 #include "Fish.h"
-#include "DashEffect.h"
+#include "Effect.h"
 #include "ScreenWrap.h"
 
 #include "../Engine/GameObjectManager.h"

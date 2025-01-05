@@ -5,7 +5,7 @@
 #include "../Engine/Input.h"
 #include "../Engine/MapManager.h"
 #include "angles.h"
-#include "DashEffect.h"
+#include "Effect.h"
 #include "WindowState.h"
 
 #include <iostream>
