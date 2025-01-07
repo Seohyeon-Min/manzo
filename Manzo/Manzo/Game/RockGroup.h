@@ -48,11 +48,15 @@ public:
 	vec2 FindCenterPoly();
 	std::string GetIndex() { return index; }
 
+	void Loaded() { loaded = true; }
+	bool IsLoaded() { return loaded; }
+
 	// Points
 	std::vector<vec2> GetPoints() { return points; }
 	void SetPoints();
 
 private:
+	bool loaded = false; // Is Rockgroup loaded in map?
 	bool can_collide = true;
 	vec2 start_position;
 	mat3 matrix;

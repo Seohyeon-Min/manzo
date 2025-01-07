@@ -214,7 +214,7 @@ void Map::ParseSVG(const std::string& filename) {
                     poly.polyindex = polyIndex;
                 }
 
-                objects.push_back(poly);
+                //rocks.push_back(poly);
 
                 pathCountInGroup++;
                 currentTag.clear();
@@ -231,15 +231,29 @@ void Map::ParseSVG(const std::string& filename) {
                 std::cout << (poly.polyindex).substr(4, 1) << std::endl;
                     if ((poly.polyindex).substr(4, 1) == "2") {
                         MovingRock* moving_rock = new MovingRock(poly);
+                        
+                        rocks.push_back(moving_rock);
+
                         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(moving_rock);
                         moving_rock->AddGOComponent(new MAP_SATCollision(poly, moving_rock));
-                        MakeMovingRockGroups(moving_rock, poly);
+                        RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new group
+                        rockgroup->AddMovingRock(moving_rock);                                       //add poly into new group
+
+                        moving_rock->SetRockGroup(rockgroup);
+                        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rockgroup);
+                        rock_groups.push_back(rockgroup);
                     }
                     else {
                         Rock* rock = new Rock(poly);
-                        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rock);
-                        rock->AddGOComponent(new MAP_SATCollision(poly, rock));
-                        MakeRockGroups(rock, poly);
+                        
+                        rocks.push_back(rock);
+                        
+                        //rock->AddGOComponent(new MAP_SATCollision(poly, rock));
+                        RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new group
+                        rockgroup->AddRock(rock);                                       //add poly into new group
+
+                        rock->SetRockGroup(rockgroup);
+                        rock_groups.push_back(rockgroup);
                     }
 
                 
@@ -289,17 +303,6 @@ void Map::ParseSVG(const std::string& filename) {
     file.close();
 }
 
-
-void Map::AddDrawCall()
-{
-    for (auto& object : objects) {
-        object.Draw();
-    }
-    for (auto& rock_group : rock_groups) {
-        rock_group->Draw();
-    }
-}
-
 // Ear Clipping
 constexpr bool IsConvex(const vec2& a, const vec2& b, const vec2& c) noexcept {
     vec2 ab = b - a;
@@ -318,6 +321,7 @@ bool PointInTriangle(const vec2& p, const vec2& a, const vec2& b, const vec2& c)
     
     return (cross1 < 0 && cross2 < 0 && cross3 < 0) || (cross1 > 0 && cross2 > 0 && cross3 > 0);
 }
+
 std::vector<Polygon> EarClipping(const std::vector<vec2>& points) {
 
     // for convex polygon
@@ -457,30 +461,7 @@ std::vector<vec2> Map::parsePathData(const std::string& pathData) {
     return positions;
 }
 
-void Map::MakeRockGroups(Rock* rock, Polygon poly) {// Making RockGroups
-    if (rock_groups.empty()) {
-        RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new group
-        rockgroup->AddRock(rock);                                       //add poly into new group
 
-        rock->SetRockGroup(rockgroup);
-        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rockgroup);
-        rock_groups.push_back(rockgroup);
-    }
-    else {
-        if (rock_groups.back()->GetIndex() != poly.polyindex) {             // if poly has different index
-            RockGroup* rockgroup = new RockGroup(poly.polyindex);           // make new group
-            rockgroup->AddRock(rock);                                       //add poly into new group
-
-            rock->SetRockGroup(rockgroup);
-            Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rockgroup);
-            rock_groups.push_back(rockgroup);
-        }
-        else {                                                              // if poly has same index
-            rock_groups.back()->AddRock(rock);
-            rock->SetRockGroup(rock_groups.back());
-        }
-    }
-}
 void Map::MakeMovingRockGroups(MovingRock* moving_rock, Polygon poly) {
 
     // Making RockGroups
@@ -498,7 +479,7 @@ void Map::MakeMovingRockGroups(MovingRock* moving_rock, Polygon poly) {
             rockgroup->AddMovingRock(moving_rock);                                       //add poly into new group
 
             moving_rock->SetRockGroup(rockgroup);
-            Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rockgroup);
+            //Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rockgroup);
             rock_groups.push_back(rockgroup);
         }
         else {                                                              // if poly has same index
@@ -509,4 +490,42 @@ void Map::MakeMovingRockGroups(MovingRock* moving_rock, Polygon poly) {
 }
 
 
+bool Map::IsOverlapping(const Math::rect& camera_boundary, const Math::rect& rock) {
+    return !(camera_boundary.Right() < rock.Left() || camera_boundary.Left() > rock.Right() ||
+        camera_boundary.Top() < rock.Bottom() || camera_boundary.Bottom() > rock.Top());
+}
+
+void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
+    for (auto& rockgroup : rock_groups) {
+
+        std::vector<Rock*> rocks = rockgroup->GetRocks();
+        if(!rocks.empty()){
+            Polygon poly2 = rocks[0]->GetPolygon();
+
+            if (IsOverlapping(camera_boundary, poly2.FindBoundary())) {
+
+
+                for (Rock* rock : rocks) {
+                    //Add Rock in GameState
+                    if (!rock->IsLoaded()) {
+
+                        rock->Loaded();
+                        rock->AddGOComponent(new MAP_SATCollision(poly2, rock));
+                        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rock);
+                    }
+
+                }
+
+                // Add RockGroup in GameState
+                if (!rockgroup->IsLoaded()) {
+
+                    rockgroup->Loaded();
+                    Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rockgroup);
+                }
+                
+            }
+        }
+        
+    }
+}
 

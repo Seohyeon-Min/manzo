@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include "WindowState.h"
+#include "MapManager.h"
 #include <iostream>
 
 Cam::Cam()
@@ -39,12 +40,16 @@ void Cam::Update(double dt, const vec2& player_position, bool playerMove)
     if (caminfo.camera.Position.y > limit.Top()) {
         caminfo.camera.Position.y = limit.Top();
     }
+
+    LoadMap();
+    
 }
 
 
 void Cam::SetPosition(vec2 new_position)
 {
 	caminfo.camera.Position = new_position;
+    
 }
 
 const vec2& Cam::GetPosition() const
@@ -55,4 +60,21 @@ const vec2& Cam::GetPosition() const
 void Cam::SetLimit(Math::rect new_limit)
 {
 	limit = new_limit;
+}
+
+Math::rect Cam::GetCameraBoundary() const
+{
+    float half_width = Engine::window_width / 2.0f;
+    float half_height = Engine::window_height / 2.0f;
+    float offset = 100.0f;
+
+    return Math::rect{
+        {caminfo.camera.Position.x - half_width - offset, caminfo.camera.Position.y - half_height - offset},
+        {caminfo.camera.Position.x + half_width + offset, caminfo.camera.Position.y + half_height + offset}
+    };
+}
+
+void Cam::LoadMap() { 
+    Math::rect camera_boundary = GetCameraBoundary();
+    Engine::GetGameStateManager().GetGSComponent<Map>()->LoadMapInBoundary(camera_boundary);
 }

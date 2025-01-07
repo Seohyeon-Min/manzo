@@ -24,18 +24,18 @@ Created:    September 12, 2024
 class Map : public Component {
 public:
 	~Map() {
-		objects.clear();
+		rocks.clear();
 		rock_groups.clear();
 	}
 	void ParseSVG(const std::string& filename);
 	std::vector<vec2> parsePathData(const std::string& pathData);	// path parsing
-	void MakeRockGroups(Rock* rock, Polygon poly);
 	void MakeMovingRockGroups(MovingRock* moving_rock, Polygon poly);
-	//void AddDrawCall(); currently not using
+	void LoadMapInBoundary(const Math::rect& camera_boundary);
+	bool IsOverlapping(const Math::rect& a, const Math::rect& b);
 
 private:
 	char currentCommand = '\0';
-	std::vector<Rock> objects;
+	std::vector<Rock*> rocks;
 	std::vector<RockGroup*> rock_groups;
 	vec2 circle_position{ 0,0 };
 

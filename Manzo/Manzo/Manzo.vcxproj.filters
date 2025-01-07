@@ -133,6 +133,15 @@
     <ClCompile Include="Game\Shop.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Rock.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\RockGroup.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\RockPoint.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h">
@@ -310,6 +319,15 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Game\DashEffect.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Rock.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\RockGroup.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\RockPoint.h">
       <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>

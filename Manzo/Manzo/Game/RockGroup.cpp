@@ -171,9 +171,10 @@ void RockGroup::ResolveCollision(GameObject* other_object)
         if (this->can_collide) {
             for (MovingRock* rock : this->GetMovingRocks()) {
                 rock->Hit(true);    // rock changes state to State_Pop
+
+                this->can_collide = false;
             }
         }
-        this->can_collide = false;
         
 
     }
