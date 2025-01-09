@@ -124,8 +124,8 @@ void Dialog::Draw() {
 		Engine::GetRender().AddDrawCall(draw_call_Perry, DrawLayer::DrawDialog);
 		Engine::GetRender().AddDrawCall(draw_call_effect, DrawLayer::DrawDialog);
 		Engine::GetRender().AddDrawCall(draw_call_box, DrawLayer::DrawDialog);
-		Engine::GetFontManager().PrintText(FontType::Thin, displayedText.c_str(), {-0.5f,-0.62f}, 0.0f, 0.00012f, {1.0f,1.0f,1.0f});
-		Engine::GetFontManager().PrintText(FontType::Bold, character.c_str(), { -0.5f,-0.52f }, 0.0f, 0.0001f, { 1.0f,1.0f,1.0f });		
+		//Engine::GetFontManager().PrintText(FontType::Thin, displayedText.c_str(), {-0.5f,-0.62f}, 0.0f, 0.00012f, {1.0f,1.0f,1.0f});
+		//Engine::GetFontManager().PrintText(FontType::Bold, character.c_str(), { -0.5f,-0.52f }, 0.0f, 0.0001f, { 1.0f,1.0f,1.0f });		
 	}
 }
 

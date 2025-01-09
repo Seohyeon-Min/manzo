@@ -106,12 +106,6 @@
     <ClCompile Include="Game\GameObjectTypes.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Font.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\FontManager.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="Game\AI.cpp">
       <Filter>Game</Filter>
     </ClCompile>
@@ -280,12 +274,6 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Engine\DrawSetting.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Font.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\FontManager.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Game\AI.h">
