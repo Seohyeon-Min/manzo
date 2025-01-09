@@ -34,7 +34,7 @@ public:
     virtual void Draw() = 0;
     virtual bool IsCollidingWith(GameObject* other_object) = 0;
     virtual bool IsCollidingWith(vec2 point) = 0;
-
+    virtual Math::rect GetBoundary() const = 0;
 };
 
 class RectCollision : public Collision {
@@ -47,7 +47,10 @@ public:
     bool IsCollidingWith(GameObject* other_object) override;
     bool IsCollidingWith(vec2 point) override;
     float GetT() { return t; }
-    Math::rect WorldBoundary_rect();
+    Math::rect GetBoundary() const override {
+        return WorldBoundary_rect();
+    }
+    Math::rect WorldBoundary_rect() const;
     std::pair<vec2, vec2> GetCollidingEdge() { return colliding_edge; }
 
 private:
@@ -66,7 +69,10 @@ public:
     }
     bool IsCollidingWith(GameObject* other_object) override;
     bool IsCollidingWith(vec2 point) override;
-    Polygon WorldBoundary_poly();
+    Math::rect GetBoundary() const override {
+        return Math::rect{};
+    }
+    Polygon WorldBoundary_poly() const;
     std::pair<vec2, vec2> GetCollidingEdge() { return colliding_edge; }
 private:
     GameObject* object;

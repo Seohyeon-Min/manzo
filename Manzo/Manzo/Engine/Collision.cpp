@@ -51,7 +51,7 @@ RectCollision::RectCollision(Math::irect boundary, GameObject* object) :
     Engine::GetShaderManager().LoadShader("default_collision", "assets/shaders/default_collision.vert", "assets/shaders/default_collision.frag");
 }
 
-Math::rect RectCollision::WorldBoundary_rect() {
+Math::rect RectCollision::WorldBoundary_rect() const {
     //std::cout << object->GetMatrix().column2.x << std::endl;
     return {
         {(object->GetMatrix() * mat3::build_translation((vec2)boundary.point_1)).column2.x,
@@ -61,7 +61,7 @@ Math::rect RectCollision::WorldBoundary_rect() {
     };
 }
 
-Polygon MAP_SATCollision::WorldBoundary_poly() {
+Polygon MAP_SATCollision::WorldBoundary_poly() const {
     Polygon boundary_poly;
     vec2 transformedPoint;
 

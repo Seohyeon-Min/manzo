@@ -36,6 +36,9 @@ public:
     virtual std::string TypeName() = 0;
     bool IsCollidingWith(GameObject* other_object);
     bool IsCollidingWith(vec2 point);
+    bool IsRenderable() const {
+        return !destroy;
+    }
     virtual bool CanCollideWith(GameObjectTypes other_object_type);
     virtual void ResolveCollision([[maybe_unused]] GameObject* other_object) { };
     virtual void Update(double dt);

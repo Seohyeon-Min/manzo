@@ -40,11 +40,23 @@ public:
     mat3 cam_to_ndc;
     mat3 world_to_ndc;
 
+    Math::rect GetBounds() const {
+        vec2 view_size = caminfo.camera_view.CalcViewSizeWithZoom();
+        float half_width = view_size.x / 7.0f;
+        float half_height = view_size.y / 7.0f;
+
+        vec2 position = caminfo.camera.Position;
+
+        return {
+            {position.x - half_width, position.y - half_height}, // LeftBottom
+            {position.x + half_width, position.y + half_height}  // RightTop
+        };
+    }
+
 private:
     Math::rect limit;
 
-    struct CamInfo
-    {
+    struct CamInfo {
         Camera     camera{};
         CameraView camera_view{};
         float      move_scalar = 0;
@@ -53,3 +65,4 @@ private:
         float      move_speed = 240.0f;
     } caminfo;
 };
+

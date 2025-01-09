@@ -11,6 +11,7 @@ Created:    Aprill 29, 2023
 
 #include "GameObjectManager.h"
 #include "MapManager.h"
+#include "Camera.h"
 
 void GameObjectManager::Add(GameObject* object)
 {
@@ -49,6 +50,7 @@ void GameObjectManager::DrawAll()
 	for (auto object : objects) {
 		object->Draw();
 	}
+
 	Engine::GetRender().RenderAll();
 }
 
