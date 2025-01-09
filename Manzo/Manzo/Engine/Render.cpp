@@ -132,14 +132,14 @@ void Render::ApplyPostProcessing()
     auto* bloomShader = Engine::GetShaderManager().GetShader("post_bloom");
     bloomShader->Use();
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0); // 기본 프레임버퍼로 출력
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glClear(GL_COLOR_BUFFER_BIT);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer.GetColorAttachment());
     bloomShader->SendUniform("uSceneTexture", 0);
     bloomShader->SendUniform("uThreshold", 0.70f);
-    bloomShader->SendUniform("uBlurDirection", 1.0f, 0.0f); // 수평 블러
+    bloomShader->SendUniform("uBlurDirection", 1.0f, 0.0f); 
     bloomShader->SendUniform("uResolution", static_cast<float>(Engine::window_width));
     bloomShader->SendUniform("uBloomIntensity", 1.2f);
 
@@ -151,11 +151,9 @@ void Render::ApplyPostProcessing()
 
 
 Math::rect CalculateAABB(const mat3& model_to_world, const vec2& frame_size) {
-    // 로컬 좌표에서 좌하단과 우상단 계산
     vec2 left_bottom_local = { -frame_size.x * 0.5f, -frame_size.y * 0.5f };
     vec2 right_top_local = { frame_size.x * 0.5f, frame_size.y * 0.5f };
 
-    // 월드 좌표계로 변환
     vec3 left_bottom_world = (model_to_world * mat3::build_translation(left_bottom_local)).column2;
     vec3 right_top_world = (model_to_world * mat3::build_translation(right_top_local)).column2;
 
@@ -163,27 +161,25 @@ Math::rect CalculateAABB(const mat3& model_to_world, const vec2& frame_size) {
     //std::cout << "  LeftBottom: (" << left_bottom_world.x << ", " << left_bottom_world.y << ")" << std::endl;
     //std::cout << "  RightTop: (" << right_top_world.x << ", " << right_top_world.y << ")" << std::endl;
 
-    // AABB 반환
     return {
-        {left_bottom_world.x, left_bottom_world.y}, // 좌하단
-        {right_top_world.x, right_top_world.y}      // 우상단
+        {left_bottom_world.x, left_bottom_world.y},
+        {right_top_world.x, right_top_world.y} 
     };
 }
 
 
 bool ShouldRender(const Math::rect& objectBounds, const Math::rect& cameraBounds) {
-    //// 디버깅 출력
+
     //std::cout << "Checking ShouldRender:" << std::endl;
     //std::cout << "  Object Bounds: Left(" << objectBounds.Left() << "), Right(" << objectBounds.Right()
     //    << "), Bottom(" << objectBounds.Bottom() << "), Top(" << objectBounds.Top() << ")" << std::endl;
     //std::cout << "  Camera Bounds: Left(" << cameraBounds.Left() << "), Right(" << cameraBounds.Right()
     //    << "), Bottom(" << cameraBounds.Bottom() << "), Top(" << cameraBounds.Top() << ")" << std::endl;
 
-    // AABB 겹침 여부 확인
-    if (objectBounds.Left() > cameraBounds.Right() ||  // 객체가 카메라의 오른쪽 바깥
-        objectBounds.Right() < cameraBounds.Left() ||  // 객체가 카메라의 왼쪽 바깥
-        objectBounds.Top() < cameraBounds.Bottom() ||  // 객체가 카메라의 아래쪽 바깥
-        objectBounds.Bottom() > cameraBounds.Top()) {  // 객체가 카메라의 위쪽 바깥
+    if (objectBounds.Left() > cameraBounds.Right() ||
+        objectBounds.Right() < cameraBounds.Left() ||
+        objectBounds.Top() < cameraBounds.Bottom() ||
+        objectBounds.Bottom() > cameraBounds.Top()) {
         return false;
     }
 
@@ -206,23 +202,23 @@ void Render::Draw(const DrawCall& draw_call) {
         if constexpr (std::is_same_v<T, Sprite*>) {
             if (drawable != nullptr) {
                 Sprite* sprite = drawable;
-                texture = drawable->GetTexture(); // Sprite 텍스처
-                texel_position = (vec2)sprite->GetFrameTexel(sprite->GetCurrentFrame()); // 프레임 시작 좌표
-                frame_size = sprite->GetFrameSize(); // 프레임 크기
+                texture = drawable->GetTexture();
+                texel_position = (vec2)sprite->GetFrameTexel(sprite->GetCurrentFrame());
+                frame_size = sprite->GetFrameSize();
 
             }
         }
         else if constexpr (std::is_same_v<T, GLTexture*>) {
             if (drawable != nullptr) {
-                texture = drawable; // GLTexture 텍스처
-                texel_position = { 0, 0 }; // 기본값
-                frame_size = { texture->GetSize().x, texture->GetSize().y }; // 전체 텍스처 크기
+                texture = drawable; 
+                texel_position = { 0, 0 };
+                frame_size = { texture->GetSize().x, texture->GetSize().y };
             }
         }
         }, draw_call.drawable);
 
 
-        mat3 model_to_world = *draw_call.transform * mat3::build_scale(vec2((float)frame_size.x, (float)frame_size.y)); // 프레임 크기 적용
+    mat3 model_to_world = *draw_call.transform * mat3::build_scale(vec2((float)frame_size.x, (float)frame_size.y));
     mat3 WORLD_TO_NDC = settings.is_UI
         ? mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height)
         : GetWorldtoNDC();
@@ -312,61 +308,108 @@ void Render::ClearDrawCalls()
 }
 
 
-void Render::DrawBackground(const DrawCall& draw_call)
-{
+void Render::DrawBackground(const DrawCall& draw_call) {
     const GLShader* shader = draw_call.shader;
     auto settings = draw_call.settings;
+    GLTexture* texture = nullptr;
+    vec2 texel_position;
+    ivec2 frame_size;
 
-    GLTexture* texture;
+    // Drawable 객체 처리
     std::visit([&](auto&& drawable) {
         using T = std::decay_t<decltype(drawable)>;
         if constexpr (std::is_same_v<T, Sprite*>) {
             if (drawable != nullptr) {
-                texture = drawable->GetTexture(); // sprite
+                Sprite* sprite = drawable;
+                texture = sprite->GetTexture();
+                texel_position = (vec2)sprite->GetFrameTexel(sprite->GetCurrentFrame());
+                frame_size = sprite->GetFrameSize();
             }
         }
         else if constexpr (std::is_same_v<T, GLTexture*>) {
             if (drawable != nullptr) {
-                texture = drawable; // texture
+                texture = drawable;
+                texel_position = { 0, 0 };
+                frame_size = { texture->GetSize().x, texture->GetSize().y };
             }
         }
         }, draw_call.drawable);
 
-    shader->Use();
-
-    if (texture) {
-        texture->UseForSlot(1);
-        shader->SendUniform("uTex2d", 1);
+    if (!texture) {
+        throw std::runtime_error("No texture provided for background drawing.");
     }
-    else {
-        throw std::runtime_error("no texture!");
-    }
-
-    if (settings.do_blending || settings.glow || settings.modulate_color) {
-        glCheck(glEnable(GL_BLEND));
-    }
-    else {
-        glCheck(glDisable(GL_BLEND)); // 블렌딩 비활성화
-    }
-
-    if (settings.glow) {
-        glCheck(glBlendFunc(GL_ONE, GL_ONE)); // Glow 블렌딩 설정
-    }
-    else if (settings.do_blending) {
-        glCheck(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)); // 일반 알파 블렌딩 설정
-    }
-    else if (settings.modulate_color) {
-        glCheck(glBlendFunc(GL_DST_COLOR, GL_ZERO));
-    }
-
 
     vec2 texture_size = (vec2)texture->GetSize();
+
+    // 모델 -> 월드 변환
     mat3 model_to_world = *draw_call.transform * mat3::build_scale(texture_size);
 
+    // 월드 -> NDC 변환
     mat3 WORLD_TO_NDC = GetWorldtoNDC();
+    mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
 
-    const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
-    shader->SendUniform("uModelToNDC", util::to_span(model_to_ndc));
+    // 카메라의 AABB와 텍스처의 월드 AABB 계산
+    Math::rect camera_bounds = Engine::GetGameStateManager().GetGSComponent<Cam>()->GetBounds();
+    vec2 padding(100.f, 100.f);
+
+    // point_1과 point_2에 직접 접근하여 계산
+    camera_bounds.point_1 -= padding;
+    camera_bounds.point_2 += padding;
+    Math::rect texture_bounds = CalculateAABB(*draw_call.transform, vec2((float)frame_size.x, (float)frame_size.y));
+
+    // 카메라와 텍스처 경계의 교차 영역 계산
+    Math::rect clipped_bounds = {
+        {std::max(texture_bounds.Left(), camera_bounds.Left()), std::max(texture_bounds.Bottom(), camera_bounds.Bottom())},
+        {std::min(texture_bounds.Right(), camera_bounds.Right()), std::min(texture_bounds.Top(), camera_bounds.Top())}
+    };
+
+    // 텍스처 좌표 계산
+    float tex_left = (clipped_bounds.Left() - texture_bounds.Left()) / texture_size.x;
+    float tex_right = (clipped_bounds.Right() - texture_bounds.Left()) / texture_size.x;
+    float tex_bottom = (clipped_bounds.Bottom() - texture_bounds.Bottom()) / texture_size.y;
+    float tex_top = (clipped_bounds.Top() - texture_bounds.Bottom()) / texture_size.y;
+
+
+    // 클리핑된 모델 크기 계산
+    vec2 clipped_model_size = {
+        clipped_bounds.Right() - clipped_bounds.Left(),
+        clipped_bounds.Top() - clipped_bounds.Bottom()
+    };
+
+    // 새로 조정된 모델 -> 월드 변환
+    mat3 clipped_model_to_world = mat3::build_translation(Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition()) *
+    mat3::build_scale(clipped_model_size);
+
+    // 조정된 모델 -> NDC 변환
+    mat3 clipped_model_to_ndc = WORLD_TO_NDC * clipped_model_to_world;
+
+    // 렌더링
+    shader->Use();
+    texture->UseForSlot(0);
+    shader->SendUniform("uTex2d", 0);
+
+    // 블렌딩 설정
+    if (settings.do_blending || settings.glow || settings.modulate_color) {
+        glCheck(glEnable(GL_BLEND));
+        if (settings.glow) {
+            glCheck(glBlendFunc(GL_ONE, GL_ONE));
+        }
+        else if (settings.do_blending) {
+            glCheck(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+        }
+        else if (settings.modulate_color) {
+            glCheck(glBlendFunc(GL_DST_COLOR, GL_ZERO));
+        }
+    }
+    else {
+        glCheck(glDisable(GL_BLEND));
+    }
+
+    // UV 좌표와 변환 행렬 전송
+    shader->SendUniform("uUV", tex_left, tex_top, tex_right, tex_bottom);
+    shader->SendUniform("uModelToNDC", util::to_span(clipped_model_to_ndc));
+
+    // 모델 렌더링
     model.Use();
     GLDrawIndexed(model);
 

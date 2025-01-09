@@ -42,8 +42,8 @@ public:
 
     Math::rect GetBounds() const {
         vec2 view_size = caminfo.camera_view.CalcViewSizeWithZoom();
-        float half_width = view_size.x / 7.0f;
-        float half_height = view_size.y / 7.0f;
+        float half_width = view_size.x / 2.0f;
+        float half_height = view_size.y / 2.0f;
 
         vec2 position = caminfo.camera.Position;
 
