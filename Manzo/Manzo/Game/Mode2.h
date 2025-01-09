@@ -45,7 +45,7 @@ private:
     Background* background;
     Skillsys* skill_ptr;
     UIManager* ui_manager;
-    Dialog* dialog;
+    Dialog* dialog_ptr;
 
     float y_limit = 15.0f;
     float frequency = 0.9f;
