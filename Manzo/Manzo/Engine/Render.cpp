@@ -163,7 +163,6 @@ Math::rect CalculateAABB(const mat3& model_to_world, const vec2& frame_size) {
     //std::cout << "  LeftBottom: (" << left_bottom_world.x << ", " << left_bottom_world.y << ")" << std::endl;
     //std::cout << "  RightTop: (" << right_top_world.x << ", " << right_top_world.y << ")" << std::endl;
 
-
     // AABB 반환
     return {
         {left_bottom_world.x, left_bottom_world.y}, // 좌하단
@@ -173,10 +172,22 @@ Math::rect CalculateAABB(const mat3& model_to_world, const vec2& frame_size) {
 
 
 bool ShouldRender(const Math::rect& objectBounds, const Math::rect& cameraBounds) {
-    return !(objectBounds.Left() > cameraBounds.Right() ||  // 객체가 카메라의 오른쪽 바깥
+    //// 디버깅 출력
+    //std::cout << "Checking ShouldRender:" << std::endl;
+    //std::cout << "  Object Bounds: Left(" << objectBounds.Left() << "), Right(" << objectBounds.Right()
+    //    << "), Bottom(" << objectBounds.Bottom() << "), Top(" << objectBounds.Top() << ")" << std::endl;
+    //std::cout << "  Camera Bounds: Left(" << cameraBounds.Left() << "), Right(" << cameraBounds.Right()
+    //    << "), Bottom(" << cameraBounds.Bottom() << "), Top(" << cameraBounds.Top() << ")" << std::endl;
+
+    // AABB 겹침 여부 확인
+    if (objectBounds.Left() > cameraBounds.Right() ||  // 객체가 카메라의 오른쪽 바깥
         objectBounds.Right() < cameraBounds.Left() ||  // 객체가 카메라의 왼쪽 바깥
         objectBounds.Top() < cameraBounds.Bottom() ||  // 객체가 카메라의 아래쪽 바깥
-        objectBounds.Bottom() > cameraBounds.Top());   // 객체가 카메라의 위쪽 바깥
+        objectBounds.Bottom() > cameraBounds.Top()) {  // 객체가 카메라의 위쪽 바깥
+        return false;
+    }
+
+    return true;
 }
 
 
@@ -209,6 +220,23 @@ void Render::Draw(const DrawCall& draw_call) {
             }
         }
         }, draw_call.drawable);
+
+
+        mat3 model_to_world = *draw_call.transform * mat3::build_scale(vec2((float)frame_size.x, (float)frame_size.y)); // 프레임 크기 적용
+    mat3 WORLD_TO_NDC = settings.is_UI
+        ? mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height)
+        : GetWorldtoNDC();
+    const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
+
+
+    Math::rect object_bounds = CalculateAABB(*draw_call.transform, vec2((float)frame_size.x, (float)frame_size.y));
+
+    auto cameraBounds = Engine::GetGameStateManager().GetGSComponent<Cam>()->GetBounds();
+
+    if (!ShouldRender(object_bounds, cameraBounds)) {
+        return;
+    }
+
 
     if (shader == nullptr) {
         shader = Engine::GetShaderManager().GetShader("default_collision");
@@ -250,22 +278,9 @@ void Render::Draw(const DrawCall& draw_call) {
 
     shader->SendUniform("uUV", left_u, top_v, right_u, bottom_v);
 
-    mat3 model_to_world = *draw_call.transform * mat3::build_scale(vec2((float)frame_size.x, (float)frame_size.y)); // 프레임 크기 적용
-    mat3 WORLD_TO_NDC = settings.is_UI
-        ? mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height)
-        : GetWorldtoNDC();
-    const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
 
-
-    Math::rect object_bounds = CalculateAABB(model_to_world, vec2((float)frame_size.x, (float)frame_size.y));
-
-    auto cameraBounds = Engine::GetGameStateManager().GetGSComponent<Cam>()->GetBounds();
-    if (!ShouldRender(object_bounds, cameraBounds)) {
-
-        return;
-    }
-    glEnable(GL_SCISSOR_TEST);
-    glScissor(camera_left, camera_bottom, camera_width, camera_height);
+    //glEnable(GL_SCISSOR_TEST);
+    //glScissor(camera_left, camera_bottom, camera_width, camera_height);
 
     shader->SendUniform("uModelToNDC", util::to_span(model_to_ndc)); // Send transformation matrix to shader
     if (Engine::GetShaderManager().GetShader("pixelate") == shader) 				
