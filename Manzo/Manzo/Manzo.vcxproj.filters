@@ -130,6 +130,8 @@
     <ClCompile Include="Game\RockPoint.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\FontManager.cpp" />
+    <ClCompile Include="Engine\Font.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h">
@@ -306,5 +308,6 @@
     <ClInclude Include="Game\RockPoint.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\FontManager.h" />
   </ItemGroup>
 </Project>
