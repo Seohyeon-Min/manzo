@@ -7,6 +7,7 @@
 #include <vec2.h>
 
 #include <GL/glew.h>
+#include "ShaderManager.h"
 
 class Font {
 	struct Glyph {
@@ -487,8 +488,8 @@ private:
 	}
 
 public:
-	void drawSetup() {
-		GLint location;
+	void drawSetup(GLShader* shader) {
+		/*GLint location;
 
 		location = glGetUniformLocation(program, "glyphs");
 		glUniform1i(location, 0);
@@ -501,7 +502,7 @@ public:
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_BUFFER, curveTexture);
 
-		glActiveTexture(GL_TEXTURE0);
+		glActiveTexture(GL_TEXTURE0);*/
 	}
 
 	void draw(float x, float y, const std::string& text) {

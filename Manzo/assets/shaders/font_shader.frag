@@ -12,7 +12,7 @@ struct Curve {
 
 uniform isamplerBuffer glyphs;
 uniform samplerBuffer curves;
-uniform vec4 color;
+uniform vec3 color;
 
 in vec2 uv;
 flat in int bufferIndex;
@@ -108,6 +108,6 @@ void main() {
 
 
 	alpha = clamp(alpha, 0.0, 1.0);
-	result = color * alpha;
+	result = vec4(color,1);
 
 }

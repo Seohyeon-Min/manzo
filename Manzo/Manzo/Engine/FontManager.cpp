@@ -51,12 +51,9 @@ void FontManager::PrintText(std::string txt, vec2 position, vec3 color)
 
 	shader = Engine::GetShaderManager().GetShader("font_shader");
 
-	mainFont->drawSetup();
-
-	GLuint location = glGetUniformLocation(0, "color");
-	glUniform4f(location, 1.0f, 1.0f, 1.0f, 1.0f);  //Font Color
+	shader->Use(true);
+	shader->SendUniform("color", color.x, color.y, color.z);
+	mainFont->drawSetup(shader);
 
 	mainFont->draw(position.x, position.y, txt);
-
-	shader->Use(false);
 }
