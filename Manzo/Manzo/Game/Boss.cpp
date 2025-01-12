@@ -244,8 +244,8 @@ void Boss::Move(double dt) {
 
 
 void Boss::LoadBossfile() {
-	BossJSONfileMap.push_back("assets/jsons/boss_e.json");
-	BossJSONfileMap.push_back("assets/jsons/boss_y.json");
+	BossJSONfileMap.push_back("assets/jsons/boss/boss_e.json");
+	BossJSONfileMap.push_back("assets/jsons/boss/boss_y.json");
 	BossJSONfileMap.push_back("Please add file path here");
 }
 

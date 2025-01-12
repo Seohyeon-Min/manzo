@@ -128,8 +128,7 @@ void Mode1::Load() {
 	boss_ptr = new Boss({ 750,500 }, Boss::BossName::e, Boss::BossType::MovingToLocation);
 	boss_ptr->ReadBossJSON(Boss::BossName::e);
 	BossFirstPos.push_back(std::make_pair(boss_ptr->GetFirstPosition()[0], boss_ptr->GetFirstPosition()[1]));
-	bossPosition = { 750,500, 0.0f };
-
+    bossPosition = { (float)boss_ptr->GetFirstPosition()[0],(float)boss_ptr->GetFirstPosition()[1],0.0f };
 
 	// Skill
 	if (!Engine::Instance().GetTmpPtr())
@@ -199,32 +198,31 @@ void Mode1::Update(double dt) {
 	Engine::GetAudioManager().Set3dListenerAndOrientation(smoothShipPosition,vec3{ 0.0f, -1.0f, 0.0f },vec3{ 0.0f, 0.0f, 1.0f }	);
 
 	// Apply 3D position for the boss and calculate volume based on the distance
-	if (isWithinRange) {
-		if (!soundPlaying)
-		{
-			Engine::GetAudioManager().PlayMusics("e morse");
-			soundPlaying = true;
-		}
-		else
-		{
-			if(!replay)
-			{
-				Engine::GetAudioManager().RestartPlayMusic("e morse");
-				replay = true;
-			}
-		}
-		Engine::GetAudioManager().SetChannel3dPosition("e morse", bossPosition);
+    if (isWithinRange) {
+        if (!soundPlaying) {
+            Engine::GetAudioManager().PlayMusics("e morse");
+            soundPlaying = true;
+        }
+        else {
+            if (!replay) {
+                Engine::GetAudioManager().RestartPlayMusic("e morse");
+                replay = true;
+            }
+        }
 
-		// Calculate the volume based on the distance
-		float volumeFactor = 1.0f - std::clamp(distance / 300.0f, 0.0f, 1.0f);
-		float volume = std::lerp(0.0f, 1.0f, volumeFactor);
-		Engine::GetAudioManager().SetChannelVolume("e morse", volume);
-	}
-	else
-	{
-		Engine::GetAudioManager().StopPlayingMusic("e morse");
-		replay = false;
-	}
+        Engine::GetAudioManager().SetChannel3dPosition("e morse", bossPosition);
+
+        float volumeFactor = 1.0f - std::clamp(distance / 300.0f, 0.0f, 1.0f);
+        //float volume = std::lerp(0.0f, 1.0f, volumeFactor);
+        float volume = std::lerp(-20.0f, 1.0f, volumeFactor);
+
+        Engine::GetAudioManager().SetChannelVolume("e morse", volume);
+    }
+    else {
+        Engine::GetAudioManager().StopPlayingMusic("e morse");
+        replay = false;
+    }
+
 }
 
 void Mode1::FixedUpdate(double dt)
@@ -242,12 +240,9 @@ void Mode1::Draw() {
     GetGSComponent<GameObjectManager>()->DrawAll();
     ui_manager->AddDrawCalls();
 
-	Engine::GetFontManager().PrintText("A", { 0.f,0.f }, { 1.f,1.f,1.f }, 0.5f);
 
     // Draw Font
-    //Engine::GetFontManager().PrintText("HI", { 0.f,0.f }, 0, 0.0005f, { 1.0f,1.0f,1.0f });
-	//Engine::GetFontManager().PrintText(FontType::Bold, "HI", { 0.5f,0.5f }, 0.0f, 0.0005f, { 1.0f,1.0f,1.0f });
-    //Engine::GetFontManager().PrintText(FontType::Thin, "A", { 0.5f,0.5f }, 0.0f, 0.0005f, { 0.0f,0.0f,0.0f });
+	Engine::GetFontManager().PrintText("E", { 0.f,0.f }, { 1.f,1.f,1.f }, 0.5f);
 }
 
 void Mode1::Unload() {

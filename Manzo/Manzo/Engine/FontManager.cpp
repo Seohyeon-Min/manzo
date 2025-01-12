@@ -52,6 +52,7 @@ void FontManager::PrintText(std::string txt, vec2 position, vec3 color, float al
 	shader = Engine::GetShaderManager().GetShader("font_shader");
 
 	shader->Use(true);
+
 	shader->SendUniform("color", color.x, color.y, color.z);
 	shader->SendUniform("alphaV", alpha);
 	mainFont->drawSetup(shader);
