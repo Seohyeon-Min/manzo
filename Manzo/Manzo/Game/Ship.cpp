@@ -518,28 +518,26 @@ void Pump::Update(double dt)
 void Pump::Draw(DrawLayer drawlayer)
 {
     
-    DrawSettings settings;
-    settings.do_blending = true;
 
     GetMatrix();
-
+    //float radius = 0.0f;
+    //vec2 pos;
+    //Type draw_type = Type::Circle;  // Circle е╦ют
     CircleDrawCall draw_call = {
     min_pump_radius,                       // Texture to draw
     GetPosition(),                          // Transformation matrix
-    nullptr,
-    nullptr,
-    settings
     };
+
+    draw_call.settings.do_blending = true;
 
     CircleDrawCall draw_call2 = {
     radius,                       // Texture to draw
     GetPosition(),                          // Transformation matrix
-    Engine::GetShaderManager().GetShader("change_alpha_no_texture"), // Shader to use
-    [this](const GLShader* shader) {
-        this->SetUniforms(shader);
-    },
-    settings
     };
+
+    draw_call2.shader = Engine::GetShaderManager().GetShader("change_alpha_no_texture"); // Shader to use
+    draw_call2.settings.do_blending = true;
+    draw_call2.SetUniforms = [this](const GLShader* shader) {this->SetUniforms(shader);};
 
     Engine::GetRender().AddDrawCall(draw_call);
     Engine::GetRender().AddDrawCall(draw_call2);

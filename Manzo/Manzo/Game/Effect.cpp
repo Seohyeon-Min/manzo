@@ -20,19 +20,17 @@ void Effect::Update(double dt) {
 
 void Effect::Draw(DrawLayer drawlayer) {
 
-    DrawSettings settings;
-    settings.do_blending = true;
     Sprite* sprite = GetGOComponent<Sprite>();
 
     DrawCall draw_call = {
         sprite,
         &GetMatrix(),
-        Engine::GetShaderManager().GetShader("change_alpha"),
-        [this](const GLShader* shader) {
-            SetAlpha(shader);
-        },
-        settings
+        Engine::GetShaderManager().GetShader("change_alpha") // Shader to use
     };
+
+    draw_call.settings.do_blending = true;
+    draw_call.SetUniforms = [this](const GLShader* shader) { SetAlpha(shader); };
+    draw_call.sorting_layer = drawlayer;
 
     GameObject::Draw(draw_call);
 }
@@ -66,17 +64,17 @@ void DashEffect::Update(double dt) {
 }
 
 void DashEffect::Draw(DrawLayer drawlayer) {
-    DrawSettings settings;
-    settings.do_blending = true;
 
     Sprite* sprite = GetGOComponent<Sprite>();
     DrawCall draw_call = {
         sprite,
         &GetMatrix(),
-        Engine::GetShaderManager().GetShader("change_alpha"),
-        [this](const GLShader* shader) { SetAlpha(shader); },
-        settings
+        Engine::GetShaderManager().GetShader("change_alpha") // Shader to use
     };
+
+    draw_call.settings.do_blending = true;
+    draw_call.SetUniforms = [this](const GLShader* shader) { SetAlpha(shader); };
+    draw_call.sorting_layer = drawlayer;
     GameObject::Draw(draw_call);
 }
 

@@ -52,12 +52,7 @@ void GameObject::Draw(DrawLayer drawlayer) {
 	Sprite* sprite = GetGOComponent<Sprite>();
 	if (sprite != nullptr) {
 		if (shader == nullptr) {
-			if (IsPixelShaderApplicable(Type())) {
-				shader = Engine::GetShaderManager().GetShader("pixelate");
-			}
-			else {
-				shader = Engine::GetShaderManager().GetDefaultShader();
-			}
+			shader = Engine::GetShaderManager().GetDefaultShader();
 		}
 
 		DrawCall draw_call = {
@@ -67,7 +62,8 @@ void GameObject::Draw(DrawLayer drawlayer) {
 		};
 
 		if (drawlayer != DrawLayer::Draw) {
-			Engine::GetRender().AddDrawCall(draw_call, drawlayer);
+			draw_call.sorting_layer = drawlayer;
+			Engine::GetRender().AddDrawCall(draw_call);
 		}
 		else {
 			Engine::GetRender().AddDrawCall(draw_call);  // basic layer
@@ -81,7 +77,7 @@ void GameObject::Draw(DrawLayer drawlayer) {
 	}
 }
 
-void GameObject::Draw(const DrawCall& draw_call, DrawLayer drawlayer)
+void GameObject::Draw(const DrawCall& draw_call)
 {
 	Sprite* sprite = GetGOComponent<Sprite>();
 	if (sprite != nullptr) {
@@ -94,7 +90,7 @@ void GameObject::Draw(const DrawCall& draw_call, DrawLayer drawlayer)
 			}
 		}
 
-		Engine::GetRender().AddDrawCall(draw_call, drawlayer);
+		Engine::GetRender().AddDrawCall(draw_call);
 	}
 	if (Engine::GetGameStateManager().GetGSComponent<ShowCollision>() != nullptr && Engine::GetGameStateManager().GetGSComponent<ShowCollision>()->Enabled()) {
 		Collision* collision = GetGOComponent<Collision>();

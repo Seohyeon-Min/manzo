@@ -26,40 +26,66 @@ enum class DrawLayer {
     DrawDialog
 };
 
-
+enum class DrawType {
+    Regular,
+    Line,
+    Circle
+};
 
 class Sprite;
 
-struct DrawCall {
+struct BaseDrawCall {
+    const GLShader* shader = nullptr;                     // 셰이더
+    DrawLayer sorting_layer = DrawLayer::Draw;            // 정렬 레이어
+    int order_in_layer = 0;                               // 레이어 내 순서
+    std::function<void(const GLShader*)> SetUniforms = nullptr; // 유니폼 설정
+    DrawSettings settings;                                // 드로우 설정
+};
+
+struct DrawCall : BaseDrawCall {
     std::variant<Sprite*, GLTexture*> drawable;
-    const mat3* transform;
-    const GLShader* shader;
-    std::function<void(const GLShader*)> SetUniforms = nullptr;
-    DrawSettings settings; // later, change it to pointer
+    const mat3* transform = nullptr;
+    DrawType draw_type = DrawType::Regular;  // 기본적으로 Regular 타입
+    const GLShader* shader = nullptr;                     // 셰이더
+
+    DrawCall() = default;
+
+    DrawCall(Sprite* sprite, const mat3* transform_matrix, const GLShader* shader_ptr = nullptr, DrawType type = DrawType::Regular)
+        : drawable(sprite), transform(transform_matrix), draw_type(type) {
+        shader = shader_ptr;
+    }
+
+    DrawCall(GLTexture* texture, const mat3* transform_matrix, const GLShader* shader_ptr = nullptr, DrawType type = DrawType::Regular)
+        : drawable(texture), transform(transform_matrix), draw_type(type) {
+        shader = shader_ptr;
+    }
 };
 
-struct LineDrawCall {
+struct LineDrawCall : BaseDrawCall {
     vec2 start;
     vec2 end;
     color3 color;
-    const GLShader* shader;
+    DrawType draw_type = DrawType::Line;  // Line 타입
 };
 
-struct LineDrawCallPro {
+struct LineDrawCallPro : BaseDrawCall {
     vec2 start;
     vec2 end;
     color3 color;
-    const float width;
-    const float alpha;
-    const GLShader* shader;
+    float width = 1.0f;
+    float alpha = 255.0f;
+    DrawType draw_type = DrawType::Line;  // Line 타입
 };
 
-struct CircleDrawCall {
-    float radius;
+struct CircleDrawCall : BaseDrawCall {
+    float radius = 0.0f;
     vec2 pos;
-    const GLShader* shader;
-    std::function<void(const GLShader*)> SetUniforms = nullptr;
-    DrawSettings settings;
+    DrawType draw_type = DrawType::Circle;  // Circle 타입
+
+    CircleDrawCall() = default;
+    CircleDrawCall(float radius, vec2 pos) {
+
+    }
 };
 
 class Render {
@@ -68,10 +94,11 @@ public:
 
     // 매개변수를 스트럭트로 넘길수도 있다!!! 그게 더 좋을거같다!!!
 
-    void AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase = DrawLayer::Draw);
+    void AddDrawCall(const DrawCall& drawCall);
+    void AddBackgroundDrawCall(const DrawCall& drawCall);
     void AddDrawCall
     (vec2 start, vec2 end, color3 color, float width = 1.0f, float alpha = 255.0f, const GLShader* shader = nullptr, bool iscollision = true);
-    void AddDrawCall(const CircleDrawCall& drawcall, const DrawLayer& phase = DrawLayer::Draw);
+    void AddDrawCall(const CircleDrawCall& drawcall);
     void RenderAll();
 
     void ApplyPostProcessing();
@@ -98,12 +125,12 @@ private:
     // z 발류 갖고있는 스트럭트로 불투명 리스트 하나, 투명 리스트 하나 할 수 있다!!
     // 이게 더 좋을듯
 
+
+    using DrawCallVariant = std::variant<DrawCall, LineDrawCall, LineDrawCallPro, CircleDrawCall>;
+    std::vector<DrawCallVariant> all_draw_calls;
+
     std::vector<DrawCall> draw_background_calls;
-    std::vector<DrawCall> draw_first_calls;
     std::vector<DrawCall> draw_calls;
-    std::vector<DrawCall> draw_late_calls;
-    std::vector<DrawCall> draw_ui_calls;
-    std::vector<DrawCall> draw_dialog_calls;
     std::vector<LineDrawCallPro> draw_line_calls;
     std::vector<LineDrawCall> draw_collision_calls;
     std::vector<CircleDrawCall> draw_circle_calls;

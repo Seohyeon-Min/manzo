@@ -23,21 +23,18 @@ GodRay::GodRay()
 
 void GodRay::Draw()
 {
-    DrawSettings settings;
-    settings.do_blending = true;
-    settings.is_UI = true;
-
     DrawCall draw_call = {
-    texture,                       // Texture to draw
-    &mat,                          // Transformation matrix
-    Engine::GetShaderManager().GetShader("under_water_god_ray"), // Shader to use
-    [this](const GLShader* shader) {
-        this->SetUniforms(shader);
-    },
-    settings
+        texture,                       // Texture to draw
+        &mat,                          // Transformation matrix
+        Engine::GetShaderManager().GetShader("under_water_god_ray"), // Shader to use
     };
 
-    Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawUI);
+    draw_call.settings.do_blending = true;
+    draw_call.settings.is_UI = true;
+    draw_call.SetUniforms = [this](const GLShader* shader) { this->SetUniforms(shader); };
+    draw_call.sorting_layer = DrawLayer::DrawUI;
+
+    Engine::GetRender().AddDrawCall(draw_call);
 }
 
 //Pump::Pump()

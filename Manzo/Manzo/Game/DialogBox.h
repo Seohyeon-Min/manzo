@@ -34,8 +34,6 @@ private:
     mat3 seller_martix;
     mat3 perry_martix;
 
-    DrawCall draw_call;
-
     JsonParser_dialog* dialog;
     std::string fullText;
     std::string displayedText;

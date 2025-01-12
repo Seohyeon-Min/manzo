@@ -26,28 +26,12 @@ Render::Render()
 
 // Add a draw call to the corresponding vector based on the draw layer
 // Draw calls are grouped into first, normal, and late phases
-void Render::AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase) {
-    if (phase == DrawLayer::DrawFirst) {
-        draw_first_calls.push_back(drawCall); // Add to early phase
-    }
-    else if (phase == DrawLayer::DrawLast) {
-        draw_late_calls.push_back(drawCall); // Add to late phase
-    }
-    else if (phase == DrawLayer::DrawBackground)
-    {
-        draw_background_calls.push_back(drawCall);
-    }
-    else if (phase == DrawLayer::DrawUI)
-    {
-        draw_ui_calls.push_back(drawCall);
-    }
-    else if (phase == DrawLayer::DrawDialog)
-    {
-        draw_dialog_calls.push_back(drawCall);
-    }
-    else {
-        draw_calls.push_back(drawCall); // Add to normal phase
-    }
+void Render::AddDrawCall(const DrawCall& drawCall) {
+    draw_calls.push_back(drawCall);
+}
+
+void Render::AddBackgroundDrawCall(const DrawCall& drawCall) {
+    draw_background_calls.push_back(drawCall);
 }
 
 // Overloaded function to add a line or collision draw call
@@ -55,14 +39,18 @@ void Render::AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase) {
 void Render::AddDrawCall
 (vec2 start, vec2 end, color3 color,float width, float alpha ,const GLShader* shader, bool iscollision) {
     if (iscollision) {
-        draw_collision_calls.push_back({ start, end, color, shader }); // Collision line
+        LineDrawCall line;
+        line.start = start; line.end = end; line.color = color;
+        draw_collision_calls.push_back(line); // Collision line
     }
     else {
-        draw_line_calls.push_back({ start, end, color, width, alpha, shader }); // Regular line
+        LineDrawCallPro line;
+        line.start = start; line.end = end; line.color = color; line.width = width; line.alpha = alpha; line.shader = shader;
+        draw_line_calls.push_back(line); // Regular line
     }
 }
 
-void Render::AddDrawCall (const CircleDrawCall& drawcall, const DrawLayer& phase) {
+void Render::AddDrawCall (const CircleDrawCall& drawcall) {
     draw_circle_calls.push_back(drawcall); // Regular line
 }
 
@@ -77,37 +65,42 @@ void Render::RenderAll() {
     for (const auto& draw_call : draw_background_calls) {
         DrawBackground(draw_call);
     }
-    // Draw calls in the early phase
-    for (const auto& draw_call : draw_first_calls) {
-        Draw(draw_call);
-    }
 
-    // Draw normal draw calls
+    
     for (const auto& draw_call : draw_calls) {
-        Draw(draw_call);
+        all_draw_calls.emplace_back(draw_call); // DrawCall -> std::variant
     }
 
     for (const auto& draw_call : draw_circle_calls) {
-        DrawCircleLine(draw_call);
+        all_draw_calls.emplace_back(draw_call); // CircleDrawCall -> std::variant
     }
 
-    // Draw calls in the late phase
-    for (const auto& draw_call : draw_late_calls) {
-        Draw(draw_call);
-    }
-
-    // Draw UI
-    for (const auto& draw_call : draw_ui_calls) {
-        Draw(draw_call);
-    }
-    for (const auto& draw_call : draw_dialog_calls) {
-        Draw(draw_call);
-    }
-
-    // Draw lines
-    float line_width = 2.0f;
     for (const auto& draw_call : draw_line_calls) {
-        DrawLinePro(draw_call);
+        all_draw_calls.emplace_back(draw_call); // LineDrawCallPro -> std::variant
+    }
+
+    for (const auto& draw_call : draw_collision_calls) {
+        all_draw_calls.emplace_back(draw_call); // LineDrawCall -> std::variant
+    }
+
+
+
+    for (const auto& draw_call : all_draw_calls) {
+        std::visit([&](auto&& specific_call) {
+            using T = std::decay_t<decltype(specific_call)>;
+            if constexpr (std::is_same_v<T, DrawCall>) {
+                Draw(specific_call); // Regular Draw
+            }
+            else if constexpr (std::is_same_v<T, LineDrawCall>) {
+                DrawLine(specific_call);
+            }
+            else if constexpr (std::is_same_v<T, LineDrawCallPro>) {
+                DrawLinePro(specific_call);
+            }
+            else if constexpr (std::is_same_v<T, CircleDrawCall>) {
+                DrawCircleLine(specific_call);
+            }
+            }, draw_call);
     }
 
     // If collision debug mode is enabled, render collision lines
@@ -293,11 +286,9 @@ void Render::Draw(const DrawCall& draw_call) {
 
 void Render::ClearDrawCalls()
 {
-    draw_first_calls.clear();
+    all_draw_calls.clear();
     draw_calls.clear();
-    draw_late_calls.clear();
     draw_line_calls.clear();
-    draw_ui_calls.clear();
     draw_collision_calls.clear();
     draw_circle_calls.clear();
     draw_background_calls.clear();

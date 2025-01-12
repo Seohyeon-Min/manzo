@@ -12,7 +12,9 @@
 
 Mouse::Mouse() : mouse_cursor(nullptr),
 mouse_position({ 0, 0 }),
-trails(trail_length, { vec2(0, 0), 1.0f }) {
+trails(trail_length, { vec2(0, 0), 1.0f }),
+draw_call((GLTexture*)nullptr,nullptr,nullptr)
+{
     mouse_cursor = Engine::GetTextureManager().Load("assets/images/mouse.png");
     mouse_cursor->SetFiltering(GLTexture::Linear);
 }
@@ -52,20 +54,20 @@ void Mouse::UpdateTrail(const vec2& new_position) {
 void Mouse::DrawMouseCursor()
 {
     DrawSettings settings;
-    settings.is_UI = true;
-    settings.do_blending = true;
 
     pos_matrix = mat3::build_translation({ mouse_position.x - Engine::window_width / 2 , mouse_position.y - Engine::window_height / 2 }) * mat3::build_scale(scale);
 
     draw_call = {
         mouse_cursor,                       // Texture to draw
         &pos_matrix,                          // Transformation matrix
-        Engine::GetShaderManager().GetDefaultShader(), // Shader to use
-        nullptr,
-        settings
+        Engine::GetShaderManager().GetDefaultShader()
     };
 
-    Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawUI);
+    draw_call.settings.is_UI = true;
+    draw_call.settings.do_blending = true;
+    draw_call.sorting_layer = DrawLayer::DrawUI;
+
+    Engine::GetRender().AddDrawCall(draw_call);
 }
 
 

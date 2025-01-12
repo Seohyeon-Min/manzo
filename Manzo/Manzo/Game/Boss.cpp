@@ -274,17 +274,13 @@ void Boss::RunMusic()
 
 void Boss::Draw(DrawLayer drawlayer)
 {
-	DrawSettings settings;
-	settings.do_blending = true;
-
 	DrawCall draw_call = {
-		GetGOComponent<Sprite>()->GetTexture(),// Texture to draw
+		GetGOComponent<Sprite>()->GetTexture(),                       // Texture to draw
 		&GetMatrix(),                          // Transformation matrix
-		Engine::GetShaderManager().GetDefaultShader(),
-		nullptr,
-		settings
+		Engine::GetShaderManager().GetDefaultShader()
 	};
 
+	draw_call.settings.do_blending = true;
 	GameObject::Draw(draw_call);
 }
 
