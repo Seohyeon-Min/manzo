@@ -56,6 +56,8 @@ public:
     void SendUniform(std::string_view name, float x, float y, float z) const;
     void SendUniform(std::string_view name, std::span<const float, 4> value) const;
     void SendUniform(std::string_view name, float x, float y, float z, float w) const;
+    void SetTexture(const std::string& uniformName, GLuint textureUnit, GLuint textureID);
+
     enum Transpose : GLboolean
     {
         NO_TRANSPOSE = GL_FALSE,

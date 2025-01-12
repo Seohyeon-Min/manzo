@@ -489,12 +489,12 @@ private:
 
 public:
 	void drawSetup(GLShader* shader) {
-		/*GLint location;
 
-		location = glGetUniformLocation(program, "glyphs");
-		glUniform1i(location, 0);
-		location = glGetUniformLocation(program, "curves");
-		glUniform1i(location, 1);
+		//GLint location;
+		//location = glGetUniformLocation(program, "glyphs");
+		//glUniform1i(location, 0);
+		//location = glGetUniformLocation(program, "curves");
+		//glUniform1i(location, 1);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_BUFFER, glyphTexture);
@@ -502,7 +502,10 @@ public:
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_BUFFER, curveTexture);
 
-		glActiveTexture(GL_TEXTURE0);*/
+		glActiveTexture(GL_TEXTURE0);
+
+		shader->SetTexture("glyphs", 0, glyphTexture);
+		shader->SetTexture("curves", 1, curveTexture);
 	}
 
 	void draw(float x, float y, const std::string& text) {
