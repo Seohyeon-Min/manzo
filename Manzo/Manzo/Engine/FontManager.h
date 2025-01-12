@@ -11,7 +11,7 @@ public:
 	~FontManager();
 
 	void AddFontType(const char* file_path);
-	void PrintText(std::string txt, vec2 position, vec3 color);
+	void PrintText(std::string txt, vec2 position, vec3 color, float alpha);
 	std::unique_ptr<Font> loadFont(const std::string& filename, float worldSize = 1.0f, bool hinting = false);
 
 private:

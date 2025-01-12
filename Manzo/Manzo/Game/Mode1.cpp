@@ -242,7 +242,7 @@ void Mode1::Draw() {
     GetGSComponent<GameObjectManager>()->DrawAll();
     ui_manager->AddDrawCalls();
 
-	Engine::GetFontManager().PrintText("A", { 0.f,0.f }, { 1.f,1.f,1.f });
+	Engine::GetFontManager().PrintText("A", { 0.f,0.f }, { 1.f,1.f,1.f }, 0.5f);
 
     // Draw Font
     //Engine::GetFontManager().PrintText("HI", { 0.f,0.f }, 0, 0.0005f, { 1.0f,1.0f,1.0f });

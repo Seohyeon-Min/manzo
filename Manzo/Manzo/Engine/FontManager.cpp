@@ -41,7 +41,7 @@ std::unique_ptr<Font> FontManager::loadFont(const std::string& filename, float w
 	return std::make_unique<Font>(face, worldSize, hinting);
 }
 
-void FontManager::PrintText(std::string txt, vec2 position, vec3 color)
+void FontManager::PrintText(std::string txt, vec2 position, vec3 color, float alpha)
 {
 	FT_Error error = FT_Init_FreeType(&library);
 	if (error) {
@@ -53,6 +53,7 @@ void FontManager::PrintText(std::string txt, vec2 position, vec3 color)
 
 	shader->Use(true);
 	shader->SendUniform("color", color.x, color.y, color.z);
+	shader->SendUniform("alphaV", alpha);
 	mainFont->drawSetup(shader);
 
 	mainFont->draw(position.x, position.y, txt);
