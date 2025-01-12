@@ -13,6 +13,7 @@ Created:    November 25, 2024
 Rock::Rock(Polygon poly) :GameObject({ 0,0 }), poly(poly)
 {
     SetCenter();
+    GetMatrix();
 }
 
 MovingRock::MovingRock(Polygon poly) :Rock(poly), hit(false)

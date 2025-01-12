@@ -149,8 +149,13 @@ void Render::ApplyPostProcessing()
 
 
 
-
-Math::rect CalculateAABB(const mat3& model_to_world, const vec2& frame_size) {
+/// <summary>
+/// /////////// It is duplicated
+/// </summary>
+/// <param name="model_to_world"></param>
+/// <param name="frame_size"></param>
+/// <returns></returns>
+Math::rect CalculateAABB2(const mat3& model_to_world, const vec2& frame_size) {
     vec2 left_bottom_local = { -frame_size.x * 0.5f, -frame_size.y * 0.5f };
     vec2 right_top_local = { frame_size.x * 0.5f, frame_size.y * 0.5f };
 
@@ -168,23 +173,23 @@ Math::rect CalculateAABB(const mat3& model_to_world, const vec2& frame_size) {
 }
 
 
-bool ShouldRender(const Math::rect& objectBounds, const Math::rect& cameraBounds) {
-
-    //std::cout << "Checking ShouldRender:" << std::endl;
-    //std::cout << "  Object Bounds: Left(" << objectBounds.Left() << "), Right(" << objectBounds.Right()
-    //    << "), Bottom(" << objectBounds.Bottom() << "), Top(" << objectBounds.Top() << ")" << std::endl;
-    //std::cout << "  Camera Bounds: Left(" << cameraBounds.Left() << "), Right(" << cameraBounds.Right()
-    //    << "), Bottom(" << cameraBounds.Bottom() << "), Top(" << cameraBounds.Top() << ")" << std::endl;
-
-    if (objectBounds.Left() > cameraBounds.Right() ||
-        objectBounds.Right() < cameraBounds.Left() ||
-        objectBounds.Top() < cameraBounds.Bottom() ||
-        objectBounds.Bottom() > cameraBounds.Top()) {
-        return false;
-    }
-
-    return true;
-}
+//bool ShouldRender(const Math::rect& objectBounds, const Math::rect& cameraBounds) {
+//
+//    //std::cout << "Checking ShouldRender:" << std::endl;
+//    //std::cout << "  Object Bounds: Left(" << objectBounds.Left() << "), Right(" << objectBounds.Right()
+//    //    << "), Bottom(" << objectBounds.Bottom() << "), Top(" << objectBounds.Top() << ")" << std::endl;
+//    //std::cout << "  Camera Bounds: Left(" << cameraBounds.Left() << "), Right(" << cameraBounds.Right()
+//    //    << "), Bottom(" << cameraBounds.Bottom() << "), Top(" << cameraBounds.Top() << ")" << std::endl;
+//
+//    if (objectBounds.Left() > cameraBounds.Right() ||
+//        objectBounds.Right() < cameraBounds.Left() ||
+//        objectBounds.Top() < cameraBounds.Bottom() ||
+//        objectBounds.Bottom() > cameraBounds.Top()) {
+//        return false;
+//    }
+//
+//    return true;
+//}
 
 
 // Draw an individual draw call (textured quad)
@@ -223,15 +228,6 @@ void Render::Draw(const DrawCall& draw_call) {
         ? mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height)
         : GetWorldtoNDC();
     const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
-
-
-    Math::rect object_bounds = CalculateAABB(*draw_call.transform, vec2((float)frame_size.x, (float)frame_size.y));
-
-    auto cameraBounds = Engine::GetGameStateManager().GetGSComponent<Cam>()->GetBounds();
-
-    if (!ShouldRender(object_bounds, cameraBounds)) {
-        return;
-    }
 
 
     if (shader == nullptr) {
@@ -353,9 +349,9 @@ void Render::DrawBackground(const DrawCall& draw_call) {
     vec2 padding(100.f, 100.f);
 
     // point_1과 point_2에 직접 접근하여 계산
-    camera_bounds.point_1 -= padding;
-    camera_bounds.point_2 += padding;
-    Math::rect texture_bounds = CalculateAABB(*draw_call.transform, vec2((float)frame_size.x, (float)frame_size.y));
+    //camera_bounds.point_1 -= padding;
+    //camera_bounds.point_2 += padding;
+    Math::rect texture_bounds = CalculateAABB2(*draw_call.transform, vec2((float)frame_size.x, (float)frame_size.y));
 
     // 카메라와 텍스처 경계의 교차 영역 계산
     Math::rect clipped_bounds = {
@@ -406,7 +402,7 @@ void Render::DrawBackground(const DrawCall& draw_call) {
     }
 
     // UV 좌표와 변환 행렬 전송
-    shader->SendUniform("uUV", tex_left, tex_top, tex_right, tex_bottom);
+    shader->SendUniform("uUV", tex_left, tex_bottom, tex_right, tex_top);
     shader->SendUniform("uModelToNDC", util::to_span(clipped_model_to_ndc));
 
     // 모델 렌더링

@@ -47,8 +47,12 @@ void GameObjectManager::FixedUpdateAll(double dt)
 
 void GameObjectManager::DrawAll()
 {
+	auto camera_bounds = Engine::GetGameStateManager().GetGSComponent<Cam>()->GetBounds();
+
 	for (auto object : objects) {
-		object->Draw();
+		if (object->IsVisible(camera_bounds)) {
+			object->Draw();
+		}
 	}
 
 	Engine::GetRender().RenderAll();

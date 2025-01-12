@@ -111,7 +111,7 @@ class Pump : public GameObject {
 public:
     Pump();
     GameObjectTypes Type() override { return GameObjectTypes::Ship; }
-    std::string TypeName() override { return "Ship:Dal"; }
+    std::string TypeName() override { return "Ship:Dal_Pump"; }
     void Update(double dt) override;
     void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
     float GetRadius() { return radius; }

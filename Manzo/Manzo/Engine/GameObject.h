@@ -36,9 +36,7 @@ public:
     virtual std::string TypeName() = 0;
     bool IsCollidingWith(GameObject* other_object);
     bool IsCollidingWith(vec2 point);
-    bool IsRenderable() const {
-        return !destroy;
-    }
+    bool IsVisible(const Math::rect& camera_bounds) const;
     virtual bool CanCollideWith(GameObjectTypes other_object_type);
     virtual void ResolveCollision([[maybe_unused]] GameObject* other_object) { };
     virtual void Update(double dt);
@@ -50,6 +48,7 @@ public:
     virtual void SetShader(GLShader* new_shader) { shader = new_shader; };
 
     const mat3& GetMatrix();
+    const Math::rect& GetAABB() const;
     const vec2& GetPosition() const;
     const vec2& GetVelocity() const;
     const vec2& GetScale() const;
@@ -112,6 +111,8 @@ private:
     vec2 position;
     vec2 velocity;
     GLShader* shader = nullptr;
+    Math::rect cached_aabb;
+    vec2 frame_size;
 
     class State_None : public State {
     public:

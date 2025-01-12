@@ -490,6 +490,9 @@ Pump::Pump() :
 
 void Pump::Update(double dt)
 {
+    Ship* ship = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>();
+    SetPosition(ship->GetPosition());
+
     float decrease_duration = (float)beat->GetFixedDuration() - 0.1f;
     float delta_radius = (max_pump_radius - min_pump_radius) / decrease_duration;
     float delta_alpha = 1 / decrease_duration;
@@ -514,13 +517,15 @@ void Pump::Update(double dt)
 
 void Pump::Draw(DrawLayer drawlayer)
 {
-    Ship* ship = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>();
+    
     DrawSettings settings;
     settings.do_blending = true;
 
+    GetMatrix();
+
     CircleDrawCall draw_call = {
     min_pump_radius,                       // Texture to draw
-    ship->GetPosition(),                          // Transformation matrix
+    GetPosition(),                          // Transformation matrix
     nullptr,
     nullptr,
     settings
@@ -528,7 +533,7 @@ void Pump::Draw(DrawLayer drawlayer)
 
     CircleDrawCall draw_call2 = {
     radius,                       // Texture to draw
-    ship->GetPosition(),                          // Transformation matrix
+    GetPosition(),                          // Transformation matrix
     Engine::GetShaderManager().GetShader("change_alpha_no_texture"), // Shader to use
     [this](const GLShader* shader) {
         this->SetUniforms(shader);

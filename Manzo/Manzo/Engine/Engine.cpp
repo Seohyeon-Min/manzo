@@ -61,14 +61,14 @@ void Engine::Update() {
         }
     }
 
-    FPS = 1.0 / dt;
+    //FPS = 1.0 / dt;
     gamestatemanager.Update(dt);
     input.Update();
 
     frame_count++;
     if (frame_count >= FPSTargetFrames) {
         double actual_time = duration<double>(now - last_test).count();
-        //FPS = frame_count / actual_time;
+        FPS = frame_count / actual_time;
         logger.LogDebug("FPS: " + std::to_string(FPS));
         frame_count = 0;
         last_test = now;
