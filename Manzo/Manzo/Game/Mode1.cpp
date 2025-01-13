@@ -242,7 +242,7 @@ void Mode1::Draw() {
 
 
     // Draw Font
-	Engine::GetFontManager().PrintText(FontType::Bold,"E", { 0.f,0.f }, 0.5f,{ 1.f,1.f,1.f }, 0.5f);
+	Engine::GetFontManager().PrintText(FontType::Bold,"E", { 650.f,400.f }, 0.2f,{ 1.f,1.f,1.f }, 0.5f);
 }
 
 void Mode1::Unload() {

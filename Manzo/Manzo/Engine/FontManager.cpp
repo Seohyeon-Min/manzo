@@ -62,8 +62,6 @@ void FontManager::PrintText(FontType font, std::string txt, vec2 position, float
 	mat3 WORLD_TO_NDC = Engine::GetGameStateManager().GetGSComponent<Cam>()->world_to_ndc;
 	const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
 
-	//shader->SendUniform("uModelToNDC", util::to_span(model_to_ndc));
-
 	font_list[font]->drawSetup(shader);
 	font_list[font]->setWorldSize(scale);
 	font_list[font]->draw(model_to_ndc * vec3(position.x, position.y, 1.0), txt);
