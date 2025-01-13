@@ -26,7 +26,7 @@ void FontManager::AddFontType(const char* file_path)
 	shader = Engine::GetShaderManager().LoadShader("font_shader", "assets/shaders/font_shader.vert", "assets/shaders/font_shader.frag");
 	auto font = loadFont(file_path, 1.0f);
 	if (!font) return;
-	mainFont = std::move(font);
+	font_list[(FontType)num_font++] = std::move(font);
 }
 
 std::unique_ptr<Font> FontManager::loadFont(const std::string& filename, float worldSize, bool hinting)
@@ -41,7 +41,7 @@ std::unique_ptr<Font> FontManager::loadFont(const std::string& filename, float w
 	return std::make_unique<Font>(face, worldSize, hinting);
 }
 
-void FontManager::PrintText(std::string txt, vec2 position, vec3 color, float alpha)
+void FontManager::PrintText(FontType font, std::string txt, vec2 position, vec3 color, float alpha)
 {
 	FT_Error error = FT_Init_FreeType(&library);
 	if (error) {
@@ -55,7 +55,7 @@ void FontManager::PrintText(std::string txt, vec2 position, vec3 color, float al
 
 	shader->SendUniform("color", color.x, color.y, color.z);
 	shader->SendUniform("alphaV", alpha);
-	mainFont->drawSetup(shader);
+	font_list[font]->drawSetup(shader);
 
-	mainFont->draw(position.x, position.y, txt);
+	font_list[font]->draw(position.x, position.y, txt);
 }
