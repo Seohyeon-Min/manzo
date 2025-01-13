@@ -8,6 +8,7 @@
 
 #include <GL/glew.h>
 #include "ShaderManager.h"
+#include <vec3.h>
 
 class Font {
 	struct Glyph {
@@ -508,8 +509,9 @@ public:
 		shader->SetTexture("curves", 1, curveTexture);
 	}
 
-	void draw(float x, float y, const std::string& text) {
-		float originalX = x;
+	void draw(const vec3& ndcPosition, const std::string& text) {
+		float x = ndcPosition.x;
+		float y = ndcPosition.y;
 
 		glBindVertexArray(vao);
 
@@ -523,7 +525,7 @@ public:
 			if (charcode == '\r') continue;
 
 			if (charcode == '\n') {
-				x = originalX;
+				x = ndcPosition.x; // Reset X to initial NDC X
 				y -= (float)face->height / (float)face->units_per_EM * worldSize;
 				if (hinting) y = std::round(y);
 				continue;
@@ -540,8 +542,8 @@ public:
 				}
 			}
 
-			// Do not emit quad for empty glyphs (whitespace).
 			if (glyph.curveCount) {
+				// Calculate glyph quad positions in NDC
 				FT_Pos d = (FT_Pos)(emSize * dilation);
 
 				float u0 = (float)(glyph.bearingX - d) / emSize;
@@ -576,6 +578,7 @@ public:
 
 		glBindVertexArray(0);
 	}
+
 
 private:
 	FT_Face face;

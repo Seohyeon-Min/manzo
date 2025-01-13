@@ -10,6 +10,8 @@
 #include "freetype.h"
 #include "FontManager.h"
 #include "Engine.h"
+#include <to_span.h>
+#include "Camera.h"
 
 FontManager::FontManager() {
 	if (FT_Init_FreeType(&library)) {
@@ -55,7 +57,14 @@ void FontManager::PrintText(FontType font, std::string txt, vec2 position, vec3 
 
 	shader->SendUniform("color", color.x, color.y, color.z);
 	shader->SendUniform("alphaV", alpha);
+
+	mat3 model_to_world = mat3::build_translation(position);
+	mat3 WORLD_TO_NDC = Engine::GetGameStateManager().GetGSComponent<Cam>()->world_to_ndc;
+	const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
+
+	//shader->SendUniform("uModelToNDC", util::to_span(model_to_ndc));
+
 	font_list[font]->drawSetup(shader);
 
-	font_list[font]->draw(position.x, position.y, txt);
+	font_list[font]->draw(model_to_ndc * vec3(position.x, position.y, 1.0), txt);
 }
