@@ -20,7 +20,7 @@ public:
 	~FontManager();
 
 	void AddFontType(const char* file_path);
-	void PrintText(FontType font, std::string txt, vec2 position, vec3 color, float alpha);
+	void PrintText(FontType font, std::string txt, vec2 position, float scale, vec3 color, float alpha);
 	std::unique_ptr<Font> loadFont(const std::string& filename, float worldSize = 1.0f, bool hinting = false);
 
 private:

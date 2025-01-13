@@ -43,7 +43,7 @@ std::unique_ptr<Font> FontManager::loadFont(const std::string& filename, float w
 	return std::make_unique<Font>(face, worldSize, hinting);
 }
 
-void FontManager::PrintText(FontType font, std::string txt, vec2 position, vec3 color, float alpha)
+void FontManager::PrintText(FontType font, std::string txt, vec2 position, float scale, vec3 color, float alpha)
 {
 	FT_Error error = FT_Init_FreeType(&library);
 	if (error) {
@@ -65,6 +65,6 @@ void FontManager::PrintText(FontType font, std::string txt, vec2 position, vec3 
 	//shader->SendUniform("uModelToNDC", util::to_span(model_to_ndc));
 
 	font_list[font]->drawSetup(shader);
-
+	font_list[font]->setWorldSize(scale);
 	font_list[font]->draw(model_to_ndc * vec3(position.x, position.y, 1.0), txt);
 }
