@@ -529,6 +529,7 @@ void Pump::Draw(DrawLayer drawlayer)
     };
 
     draw_call.settings.do_blending = true;
+    draw_call.sorting_layer = DrawLayer::DrawUI;
 
     CircleDrawCall draw_call2 = {
     radius,                       // Texture to draw
@@ -538,9 +539,10 @@ void Pump::Draw(DrawLayer drawlayer)
     draw_call2.shader = Engine::GetShaderManager().GetShader("change_alpha_no_texture"); // Shader to use
     draw_call2.settings.do_blending = true;
     draw_call2.SetUniforms = [this](const GLShader* shader) {this->SetUniforms(shader);};
+    draw_call2.sorting_layer = DrawLayer::DrawUI;
 
-    Engine::GetRender().AddDrawCall(draw_call);
-    Engine::GetRender().AddDrawCall(draw_call2);
+    Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call));
+    Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call2));
 }
 
 void Pump::Reset() {

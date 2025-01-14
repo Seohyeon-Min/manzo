@@ -34,7 +34,7 @@ void GodRay::Draw()
     draw_call.SetUniforms = [this](const GLShader* shader) { this->SetUniforms(shader); };
     draw_call.sorting_layer = DrawLayer::DrawUI;
 
-    Engine::GetRender().AddDrawCall(draw_call);
+    Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call));
 }
 
 //Pump::Pump()

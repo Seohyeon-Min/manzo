@@ -35,7 +35,7 @@ void FuelUI::AddDrawCall()
     draw_call.SetUniforms = [this](const GLShader* shader) { this->SetFuelBarUniforms(shader); };
     draw_call.sorting_layer = DrawLayer::DrawUI;
 
-    Engine::GetRender().AddDrawCall(draw_call);
+    Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call));
 
     draw_call = {
         foreground_texture,                       // Texture to draw
@@ -47,5 +47,5 @@ void FuelUI::AddDrawCall()
     draw_call.SetUniforms = [this](const GLShader* shader) { this->SetFuelBarUniforms(shader); };
     draw_call.sorting_layer = DrawLayer::DrawUI;
 
-    Engine::GetRender().AddDrawCall(draw_call);
+    Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call));
 }

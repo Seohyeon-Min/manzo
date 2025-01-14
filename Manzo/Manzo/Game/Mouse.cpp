@@ -67,7 +67,7 @@ void Mouse::DrawMouseCursor()
     draw_call.settings.do_blending = true;
     draw_call.sorting_layer = DrawLayer::DrawUI;
 
-    Engine::GetRender().AddDrawCall(draw_call);
+    Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call));
 }
 
 

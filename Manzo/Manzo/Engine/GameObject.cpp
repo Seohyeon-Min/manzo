@@ -63,10 +63,10 @@ void GameObject::Draw(DrawLayer drawlayer) {
 
 		if (drawlayer != DrawLayer::Draw) {
 			draw_call.sorting_layer = drawlayer;
-			Engine::GetRender().AddDrawCall(draw_call);
+			Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call));
 		}
 		else {
-			Engine::GetRender().AddDrawCall(draw_call);  // basic layer
+			Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call));  // basic layer
 		}
 	}
 	if (Engine::GetGameStateManager().GetGSComponent<ShowCollision>() != nullptr && Engine::GetGameStateManager().GetGSComponent<ShowCollision>()->Enabled()) {
@@ -90,7 +90,7 @@ void GameObject::Draw(const DrawCall& draw_call)
 			}
 		}
 
-		Engine::GetRender().AddDrawCall(draw_call);
+		Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call));
 	}
 	if (Engine::GetGameStateManager().GetGSComponent<ShowCollision>() != nullptr && Engine::GetGameStateManager().GetGSComponent<ShowCollision>()->Enabled()) {
 		Collision* collision = GetGOComponent<Collision>();
@@ -150,7 +150,7 @@ const mat3& GameObject::GetMatrix() {
 		if(GetGOComponent<Sprite>() != nullptr ) 
 		frame_size = (vec2)GetGOComponent<Sprite>()->GetFrameSize();
 		else {
-			std::cout << "I don't have a sprite!! : " << TypeName() << std::endl;
+			//std::cout << "I don't have a sprite!! : " << TypeName() << std::endl;
 		}
 
 		// different with the collisoin one. It is based on the fame size.

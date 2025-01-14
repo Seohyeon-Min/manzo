@@ -22,12 +22,13 @@ Render::Render()
     CreatModel();  // ¸ðµ¨ »ý¼º
     CreatLineModel();
     CreateCircleLineModel();
+    all_draw_calls.reserve(1000);
 }
 
 // Add a draw call to the corresponding vector based on the draw layer
 // Draw calls are grouped into first, normal, and late phases
-void Render::AddDrawCall(const DrawCall& drawCall) {
-    draw_calls.push_back(drawCall);
+void Render::AddDrawCall(std::unique_ptr<BaseDrawCall> drawCall) {
+    all_draw_calls.push_back(std::move(drawCall));
 }
 
 void Render::AddBackgroundDrawCall(const DrawCall& drawCall) {
@@ -46,12 +47,8 @@ void Render::AddDrawCall
     else {
         LineDrawCallPro line;
         line.start = start; line.end = end; line.color = color; line.width = width; line.alpha = alpha; line.shader = shader;
-        draw_line_calls.push_back(line); // Regular line
+        all_draw_calls.push_back(std::make_unique<LineDrawCallPro>(line)); // Regular line
     }
-}
-
-void Render::AddDrawCall (const CircleDrawCall& drawcall) {
-    draw_circle_calls.push_back(drawcall); // Regular line
 }
 
 // Render all stored draw calls, starting with early phase, normal phase, and then late phase
@@ -66,42 +63,35 @@ void Render::RenderAll() {
         DrawBackground(draw_call);
     }
 
-    
-    for (const auto& draw_call : draw_calls) {
-        all_draw_calls.emplace_back(draw_call); // DrawCall -> std::variant
-    }
 
-    for (const auto& draw_call : draw_circle_calls) {
-        all_draw_calls.emplace_back(draw_call); // CircleDrawCall -> std::variant
-    }
+    std::sort(all_draw_calls.begin(), all_draw_calls.end(),
+        [](const std::unique_ptr<BaseDrawCall>& a, const std::unique_ptr<BaseDrawCall>& b) {
+            if (a->sorting_layer != b->sorting_layer) {
+                return a->sorting_layer < b->sorting_layer;
+            }
+            if (a->shader != b->shader) {
+                return a->shader < b->shader;
+            }
 
-    for (const auto& draw_call : draw_line_calls) {
-        all_draw_calls.emplace_back(draw_call); // LineDrawCallPro -> std::variant
-    }
+            return a->order_in_layer < b->order_in_layer;
+        });
 
-    for (const auto& draw_call : draw_collision_calls) {
-        all_draw_calls.emplace_back(draw_call); // LineDrawCall -> std::variant
-    }
-
-
-
+    // Render all draw calls
     for (const auto& draw_call : all_draw_calls) {
-        std::visit([&](auto&& specific_call) {
-            using T = std::decay_t<decltype(specific_call)>;
-            if constexpr (std::is_same_v<T, DrawCall>) {
-                Draw(specific_call); // Regular Draw
-            }
-            else if constexpr (std::is_same_v<T, LineDrawCall>) {
-                DrawLine(specific_call);
-            }
-            else if constexpr (std::is_same_v<T, LineDrawCallPro>) {
-                DrawLinePro(specific_call);
-            }
-            else if constexpr (std::is_same_v<T, CircleDrawCall>) {
-                DrawCircleLine(specific_call);
-            }
-            }, draw_call);
+        if (auto* call = dynamic_cast<DrawCall*>(draw_call.get())) {
+            Draw(*call);
+        }
+        else if (auto* call = dynamic_cast<LineDrawCall*>(draw_call.get())) {
+            DrawLine(*call);
+        }
+        else if (auto* call = dynamic_cast<LineDrawCallPro*>(draw_call.get())) {
+            DrawLinePro(*call);
+        }
+        else if (auto* call = dynamic_cast<CircleDrawCall*>(draw_call.get())) {
+            DrawCircleLine(*call);
+        }
     }
+
 
     // If collision debug mode is enabled, render collision lines
     if (Engine::GetGameStateManager().GetGSComponent<ShowCollision>() != nullptr &&
@@ -164,25 +154,6 @@ Math::rect CalculateAABB2(const mat3& model_to_world, const vec2& frame_size) {
         {right_top_world.x, right_top_world.y} 
     };
 }
-
-
-//bool ShouldRender(const Math::rect& objectBounds, const Math::rect& cameraBounds) {
-//
-//    //std::cout << "Checking ShouldRender:" << std::endl;
-//    //std::cout << "  Object Bounds: Left(" << objectBounds.Left() << "), Right(" << objectBounds.Right()
-//    //    << "), Bottom(" << objectBounds.Bottom() << "), Top(" << objectBounds.Top() << ")" << std::endl;
-//    //std::cout << "  Camera Bounds: Left(" << cameraBounds.Left() << "), Right(" << cameraBounds.Right()
-//    //    << "), Bottom(" << cameraBounds.Bottom() << "), Top(" << cameraBounds.Top() << ")" << std::endl;
-//
-//    if (objectBounds.Left() > cameraBounds.Right() ||
-//        objectBounds.Right() < cameraBounds.Left() ||
-//        objectBounds.Top() < cameraBounds.Bottom() ||
-//        objectBounds.Bottom() > cameraBounds.Top()) {
-//        return false;
-//    }
-//
-//    return true;
-//}
 
 
 // Draw an individual draw call (textured quad)
@@ -288,9 +259,7 @@ void Render::ClearDrawCalls()
 {
     all_draw_calls.clear();
     draw_calls.clear();
-    draw_line_calls.clear();
     draw_collision_calls.clear();
-    draw_circle_calls.clear();
     draw_background_calls.clear();
 }
 
