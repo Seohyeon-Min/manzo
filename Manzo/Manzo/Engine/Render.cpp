@@ -309,8 +309,8 @@ void Render::DrawBackground(const DrawCall& draw_call) {
     vec2 padding(100.f, 100.f);
 
     // point_1과 point_2에 직접 접근하여 계산
-    //camera_bounds.point_1 -= padding;
-    //camera_bounds.point_2 += padding;
+    camera_bounds.point_1 -= padding;
+    camera_bounds.point_2 += padding;
     Math::rect texture_bounds = CalculateAABB2(*draw_call.transform, vec2((float)frame_size.x, (float)frame_size.y));
 
     // 카메라와 텍스처 경계의 교차 영역 계산
