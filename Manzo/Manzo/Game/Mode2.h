@@ -44,6 +44,7 @@ private:
     Ship* ship_ptr;
     Background* background;
     Skillsys* skill_ptr;
+    Shop* shop_ptr;
     UIManager* ui_manager;
     Dialog* dialog;
 
