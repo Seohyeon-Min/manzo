@@ -32,7 +32,6 @@ public:
     void Update(double dt, const vec2& player_position, bool playerMove);
     void SetPosition(vec2 new_position);
     const vec2& GetPosition() const;
-    void SetLimit(Math::rect new_limit);
     CameraView& GetCameraView() { return caminfo.camera_view; }
     Camera& GetCamera() { return caminfo.camera; }
 
@@ -54,15 +53,12 @@ public:
     }
 
 private:
-    Math::rect limit;
+    float lerpFactor = 0.03f;
+    vec2 target_position;
 
     struct CamInfo {
         Camera     camera{};
         CameraView camera_view{};
-        float      move_scalar = 0;
-        float      turn_scalar = 0;
-        float      strafe_scalar = 0;
-        float      move_speed = 240.0f;
     } caminfo;
 };
 

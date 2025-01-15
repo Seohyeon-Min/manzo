@@ -78,10 +78,8 @@ void Mode1::Load() {
     AddGSComponent(new ParticleManager<Particles::CaptureEffect>());
 
     //// camera
-    Math::rect Boundary({ -BoundaryX, -BoundaryY }, { BoundaryX, BoundaryY });
     camera = new Cam();
     AddGSComponent(camera);
-    camera->SetLimit(Boundary);
 
     //// ship
     ship_ptr = new Ship({ 0, 0 });

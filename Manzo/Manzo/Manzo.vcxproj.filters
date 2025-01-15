@@ -127,10 +127,13 @@
     <ClCompile Include="Game\Shop.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Rock.cpp" />
-    <ClCompile Include="Game\RockGroup.cpp" />
-    <ClCompile Include="Game\RockPoint.cpp" />
-    <ClCompile Include="Game\Effect.cpp">
+    <ClCompile Include="Game\Rock.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\RockGroup.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\RockPoint.cpp">
       <Filter>Game</Filter>
     </ClCompile>
   </ItemGroup>
@@ -306,8 +309,14 @@
     <ClInclude Include="Game\Effect.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Rock.h" />
-    <ClInclude Include="Game\RockGroup.h" />
-    <ClInclude Include="Game\RockPoint.h" />
+    <ClInclude Include="Game\Rock.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\RockGroup.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\RockPoint.h">
+      <Filter>Game</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

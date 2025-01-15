@@ -57,10 +57,9 @@ void Mode2::Load() {
     background->Add("assets/images/background/house.png", 0.25f);
 
     /// Dialog
-    dialog = new Dialog();
-    AddGSComponent(dialog);
-    dialog->Unload();
-
+    dialog_ptr = new Dialog({0,0});
+    GetGSComponent<GameObjectManager>()->Add(dialog_ptr);
+ 
     //// audio
     //Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("assets/audios/basic_beat_100_4.wav", "sample");
     //if (sample) {
@@ -108,7 +107,7 @@ void Mode2::Update(double dt) {
         Engine::GetGameStateManager().ReloadState();
     }
     if (Engine::GetInput().KeyJustPressed(Input::Keys::Space) && !isLoaded) {
-       dialog->LoadDialog(1, 0.1);
+       dialog_ptr->LoadDialog(1, 0.05);
        isLoaded = true;
     }
    
@@ -124,7 +123,7 @@ void Mode2::Draw() {
     GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
     GetGSComponent<GameObjectManager>()->DrawAll();
     ui_manager->AddDrawCalls();
-    dialog->Draw();
+    dialog_ptr->Draw();
     
 }
 
@@ -136,5 +135,5 @@ void Mode2::Unload() {
     ship_ptr = nullptr;
     skill_ptr = nullptr;
     background = nullptr;
-    dialog->Unload();
+    dialog_ptr->Unload();
 }

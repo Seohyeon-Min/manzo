@@ -21,6 +21,7 @@ enum class GameObjectTypes {
     BackgroundFish,
     Particle,
     Boss,
+    Dialog,
     Count
 };
 
