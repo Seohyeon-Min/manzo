@@ -79,11 +79,14 @@ void Mode2::Load() {
         skill_ptr->SetShipPtr(ship_ptr);
     }
 
+    //Shop
+    shop_ptr = new Shop();
+    GetGSComponent<GameObjectManager>()->Add(shop_ptr);
+
     // UI
     AddGSComponent(new UIManager());
     ui_manager = GetGSComponent<UIManager>();
-    //ui_manager->AddUI(std::make_unique<Mouse>());
-    AddGSComponent(new Shop());
+    //ui_manager->AddUI(std::make_unique<Mouse>());;
 
     std::cout << "Left money : " << Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() << std::endl;
 }

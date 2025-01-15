@@ -136,6 +136,12 @@
     <ClCompile Include="Game\RockPoint.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Icon.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\IconManager.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h">
@@ -316,6 +322,15 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Game\RockPoint.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Rock.h" />
+    <ClInclude Include="Game\RockGroup.h" />
+    <ClInclude Include="Game\RockPoint.h" />
+    <ClInclude Include="Game\Icon.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\IconManager.h">
       <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>

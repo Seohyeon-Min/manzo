@@ -12,6 +12,16 @@ class Ship;
 
 class Fish;
 
+/*
+	해야할것
+
+	1. 단순 Set 함수 헤더파일로 이동
+	2. for문 대신 STL 로직
+	3. update 내 책임 분리 되는것 분리해서 별도 함수로 만들기.
+		ㄴ SelectSlot(), SelectSkill(), HandleSlotSelection(), ApplySkillToSlot() 등으로 만든다던가..
+		ㄴ Update도 모드1, 모드2로 받지 말고 모드1용 업데이트 함수, 모드2용 업데이트 함수 만들기.
+*/ 
+
 class Skillsys //skill system
 {
 
@@ -22,7 +32,7 @@ public:
 		Net,
 		Light,
 
-		GARRY,
+		TEMP1, // after this, all enum is just temp name.
 		GILL,
 		GLEN,
 		IDONTKNOW,
@@ -35,24 +45,24 @@ public:
 		Active,
 	};
 
-	Skillsys() : skillslots(3, Empty), inventory(0) { is_active_skill = false; }
+				Skillsys() : skillslots(3, Empty), inventory(0) { is_active_skill = false; }
 
-	void Update();
-	void setskill(int slot, Skill_list skill);
-	void skillprint(); // for debug, print skillslot info
-	void ClearSkill(); // Clear skillslot vector
-	void SetShipPtr(Ship* ptr); // need ship..
-	Ship* GetShipPtr(); 
+	void					Update();
+	void					SetSkill(int slot, Skill_list skill) { skillslots[slot] = skill; };
+	void					SkillPrint(); // for debug, print skillslot info
+	void					ClearSkill(); // Clear skillslot vector
+	void					SetShipPtr(Ship* ptr); // need ship..
+	Ship*					GetShipPtr(); 
 	std::vector<Skill_list> GetSkill() { return skillslots; };
-	void AddSkill(Skill_list input, int money);
-	void RemoveSkill(Skill_list input, int money);
-	Skill_list Change_number_to_list(int input);
+	void					AddSkill(Skill_list input, int money);
+	void					RemoveSkill(Skill_list input, int money);
+	Skill_list				ChangeNumberToList(int input) { return static_cast<Skill_list>(input); };
 	std::vector<Skill_list> GetInventory() { return inventory; };
 
-	void Active_skill(Skill_list skill);
-	void SkillNet();
-	void SkillLight();
-	void PrintInven();
+	void					Active_skill(Skill_list skill);
+	void					SkillNet();
+	void					SkillLight();
+	void					PrintInven();
 
 	//Class for each skill
 
@@ -79,16 +89,16 @@ public:
 	};
 
 private:
-	std::vector<Skill_list> skillslots;
-	std::vector<Skill_list> inventory;
-	bool is_slot_selected = false;
-	bool Ready_to_set = false;
-	bool is_active_skill = false;
-	int Selected_slot = NULL;
-	bool Check_ship_ptr = false;
-	Skill_list Selected_skill = Empty;
-	Ship* Ship_ptr = nullptr;
-	Skill_Net* skill_net;
+	std::vector<Skill_list>			skillslots;
+	std::vector<Skill_list>			inventory;
+	bool							is_slot_selected = false;
+	bool							ready_to_set = false;
+	bool							is_active_skill = false;
+	int								selected_slot = NULL;
+	bool							check_ship_ptr = false;
+	Skill_list						selected_skill = Empty;
+	Ship*							ship_ptr = nullptr;
+	Skill_Net*						skill_net;
 
 	//For Skill
 

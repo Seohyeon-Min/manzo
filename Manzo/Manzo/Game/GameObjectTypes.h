@@ -22,7 +22,9 @@ enum class GameObjectTypes {
     Particle,
     Boss,
     Dialog,
-    Count
+    Count,
+    Shop,
+    Icon
 };
 
 bool IsPixelShaderApplicable(GameObjectTypes type);
