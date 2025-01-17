@@ -17,17 +17,22 @@
 #ifndef PIover3
 #define PIover3  (3.1415926535987932f / 3.0f)
 #endif
+
 #ifndef PIover6
 #define PIover6  (3.1415926535987932f / 6.0f)
 #endif
 
-std::mt19937 dre;
-std::vector<Fish::FishDex> Fish::fishBook;
+std::random_device rd;
+std::mt19937 dre(rd());
+static std::vector<Fish::FishDex> fishBook;
 int Fish::money = 0;
-int fishCnt = 0;
+int fishCnt = 0; 
+static std::vector<float> weights;
 
 Fish::Fish(Fish* parent) : GameObject({ 0, 0 }) {
-    std::uniform_int_distribution<int> fishIndex(0, static_cast<int>(fishBook.size() - 1));
+  
+    std::discrete_distribution<> fishIndex(weights.begin(), weights.end());
+
     int index = fishIndex(dre);
 
     if (parent == nullptr) {
@@ -52,7 +57,7 @@ Fish::Fish(Fish* parent) : GameObject({ 0, 0 }) {
         type = parent->type;
         parentFish = parent;
     }
-
+    
     AddGOComponent(new Sprite(fishBook[index].filePath, this));
     fishCnt++;
 
@@ -221,6 +226,10 @@ void Fish::ReadFishCSV(const std::string& filename) {
 
         std::getline(linestream, cell, ',');
         f.filePath = cell;
+
+        std::getline(linestream, cell, ',');
+        f.possibility = std::stof(cell);
+        weights.push_back(f.possibility);
 
         fishBook.push_back(f);
     }

@@ -32,9 +32,9 @@ public:
 		vec2 scale;
 		vec2 velocity;
 		std::filesystem::path filePath;
+		float possibility;
 	};
 
-	static std::vector<FishDex> fishBook;
 	int type = FishType::Fish1;
 
 	bool collided = false;
