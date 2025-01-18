@@ -33,10 +33,10 @@ public:
 		vec2 velocity;
 		std::filesystem::path filePath;
 		float possibility;
+		int money;
 	};
 
 	int type = FishType::Fish1;
-
 	bool collided = false;
 
 	void Update(double dt);

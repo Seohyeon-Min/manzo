@@ -28,6 +28,7 @@ static std::vector<Fish::FishDex> fishBook;
 int Fish::money = 0;
 int fishCnt = 0; 
 static std::vector<float> weights;
+static std::vector<int> moneys;
 
 Fish::Fish(Fish* parent) : GameObject({ 0, 0 }) {
   
@@ -82,7 +83,7 @@ void Fish::ResolveCollision(GameObject* other_object) {
         {
             collided = true;
             fishCnt--;
-            money++;
+            money += moneys[type-1];
         }
         this->Destroy();
         break;
@@ -93,7 +94,7 @@ void Fish::ResolveCollision(GameObject* other_object) {
         {
             collided = true;
             fishCnt--;
-            money++;
+            money += moneys[type-1];
         }
         this->Destroy();
         break;
@@ -194,10 +195,10 @@ vec2 Fish::AvoidRock(vec2 thisPos, vec2 rockPos) {
     return avoidanceVec.Normalize() * avoidanceStrength;
 }
 
-
 void Fish::Draw() {
     GameObject::Draw();
 }
+
 void Fish::ReadFishCSV(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
@@ -230,6 +231,10 @@ void Fish::ReadFishCSV(const std::string& filename) {
         std::getline(linestream, cell, ',');
         f.possibility = std::stof(cell);
         weights.push_back(f.possibility);
+
+        std::getline(linestream, cell, ',');
+        f.money = std::stoi(cell);
+        moneys.push_back(f.money);
 
         fishBook.push_back(f);
     }

@@ -1,4 +1,4 @@
-type,scale,velocity,img,possibility
-1,0.7,40,assets/images/Fish1.spt,70
-2,1.5,70,assets/images/Fish2.spt,50
-3,1,40,assets/images/Fish3.spt,20
+type,scale,velocity,img,possibility,money
+1,0.7,40,assets/images/Fish1.spt,70,1
+2,1.5,70,assets/images/Fish2.spt,50,2
+3,1,40,assets/images/Fish3.spt,20,2
