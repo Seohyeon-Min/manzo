@@ -53,10 +53,12 @@ void GameObjectManager::DrawAll()
 		if (object->IsVisible(camera_bounds)) {
 			object->Draw();
 		}
+
 	}
 
 	Engine::GetRender().RenderAll();
 }
+
 
 void GameObjectManager::CollisionTest() {
 	for (auto object_1 : objects) {

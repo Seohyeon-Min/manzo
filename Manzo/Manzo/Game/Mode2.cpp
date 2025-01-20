@@ -11,7 +11,6 @@ Created:    March 8, 2023
 #include "../Engine/Engine.h"
 #include "../Engine/ShowCollision.h"
 #include "../Engine/AudioManager.h"
-#include "../Engine/UIManager.h"
 #include <cmath>
 
 #include "States.h"
@@ -84,8 +83,6 @@ void Mode2::Load() {
     GetGSComponent<GameObjectManager>()->Add(shop_ptr);
 
     // UI
-    AddGSComponent(new UIManager());
-    ui_manager = GetGSComponent<UIManager>();
     //ui_manager->AddUI(std::make_unique<Mouse>());;
 
     std::cout << "Left money : " << Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() << std::endl;
@@ -125,7 +122,6 @@ void Mode2::FixedUpdate(double dt)
 void Mode2::Draw() {
     GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
     GetGSComponent<GameObjectManager>()->DrawAll();
-    ui_manager->AddDrawCalls();
     dialog_ptr->Draw();
     
 }
@@ -133,7 +129,6 @@ void Mode2::Draw() {
 void Mode2::Unload() {
     GetGSComponent<GameObjectManager>()->Unload();
     GetGSComponent<Background>()->Unload();
-    ui_manager->UnloadUI();
     ClearGSComponents();
     ship_ptr = nullptr;
     skill_ptr = nullptr;

@@ -517,12 +517,8 @@ void Pump::Update(double dt)
 
 void Pump::Draw(DrawLayer drawlayer)
 {
-    
-
     GetMatrix();
-    //float radius = 0.0f;
-    //vec2 pos;
-    //Type draw_type = Type::Circle;  // Circle е╦ют
+
     CircleDrawCall draw_call = {
     min_pump_radius,                       // Texture to draw
     GetPosition(),                          // Transformation matrix

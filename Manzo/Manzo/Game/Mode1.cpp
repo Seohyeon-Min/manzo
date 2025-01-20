@@ -51,6 +51,7 @@ void Mode1::Load() {
     Engine::GetShaderManager().LoadShader("blur", "assets/shaders/default.vert", "assets/shaders/blur.frag");
     Engine::GetShaderManager().LoadShader("change_alpha", "assets/shaders/default.vert", "assets/shaders/change_alpha.frag");
     Engine::GetShaderManager().LoadShader("change_alpha_no_texture", "assets/shaders/default.vert", "assets/shaders/change_alpha_no_texture.frag");
+	Engine::GetShaderManager().LoadShader("health_bar", "assets/shaders/default.vert", "assets/shaders/health_bar.frag");
 
 	// audio
 	Engine::GetAudioManager().LoadMusic("assets/audios/bgm_original.wav", "background1", false);
@@ -68,8 +69,7 @@ void Mode1::Load() {
     //AddGSComponent(new Pump());
 
 
-    // Mouse and Particle
-    AddGSComponent(new ParticleManager<Particles::MouseFollow>()); // wait, are we using it?
+    // Particle
     AddGSComponent(new ParticleManager<Particles::Plankton>());
     AddGSComponent(new ParticleManager<Particles::FuelBubble>());
     AddGSComponent(new ParticleManager<Particles::BubblePop>());
@@ -105,14 +105,6 @@ void Mode1::Load() {
     background->Add("assets/images/background/bg3.png", 0.5f);
 	//background->Add("assets/images/background/bubble.png", 1.5f, DrawLayer::DrawUI);
 
-    // UI
-	if (!GetGSComponent<UIManager>()) {
-		AddGSComponent(new UIManager());
-	}
-    ui_manager = GetGSComponent<UIManager>();
-    ui_manager->AddUI(std::make_unique<FuelUI>(ship_ptr));
-    ui_manager->AddUI(std::make_unique<Mouse>());
-
     // Map
 	AddGSComponent(new Map());
     GetGSComponent<Map>()->ParseSVG("assets/maps/map6.svg");
@@ -130,6 +122,9 @@ void Mode1::Load() {
 	BossFirstPos.push_back(std::make_pair(boss_ptr->GetFirstPosition()[0], boss_ptr->GetFirstPosition()[1]));
 	bossPosition = { 750,500, 0.0f };
 
+	// UI
+	GetGSComponent<GameObjectManager>()->Add(new Mouse);
+	GetGSComponent<GameObjectManager>()->Add(new FuelUI(ship_ptr));
 
 	// Skill
 	if (!Engine::Instance().GetTmpPtr())
@@ -240,7 +235,6 @@ void Mode1::Draw() {
     //GetGSComponent<Map>()->AddDrawCall();
     god_ray->Draw();
     GetGSComponent<GameObjectManager>()->DrawAll();
-    ui_manager->AddDrawCalls();
 
     // Draw Font
     //Engine::GetFontManager().PrintText(FontType::Bold, "HI", { 0.f,0.f }, 0.0f, 0.001f, { 1.0f,1.0f,1.0f });
@@ -259,7 +253,6 @@ void Mode1::Unload() {
 	GetGSComponent<GameObjectManager>()->Unload();
 	GetGSComponent<Background>()->Unload();
 	Engine::GetRender().ClearDrawCalls();
-	ui_manager->UnloadUI();
 	ClearGSComponents();
 	Engine::GetAudioManager().StopAllChannels();
 	Engine::Instance().ResetSlowDownFactor();

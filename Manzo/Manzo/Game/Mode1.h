@@ -12,7 +12,6 @@ Created:    March 8, 2023
 #include "../Engine/GameState.h"
 #include "../Engine/Sprite.h"
 #include "..\Engine\GameObjectManager.h"
-#include "../Engine/UIManager.h"
 #include "../Engine/Timer.h"
 #include "FishEcosystem.h"
 #include "../Engine/Camera.h"
@@ -47,7 +46,6 @@ private:
     Fish* fish;
     Background* background;
     Boss* boss_ptr;
-    UIManager* ui_manager;
     Cam* camera;
     Beat* beat_system;
     GodRay* god_ray;

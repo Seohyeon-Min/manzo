@@ -45,7 +45,7 @@ public:
 		Active,
 	};
 
-				Skillsys() : skillslots(3, Empty), inventory(0) { is_active_skill = false; }
+				Skillsys() : skillslots(3, Empty), inventory(0), skill_net(nullptr){ is_active_skill = false; }
 
 	void					Update();
 	void					SetSkill(int slot, Skill_list skill) { skillslots[slot] = skill; };

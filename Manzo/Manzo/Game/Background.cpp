@@ -50,7 +50,7 @@ void Background::Draw(const Cam& camera)
         };
 
         draw_call.settings.do_blending = true;
-        draw_call.settings.is_UI = true;
+        draw_call.settings.is_camera_fixed = true;
 
         Engine::GetRender().AddBackgroundDrawCall(draw_call);
     }

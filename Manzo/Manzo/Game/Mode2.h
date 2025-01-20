@@ -16,7 +16,6 @@ Created:    Sept 12, 2024
 #include "Background.h"
 #include "Fish.h"
 #include "Shop.h"
-#include "../Engine/UIManager.h"
 #include "DialogBox.h"
 
 class Fish;
@@ -45,7 +44,6 @@ private:
     Background* background;
     Skillsys* skill_ptr;
     Shop* shop_ptr;
-    UIManager* ui_manager;
     Dialog* dialog_ptr;
 
     float y_limit = 15.0f;

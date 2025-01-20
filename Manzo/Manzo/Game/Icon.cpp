@@ -16,20 +16,20 @@ void Icon::Update(double dt)
 
 void Icon::Draw()
 {
-	DrawSettings settings;
-	settings.is_UI = true;
-	settings.do_blending = true;
+	//DrawSettings settings;
+	//settings.is_camera_fixed = true;
+	//settings.do_blending = true;
 
-	matrix = mat3::build_translation({ GetPosition() }) * mat3::build_scale(GetScale()); //* mat3::build_rotation(3.141592f/2.0f);
+	//matrix = mat3::build_translation({ GetPosition() }) * mat3::build_scale(GetScale()); //* mat3::build_rotation(3.141592f/2.0f);
 
-	draw_call =
-	{
-		texture,                       // Texture to draw
-		&matrix,                          // Transformation matrix
-		Engine::GetShaderManager().GetDefaultShader(), // Shader to use
-		nullptr,
-		settings
-	};
+	//draw_call =
+	//{
+	//	texture,                       // Texture to draw
+	//	&matrix,                          // Transformation matrix
+	//	Engine::GetShaderManager().GetDefaultShader(), // Shader to use
+	//	nullptr,
+	//	settings
+	//};
 
-	Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawFirst);
+	//Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawFirst);
 }

@@ -93,7 +93,6 @@
     <ClInclude Include="Engine\TextureManager.h" />
     <ClInclude Include="Engine\Timer.h" />
     <ClInclude Include="Engine\UI.h" />
-    <ClInclude Include="Engine\UIManager.h" />
     <ClInclude Include="Game\AI.h" />
     <ClInclude Include="Game\Background.h" />
     <ClInclude Include="Game\BeatSystem.h" />
@@ -169,6 +168,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)external\include\glm;$(SolutionDir)external\include\freetype\config;$(SolutionDir)external\include\freetype;$(ProjectDir)include;$(SolutionDir)common_gl\include;$(SolutionDir)external\include;$(SolutionDir)external\include\backends;$(SolutionDir)external\include\rapidjson;$(SolutionDir)external\include\FMOD;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

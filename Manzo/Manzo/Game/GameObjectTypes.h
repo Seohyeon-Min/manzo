@@ -24,6 +24,8 @@ enum class GameObjectTypes {
     Dialog,
     Count,
     Shop,
+    Mouse,
+    UI,
     Icon
 };
 

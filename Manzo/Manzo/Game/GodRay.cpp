@@ -30,7 +30,7 @@ void GodRay::Draw()
     };
 
     draw_call.settings.do_blending = true;
-    draw_call.settings.is_UI = true;
+    draw_call.settings.is_camera_fixed = true;
     draw_call.SetUniforms = [this](const GLShader* shader) { this->SetUniforms(shader); };
     draw_call.sorting_layer = DrawLayer::DrawUI;
 
@@ -48,7 +48,7 @@ void GodRay::Draw()
 //    DrawSettings settings;
 //    settings.do_blending = true;
 //    //settings.modulate_color = true;
-//    settings.is_UI = true;
+//    settings.is_camera_fixed = true;
 //
 //    const mat3 mat;
 //    DrawCall draw_call = {

@@ -4,24 +4,23 @@
 #include "../Game/Ship.h"
 #include <memory>
 
-class UI : public Component { // ui (object)  button click(component) 
-public:
-    virtual void AddDrawCall() = 0;
-};
 
-class FuelUI : public UI {
+class FuelUI : public GameObject {
 public:
     FuelUI(Ship* ship);
+    GameObjectTypes Type() override { return GameObjectTypes::UI; }
+    std::string TypeName() override { return "Fuel_UI"; }
     void Update([[maybe_unused]] double dt) override;
-    void AddDrawCall() override;
+    void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
 private:
+    FuelUI() :GameObject({}) {};
     void SetFuelBarUniforms(const GLShader* shader);
     Ship* ship;
     GLTexture* background_texture;
     GLTexture* foreground_texture;
+
     vec2 position;
-    DrawCall draw_call;
-    mat3 parallax_matrix;
+
     float scale = 0.34f;
     float y_padding = 24.f;
     float x_padding = 8.f;

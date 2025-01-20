@@ -85,6 +85,11 @@ struct LineDrawCallPro : BaseDrawCall {
     float alpha = 255.0f;
     DrawType draw_type = DrawType::Line;
 
+    LineDrawCallPro() = default;
+    LineDrawCallPro(vec2 start, vec2 end, color3 color, float width, float alpha, const GLShader* shader = nullptr, bool iscollision = false)
+        :start(start), end(end), color(color), width(width), alpha(alpha)
+    { }
+
     DrawType GetDrawType() const override {
         return DrawType::Line;
     }

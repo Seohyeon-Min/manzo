@@ -61,24 +61,24 @@ void Dialog::Update(double dt) {
 }
 
 void Dialog::Draw() {
-    DrawSettings settings;
-    settings.is_UI = true;
-    settings.do_blending = true;
+    //DrawSettings settings;
+    //settings.is_camera_fixed = true;
+    //settings.do_blending = true;
 
-    DrawCall draw_call_box = { DialogBox, &back_matrix, Engine::GetShaderManager().GetDefaultShader(), nullptr, settings };
-    DrawCall draw_call_effect = { Box_effect, &effect_matrix, Engine::GetShaderManager().GetDefaultShader(), nullptr, settings };
-    DrawCall draw_call_Me = { Me, &me_matrix, Engine::GetShaderManager().GetDefaultShader(), nullptr, settings };
-    DrawCall draw_call_Sellerkeeper = { Sellerkeeper_1, &seller_martix, Engine::GetShaderManager().GetDefaultShader(), nullptr, settings };
-    DrawCall draw_call_Perry = { Perry, &perry_martix, Engine::GetShaderManager().GetDefaultShader(), nullptr, settings };
+    //DrawCall draw_call_box = { DialogBox, &back_matrix, Engine::GetShaderManager().GetDefaultShader(), nullptr, settings };
+    //DrawCall draw_call_effect = { Box_effect, &effect_matrix, Engine::GetShaderManager().GetDefaultShader(), nullptr, settings };
+    //DrawCall draw_call_Me = { Me, &me_matrix, Engine::GetShaderManager().GetDefaultShader(), nullptr, settings };
+    //DrawCall draw_call_Sellerkeeper = { Sellerkeeper_1, &seller_martix, Engine::GetShaderManager().GetDefaultShader(), nullptr, settings };
+    //DrawCall draw_call_Perry = { Perry, &perry_martix, Engine::GetShaderManager().GetDefaultShader(), nullptr, settings };
 
-    if (displayedText != "") {
-        Engine::GetRender().AddDrawCall(draw_call_Me, DrawLayer::DrawDialog);
-        Engine::GetRender().AddDrawCall(draw_call_Perry, DrawLayer::DrawDialog);
-        Engine::GetRender().AddDrawCall(draw_call_effect, DrawLayer::DrawDialog);
-        Engine::GetRender().AddDrawCall(draw_call_box, DrawLayer::DrawDialog);
-        Engine::GetFontManager().PrintText(FontType::Thin, displayedText.c_str(), { -0.5f, -0.62f }, 0.0f, 0.00012f, { 1.0f, 1.0f, 1.0f });
-        Engine::GetFontManager().PrintText(FontType::Bold, character.c_str(), { -0.5f, -0.52f }, 0.0f, 0.0001f, { 1.0f, 1.0f, 1.0f });
-    }
+    //if (displayedText != "") {
+    //    Engine::GetRender().AddDrawCall(draw_call_Me, DrawLayer::DrawDialog);
+    //    Engine::GetRender().AddDrawCall(draw_call_Perry, DrawLayer::DrawDialog);
+    //    Engine::GetRender().AddDrawCall(draw_call_effect, DrawLayer::DrawDialog);
+    //    Engine::GetRender().AddDrawCall(draw_call_box, DrawLayer::DrawDialog);
+    //    Engine::GetFontManager().PrintText(FontType::Thin, displayedText.c_str(), { -0.5f, -0.62f }, 0.0f, 0.00012f, { 1.0f, 1.0f, 1.0f });
+    //    Engine::GetFontManager().PrintText(FontType::Bold, character.c_str(), { -0.5f, -0.52f }, 0.0f, 0.0001f, { 1.0f, 1.0f, 1.0f });
+    //}
 }
 
 void Dialog::Unload() {

@@ -39,15 +39,10 @@ void Render::AddBackgroundDrawCall(const DrawCall& drawCall) {
 // depending on whether it is a collision line
 void Render::AddDrawCall
 (vec2 start, vec2 end, color3 color,float width, float alpha ,const GLShader* shader, bool iscollision) {
-    if (iscollision) {
+    if (iscollision) { // can be deleted
         LineDrawCall line;
         line.start = start; line.end = end; line.color = color;
         draw_collision_calls.push_back(line); // Collision line
-    }
-    else {
-        LineDrawCallPro line;
-        line.start = start; line.end = end; line.color = color; line.width = width; line.alpha = alpha; line.shader = shader;
-        all_draw_calls.push_back(std::make_unique<LineDrawCallPro>(line)); // Regular line
     }
 }
 
@@ -188,7 +183,7 @@ void Render::Draw(const DrawCall& draw_call) {
 
 
     mat3 model_to_world = *draw_call.transform * mat3::build_scale(vec2((float)frame_size.x, (float)frame_size.y));
-    mat3 WORLD_TO_NDC = settings.is_UI
+    mat3 WORLD_TO_NDC = settings.is_camera_fixed
         ? mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height)
         : GetWorldtoNDC();
     const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
@@ -418,6 +413,7 @@ void Render::DrawLinePro(LineDrawCallPro drawcall)
     const GLShader* shader = drawcall.shader;
     const float width = drawcall.width;
     const float alpha = drawcall.alpha;
+    auto settings = drawcall.settings;
 
     // Use default collision shader if no shader is provided
     if (shader == nullptr) {
@@ -432,9 +428,9 @@ void Render::DrawLinePro(LineDrawCallPro drawcall)
 
     mat3 model_to_world = mat3::build_translation(start) * mat3::build_rotation(angle)* mat3::build_scale(length);
     
-    mat3 WORLD_TO_NDC =
-        mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height) *
-        mat3::build_translation({ -(Engine::window_width / 2), -(Engine::window_height / 2) });
+    mat3 WORLD_TO_NDC = settings.is_camera_fixed
+        ? mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height)
+        : GetWorldtoNDC();
     const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
 
     shader->Use(); // Use shader
@@ -478,7 +474,7 @@ void Render::DrawCircleLine(CircleDrawCall draw_call) {
 
     mat3 model_to_world = mat3::build_translation(position) * mat3::build_scale(radius);
 
-    mat3 WORLD_TO_NDC = settings.is_UI
+    mat3 WORLD_TO_NDC = settings.is_camera_fixed
         ? mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height)
         : GetWorldtoNDC();
 

@@ -23,6 +23,8 @@ public:
     void UpdateAll(double dt);
     void FixedUpdateAll(double dt);
     void DrawAll();
+
+
     void CollisionTest();
     vec2 FindNearestRock(GameObject* object);
 
