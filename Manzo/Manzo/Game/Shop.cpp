@@ -1,4 +1,5 @@
 #include "Shop.h"
+#include "Dragging.h"
 
 static bool is_on_inven = false;
 static bool is_on_shop = false;
@@ -28,6 +29,15 @@ Shop::Shop() : GameObject(back_position_default)
 	icon_manager_ptr = new IconManager();
 	icon_manager_ptr->Add(test_icon_ptr);
 	icon_manager_ptr->Add(test_icon_ptr2);
+	
+	Dragging* test_drag = new Dragging(test_icon_ptr, shop_icon);
+	test_icon_ptr->AddGOComponent(test_drag);
+	Dragging* test_drag2 = new Dragging(test_icon_ptr2, shop_icon);
+	test_icon_ptr2->AddGOComponent(test_drag2);
+
+	test_icon_ptr->GetGOComponent<Dragging>()->RevertPosition(true);
+	test_icon_ptr2->GetGOComponent<Dragging>()->RevertPosition(false);
+	
 }
 
 Shop::~Shop()
@@ -276,7 +286,7 @@ void Shop::Shop_button_draw()
 	};
 
 	Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawFirst);
-}
+} */
 
 void Shop::Inventory_Back_draw()
 {
@@ -297,7 +307,7 @@ void Shop::Inventory_Back_draw()
 
 	Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawFirst);
 }
-
+/*
 void Shop::Inventory_Icon_draw()
 {
 	DrawSettings settings;

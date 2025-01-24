@@ -87,7 +87,7 @@ void Mode2::Load() {
     // UI
     AddGSComponent(new UIManager());
     ui_manager = GetGSComponent<UIManager>();
-    //ui_manager->AddUI(std::make_unique<Mouse>());;
+    ui_manager->AddUI(std::make_unique<Mouse>());; //for shop debug
 
     std::cout << "Left money : " << Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() << std::endl;
 }

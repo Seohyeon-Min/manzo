@@ -142,6 +142,9 @@
     <ClCompile Include="Game\IconManager.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Dragging.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h">
@@ -328,6 +331,9 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Game\IconManager.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Dragging.h">
       <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>
