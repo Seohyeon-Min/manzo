@@ -58,11 +58,10 @@ void Render::RenderAll() {
         DrawBackground(draw_call);
     }
 
-
-    std::sort(all_draw_calls.begin(), all_draw_calls.end(),
+    std::stable_sort(all_draw_calls.begin(), all_draw_calls.end(),
         [](const std::unique_ptr<BaseDrawCall>& a, const std::unique_ptr<BaseDrawCall>& b) {
             if (a->sorting_layer != b->sorting_layer) {
-                return a->sorting_layer < b->sorting_layer;
+                return static_cast<int>(a->sorting_layer) < static_cast<int>(b->sorting_layer);
             }
             if (a->shader != b->shader) {
                 return a->shader < b->shader;

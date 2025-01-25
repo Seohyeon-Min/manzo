@@ -5,6 +5,8 @@ Effect::Effect(vec2 position, double effect_time)
     : GameObject(position), effect_time(effect_time) {
     effect_timer = new Timer(effect_time);
     AddGOComponent(effect_timer);
+    SetPosition(position);
+    SetCameraFixed(true);
 }
 
 Effect::~Effect() {
@@ -112,4 +114,19 @@ void HitEffect::Update(double dt) {
     if (GetGOComponent<Sprite>()->AnimationEnded()) {
         Destroy();
     }
+}
+
+void HitEffect::Draw(DrawLayer drawlayer)
+{
+    Sprite* sprite = GetGOComponent<Sprite>();
+    DrawCall draw_call = {
+        sprite,
+        &GetMatrix(),
+        Engine::GetShaderManager().GetShader("change_alpha") // Shader to use
+    };
+
+    draw_call.settings.do_blending = true;
+    draw_call.SetUniforms = [this](const GLShader* shader) { SetAlpha(shader); };
+    draw_call.sorting_layer = drawlayer;
+    GameObject::Draw(draw_call);
 }

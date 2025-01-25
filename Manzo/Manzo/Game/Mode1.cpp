@@ -85,11 +85,6 @@ void Mode1::Load() {
     ship_ptr = new Ship({ 0, 0 });
     GetGSComponent<GameObjectManager>()->Add(ship_ptr);
 
-
-	//// ship
-	ship_ptr = new Ship({ 0, 0 });
-	GetGSComponent<GameObjectManager>()->Add(ship_ptr);
-
 	//// background
 	background = new Background();
 	AddGSComponent(background);

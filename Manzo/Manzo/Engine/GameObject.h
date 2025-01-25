@@ -37,6 +37,8 @@ public:
     bool IsCollidingWith(GameObject* other_object);
     bool IsCollidingWith(vec2 point);
     bool IsVisible(const Math::rect& camera_bounds) const;
+    bool isCameraFixed() const { return is_camera_fixed; }
+    void SetCameraFixed(bool fixed) { is_camera_fixed = fixed; }
     virtual bool CanCollideWith(GameObjectTypes other_object_type);
     virtual void ResolveCollision([[maybe_unused]] GameObject* other_object) { };
     virtual void Update(double dt);
@@ -106,6 +108,7 @@ private:
 
     double rotation;
     bool matrix_outdated = true;
+    bool is_camera_fixed = false;
     bool destroy;
     vec2 scale;
     vec2 position;

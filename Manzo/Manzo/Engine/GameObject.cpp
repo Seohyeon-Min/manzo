@@ -61,13 +61,8 @@ void GameObject::Draw(DrawLayer drawlayer) {
 			shader
 		};
 
-		if (drawlayer != DrawLayer::Draw) {
-			draw_call.sorting_layer = drawlayer;
-			Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call));
-		}
-		else {
-			Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call));  // basic layer
-		}
+		draw_call.sorting_layer = drawlayer;
+		Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call));
 	}
 	if (Engine::GetGameStateManager().GetGSComponent<ShowCollision>() != nullptr && Engine::GetGameStateManager().GetGSComponent<ShowCollision>()->Enabled()) {
 		Collision* collision = GetGOComponent<Collision>();

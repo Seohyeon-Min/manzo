@@ -15,6 +15,7 @@ mouse_position({ 0, 0 }),
 trails(trail_length, { vec2(0, 0), 1.0f })
 {
     AddGOComponent(new Sprite("assets/images/mouse.spt", this));
+    SetCameraFixed(true);
 }
 
 

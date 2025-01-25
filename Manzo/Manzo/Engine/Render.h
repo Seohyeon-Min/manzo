@@ -18,12 +18,12 @@
 
 // A structure to represent a draw call
 enum class DrawLayer {
-    DrawBackground,
-    DrawFirst,
-    Draw,
-    DrawLast,
-    DrawUI,
-    DrawDialog
+    DrawBackground = 0,
+    DrawFirst = 1,
+    Draw = 2,
+    DrawLast = 3,
+    DrawUI = 4,
+    DrawDialog = 5
 };
 
 enum class DrawType {
@@ -45,10 +45,9 @@ struct BaseDrawCall {
     virtual DrawType GetDrawType() const = 0;
 };
 
-struct DrawCall : BaseDrawCall {
+struct DrawCall : public BaseDrawCall {
     std::variant<Sprite*, GLTexture*> drawable;
     const mat3* transform = nullptr;
-    const GLShader* shader = nullptr;
 
     DrawCall() = default;
 
@@ -67,7 +66,7 @@ struct DrawCall : BaseDrawCall {
     }
 };
 
-struct LineDrawCall : BaseDrawCall {
+struct LineDrawCall : public BaseDrawCall {
     vec2 start;
     vec2 end;
     color3 color;
@@ -77,7 +76,7 @@ struct LineDrawCall : BaseDrawCall {
     }
 };
 
-struct LineDrawCallPro : BaseDrawCall {
+struct LineDrawCallPro : public BaseDrawCall {
     vec2 start;
     vec2 end;
     color3 color;
@@ -95,7 +94,7 @@ struct LineDrawCallPro : BaseDrawCall {
     }
 };
 
-struct CircleDrawCall : BaseDrawCall {
+struct CircleDrawCall : public BaseDrawCall {
     float radius = 0.0f;
     vec2 pos;
     DrawType draw_type = DrawType::Circle;

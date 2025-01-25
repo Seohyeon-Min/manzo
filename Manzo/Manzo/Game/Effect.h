@@ -45,4 +45,5 @@ class HitEffect : public Effect {
 public:
     HitEffect(vec2 pos);
     void Update(double dt) override;
+    void Draw(DrawLayer drawlayer = DrawLayer::DrawLast) override;
 };
