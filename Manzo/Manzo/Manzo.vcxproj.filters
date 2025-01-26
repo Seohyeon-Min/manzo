@@ -132,6 +132,7 @@
     </ClCompile>
     <ClCompile Include="Engine\FontManager.cpp" />
     <ClCompile Include="Engine\Font.cpp" />
+    <ClCompile Include="Engine\RayCasting.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h">
@@ -309,5 +310,6 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Engine\FontManager.h" />
+    <ClInclude Include="Engine\RayCasting.h" />
   </ItemGroup>
 </Project>

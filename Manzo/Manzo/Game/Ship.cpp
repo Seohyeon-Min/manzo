@@ -9,6 +9,7 @@
 #include "WindowState.h"
 
 #include <iostream>
+#include "../Engine/RayCasting.h"
 
 Ship::Ship(vec2 start_position) :
     GameObject(start_position), move(false)
@@ -221,9 +222,34 @@ void Ship::FixedUpdate(double fixed_dt) {
     GameObject::FixedUpdate(fixed_dt);
 }
 
-
 void Ship::Draw(DrawLayer drawlayer) {
     GameObject::Draw(DrawLayer::DrawLast);
+
+    //std::vector<Rock*> rocks = Engine::GetGameStateManager().GetGSComponent<RockGroup>()->GetRocks();
+
+    //if (!rocks.empty()) {
+    //    vec2 start = GetPosition();
+    //    vec2 direction = vec2(1.0f, 0.0f); // Example ray direction
+
+    //    RayCasting r(direction.x, direction.y);
+    //    r.g_mouse_pos = start;
+    //    r.reset();
+
+    //    for (Rock* rock : rocks) {
+    //        vec2 rockPos = rock->GetPosition();
+    //        std::vector<vec2> vertices = rock->GetPolygon().vertices; // Assuming Rock has a polygon with vertices
+
+    //        for (size_t i = 0; i < vertices.size(); ++i) {
+    //            vec2 p1 = vertices[i] + rockPos;
+    //            vec2 p2 = vertices[(i + 1) % vertices.size()] + rockPos;
+    //            r.calc_hit(p1, p2);
+    //        }
+    //    }
+
+    //    Engine::GetRender().AddDrawCall(start, r.m_end, { 255, 0, 0 });
+    //}
+
+
 }
 
 vec2 CatmullRomSpline(const vec2& p0, const vec2& p1, const vec2& p2, const vec2& p3, float t) {
