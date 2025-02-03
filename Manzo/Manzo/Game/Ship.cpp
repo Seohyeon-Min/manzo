@@ -143,7 +143,9 @@ std::vector<vec2> spline_points;
 void Ship::State_Hit::Enter(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
     Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
-    ship->HitWithReef(ship->normal);
+    vec2 velocity = ship->GetVelocity();
+    ship->SetVelocity({});
+    ship->HitWithReef(ship->normal, velocity);
     ship->collide_timer->Start();
     ship->force = ship->direction * 20200.f;
     Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new HitEffect(ship->GetPosition()));
@@ -223,7 +225,7 @@ void Ship::FixedUpdate(double fixed_dt) {
 
 
 void Ship::Draw(DrawLayer drawlayer) {
-    GameObject::Draw(DrawLayer::DrawLast);
+    GameObject::Draw(DrawLayer::DrawPlayer);
 }
 
 vec2 CatmullRomSpline(const vec2& p0, const vec2& p1, const vec2& p2, const vec2& p3, float t) {
@@ -374,14 +376,12 @@ void Ship::ResolveCollision(GameObject* other_object)
     }
 }
 
-void Ship::HitWithReef(vec2 normal) {
+void Ship::HitWithReef(vec2 normal, vec2 velocity) {
     fuel -= HitDecFuel;
 
     if (fuel < 0.0f) {
         fuel = 0.0f;
     }
-
-    vec2 velocity = GetVelocity();
 
     float dot_product = velocity.x * normal.x + velocity.y * normal.y;
 
@@ -490,8 +490,10 @@ Pump::Pump() :
 
 void Pump::Update(double dt)
 {
+    GameObject::Update(dt);
     Ship* ship = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>();
     SetPosition(ship->GetPosition());
+    GetMatrix();
 
     float decrease_duration = (float)beat->GetFixedDuration() - 0.1f;
     float delta_radius = (max_pump_radius - min_pump_radius) / decrease_duration;
@@ -517,8 +519,6 @@ void Pump::Update(double dt)
 
 void Pump::Draw(DrawLayer drawlayer)
 {
-    GetMatrix();
-
     CircleDrawCall draw_call = {
     min_pump_radius,                       // Texture to draw
     GetPosition(),                          // Transformation matrix

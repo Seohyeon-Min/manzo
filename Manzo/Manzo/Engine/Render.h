@@ -22,8 +22,10 @@ enum class DrawLayer {
     DrawFirst = 1,
     Draw = 2,
     DrawLast = 3,
-    DrawUI = 4,
-    DrawDialog = 5
+    DrawPlayer,
+    DrawPlayerTop,
+    DrawUI,
+    DrawDialog
 };
 
 enum class DrawType {
@@ -114,7 +116,7 @@ public:
     void AddDrawCall(std::unique_ptr<BaseDrawCall> drawCall);
     void AddBackgroundDrawCall(const DrawCall& drawCall);
     void AddDrawCall
-    (vec2 start, vec2 end, color3 color, float width = 1.0f, float alpha = 255.0f, const GLShader* shader = nullptr, bool iscollision = true);
+    (vec2 start, vec2 end, color3 color, float width = 1.0f, float alpha = 255.0f, const GLShader* shader = nullptr);
     void RenderAll();
 
     void ApplyPostProcessing();
@@ -136,9 +138,8 @@ private:
 
     mat3 GetWorldtoNDC();
 
-    std::vector<std::unique_ptr<BaseDrawCall>> all_draw_calls;
+    std::vector<std::vector<std::unique_ptr<BaseDrawCall>>> all_draw_calls;
     std::vector<DrawCall> draw_background_calls;
-    std::vector<std::unique_ptr<DrawCall>> draw_calls;  
     std::vector<LineDrawCall> draw_collision_calls;
 
     GLVertexArray model;

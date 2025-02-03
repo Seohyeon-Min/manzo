@@ -18,32 +18,34 @@
 const float WORLD_SIZE_MAX = (float)std::max(Engine::window_width, Engine::window_height);
 
 Render::Render()
-    : postProcessFramebuffer((unsigned int)Engine::window_width, (unsigned int)Engine::window_height) { // 프레임 버퍼 생성
-    CreatModel();  // 모델 생성
+    : postProcessFramebuffer((unsigned int)Engine::window_width, (unsigned int)Engine::window_height) {
+    CreatModel();
     CreatLineModel();
     CreateCircleLineModel();
-    all_draw_calls.reserve(1000);
+    //all_draw_calls.reserve(1000);
+
 }
 
-// Add a draw call to the corresponding vector based on the draw layer
-// Draw calls are grouped into first, normal, and late phases
 void Render::AddDrawCall(std::unique_ptr<BaseDrawCall> drawCall) {
-    all_draw_calls.push_back(std::move(drawCall));
+    //all_draw_calls.push_back(std::move(drawCall));
+    int layer = static_cast<int>(drawCall->sorting_layer);
+
+    if (layer >= all_draw_calls.size()) {
+        all_draw_calls.resize(layer + 1);
+    }
+
+    all_draw_calls[layer].push_back(std::move(drawCall));
 }
 
 void Render::AddBackgroundDrawCall(const DrawCall& drawCall) {
     draw_background_calls.push_back(drawCall);
 }
 
-// Overloaded function to add a line or collision draw call
-// depending on whether it is a collision line
 void Render::AddDrawCall
-(vec2 start, vec2 end, color3 color,float width, float alpha ,const GLShader* shader, bool iscollision) {
-    if (iscollision) { // can be deleted
-        LineDrawCall line;
-        line.start = start; line.end = end; line.color = color;
-        draw_collision_calls.push_back(line); // Collision line
-    }
+(vec2 start, vec2 end, color3 color,float width, float alpha ,const GLShader* shader) {
+    LineDrawCall line;
+    line.start = start; line.end = end; line.color = color;
+    draw_collision_calls.push_back(line); // Collision line
 }
 
 // Render all stored draw calls, starting with early phase, normal phase, and then late phase
@@ -58,34 +60,24 @@ void Render::RenderAll() {
         DrawBackground(draw_call);
     }
 
-    std::stable_sort(all_draw_calls.begin(), all_draw_calls.end(),
-        [](const std::unique_ptr<BaseDrawCall>& a, const std::unique_ptr<BaseDrawCall>& b) {
-            if (a->sorting_layer != b->sorting_layer) {
-                return static_cast<int>(a->sorting_layer) < static_cast<int>(b->sorting_layer);
-            }
-            if (a->shader != b->shader) {
-                return a->shader < b->shader;
-            }
-
-            return a->order_in_layer < b->order_in_layer;
-        });
-
     // Render all draw calls
-    for (const auto& draw_call : all_draw_calls) {
-        if (auto* call = dynamic_cast<DrawCall*>(draw_call.get())) {
-            Draw(*call);
-        }
-        else if (auto* call = dynamic_cast<LineDrawCall*>(draw_call.get())) {
-            DrawLine(*call);
-        }
-        else if (auto* call = dynamic_cast<LineDrawCallPro*>(draw_call.get())) {
-            DrawLinePro(*call);
-        }
-        else if (auto* call = dynamic_cast<CircleDrawCall*>(draw_call.get())) {
-            DrawCircleLine(*call);
+    for (auto& layer : all_draw_calls) {
+
+        for (auto& draw_call : layer) {
+            if (auto* call = dynamic_cast<DrawCall*>(draw_call.get())) {
+                Draw(*call);
+            }
+            else if (auto* call = dynamic_cast<LineDrawCall*>(draw_call.get())) {
+                DrawLine(*call);
+            }
+            else if (auto* call = dynamic_cast<LineDrawCallPro*>(draw_call.get())) {
+                DrawLinePro(*call);
+            }
+            else if (auto* call = dynamic_cast<CircleDrawCall*>(draw_call.get())) {
+                DrawCircleLine(*call);
+            }
         }
     }
-
 
     // If collision debug mode is enabled, render collision lines
     if (Engine::GetGameStateManager().GetGSComponent<ShowCollision>() != nullptr &&
@@ -109,44 +101,24 @@ void Render::ApplyPostProcessing()
     auto* bloomShader = Engine::GetShaderManager().GetShader("post_bloom");
     bloomShader->Use();
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glClear(GL_COLOR_BUFFER_BIT);
-
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer.GetColorAttachment());
     bloomShader->SendUniform("uSceneTexture", 0);
-    bloomShader->SendUniform("uThreshold", 0.70f);
-    bloomShader->SendUniform("uBlurDirection", 1.0f, 0.0f); 
+    bloomShader->SendUniform("uThreshold", 0.8f);
+    bloomShader->SendUniform("uBlurDirection", 1.0f, 1.0f); 
     bloomShader->SendUniform("uResolution", static_cast<float>(Engine::window_width));
-    bloomShader->SendUniform("uBloomIntensity", 1.2f);
+    bloomShader->SendUniform("uBloomIntensity", 1.1f);
 
     RenderQuad();
     bloomShader->Use(false);
 }
 
 
-
-/// <summary>
-/// /////////// It is duplicated
-/// </summary>
-/// <param name="model_to_world"></param>
-/// <param name="frame_size"></param>
-/// <returns></returns>
-Math::rect CalculateAABB2(const mat3& model_to_world, const vec2& frame_size) {
-    vec2 left_bottom_local = { -frame_size.x * 0.5f, -frame_size.y * 0.5f };
-    vec2 right_top_local = { frame_size.x * 0.5f, frame_size.y * 0.5f };
-
-    vec3 left_bottom_world = (model_to_world * mat3::build_translation(left_bottom_local)).column2;
-    vec3 right_top_world = (model_to_world * mat3::build_translation(right_top_local)).column2;
-
-    //std::cout << "World Transformed Bounds:" << std::endl;
-    //std::cout << "  LeftBottom: (" << left_bottom_world.x << ", " << left_bottom_world.y << ")" << std::endl;
-    //std::cout << "  RightTop: (" << right_top_world.x << ", " << right_top_world.y << ")" << std::endl;
-
-    return {
-        {left_bottom_world.x, left_bottom_world.y},
-        {right_top_world.x, right_top_world.y} 
-    };
+void Render::ClearDrawCalls()
+{
+    all_draw_calls.clear();
+    draw_collision_calls.clear();
+    draw_background_calls.clear();
 }
 
 
@@ -249,15 +221,6 @@ void Render::Draw(const DrawCall& draw_call) {
 }
 
 
-void Render::ClearDrawCalls()
-{
-    all_draw_calls.clear();
-    draw_calls.clear();
-    draw_collision_calls.clear();
-    draw_background_calls.clear();
-}
-
-
 void Render::DrawBackground(const DrawCall& draw_call) {
     const GLShader* shader = draw_call.shader;
     auto settings = draw_call.settings;
@@ -298,41 +261,6 @@ void Render::DrawBackground(const DrawCall& draw_call) {
     mat3 WORLD_TO_NDC = GetWorldtoNDC();
     mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
 
-    // 카메라의 AABB와 텍스처의 월드 AABB 계산
-    Math::rect camera_bounds = Engine::GetGameStateManager().GetGSComponent<Cam>()->GetBounds();
-    vec2 padding(100.f, 100.f);
-
-    // point_1과 point_2에 직접 접근하여 계산
-    camera_bounds.point_1 -= padding;
-    camera_bounds.point_2 += padding;
-    Math::rect texture_bounds = CalculateAABB2(*draw_call.transform, vec2((float)frame_size.x, (float)frame_size.y));
-
-    // 카메라와 텍스처 경계의 교차 영역 계산
-    Math::rect clipped_bounds = {
-        {std::max(texture_bounds.Left(), camera_bounds.Left()), std::max(texture_bounds.Bottom(), camera_bounds.Bottom())},
-        {std::min(texture_bounds.Right(), camera_bounds.Right()), std::min(texture_bounds.Top(), camera_bounds.Top())}
-    };
-
-    // 텍스처 좌표 계산
-    float tex_left = (clipped_bounds.Left() - texture_bounds.Left()) / texture_size.x;
-    float tex_right = (clipped_bounds.Right() - texture_bounds.Left()) / texture_size.x;
-    float tex_bottom = (clipped_bounds.Bottom() - texture_bounds.Bottom()) / texture_size.y;
-    float tex_top = (clipped_bounds.Top() - texture_bounds.Bottom()) / texture_size.y;
-
-
-    // 클리핑된 모델 크기 계산
-    vec2 clipped_model_size = {
-        clipped_bounds.Right() - clipped_bounds.Left(),
-        clipped_bounds.Top() - clipped_bounds.Bottom()
-    };
-
-    // 새로 조정된 모델 -> 월드 변환
-    mat3 clipped_model_to_world = mat3::build_translation(Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition()) *
-    mat3::build_scale(clipped_model_size);
-
-    // 조정된 모델 -> NDC 변환
-    mat3 clipped_model_to_ndc = WORLD_TO_NDC * clipped_model_to_world;
-
     // 렌더링
     shader->Use();
     texture->UseForSlot(0);
@@ -355,9 +283,7 @@ void Render::DrawBackground(const DrawCall& draw_call) {
         glCheck(glDisable(GL_BLEND));
     }
 
-    // UV 좌표와 변환 행렬 전송
-    shader->SendUniform("uUV", tex_left, tex_bottom, tex_right, tex_top);
-    shader->SendUniform("uModelToNDC", util::to_span(clipped_model_to_ndc));
+    shader->SendUniform("uModelToNDC", util::to_span(model_to_ndc));
 
     // 모델 렌더링
     model.Use();

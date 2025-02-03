@@ -36,7 +36,7 @@ public:
     float GetMaxFuel() { return (float)Maxfuel; }
     void FuelUpdate(double dt);
     void SetMaxFuel(double input);
-    void HitWithReef(vec2 normal);
+    void HitWithReef(vec2 normal, vec2 velocity);
     bool IsTouchingReef();
     bool IsFuelZero();
     bool IsShipUnder();

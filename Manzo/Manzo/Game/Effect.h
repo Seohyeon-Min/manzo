@@ -39,6 +39,8 @@ class CaptureEffect : public Effect {
 public:
     CaptureEffect(vec2 pos);
     void Update(double dt) override;
+    void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
+    ~CaptureEffect();
 };
 
 class HitEffect : public Effect {

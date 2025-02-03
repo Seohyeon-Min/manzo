@@ -90,11 +90,30 @@ CaptureEffect::CaptureEffect(vec2 pos)
 
 void CaptureEffect::Update(double dt) {
     Effect::Update(dt);
-    if (GetGOComponent<Sprite>()->AnimationEnded()) {
-        Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::CaptureEffect>>()
-            ->EmitRound(8, GetPosition(), 100.f, 30.f);
+    if (GetGOComponent<Sprite>()->GetCurrentFrame() >= 8) {
         Destroy();
     }
+}
+
+void CaptureEffect::Draw(DrawLayer drawlayer)
+{
+    Sprite* sprite = GetGOComponent<Sprite>();
+    DrawCall draw_call = {
+        sprite,
+        &GetMatrix(),
+        Engine::GetShaderManager().GetShader("change_alpha") // Shader to use
+    };
+
+    draw_call.settings.do_blending = true;
+    draw_call.SetUniforms = [this](const GLShader* shader) { SetAlpha(shader); };
+    draw_call.sorting_layer = DrawLayer::DrawPlayerTop;
+    GameObject::Draw(draw_call);
+}
+
+CaptureEffect::~CaptureEffect()
+{
+    Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::CaptureEffect>>()
+        ->EmitRound(2, GetPosition(), 100.f, 30.f);
 }
 
 HitEffect::HitEffect(vec2 pos)
@@ -127,6 +146,6 @@ void HitEffect::Draw(DrawLayer drawlayer)
 
     draw_call.settings.do_blending = true;
     draw_call.SetUniforms = [this](const GLShader* shader) { SetAlpha(shader); };
-    draw_call.sorting_layer = drawlayer;
+    draw_call.sorting_layer = DrawLayer::DrawLast;
     GameObject::Draw(draw_call);
 }
