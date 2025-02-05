@@ -1,6 +1,7 @@
 #include "GLFrameBuffer.h"
 
-GLFrameBuffer::GLFrameBuffer(unsigned int width, unsigned int height) {
+
+void GLFrameBuffer::Creat(unsigned int width, unsigned int height) {
     // 프레임 버퍼 생성
     glGenFramebuffers(1, &framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -12,12 +13,6 @@ GLFrameBuffer::GLFrameBuffer(unsigned int width, unsigned int height) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorAttachment, 0);
-
-    // 깊이 및 스텐실 렌더 버퍼 생성
-    glGenRenderbuffers(1, &depthStencilAttachment);
-    glBindRenderbuffer(GL_RENDERBUFFER, depthStencilAttachment);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthStencilAttachment);
 
     // 프레임 버퍼 상태 확인
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
@@ -32,6 +27,7 @@ GLFrameBuffer::~GLFrameBuffer() {
     glDeleteTextures(1, &colorAttachment);
     glDeleteRenderbuffers(1, &depthStencilAttachment);
 }
+
 
 void GLFrameBuffer::Bind() const {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);

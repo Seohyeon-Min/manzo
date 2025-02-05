@@ -48,7 +48,6 @@ private:
     Boss* boss_ptr;
     Cam* camera;
     Beat* beat_system;
-    GodRay* god_ray;
     Skillsys* skill_ptr;
     Skillsys::Skill_Net* Net_ptr;
 

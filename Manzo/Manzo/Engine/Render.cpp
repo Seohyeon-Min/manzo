@@ -17,11 +17,12 @@
 
 const float WORLD_SIZE_MAX = (float)std::max(Engine::window_width, Engine::window_height);
 
-Render::Render()
-    : postProcessFramebuffer((unsigned int)Engine::window_width, (unsigned int)Engine::window_height) {
+Render::Render(){
     CreatModel();
     CreatLineModel();
     CreateCircleLineModel();
+    postProcessFramebuffer[0].Creat((unsigned int)Engine::window_width, (unsigned int)Engine::window_height);
+    postProcessFramebuffer[1].Creat((unsigned int)Engine::window_width, (unsigned int)Engine::window_height);
     //all_draw_calls.reserve(1000);
 
 }
@@ -52,7 +53,7 @@ void Render::AddDrawCall
 // Also handles rendering of lines and collision shapes
 void Render::RenderAll() {
     if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
-        postProcessFramebuffer.Bind();
+        postProcessFramebuffer[0].Bind();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
@@ -88,7 +89,7 @@ void Render::RenderAll() {
     }
 
     if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
-        postProcessFramebuffer.Unbind();
+        postProcessFramebuffer[1].Unbind();
         ApplyPostProcessing();
     }
 
@@ -98,19 +99,62 @@ void Render::RenderAll() {
 
 void Render::ApplyPostProcessing()
 {
-    auto* bloomShader = Engine::GetShaderManager().GetShader("post_bloom");
-    bloomShader->Use();
+    bool horizontal = true, first_iteration = true;
+    int num_passes = 2; // Number of post process
+
+    for (int i = 0; i < num_passes; i++) {
+        postProcessFramebuffer[horizontal].Bind();
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        GLShader* shader = Engine::GetShaderManager().GetShader("under_water_god_ray");
+
+        switch (i) {
+        case 1:
+            shader = Engine::GetShaderManager().GetShader("under_water_god_ray");
+            break;
+        case 0:
+            shader = Engine::GetShaderManager().GetShader("post_bloom"); 
+            break;
+        }
+        shader->Use();
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer[!horizontal].GetColorAttachment());
+
+        double currentTime = Engine::GetAudioManager().GetCurrentMusicTime("background1");
+
+        switch (i) {
+        case 1: // God Ray
+            shader->SendUniform("uSceneTexture", 0);
+            shader->SendUniform("iResolution", Engine::window_width, Engine::window_height);
+            shader->SendUniform("iTime", float(currentTime));
+            break;
+        case 0: // Bloom
+            shader->SendUniform("uSceneTexture", 0);
+            shader->SendUniform("uThreshold", 0.8f);
+            shader->SendUniform("uBlurDirection", 1.0f, 1.0f);
+            shader->SendUniform("uResolution", static_cast<float>(Engine::window_width));
+            shader->SendUniform("uBloomIntensity", 1.1f);
+            break;
+        }
+
+        RenderQuad();
+        shader->Use(false);
+
+        horizontal = !horizontal;
+        first_iteration = false;
+    }
+
+    // Post pass-through
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    auto* finalShader = Engine::GetShaderManager().GetShader("post_default");
+    finalShader->Use();
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer.GetColorAttachment());
-    bloomShader->SendUniform("uSceneTexture", 0);
-    bloomShader->SendUniform("uThreshold", 0.8f);
-    bloomShader->SendUniform("uBlurDirection", 1.0f, 1.0f); 
-    bloomShader->SendUniform("uResolution", static_cast<float>(Engine::window_width));
-    bloomShader->SendUniform("uBloomIntensity", 1.1f);
+    glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer[!horizontal].GetColorAttachment()); // 마지막 패스 결과를 사용
 
     RenderQuad();
-    bloomShader->Use(false);
+    finalShader->Use(false);
 }
 
 

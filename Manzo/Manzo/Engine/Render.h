@@ -145,7 +145,8 @@ private:
     GLVertexArray model;
     GLVertexArray line_model;
     GLVertexArray circle_line_model;
-    GLFrameBuffer postProcessFramebuffer;
+
+    GLFrameBuffer postProcessFramebuffer[2];
 
     mat3 projection_matrix;
 };

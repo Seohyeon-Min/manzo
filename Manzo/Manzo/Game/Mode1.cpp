@@ -46,12 +46,14 @@ void Mode1::Load() {
 
     //shader
     Engine::GetShaderManager().LoadShader("pixelate", "assets/shaders/default.vert", "assets/shaders/pixelate.frag");
-    Engine::GetShaderManager().LoadShader("post_process", "assets/shaders/post_default.vert", "assets/shaders/post_default.frag");
-    Engine::GetShaderManager().LoadShader("post_bloom", "assets/shaders/post_default.vert", "assets/shaders/post_bloom.frag");
     Engine::GetShaderManager().LoadShader("blur", "assets/shaders/default.vert", "assets/shaders/blur.frag");
     Engine::GetShaderManager().LoadShader("change_alpha", "assets/shaders/default.vert", "assets/shaders/change_alpha.frag");
     Engine::GetShaderManager().LoadShader("change_alpha_no_texture", "assets/shaders/default.vert", "assets/shaders/change_alpha_no_texture.frag");
 	Engine::GetShaderManager().LoadShader("health_bar", "assets/shaders/default.vert", "assets/shaders/health_bar.frag");
+
+	Engine::GetShaderManager().LoadShader("under_water_god_ray", "assets/shaders/post_default.vert", "assets/shaders/underwater_god_ray.frag");
+	Engine::GetShaderManager().LoadShader("post_default", "assets/shaders/post_default.vert", "assets/shaders/post_default.frag");
+    Engine::GetShaderManager().LoadShader("post_bloom", "assets/shaders/post_default.vert", "assets/shaders/post_bloom.frag");
 
 	// audio
 	Engine::GetAudioManager().LoadMusic("assets/audios/bgm_original.wav", "background1", false);
@@ -64,8 +66,8 @@ void Mode1::Load() {
     AddGSComponent(beat_system);
 	beat_system->LoadMusicToSync("background1");///////////////////////
 
-    god_ray = new GodRay();
-    AddGSComponent(god_ray);
+    //god_ray = new GodRay();
+    //AddGSComponent(god_ray);
     //AddGSComponent(new Pump());
 
 
@@ -228,7 +230,6 @@ void Mode1::FixedUpdate(double dt)
 void Mode1::Draw() {
     GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
     //GetGSComponent<Map>()->AddDrawCall();
-    god_ray->Draw();
     GetGSComponent<GameObjectManager>()->DrawAll();
 
     // Draw Font

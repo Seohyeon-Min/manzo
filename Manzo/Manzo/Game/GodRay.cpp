@@ -1,79 +1,79 @@
-#include "GodRay.h"
-#include "mat3.h"
-#include "BeatSystem.h"
-#include "../Engine/Engine.h"
-
-void GodRay::SetUniforms(const GLShader* shader) {
-    double currentTime = Engine::GetAudioManager().GetCurrentMusicTime("background1");
-    //counter += Engine::Instance().GetDt();
-    shader->SendUniform("iResolution",Engine::window_width, Engine::window_height);
-    shader->SendUniform("iTime", float(currentTime));
-}
-
-GodRay::GodRay()
-{
-    Engine::GetShaderManager().LoadShader("under_water_god_ray", "assets/shaders/default.vert", "assets/shaders/underwater_god_ray.frag");
-	texture = Engine::GetTextureManager().Load("assets/images/full_quad.png");
-    mat = {
-        {1.0f, 0.0f, 0.0f},
-        {0.0f, 1.0f, 0.0f},
-        {0.0f, 0.0f, 1.0f}
-    };
-}
-
-void GodRay::Draw()
-{
-    DrawCall draw_call = {
-        texture,                       // Texture to draw
-        &mat,                          // Transformation matrix
-        Engine::GetShaderManager().GetShader("under_water_god_ray"), // Shader to use
-    };
-
-    draw_call.settings.do_blending = true;
-    draw_call.settings.is_camera_fixed = true;
-    draw_call.SetUniforms = [this](const GLShader* shader) { this->SetUniforms(shader); };
-    draw_call.sorting_layer = DrawLayer::DrawUI;
-
-    Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call));
-}
-
-//Pump::Pump()
-//{
-//    Engine::GetShaderManager().LoadShader("change_alpha", "assets/shaders/default.vert", "assets/shaders/change_alpha.frag");
-//    texture = Engine::GetTextureManager().Load("assets/images/full_quad.png");
+//#include "GodRay.h"
+//#include "mat3.h"
+//#include "BeatSystem.h"
+//#include "../Engine/Engine.h"
+//
+//void GodRay::SetUniforms(const GLShader* shader) {
+//    double currentTime = Engine::GetAudioManager().GetCurrentMusicTime("background1");
+//    //counter += Engine::Instance().GetDt();
+//    shader->SendUniform("iResolution",Engine::window_width, Engine::window_height);
+//    shader->SendUniform("iTime", float(currentTime));
 //}
 //
-//void Pump::Draw()
+//GodRay::GodRay()
 //{
-//    DrawSettings settings;
-//    settings.do_blending = true;
-//    //settings.modulate_color = true;
-//    settings.is_camera_fixed = true;
+//   Engine::GetShaderManager().LoadShader("under_water_god_ray", "assets/shaders/default.vert", "assets/shaders/underwater_god_ray.frag"); 
+//	texture = Engine::GetTextureManager().Load("assets/images/full_quad.png");
+//    mat = {
+//        {1.0f, 0.0f, 0.0f},
+//        {0.0f, 1.0f, 0.0f},
+//        {0.0f, 0.0f, 1.0f}
+//    };
+//}
 //
-//    const mat3 mat;
+//void GodRay::Draw()
+//{
 //    DrawCall draw_call = {
-//    texture,                       // Texture to draw
-//    &mat,                          // Transformation matrix
-//    Engine::GetShaderManager().GetShader("change_alpha"), // Shader to use
-//    [this](const GLShader* shader) {
-//        this->SetUniforms(shader);
-//    },
-//    settings
+//        texture,                       // Texture to draw
+//        &mat,                          // Transformation matrix
+//        Engine::GetShaderManager().GetShader("under_water_god_ray"), // Shader to use
 //    };
 //
-//    Engine::GetRender().AddDrawCall(draw_call);
+//    draw_call.settings.do_blending = true;
+//    draw_call.settings.is_camera_fixed = true;
+//    draw_call.SetUniforms = [this](const GLShader* shader) { this->SetUniforms(shader); };
+//    draw_call.sorting_layer = DrawLayer::DrawUI;
+//
+//    Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call));
 //}
 //
-//void Pump::Update(double dt)
-//{
-//    if (Engine::GetGameStateManager().GetGSComponent<Beat>()->GetBeat()) {
-//        alpha = 0.12f;
-//    }
-//    if(alpha>=0)
-//    alpha -= 0.002f;
-//}
-//
-//void Pump::SetUniforms(const GLShader* shader)
-//{
-//    shader->SendUniform("uAlpha", alpha);
-//}
+////Pump::Pump()
+////{
+////    Engine::GetShaderManager().LoadShader("change_alpha", "assets/shaders/default.vert", "assets/shaders/change_alpha.frag");
+////    texture = Engine::GetTextureManager().Load("assets/images/full_quad.png");
+////}
+////
+////void Pump::Draw()
+////{
+////    DrawSettings settings;
+////    settings.do_blending = true;
+////    //settings.modulate_color = true;
+////    settings.is_camera_fixed = true;
+////
+////    const mat3 mat;
+////    DrawCall draw_call = {
+////    texture,                       // Texture to draw
+////    &mat,                          // Transformation matrix
+////    Engine::GetShaderManager().GetShader("change_alpha"), // Shader to use
+////    [this](const GLShader* shader) {
+////        this->SetUniforms(shader);
+////    },
+////    settings
+////    };
+////
+////    Engine::GetRender().AddDrawCall(draw_call);
+////}
+////
+////void Pump::Update(double dt)
+////{
+////    if (Engine::GetGameStateManager().GetGSComponent<Beat>()->GetBeat()) {
+////        alpha = 0.12f;
+////    }
+////    if(alpha>=0)
+////    alpha -= 0.002f;
+////}
+////
+////void Pump::SetUniforms(const GLShader* shader)
+////{
+////    shader->SendUniform("uAlpha", alpha);
+////}
