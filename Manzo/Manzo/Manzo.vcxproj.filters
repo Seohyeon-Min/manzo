@@ -142,6 +142,9 @@
     <ClCompile Include="Engine\Font.cpp" />
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClCompile Include="Game\Dragging.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h">
@@ -312,6 +315,9 @@
     </ClInclude>
     <ClInclude Include="Engine\FontManager.h" />
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Dragging.h">
+      <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

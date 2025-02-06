@@ -12,6 +12,7 @@ Icon::Icon(vec2 position, GLTexture* icon_texture) : GameObject(position)
 void Icon::Update(double dt)
 {
 	GameObject::Update(dt);
+	//this->UpdateGOComponents(dt);
 }
 
 void Icon::Draw()
