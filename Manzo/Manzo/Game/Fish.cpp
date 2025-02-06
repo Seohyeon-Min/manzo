@@ -17,17 +17,23 @@
 #ifndef PIover3
 #define PIover3  (3.1415926535987932f / 3.0f)
 #endif
+
 #ifndef PIover6
 #define PIover6  (3.1415926535987932f / 6.0f)
 #endif
 
-std::mt19937 dre;
-std::vector<Fish::FishDex> Fish::fishBook;
+std::random_device rd;
+std::mt19937 dre(rd());
+static std::vector<Fish::FishDex> fishBook;
 int Fish::money = 0;
-int fishCnt = 0;
+int fishCnt = 0; 
+static std::vector<float> weights;
+static std::vector<int> moneys;
 
 Fish::Fish(Fish* parent) : GameObject({ 0, 0 }) {
-    std::uniform_int_distribution<int> fishIndex(0, static_cast<int>(fishBook.size() - 1));
+  
+    std::discrete_distribution<> fishIndex(weights.begin(), weights.end());
+
     int index = fishIndex(dre);
 
     if (parent == nullptr) {
@@ -52,7 +58,7 @@ Fish::Fish(Fish* parent) : GameObject({ 0, 0 }) {
         type = parent->type;
         parentFish = parent;
     }
-
+    
     AddGOComponent(new Sprite(fishBook[index].filePath, this));
     fishCnt++;
 
@@ -77,7 +83,7 @@ void Fish::ResolveCollision(GameObject* other_object) {
         {
             collided = true;
             fishCnt--;
-            money++;
+            money += moneys[type-1];
         }
         this->Destroy();
         break;
@@ -88,7 +94,7 @@ void Fish::ResolveCollision(GameObject* other_object) {
         {
             collided = true;
             fishCnt--;
-            money++;
+            money += moneys[type-1];
         }
         this->Destroy();
         break;
@@ -189,10 +195,10 @@ vec2 Fish::AvoidRock(vec2 thisPos, vec2 rockPos) {
     return avoidanceVec.Normalize() * avoidanceStrength;
 }
 
-
 void Fish::Draw() {
     GameObject::Draw(DrawLayer::DrawLast);
 }
+
 void Fish::ReadFishCSV(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
@@ -221,6 +227,14 @@ void Fish::ReadFishCSV(const std::string& filename) {
 
         std::getline(linestream, cell, ',');
         f.filePath = cell;
+
+        std::getline(linestream, cell, ',');
+        f.possibility = std::stof(cell);
+        weights.push_back(f.possibility);
+
+        std::getline(linestream, cell, ',');
+        f.money = std::stoi(cell);
+        moneys.push_back(f.money);
 
         fishBook.push_back(f);
     }

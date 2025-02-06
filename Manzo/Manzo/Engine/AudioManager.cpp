@@ -286,6 +286,7 @@ void AudioManager::SetChannelVolume(const std::string& alias, float fVolumedB)
 		return;
 
 	ErrorCheck(tFoundIt->second->setVolume(dbToVolume(fVolumedB)));
+
 }
 
 void AudioManager::SetMute(const std::string& alias, bool mute)

@@ -1,34 +1,14 @@
 #version 450 core
 
-in vec2 position;
-in vec2 origin;
-in vec2 textureCoord;
-in vec3 color;
+layout (location = 0) in vec2 vertexPosition;
+layout (location = 1) in vec2 vertexUV;
+layout (location = 2) in int  vertexIndex;
 
-out vec3 v_textureColor;
-out vec2 v_textureCoord;
+out vec2 uv;
+flat out int bufferIndex;
 
-void main()
-{
-	// apply zoom scaling and Rotation to model matrix
-	mat4 scalingMatrix = mat4(1.0);
-	scalingMatrix[3][3] = 1.0f;
-	
-	// apply Translation to the final position 
-	vec4 finalPosition = scalingMatrix * vec4(position,0.0f,1.0f);
-
-	// apply Translation to the text origin
-	vec4 finalTextorigin = scalingMatrix * vec4(origin,0.0f,1.0f);
-
-	// Remove the zoom scale
-	vec2 scaled_pt = vec2(finalPosition.x - finalTextorigin.x,finalPosition.y - finalTextorigin.y);
-		
-	// Set the final position of the vertex
-	gl_Position = vec4(finalPosition.x + scaled_pt.x,finalPosition.y + scaled_pt.y, 0.0f, 1.0f);
-
-	// Calculate texture coordinates for the glyph
-	v_textureCoord = textureCoord;
-	
-	// Pass the texture color to the fragment shader
-	v_textureColor = color;
+void main() {
+	gl_Position = vec4(vertexPosition, 0, 1);
+	uv = vertexUV;
+	bufferIndex = vertexIndex;
 }

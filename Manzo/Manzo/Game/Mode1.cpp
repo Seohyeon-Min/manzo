@@ -185,32 +185,31 @@ void Mode1::Update(double dt) {
 	Engine::GetAudioManager().Set3dListenerAndOrientation(smoothShipPosition,vec3{ 0.0f, -1.0f, 0.0f },vec3{ 0.0f, 0.0f, 1.0f }	);
 
 	// Apply 3D position for the boss and calculate volume based on the distance
-	if (isWithinRange) {
-		if (!soundPlaying)
-		{
-			Engine::GetAudioManager().PlayMusics("e morse");
-			soundPlaying = true;
-		}
-		else
-		{
-			if(!replay)
-			{
-				Engine::GetAudioManager().RestartPlayMusic("e morse");
-				replay = true;
-			}
-		}
-		Engine::GetAudioManager().SetChannel3dPosition("e morse", bossPosition);
+    if (isWithinRange) {
+        if (!soundPlaying) {
+            Engine::GetAudioManager().PlayMusics("e morse");
+            soundPlaying = true;
+        }
+        else {
+            if (!replay) {
+                Engine::GetAudioManager().RestartPlayMusic("e morse");
+                replay = true;
+            }
+        }
 
-		// Calculate the volume based on the distance
-		float volumeFactor = 1.0f - std::clamp(distance / 300.0f, 0.0f, 1.0f);
-		float volume = std::lerp(0.0f, 1.0f, volumeFactor);
-		Engine::GetAudioManager().SetChannelVolume("e morse", volume);
-	}
-	else
-	{
-		Engine::GetAudioManager().StopPlayingMusic("e morse");
-		replay = false;
-	}
+        Engine::GetAudioManager().SetChannel3dPosition("e morse", bossPosition);
+
+        float volumeFactor = 1.0f - std::clamp(distance / 300.0f, 0.0f, 1.0f);
+        //float volume = std::lerp(0.0f, 1.0f, volumeFactor);
+        float volume = std::lerp(-20.0f, 1.0f, volumeFactor);
+
+        Engine::GetAudioManager().SetChannelVolume("e morse", volume);
+    }
+    else {
+        Engine::GetAudioManager().StopPlayingMusic("e morse");
+        replay = false;
+    }
+
 }
 
 void Mode1::FixedUpdate(double dt)
@@ -226,9 +225,9 @@ void Mode1::Draw() {
     //GetGSComponent<Map>()->AddDrawCall();
     GetGSComponent<GameObjectManager>()->DrawAll();
 
+
     // Draw Font
-    //Engine::GetFontManager().PrintText(FontType::Bold, "HI", { 0.f,0.f }, 0.0f, 0.001f, { 1.0f,1.0f,1.0f });
-    //Engine::GetFontManager().PrintText(FontType::Thin, "A", { 0.5f,0.5f }, 0.0f, 0.0005f, { 0.0f,0.0f,0.0f });
+	Engine::GetFontManager().PrintText(FontType::Bold,"E", { 0.f,0.f }, 0.2f,{ 1.f,1.f,1.f }, 0.5f);
 }
 
 void Mode1::Unload() {

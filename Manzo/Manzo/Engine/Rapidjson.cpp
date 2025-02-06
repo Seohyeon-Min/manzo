@@ -21,7 +21,7 @@ JsonParser_boss::JsonParser_boss(std::string path)
     FILE* fptr = nullptr;
     errno_t err = fopen_s(&fptr, path.c_str(), "rb");
     if (err != 0 || fptr == nullptr) {
-        Engine::GetLogger().LogError("Failed to open JSON file");
+        Engine::GetLogger().LogError("Failed to open " + path + " file");
         return;
     }
 

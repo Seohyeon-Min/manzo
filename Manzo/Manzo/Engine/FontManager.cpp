@@ -1,47 +1,68 @@
+#include <cmath>
+#include <cstdint>
+#include <iostream>
+#include <limits>
+#include <sstream>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include <ft2build.h>
+#include "freetype.h"
 #include "FontManager.h"
-#include "ShaderManager.h"
 #include "Engine.h"
-#include "Font.h"
+#include <to_span.h>
+#include "Camera.h"
 
-int FontManager::fontNum = 0;
-
-FontManager::FontManager()
-{
+FontManager::FontManager() {
+	if (FT_Init_FreeType(&library)) {
+		std::cerr << "ERROR: failed to initialize FreeType" << std::endl;
+	}
 }
 
-FontManager::~FontManager()
-{
-	text_list.clear();
+FontManager::~FontManager() {
+	FT_Done_FreeType(library); // Free FreeType resources
 }
 
 void FontManager::AddFontType(const char* file_path)
 {
-	if (!file_path)
-	{
-		std::cerr << "No file exists in that path" << std::endl;
+	shader = Engine::GetShaderManager().LoadShader("font_shader", "assets/shaders/font_shader.vert", "assets/shaders/font_shader.frag");
+	auto font = loadFont(file_path, 1.0f);
+	if (!font) return;
+	font_list[(FontType)num_font++] = std::move(font);
+}
+
+std::unique_ptr<Font> FontManager::loadFont(const std::string& filename, float worldSize, bool hinting)
+{
+	std::string error;
+	FT_Face face = Font::loadFace(library, filename, error);
+	if (error != "") {
+		std::cerr << "[font] failed to load " << filename << ": " << error << std::endl;
+		return std::unique_ptr<Font>{};
+	}
+
+	return std::make_unique<Font>(face, worldSize, hinting);
+}
+
+void FontManager::PrintText(FontType font, std::string txt, vec2 position, float scale, vec3 color, float alpha)
+{
+	FT_Error error = FT_Init_FreeType(&library);
+	if (error) {
+		std::cerr << "ERROR: failed to initialize FreeType" << std::endl;
 		return;
 	}
 
-	shader = Engine::GetShaderManager().LoadShader("font_shader", "assets/shaders/font_shader.vert", "assets/shaders/font_shader.frag");
-	all_labels[fontNum++].init(file_path);
-}
+	shader = Engine::GetShaderManager().GetShader("font_shader");
 
-void FontManager::PrintText(int ft, const char* text, vec2 location, float angle, float size, vec3 color)
-{
-    shader = Engine::GetShaderManager().GetShader("font_shader");
+	shader->Use(true);
 
-    shader->Use(true);
-    shader->SendUniform("u_Texture", 0);
+	shader->SendUniform("color", color.x, color.y, color.z);
+	shader->SendUniform("alphaV", alpha);
 
-    std::string textStr(text);
+	mat3 model_to_world = mat3::build_translation(position);
+	mat3 WORLD_TO_NDC = Engine::GetGameStateManager().GetGSComponent<Cam>()->world_to_ndc;
+	const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
 
-    auto it = std::find(text_list.begin(), text_list.end(), textStr);
-    if (it == text_list.end()) 
-    {
-        all_labels[ft].add_text(textStr, location, angle, size, color);
-        all_labels[ft].set_buffers();
-        text_list.push_back(textStr);
-    }
-
-    all_labels[ft].paint_text();
+	font_list[font]->drawSetup(shader);
+	font_list[font]->setWorldSize(scale);
+	font_list[font]->draw(model_to_ndc * vec3(position.x, position.y, 1.0), txt);
 }
