@@ -26,7 +26,7 @@ Created:    March 8, 2023
 
 Mode2::Mode2() {}
 
-int dialog_test_int = 0;//������ ����
+int dialog_test_int = 0;
 
 void Mode2::Load() {
 
@@ -34,28 +34,27 @@ void Mode2::Load() {
     AddGSComponent(new ShowCollision());
 #else
 #endif
-
-    
-    
     // compenent
     AddGSComponent(new GameObjectManager());
 
-    //// ship
+    // ship
     ship_ptr = new Ship({ 0, -250 });
     GetGSComponent<GameObjectManager>()->Add(ship_ptr);
 
-    //// camera
+    // player
+    player_ptr = new Player({ 0, -115 });
+    GetGSComponent<GameObjectManager>()->Add(player_ptr);
+
+    // camera
     AddGSComponent(new Cam());
-    vec2 playerPosition = ship_ptr->GetPosition();
-    GetGSComponent<Cam>()->SetPosition({ playerPosition.x, 0 });
+    GetGSComponent<Cam>()->SetPosition({ 0, 0 });
 
-
-    //// background
+    // background
     background = new Background();
     AddGSComponent(background);
     background->Add("assets/images/background/house.png", 0.25f);
 
-    /// Dialog
+    // Dialog
     dialog_ptr = new Dialog({0,0});
     GetGSComponent<GameObjectManager>()->Add(dialog_ptr);
  
@@ -82,19 +81,15 @@ void Mode2::Load() {
     shop_ptr = new Shop();
     GetGSComponent<GameObjectManager>()->Add(shop_ptr);
 
-    // UI
-    //ui_manager->AddUI(std::make_unique<Mouse>());;
-
     std::cout << "Left money : " << Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() << std::endl;
 }
 
 void Mode2::Update(double dt) {
     UpdateGSComponents(dt);
     GetGSComponent<GameObjectManager>()->UpdateAll(dt);
-    GetGSComponent<Cam>()->Update(dt, ship_ptr->GetPosition(), false);
+    GetGSComponent<Cam>()->Update(dt, {}, false);
     skill_ptr->Update();
     
-
     //float moving~
     time += float(dt);
     ship_ptr->SetVelocity({ 0, -(y_limit * frequency * std::cos(frequency * float(time))) });
@@ -110,20 +105,15 @@ void Mode2::Update(double dt) {
        dialog_ptr->LoadDialog(1, 0.05);
        isLoaded = true;
     }
-   
-
 }
 
 void Mode2::FixedUpdate(double dt)
-{
-
-}
+{}
 
 void Mode2::Draw() {
     GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
     GetGSComponent<GameObjectManager>()->DrawAll();
     dialog_ptr->Draw();
-    
 }
 
 void Mode2::Unload() {

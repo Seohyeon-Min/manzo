@@ -26,6 +26,7 @@ enum class GameObjectTypes {
     Shop,
     Mouse,
     UI,
+    Player,
     Icon
 };
 

@@ -43,7 +43,6 @@ void Mode1::Load() {
     AddGSComponent(new ShowCollision());
 #else
 #endif
-
     //shader
     Engine::GetShaderManager().LoadShader("pixelate", "assets/shaders/default.vert", "assets/shaders/pixelate.frag");
     Engine::GetShaderManager().LoadShader("blur", "assets/shaders/default.vert", "assets/shaders/blur.frag");
@@ -64,12 +63,7 @@ void Mode1::Load() {
     AddGSComponent(new GameObjectManager());
     beat_system = new Beat();
     AddGSComponent(beat_system);
-	beat_system->LoadMusicToSync("background1");///////////////////////
-
-    //god_ray = new GodRay();
-    //AddGSComponent(god_ray);
-    //AddGSComponent(new Pump());
-
+	beat_system->LoadMusicToSync("background1");
 
     // Particle
     AddGSComponent(new ParticleManager<Particles::Plankton>());

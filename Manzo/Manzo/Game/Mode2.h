@@ -17,6 +17,7 @@ Created:    Sept 12, 2024
 #include "Fish.h"
 #include "Shop.h"
 #include "DialogBox.h"
+#include "Player.h"
 
 class Fish;
 
@@ -36,15 +37,17 @@ public:
     std::string GetName() override {
         return "Mode2";
     }
+
 private:
     double counter = 0.0;
-    Timer* timer;
     double swimming_range = 15.0;
+    Timer* timer;
     Ship* ship_ptr;
     Background* background;
     Skillsys* skill_ptr;
     Shop* shop_ptr;
     Dialog* dialog_ptr;
+    Player* player_ptr;
 
     float y_limit = 15.0f;
     float frequency = 0.9f;
