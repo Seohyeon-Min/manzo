@@ -57,6 +57,10 @@ void Mode2::Load() {
     // Dialog
     dialog_ptr = new Dialog({0,0});
     GetGSComponent<GameObjectManager>()->Add(dialog_ptr);
+
+    // Inven
+    inven_ptr = new Inven({0,0});
+    GetGSComponent<GameObjectManager>()->Add(inven_ptr);
  
     //// audio
     //Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("assets/audios/basic_beat_100_4.wav", "sample");
@@ -104,6 +108,13 @@ void Mode2::Update(double dt) {
     if (Engine::GetInput().KeyJustPressed(Input::Keys::Space) && !isLoaded) {
        dialog_ptr->LoadDialog(1, 0.05);
        isLoaded = true;
+    }
+
+    // Open Inven
+    if (Engine::GetInput().KeyJustPressed(Input::Keys::X))
+    {
+        if (!inven_ptr->GetIsOpened()) inven_ptr->SetIsOpened(true);
+        else inven_ptr->SetIsOpened(false);
     }
 }
 
