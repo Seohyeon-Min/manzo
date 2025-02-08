@@ -5,6 +5,9 @@
 #include "GameObjectTypes.h"
 #include "../Engine/MapManager.h"
 
+std::unordered_map<int, int> fishCaptureCount;
+void SaveFishCapture(int type);
+
 class Fish : public GameObject
 {
 public:

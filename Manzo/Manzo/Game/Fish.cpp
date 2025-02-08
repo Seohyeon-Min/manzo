@@ -84,6 +84,7 @@ void Fish::ResolveCollision(GameObject* other_object) {
             collided = true;
             fishCnt--;
             money += moneys[type-1];
+            SaveFishCapture(type - 1);
         }
         this->Destroy();
         break;
@@ -95,6 +96,7 @@ void Fish::ResolveCollision(GameObject* other_object) {
             collided = true;
             fishCnt--;
             money += moneys[type-1];
+            SaveFishCapture(type - 1);
         }
         this->Destroy();
         break;
@@ -239,4 +241,18 @@ void Fish::ReadFishCSV(const std::string& filename) {
         fishBook.push_back(f);
     }
     file.close();
+}
+
+void SaveFishCapture(int type)
+{
+    fishCaptureCount[type]++;
+
+    std::ofstream saveFile("save_data.txt");
+
+    if (saveFile.is_open()) {
+        for (const auto& entry : fishCaptureCount) {
+            saveFile << "Fish Type: " << entry.first << " captured: " << entry.second << "\n";
+        }
+        saveFile.close();
+    }
 }
