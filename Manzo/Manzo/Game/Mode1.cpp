@@ -44,6 +44,7 @@ void Mode1::Load() {
 #else
 #endif
     //shader
+	Engine::GetShaderManager().LoadShader("purple", "assets/shaders/default.vert", "assets/shaders/default_purple.frag");
     Engine::GetShaderManager().LoadShader("pixelate", "assets/shaders/default.vert", "assets/shaders/pixelate.frag");
     Engine::GetShaderManager().LoadShader("blur", "assets/shaders/default.vert", "assets/shaders/blur.frag");
     Engine::GetShaderManager().LoadShader("change_alpha", "assets/shaders/default.vert", "assets/shaders/change_alpha.frag");

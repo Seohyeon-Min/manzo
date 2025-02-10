@@ -96,6 +96,8 @@ constexpr float cross(vec2 a, vec2 b) noexcept;
 
 constexpr vec2 perpendicular_to(vec2 a) noexcept;
 
+constexpr vec2 GetPerpendicular(const vec2& v);
+
 constexpr float magnitude_squared(vec2 a) noexcept;
 
 float magnitude(vec2 a) noexcept;
@@ -180,6 +182,10 @@ constexpr float dot(vec2 a, vec2 b) noexcept
 constexpr float cross(vec2 a, vec2 b) noexcept
 {
     return a.x * b.y - b.x * a.y;
+}
+
+constexpr vec2 GetPerpendicular(const vec2& v) {
+    return { -v.y, v.x };
 }
 
 constexpr vec2 perpendicular_to(vec2 a) noexcept

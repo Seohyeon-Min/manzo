@@ -118,6 +118,42 @@ void Ship::State_Move::Enter(GameObject* object) {
 void Ship::State_Move::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
     Ship* ship = static_cast<Ship*>(object);
 
+    ship->nearestRock = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRock(ship); // it should be FindNearestRockNextFrame
+
+    if (ship->nearestRock) {
+
+        if (ship->before_nearest_rock && ship->before_nearest_rock != ship->nearestRock) {
+            ship->before_nearest_rock->GetRockGroup()->SetShader(Engine::GetShaderManager().GetDefaultShader());
+        }
+        else {
+            ship->nearestRock->GetRockGroup()->SetShader(Engine::GetShaderManager().GetShader("purple"));
+        }
+        ship->before_nearest_rock = ship->nearestRock;
+    }
+
+    float toi = 0;
+    vec2 startingPos = ship->GetPosition();
+
+    if (ship->IsCollidingWithNextFrame(ship->before_nearest_rock, ship->GetVelocity(), (float)dt, toi)) {
+        Engine::GetLogger().LogEvent("Collision Detected, Its toi is : " + std::to_string(toi));
+        vec2 collisionPos = startingPos + ship->GetVelocity() * (float)dt * toi;
+        ship->SetPosition(collisionPos);   
+
+        if (ship->nearestRock) {
+            ship->ResolveCollision(ship->nearestRock); // calculate normal
+
+            //ship->SetVelocity(ship->direction * 200.f);
+            Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
+            vec2 velocity = ship->GetVelocity();
+            ship->SetVelocity({});
+            ship->HitWithReef(ship->normal, velocity);
+            ship->collide_timer->Start();
+            ship->force = ship->direction * 20200.f;
+            Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new HitEffect(ship->GetPosition()));
+
+            std::cout << "Hit With\n";
+        }
+    }
 }
 void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_unused]] double fixed_dt) {
     Ship* ship = static_cast<Ship*>(object);
@@ -129,9 +165,9 @@ void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_
 }
 void Ship::State_Move::CheckExit(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
-    if (ship->hit_with) {
-        ship->change_state(&ship->state_hit);
-    }
+    //if (ship->hit_with) {
+    //    ship->change_state(&ship->state_hit);
+    //}
     if (!ship->beat->GetIsOnBeat()) {
         ship->move = false;
         ship->change_state(&ship->state_idle);
@@ -142,52 +178,49 @@ std::vector<vec2> spline_points;
 
 void Ship::State_Hit::Enter(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
-    Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
-    vec2 velocity = ship->GetVelocity();
-    ship->SetVelocity({});
-    ship->HitWithReef(ship->normal, velocity);
-    ship->collide_timer->Start();
-    ship->force = ship->direction * 20200.f;
-    Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new HitEffect(ship->GetPosition()));
+
 
 }
 void Ship::State_Hit::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
-    Ship* ship = static_cast<Ship*>(object);
-    //Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
-    if (spline_points.size() > 2) {
-        for (size_t i = 0; i < spline_points.size() - 1; ++i) {
-            vec2 point_a = spline_points[i];
-            vec2 point_b = spline_points[i + 1];
-            Engine::GetRender().AddDrawCall(point_a, point_b, color3{ 0,255,0 });
-        }
-    }
+    //Ship* ship = static_cast<Ship*>(object);
+    //if (spline_points.size() > 2) {
+    //    for (size_t i = 0; i < spline_points.size() - 1; ++i) {
+    //        vec2 point_a = spline_points[i];
+    //        vec2 point_b = spline_points[i + 1];
+    //        Engine::GetRender().AddDrawCall(point_a, point_b, color3{ 0,255,0 });
+    //    }
+    //}
 }
 void Ship::State_Hit::FixedUpdate(GameObject* object, double fixed_dt) {
     Ship* ship = static_cast<Ship*>(object);
-    ship->SetVelocity(ship->direction*200.f);
-    if (ship->collide_timer->Remaining() <= 0.5) {
-        Engine::GetGameStateManager().GetGSComponent<Cam>()->GetCameraView().SetZoom(1.0f);
-        ship->SetVelocity(ship->force);
-        float base_dt = 1.0f / 240.f;
-        float adjusted_deceleration = (float)pow(ship->deceleration / 2, fixed_dt / base_dt);
-        ship->force *= adjusted_deceleration;
-    }
+
 }
 void Ship::State_Hit::CheckExit(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
-    if (ship->collide_timer->IsFinished()) { // should be a timer?
-        ship->hit_with = false;
-        ship->SetVelocity(ship->direction * 2000.f);
-        ship->change_state(&ship->state_idle);
-        ship->collide_timer->Reset();
-        Engine::Instance().ResetSlowDownFactor();
-    }
+    //ship->SetVelocity(ship->direction * 2000.f);
+
 }
 
 
 void Ship::Update(double dt)
 {
     GameObject::Update(dt);
+
+
+    if (collide_timer->Remaining() < 0.5) {
+        Engine::GetGameStateManager().GetGSComponent<Cam>()->GetCameraView().SetZoom(1.0f);
+        SetVelocity(force);
+        float base_dt = 1.0f / 240.f;
+        float adjusted_deceleration = (float)pow(deceleration / 2, dt / base_dt);
+        force *= adjusted_deceleration;
+        std::cout << "Exit Hit With\n";
+    }
+
+    if (collide_timer->Remaining() <= 0) {
+        Engine::Instance().ResetSlowDownFactor();
+        collide_timer->Reset();
+    }
+
     can_dash = true;
     if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
         Engine::GetGameStateManager().GetGSComponent<Cam>()->GetCamera().UpdateShake((float)dt);
@@ -221,6 +254,23 @@ void Ship::Update(double dt)
 
 void Ship::FixedUpdate(double fixed_dt) {
     GameObject::FixedUpdate(fixed_dt);
+
+
+
+    //if (nearestRock) {
+    //    float t_hit;
+    //    MAP_SATCollision* rockCollider = nearestRock->GetGOComponent<MAP_SATCollision>();
+
+    //    //std::cout << "There is a nearest rock at " << nearestRock->GetPosition().x << std::endl;
+    //    if (ComputeTOIWithRock(currentPos, velocity, rockCollider, t_hit)) {
+    //        vec2 hitPos = currentPos + velocity * t_hit;  // 충돌 지점까지만 이동
+    //        SetPosition(hitPos); // 경계선에서 멈춤
+    //        //std::cout << "exist" << hitPos.x << " : " << hitPos.y << std::endl;
+    //        // **속도를 0으로 하여 완전 정지**
+    //        SetVelocity({ 0, 0 });
+    //        return;
+    //    }
+    //}
 }
 
 
@@ -339,8 +389,7 @@ bool Ship::CanCollideWith(GameObjectTypes other_object)
     switch (other_object) {
     case GameObjectTypes::Fish:
     case GameObjectTypes::Rock:
-        if (!hit_with) return true;
-        else return false;
+        return true;
         break;
     }
 
@@ -352,28 +401,84 @@ void Ship::ResolveCollision(GameObject* other_object)
     if (other_object->Type() == GameObjectTypes::Fish) {
         change_state(&state_idle);
     }
-    if (!hit_with) { // is it needful?
-        if (other_object->Type() == GameObjectTypes::Rock) {
 
-            if (GetVelocity().Length() <= skidding_speed + 30.f) { // if it was skidding, don't reflect
-                vec2 smallCorrection = -GetVelocity().Normalize(); // with this, ship should not able to move!
-                UpdatePosition(smallCorrection);
-                can_dash = false;
-                return;
-            }
+    if (other_object->Type() == GameObjectTypes::Rock) {
 
-            hit_with = true;
-            Rock* rock = static_cast<Rock*>(other_object);
-            std::vector<vec2> points = rock->GetRockGroup()->GetPoints();
-            vec2 center = rock->GetRockGroup()->FindCenterPoly();
+        //if (GetVelocity().Length() <= skidding_speed + 30.f) { // if it was skidding, don't reflect
+        //    vec2 smallCorrection = -GetVelocity().Normalize(); // with this, ship should not able to move!
+        //    UpdatePosition(smallCorrection);
+        //    can_dash = false;
+        //    return;
+        //}
 
-            normal = ComputeCollisionNormal(points, GetPosition(), center);
-            auto* collision_edge = this->GetGOComponent<RectCollision>();
-            if (collision_edge == nullptr) {
-                // maybe an error?
+        //current_state = &state_hit;
+        //current_state->Enter(this);
+
+        hit_with = true;
+        Rock* rock = static_cast<Rock*>(other_object);
+        std::vector<vec2> points = rock->GetRockGroup()->GetPoints();
+        vec2 center = rock->GetRockGroup()->FindCenterPoly();
+
+        normal = ComputeCollisionNormal(points, GetPosition(), center);
+        //auto* collision_edge = this->GetGOComponent<RectCollision>();
+        //if (collision_edge == nullptr) {
+        //    // maybe an error?
+        //}
+    }
+    
+}
+
+
+bool RayIntersectsSegment(vec2 rayStart, vec2 rayEnd, vec2 p1, vec2 p2, float& t, vec2& normal) {
+    vec2 segmentDir = p2 - p1;  // 바위 Edge 방향
+    vec2 rayDir = rayEnd - rayStart;  // Ship 이동 방향
+
+    float cross = segmentDir.x * rayDir.y - segmentDir.y * rayDir.x;
+    if (std::abs(cross) < 0.0001f) return false; // 평행하면 충돌 없음
+
+    vec2 diff = rayStart - p1;
+    float t1 = (diff.x * rayDir.y - diff.y * rayDir.x) / cross;
+    float t2 = (diff.x * segmentDir.y - diff.y * segmentDir.x) / cross;
+
+    if (t1 >= 0.0f && t1 <= 1.0f && t2 >= 0.0f && t2 <= 1.0f) {
+        t = t2; // 충돌 시점 반환
+        normal = vec2(-segmentDir.y, segmentDir.x).Normalize(); // Edge의 법선 방향 반환
+        return true;
+    }
+
+    return false;
+}
+
+
+bool Ship::ComputeTOIWithRock(vec2 startPos, vec2 velocity, MAP_SATCollision* rockCollider, float& t_hit)
+{
+    if (!rockCollider) return false;
+
+    Polygon rockPolygon = rockCollider->WorldBoundary_poly();
+    float closestHit = 1.0f; // 충돌 시점 (0~1 사이 값)
+
+    for (size_t i = 0; i < rockPolygon.vertexCount; ++i) {
+        vec2 p1 = rockPolygon.vertices[i];
+        vec2 p2 = rockPolygon.vertices[(i + 1) % rockPolygon.vertexCount];
+
+        float t;
+        vec2 normal;
+
+        // **Ray(선분) vs Edge(선분) 교차 검사**
+        if (RayIntersectsSegment(startPos, startPos + velocity, p1, p2, t, normal)) {
+            if (t >= 0.0f && t < closestHit) { // 0~1 사이 값이면 충돌
+                closestHit = t;
+                std::cout << "exist" << closestHit << " : " << closestHit << std::endl;
             }
         }
     }
+
+    if (closestHit < 1.0f) {
+        t_hit = closestHit;
+        return true;
+    }
+
+    return false;
 }
 
 void Ship::HitWithReef(vec2 normal, vec2 velocity) {
@@ -403,7 +508,7 @@ void Ship::HitWithReef(vec2 normal, vec2 velocity) {
 
     auto cam = Engine::GetGameStateManager().GetGSComponent<Cam>();
     cam->GetCameraView().SetZoom(1.05f);
-    cam->GetCamera().StartShake(40, 5);
+    cam->GetCamera().StartShake(camera_shake, 5);
     move = false;
 
 }

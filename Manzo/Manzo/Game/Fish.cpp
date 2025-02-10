@@ -101,8 +101,8 @@ void Fish::ResolveCollision(GameObject* other_object) {
 
     case GameObjectTypes::RockBoundary:
         vec2 avoidanceVelocity = AvoidRock(GetPosition(),
-            { Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRock(this).x - 20,
-              Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRock(this).y - 20 });
+            { Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRockPoint(this).x - 20,
+              Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRockPoint(this).y - 20 });
         SetVelocity(GetVelocity() + avoidanceVelocity);
         IsAvoided = true;
         break;
@@ -126,8 +126,8 @@ void Fish::Update(double dt) {
     }
 
     vec2 currentPosition = GetPosition();
-    vec2 nearestRock = { (GetVelocity().x <= 0 ? Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRock(this).x + 20 : Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRock(this).x - 20),
-                          Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRock(this).y - 20 };
+    vec2 nearestRock = { (GetVelocity().x <= 0 ? Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRockPoint(this).x + 20 : Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRockPoint(this).x - 20),
+                          Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRockPoint(this).y - 20 };
 
     float safeDistance = 155.0f;  // safety distance
 

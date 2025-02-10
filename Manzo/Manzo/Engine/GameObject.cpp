@@ -119,6 +119,13 @@ bool GameObject::IsCollidingWith(GameObject* other_object) {
 	return collider != nullptr && collider->IsCollidingWith(other_object);
 }
 
+bool GameObject::IsCollidingWithNextFrame(GameObject* other_object, vec2 velocity, float dt, float& toi)
+{
+	if (other_object->Type() != GameObjectTypes::Rock) return false;
+	RectCollision* collider = GetGOComponent<RectCollision>();
+	return collider != nullptr && collider->IsCollidingWithNextFrame(other_object, velocity, dt, toi);
+}
+
 bool GameObject::IsCollidingWith(vec2 point) {
 	Collision* collider = GetGOComponent<Collision>();
 	return collider != nullptr && collider->IsCollidingWith(point);

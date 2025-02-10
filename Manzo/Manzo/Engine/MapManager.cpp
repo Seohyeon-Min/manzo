@@ -241,12 +241,6 @@ void Map::ParseSVG(const std::string& filename) {
                         rock->AddGOComponent(new MAP_SATCollision(poly, rock));
                         MakeRockGroups(rock, poly);
                     }
-
-                
-
-
-                
-
                 
             }
 

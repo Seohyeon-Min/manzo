@@ -29,9 +29,11 @@ public:
 	}
 	void ParseSVG(const std::string& filename);
 	std::vector<vec2> parsePathData(const std::string& pathData);	// path parsing
+	std::vector<Rock>& GetRocks() { return objects; }
 	void MakeRockGroups(Rock* rock, Polygon poly);
 	void MakeMovingRockGroups(MovingRock* moving_rock, Polygon poly);
 	void AddDrawCall();
+
 
 private:
 	char currentCommand = '\0';

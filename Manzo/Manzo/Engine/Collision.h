@@ -45,8 +45,9 @@ public:
     }
     void Draw();
     bool IsCollidingWith(GameObject* other_object) override;
+    bool IsCollidingWith(Collision* other_collider, Math::rect next_rect);
+    bool IsCollidingWithNextFrame(GameObject* other_object, vec2 velocity, float dt, float& toi);
     bool IsCollidingWith(vec2 point) override;
-    float GetT() { return t; }
     Math::rect GetBoundary() const override {
         return WorldBoundary_rect();
     }
@@ -54,7 +55,6 @@ public:
     std::pair<vec2, vec2> GetCollidingEdge() { return colliding_edge; }
 
 private:
-    float t;
     GameObject* object;
     Math::irect boundary;
     std::pair<vec2, vec2> colliding_edge{};

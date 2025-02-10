@@ -14,6 +14,7 @@ Created:    June 13, 2024
 #include "..\Engine\Timer.h"
 #include "..\Game\Skill.h"
 #include "../Engine/Rect.h"
+#include "Rock.h"
 
 class Beat;
 
@@ -30,6 +31,7 @@ public:
     bool IsShipMoving() { return move; }
     bool CanCollideWith(GameObjectTypes) override;
     void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
+    bool ComputeTOIWithRock(vec2 startPos, vec2 velocity, MAP_SATCollision* rockCollider, float& t_hit);
     const vec2& GetPosition() const { return GameObject::GetPosition(); }
     //for fuel
     float GetFuel() { return (float)fuel; }
@@ -57,6 +59,7 @@ private:
     Math::rect limit;
     const double fuel_bubble_time = 0.03;
     const double collide_time = 1.1;
+    const float camera_shake = 10;
     Timer* fuel_bubble_timer;
     RealTimeTimer* collide_timer;
 
@@ -71,7 +74,8 @@ private:
     double MoveDecfuel = 0.5;
     double HitDecFuel = 50;
     double fuelcounter = 0;
-
+    Rock* before_nearest_rock = nullptr;
+    Rock* nearestRock = nullptr;
     //
 
 

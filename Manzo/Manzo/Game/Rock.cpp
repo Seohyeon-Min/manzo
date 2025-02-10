@@ -46,7 +46,7 @@ void Rock::SetCenter() {
     }
     center.x /= vertices.size();
     center.y /= vertices.size();
-    
+
 }
 vec2 MovingRock::Normalize(const vec2& vec) {
     float length = std::sqrt(vec.x * vec.x + vec.y * vec.y);

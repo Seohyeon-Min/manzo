@@ -35,6 +35,7 @@ public:
     virtual GameObjectTypes Type() = 0;
     virtual std::string TypeName() = 0;
     bool IsCollidingWith(GameObject* other_object);
+    bool IsCollidingWithNextFrame(GameObject* other_object, vec2 velocity, float dt, float& toi);
     bool IsCollidingWith(vec2 point);
     bool IsVisible(const Math::rect& camera_bounds) const;
     bool isCameraFixed() const { return is_camera_fixed; }
