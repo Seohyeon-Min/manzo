@@ -13,6 +13,10 @@
 #include <queue>
 #include <cmath>
 #include <algorithm>
+#include <map>
+
+std::map<int, int> fishCaptureCount;
+
 
 #ifndef PIover3
 #define PIover3  (3.1415926535987932f / 3.0f)
@@ -26,12 +30,12 @@ std::random_device rd;
 std::mt19937 dre(rd());
 static std::vector<Fish::FishDex> fishBook;
 int Fish::money = 0;
-int fishCnt = 0; 
+int fishCnt = 0;
 static std::vector<float> weights;
 static std::vector<int> moneys;
 
 Fish::Fish(Fish* parent) : GameObject({ 0, 0 }) {
-  
+
     std::discrete_distribution<> fishIndex(weights.begin(), weights.end());
 
     int index = fishIndex(dre);
@@ -58,7 +62,7 @@ Fish::Fish(Fish* parent) : GameObject({ 0, 0 }) {
         type = parent->type;
         parentFish = parent;
     }
-    
+
     AddGOComponent(new Sprite(fishBook[index].filePath, this));
     fishCnt++;
 
@@ -83,7 +87,7 @@ void Fish::ResolveCollision(GameObject* other_object) {
         {
             collided = true;
             fishCnt--;
-            money += moneys[type-1];
+            money += moneys[type - 1];
             SaveFishCapture(type - 1);
         }
         this->Destroy();
@@ -95,7 +99,7 @@ void Fish::ResolveCollision(GameObject* other_object) {
         {
             collided = true;
             fishCnt--;
-            money += moneys[type-1];
+            money += moneys[type - 1];
             SaveFishCapture(type - 1);
         }
         this->Destroy();
@@ -191,7 +195,7 @@ bool Fish::IsRockInfront(vec2 thisPos, vec2 rockPos) {
 
 vec2 Fish::AvoidRock(vec2 thisPos, vec2 rockPos) {
     vec2 distanceVec = rockPos - thisPos;
-    vec2 avoidanceVec = { 0, -distanceVec.y};
+    vec2 avoidanceVec = { 0, -distanceVec.y };
 
     const float avoidanceStrength = 180.0f;
     return avoidanceVec.Normalize() * avoidanceStrength;
@@ -251,7 +255,7 @@ void SaveFishCapture(int type)
 
     if (saveFile.is_open()) {
         for (const auto& entry : fishCaptureCount) {
-            saveFile << "Fish Type: " << entry.first << " captured: " << entry.second << "\n";
+            saveFile << entry.first + 1 << " " << entry.second << "\n";
         }
         saveFile.close();
     }

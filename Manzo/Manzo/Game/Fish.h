@@ -1,11 +1,11 @@
-#ifndef FISH_H
-#define FISH_H
+#pragma once
 
 #include "../Engine/GameObject.h"
 #include "GameObjectTypes.h"
 #include "../Engine/MapManager.h"
+#include <map>
 
-std::unordered_map<int, int> fishCaptureCount;
+extern std::map<int, int> fishCaptureCount;
 void SaveFishCapture(int type);
 
 class Fish : public GameObject
@@ -59,5 +59,3 @@ private:
 };
 
 extern int fishCnt;
-
-#endif

@@ -232,6 +232,13 @@ void Mode1::Draw() {
 
 void Mode1::Unload() {
 
+	std::ofstream saveFile("save_data.txt", std::ios::app);
+
+	if (saveFile.is_open()) {
+		saveFile << "Money: " << GetGSComponent<Fish>()->GetMoney() << "\n";
+		saveFile.close();
+	}
+
 	ship_ptr = nullptr;
 	delete fishGenerator;
 	fishGenerator = nullptr;

@@ -82,8 +82,8 @@ void Mode2::Load() {
     }
 
     //Shop
-    shop_ptr = new Shop();
-    GetGSComponent<GameObjectManager>()->Add(shop_ptr);
+    /*shop_ptr = new Shop();
+    GetGSComponent<GameObjectManager>()->Add(shop_ptr);*/
 
     std::cout << "Left money : " << Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() << std::endl;
 }
@@ -128,6 +128,16 @@ void Mode2::Draw() {
 }
 
 void Mode2::Unload() {
+    std::ofstream saveFile("save_data.txt");
+
+    if (saveFile.is_open()) {
+        for (const auto& entry : inven_ptr->fishCollection) {
+            saveFile << entry.first + 1 << " " << entry.second << "\n";
+        }
+        saveFile << "Money: " << inven_ptr->GetMoney() << "\n";
+        saveFile.close();
+    }
+
     GetGSComponent<GameObjectManager>()->Unload();
     GetGSComponent<Background>()->Unload();
     ClearGSComponents();

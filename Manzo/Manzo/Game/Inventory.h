@@ -15,9 +15,16 @@ public:
 	bool GetIsOpened() { return is_opened; }
 	void SetIsOpened(bool open) { is_opened = open; }
 
+	int GetMoney() { return money; }
+
+	std::map<int, int> fishCollection;
+
 private:
+	void ReadSaveFile(const std::string& filename);
+
 	bool is_opened = false;
 	int page = 0;
+	int money = 0;
 
 	enum class Animations {
 		Module,
