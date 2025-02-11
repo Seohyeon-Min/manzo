@@ -21,6 +21,8 @@
     <ClCompile Include="Engine\GameObject.cpp" />
     <ClCompile Include="Engine\GameObjectManager.cpp" />
     <ClCompile Include="Engine\GameStateManager.cpp" />
+    <ClCompile Include="Engine\Icon.cpp" />
+    <ClCompile Include="Engine\IconManager.cpp" />
     <ClCompile Include="Engine\Input.cpp" />
     <ClCompile Include="Engine\logger.cpp" />
     <ClCompile Include="Engine\MapManager.cpp" />
@@ -39,12 +41,10 @@
     <ClCompile Include="Game\Boss.cpp" />
     <ClCompile Include="Game\DialogBox.cpp" />
     <ClCompile Include="Game\Effect.cpp" />
-    <ClCompile Include="Game\Dragging.cpp" />
+    <ClCompile Include="Engine\Dragging.cpp" />
     <ClCompile Include="Game\Fish.cpp" />
     <ClCompile Include="Game\FishEcosystem.cpp" />
     <ClCompile Include="Game\GameObjectTypes.cpp" />
-    <ClCompile Include="Game\Icon.cpp" />
-    <ClCompile Include="Game\IconManager.cpp" />
     <ClCompile Include="Game\Inventory.cpp" />
     <ClCompile Include="Game\Mode1.cpp" />
     <ClCompile Include="Game\Mode2.cpp" />
@@ -79,6 +79,8 @@
     <ClInclude Include="Engine\GameObjectManager.h" />
     <ClInclude Include="Engine\GameState.h" />
     <ClInclude Include="Engine\GameStateManager.h" />
+    <ClInclude Include="Engine\Icon.h" />
+    <ClInclude Include="Engine\IconManager.h" />
     <ClInclude Include="Engine\Input.h" />
     <ClInclude Include="Engine\logger.h" />
     <ClInclude Include="Engine\MapManager.h" />
@@ -100,12 +102,10 @@
     <ClInclude Include="Game\Boss.h" />
     <ClInclude Include="Game\Effect.h" />
     <ClInclude Include="Game\DialogBox.h" />
-    <ClInclude Include="Game\Dragging.h" />
+    <ClInclude Include="Engine\Dragging.h" />
     <ClInclude Include="Game\Fish.h" />
     <ClInclude Include="Game\FishEcosystem.h" />
     <ClInclude Include="Game\GameObjectTypes.h" />
-    <ClInclude Include="Game\Icon.h" />
-    <ClInclude Include="Game\IconManager.h" />
     <ClInclude Include="Game\Inventory.h" />
     <ClInclude Include="Game\Mode1.h" />
     <ClInclude Include="Game\Mode2.h" />

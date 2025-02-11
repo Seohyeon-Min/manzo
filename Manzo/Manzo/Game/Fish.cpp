@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <map>
 
+// 초기화 되는지 확인하기
 std::map<int, int> fishCaptureCount;
 
 #ifndef PIover3

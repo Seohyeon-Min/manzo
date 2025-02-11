@@ -21,6 +21,7 @@ Created:    March 8, 2023
 #include "AudioManager.h"
 #include "FontManager.h"
 #include "WindowState.h"
+#include "IconManager.h"
 
 #include <chrono>
 #include <time.h>
@@ -67,6 +68,10 @@ public:
         return Instance().fontmanager;
     }
 
+    static IconManager& GetIconManager() {
+        return Instance().iconmanager;
+    }
+
     void Start(std::string window_title);
     void Stop();
     void Update();
@@ -107,4 +112,5 @@ private:
     TextureManager texturemanager;
     Render render;
     FontManager fontmanager;
+    IconManager iconmanager;
 };

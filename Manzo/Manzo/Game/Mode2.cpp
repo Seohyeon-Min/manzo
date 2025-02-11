@@ -68,6 +68,9 @@ void Mode2::Load() {
     //    GetGSComponent<AudioManager>()->PlayMusic(sample, -1);
     //}
 
+    // Icon
+    Engine::GetIconManager().LoadIconList();
+
     // skill
     if (!Engine::Instance().GetTmpPtr())
     {
@@ -116,6 +119,8 @@ void Mode2::Update(double dt) {
         if (!inven_ptr->GetIsOpened()) inven_ptr->SetIsOpened(true);
         else inven_ptr->SetIsOpened(false);
     }
+
+    Engine::GetIconManager().AddIcon("fish", { 0,0 }, 1.0f);
 }
 
 void Mode2::FixedUpdate(double dt)

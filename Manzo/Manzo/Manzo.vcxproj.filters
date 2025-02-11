@@ -29,12 +29,10 @@
     <ClCompile Include="Game\Boss.cpp" />
     <ClCompile Include="Game\DialogBox.cpp" />
     <ClCompile Include="Game\Effect.cpp" />
-    <ClCompile Include="Game\Dragging.cpp" />
+    <ClCompile Include="Engine\Dragging.cpp" />
     <ClCompile Include="Game\Fish.cpp" />
     <ClCompile Include="Game\FishEcosystem.cpp" />
     <ClCompile Include="Game\GameObjectTypes.cpp" />
-    <ClCompile Include="Game\Icon.cpp" />
-    <ClCompile Include="Game\IconManager.cpp" />
     <ClCompile Include="Game\Mode1.cpp" />
     <ClCompile Include="Game\Mode2.cpp" />
     <ClCompile Include="Game\Mouse.cpp" />
@@ -49,6 +47,8 @@
     <ClCompile Include="Game\Splash.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Game\Inventory.cpp" />
+    <ClCompile Include="Engine\Icon.cpp" />
+    <ClCompile Include="Engine\IconManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h" />
@@ -85,12 +85,10 @@
     <ClInclude Include="Game\Boss.h" />
     <ClInclude Include="Game\Effect.h" />
     <ClInclude Include="Game\DialogBox.h" />
-    <ClInclude Include="Game\Dragging.h" />
+    <ClInclude Include="Engine\Dragging.h" />
     <ClInclude Include="Game\Fish.h" />
     <ClInclude Include="Game\FishEcosystem.h" />
     <ClInclude Include="Game\GameObjectTypes.h" />
-    <ClInclude Include="Game\Icon.h" />
-    <ClInclude Include="Game\IconManager.h" />
     <ClInclude Include="Game\Mode1.h" />
     <ClInclude Include="Game\Mode2.h" />
     <ClInclude Include="Game\Mouse.h" />
@@ -106,5 +104,7 @@
     <ClInclude Include="Game\Splash.h" />
     <ClInclude Include="Game\States.h" />
     <ClInclude Include="Game\Inventory.h" />
+    <ClInclude Include="Engine\Icon.h" />
+    <ClInclude Include="Engine\IconManager.h" />
   </ItemGroup>
 </Project>
