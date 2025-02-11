@@ -2,6 +2,8 @@
 
 #include "../Engine/GameObject.h"
 
+#include <random>
+
 class Inven : public GameObject
 {
 public:
@@ -23,13 +25,26 @@ private:
 	void ReadSaveFile(const std::string& filename);
 
 	bool is_opened = false;
+	bool is_picked = false;
 	int page = 0;
 	int money = 0;
+	int total_fishNum = 3;
+
+	std::mt19937 dre_todayFish;
+	std::mt19937 dre_price;
 
 	enum class Animations {
 		Module,
 		FishCollection,
 		SpecialCollection
+	};
+
+	class State_None : public State {
+	public:
+		virtual void Enter(GameObject* object) override;
+		virtual void Update(GameObject* object, double dt) override;
+		virtual void CheckExit(GameObject* object) override;
+		std::string GetName() override { return "Inventory - None"; }
 	};
 
 	class State_Module : public State {
@@ -56,6 +71,7 @@ private:
 		std::string GetName() override { return "Inventory - Special Collection"; }
 	};
 
+	State_None state_none;
 	State_Module state_module;
 	State_FC state_fc;
 	State_SC state_sc;

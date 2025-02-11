@@ -2,10 +2,12 @@
 #include <iostream>
 #include "Fish.h"
 
-Inven::Inven(vec2 position) : GameObject(position), page(0)
+#include "../Engine/Engine.h"
+
+Inven::Inven(vec2 position) : GameObject(position), page(0), dre_todayFish(rd()), dre_price(rd())
 {
 	AddGOComponent(new Sprite("assets/images/window.spt", this));
-	change_state(&state_module);
+	change_state(&state_none);
 }
 
 void Inven::Update(double dt)
@@ -21,10 +23,20 @@ void Inven::Update(double dt)
 		page++;
 	}
 
-	/*if (!is_opened)
+	// 
+	if (is_opened)
 	{
-		change_state(&);
-	}*/
+		if (!is_picked)
+		{
+			std::uniform_int_distribution<> todays_fish(0, total_fishNum - 1);
+			std::uniform_int_distribution<> fish_price(1, 4);
+			int k = todays_fish(dre_todayFish);
+			int p = fish_price(dre_price);
+
+			std::cout << "Today's fish is : " << k << ",   price : " << p << "\n";
+			is_picked = true;
+		}
+	}
 }
 
 void Inven::Draw(DrawLayer drawlayer)
@@ -53,7 +65,7 @@ void Inven::ReadSaveFile(const std::string& filename)
 			fishCollection[fishType - 1] = count;
 		}
 		else if (line.find("Money:") != std::string::npos) {
-			std::istringstream ss_money(line.substr(7)); 
+			std::istringstream ss_money(line.substr(7));
 			ss_money >> money;
 		}
 	}
@@ -61,10 +73,32 @@ void Inven::ReadSaveFile(const std::string& filename)
 	file.close();
 }
 
+void Inven::State_None::Enter(GameObject* object)
+{
+	Inven* inven = static_cast<Inven*>(object);
+	inven->is_picked = false;
+	inven->is_opened = false;
+	inven->page = 0;
+}
+
+void Inven::State_None::Update(GameObject* object, double dt)
+{
+}
+
+void Inven::State_None::CheckExit(GameObject* object)
+{
+	Inven* inven = static_cast<Inven*>(object);
+	if (inven->is_opened)
+	{
+		inven->change_state(&inven->state_module);
+	}
+}
+
 void Inven::State_Module::Enter(GameObject* object)
 {
 	Inven* inven = static_cast<Inven*>(object);
 	inven->GetGOComponent<Sprite>()->PlayAnimation(static_cast<int>(Animations::Module));
+	inven->page = 1;
 }
 
 void Inven::State_Module::Update(GameObject* object, double dt)
@@ -76,9 +110,14 @@ void Inven::State_Module::Update(GameObject* object, double dt)
 void Inven::State_Module::CheckExit(GameObject* object)
 {
 	Inven* inven = static_cast<Inven*>(object);
-	if (inven->page == 1)
+	if (inven->page == 2)
 	{
 		inven->change_state(&inven->state_fc);
+	}
+
+	if (!inven->is_opened)
+	{
+		inven->change_state(&inven->state_none);
 	}
 }
 
@@ -113,13 +152,18 @@ void Inven::State_FC::Update(GameObject* object, double dt)
 void Inven::State_FC::CheckExit(GameObject* object)
 {
 	Inven* inven = static_cast<Inven*>(object);
-	if (inven->page == 0)
+	if (inven->page == 1)
 	{
 		inven->change_state(&inven->state_module);
 	}
-	else if (inven->page == 2)
+	else if (inven->page == 3)
 	{
 		inven->change_state(&inven->state_sc);
+	}
+
+	if (!inven->is_opened)
+	{
+		inven->change_state(&inven->state_none);
 	}
 }
 
@@ -138,8 +182,13 @@ void Inven::State_SC::Update(GameObject* object, double dt)
 void Inven::State_SC::CheckExit(GameObject* object)
 {
 	Inven* inven = static_cast<Inven*>(object);
-	if (inven->page == 1)
+	if (inven->page == 2)
 	{
 		inven->change_state(&inven->state_fc);
+	}
+
+	if (!inven->is_opened)
+	{
+		inven->change_state(&inven->state_none);
 	}
 }
