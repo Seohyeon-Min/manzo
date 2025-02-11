@@ -8,7 +8,8 @@
 class Icon : public GameObject
 {
 public:
-	Icon(const std::filesystem::path& filename, vec2 position, float scale);
+	Icon(const std::string& alias, const std::filesystem::path& filename, vec2 position, float scale);
+	~Icon();
 	GameObjectTypes Type() override { return GameObjectTypes::Icon; }
 	std::string TypeName() override { return "Icon"; }
 
@@ -18,5 +19,12 @@ public:
 	bool CanCollideWith(GameObjectTypes) override;
 	void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
 
+	const vec2 GetPosition() const { return position; }
+	const float GetScale() const { return scale; }
+	const std::string& GetAlias() const { return alias; }
+
 private:
+	std::string alias;
+	vec2 position;
+	float scale;
 };

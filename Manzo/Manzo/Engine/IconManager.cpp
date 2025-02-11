@@ -3,10 +3,9 @@
 
 #include <iostream>
 #include <fstream>
-#include <memory>
 #include <string>
 
-std::vector<std::unique_ptr<Icon>> icons;
+std::vector<Icon*> icons;
 
 IconManager::IconManager()
 {
@@ -14,6 +13,7 @@ IconManager::IconManager()
 
 IconManager::~IconManager()
 {
+    RemoveAllIcon();
     icon_list.clear();
 }
 
@@ -41,13 +41,31 @@ void IconManager::LoadIconList()
 }
 
 
-void IconManager::AddIcon(const char* alias, vec2 position, float scale)
+void IconManager::AddIcon(std::string alias, vec2 position, float scale)
 {
     auto it = icon_list.find(alias);
     if (it != icon_list.end()) {
-        icons.push_back(std::make_unique<Icon>(it->second, position, scale));
+        for (const auto& icon : icons)
+        {
+            if (icon->GetAlias() == alias && icon->GetPosition() == position && icon->GetScale() == scale)
+            {
+                return;
+            }
+        }
+        Icon* newIcon = new Icon(it->first, it->second, position, scale);
+        icons.push_back(newIcon);
     }
-    else {
+    else 
+    {
         std::cerr << "Error: Icon alias '" << alias << "' not found!" << std::endl;
     }
+}
+
+void IconManager::RemoveAllIcon()
+{
+    for (auto icon : icons)
+    {
+        icon->Destroy();
+    }
+    icons.clear();
 }

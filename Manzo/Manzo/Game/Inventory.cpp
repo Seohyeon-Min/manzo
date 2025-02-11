@@ -30,12 +30,18 @@ void Inven::Update(double dt)
 		{
 			std::uniform_int_distribution<> todays_fish(0, total_fishNum - 1);
 			std::uniform_int_distribution<> fish_price(1, 4);
-			int k = todays_fish(dre_todayFish);
-			int p = fish_price(dre_price);
+			todays_fish_index = todays_fish(dre_todayFish);
+			todays_price = fish_price(dre_price);
 
-			std::cout << "Today's fish is : " << k << ",   price : " << p << "\n";
+			std::cout << "Today's fish is : " << todays_fish_index << ",   price : " << todays_price << "\n";
 			is_picked = true;
 		}
+		todays_fish_icon = "fish" + std::to_string(todays_fish_index + 1);
+		Engine::GetIconManager().AddIcon(todays_fish_icon, {-200,0}, 1.0f);
+	}
+	else
+	{
+		Engine::GetIconManager().RemoveAllIcon();
 	}
 }
 
