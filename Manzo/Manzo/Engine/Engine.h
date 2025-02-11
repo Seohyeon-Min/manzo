@@ -24,6 +24,9 @@ Created:    March 8, 2023
 
 #include <chrono>
 #include <time.h>
+#include <random>
+
+extern std::random_device rd;
 
 class Engine : public IProgram {
 public:

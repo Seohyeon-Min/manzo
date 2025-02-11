@@ -5,6 +5,7 @@
 #include "../Engine/GameObjectManager.h"
 #include "../Engine/AABB.h"
 #include "../Engine/Camera.h"
+#include "../Engine/Engine.h"
 
 #include <random>
 #include <iostream>
@@ -17,7 +18,6 @@
 
 std::map<int, int> fishCaptureCount;
 
-
 #ifndef PIover3
 #define PIover3  (3.1415926535987932f / 3.0f)
 #endif
@@ -26,8 +26,7 @@ std::map<int, int> fishCaptureCount;
 #define PIover6  (3.1415926535987932f / 6.0f)
 #endif
 
-std::random_device rd;
-std::mt19937 dre(rd());
+std::mt19937 dre_fishIndex(rd());
 static std::vector<Fish::FishDex> fishBook;
 int Fish::money = 0;
 int fishCnt = 0;
@@ -38,7 +37,7 @@ Fish::Fish(Fish* parent) : GameObject({ 0, 0 }) {
 
     std::discrete_distribution<> fishIndex(weights.begin(), weights.end());
 
-    int index = fishIndex(dre);
+    int index = fishIndex(dre_fishIndex);
 
     if (parent == nullptr) {
         ivec2 windowSize = { Engine::window_width, Engine::window_height };

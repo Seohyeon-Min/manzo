@@ -20,6 +20,7 @@ Created:    March 8, 2023
 #include "GameObject.h"
 #include "WindowState.h"
 
+std::random_device rd;
 
 Engine::Engine() :
 #ifdef _DEBUG
