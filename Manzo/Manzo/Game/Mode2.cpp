@@ -88,6 +88,8 @@ void Mode2::Load() {
     /*shop_ptr = new Shop();
     GetGSComponent<GameObjectManager>()->Add(shop_ptr);*/
 
+    GetGSComponent<GameObjectManager>()->Add(new Mouse);
+
     std::cout << "Left money : " << Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() << std::endl;
 }
 

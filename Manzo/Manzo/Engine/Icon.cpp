@@ -1,5 +1,7 @@
 #include "Icon.h"
 #include "GameObjectManager.h"
+#include "Dragging.h"
+#include "../Game/Mouse.h"
 
 Icon::Icon(const std::string& alias, const std::filesystem::path& filename, vec2 position, float scale) : GameObject(position), alias(alias), position(position), scale(scale)
 {
@@ -7,6 +9,7 @@ Icon::Icon(const std::string& alias, const std::filesystem::path& filename, vec2
 	SetScale({ scale,scale });
 
 	Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(this);
+	AddGOComponent(new Dragging(*this));
 }
 
 Icon::~Icon()
