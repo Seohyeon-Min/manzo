@@ -31,7 +31,7 @@ public:
     bool IsShipMoving() { return move; }
     bool CanCollideWith(GameObjectTypes) override;
     void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
-    bool ComputeTOIWithRock(vec2 startPos, vec2 velocity, MAP_SATCollision* rockCollider, float& t_hit);
+    void HitWithRock(Rock* other_object);
     const vec2& GetPosition() const { return GameObject::GetPosition(); }
     //for fuel
     float GetFuel() { return (float)fuel; }
@@ -48,12 +48,15 @@ private:
     static constexpr float deceleration = 0.88f;
     static constexpr double skidding_speed = 150.f;
     double slow_down_factor = 0.02;
+    float toi = 0;
     bool move;
     bool hit_with = false;
+    bool should_resolve_collision = false;
     vec2 force = {};
     vec2 destination;
     vec2 direction = { 0,0 };
     vec2 normal;
+    vec2 collisionPos;
     Beat* beat;
     Skillsys* skill;
     Math::rect limit;
