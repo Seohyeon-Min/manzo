@@ -51,14 +51,15 @@ void GameObject::Update(double dt) {
 	UpdateGOComponents(dt);
 	current_state->CheckExit(this);
 	GetMatrix();
-	if (velocity.x != 0 || velocity.y != 0) {
-		UpdatePosition(velocity * (float)dt);
-	}
+
 }
 
 void GameObject::FixedUpdate(double fixed_dt)
 {
 	current_state->FixedUpdate(this, fixed_dt); // dose only state update... not sure it's correct but works..
+	if (velocity.x != 0 || velocity.y != 0) {
+		UpdatePosition(velocity * (float)fixed_dt);
+	}
 }
 
 void GameObject::change_state(State* new_state) {

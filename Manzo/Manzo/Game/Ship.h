@@ -52,6 +52,7 @@ private:
     bool move;
     bool hit_with = false;
     bool should_resolve_collision = false;
+    float slow_down = 0;
     vec2 force = {};
     vec2 destination;
     vec2 direction = { 0,0 };

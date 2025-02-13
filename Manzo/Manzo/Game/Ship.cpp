@@ -117,6 +117,18 @@ void Ship::State_Move::Enter(GameObject* object) {
 }
 void Ship::State_Move::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
     Ship* ship = static_cast<Ship*>(object);
+
+}
+
+void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_unused]] double fixed_dt) {
+    Ship* ship = static_cast<Ship*>(object);
+    if (!ship->hit_with) {
+        ship->FuelUpdate(fixed_dt);
+        ship->SetVelocity(ship->force);
+        float base_dt = 1.0f / 240.f;
+        float adjusted_deceleration = (float)pow(deceleration, fixed_dt / base_dt);
+        ship->force *= adjusted_deceleration;
+    }
     ship->nearestRock = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRock(ship); // it should be FindNearestRockNextFrame
 
 #ifdef _DEBUG
@@ -136,13 +148,13 @@ void Ship::State_Move::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
     }
 #endif
 
-    //if (ship->nearestRock == NULL) return;
+    if (ship->nearestRock == NULL) return;
 
-    if ( ship->IsCollidingWithNextFrame(ship->nearestRock, ship->GetVelocity(), (float)dt, ship->toi)) {
+    if (ship->IsCollidingWithNextFrame(ship->before_nearest_rock, ship->GetVelocity(), (float)fixed_dt, ship->toi)) {
         Engine::GetLogger().LogEvent("Collision Detected, Its toi is : " + std::to_string(ship->toi));
         //vec2 smallCorrection = -ship->GetVelocity().Normalize();
         if (ship->toi <= 0) { // just in case
-            ship->SetPosition(ship->GetPosition() - ship->GetVelocity().Normalize());
+            ship->SetPosition(ship->GetPosition() - ship->GetVelocity() * (float)fixed_dt);
             Engine::GetLogger().LogEvent("Toi is 0, returned. : " + std::to_string(ship->toi));
             return;
         }
@@ -151,39 +163,37 @@ void Ship::State_Move::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
     }
     if (ship->should_resolve_collision) {
         vec2 velocity = ship->GetVelocity();
-        ship->collisionPos = ship->GetPosition() + velocity * (float)dt * ship->toi;
+        ship->collisionPos = ship->GetPosition() + velocity * (float)fixed_dt * ship->toi;
         ship->SetVelocity({});
         ship->SetPosition(ship->collisionPos); // Bug: it doens't really stop at right pos
         Engine::GetLogger().LogEvent("@@@@ In resolve_collision @@@@");
         //this should be started in a next frame
-        ship->nearestRock = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRock(ship); // it should be FindNearestRockNextFrame
-        if (ship->nearestRock) {
+        //ship->nearestRock = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRock(ship); // it should be FindNearestRockNextFrame
+        if (ship->before_nearest_rock) {
             ship->collide_timer->Start();
             ship->HitWithRock(ship->nearestRock); // calculate normal
 
             Engine::GetLogger().LogEvent("Velocity: " + std::to_string(velocity.x) + ", " + std::to_string(velocity.y));
             Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
             ship->direction = ship->CalculateHitDirection(ship->normal, velocity);
-            ship->force = ship->direction * velocity.Length() * 0.8f;
-            ship->force *= 8.f;
-            Engine::GetLogger().LogEvent("velocity.Length(): " + std::to_string(velocity.Length()));
+
+            float speed = velocity.Length();
+
+            if (speed >= 6000.f) {
+                speed = 6000.f - ship->slow_down;
+                ship->slow_down += 1500.f;
+                std::cout << "ship->slow_down: " << ship->slow_down << std::endl;
+            }
+
+            ship->force = ship->direction * speed * 0.8f;
+            ship->force *= 7.0f;
+            Engine::GetLogger().LogEvent("velocity.Length(), speed : " + std::to_string(velocity.Length()) + " : " + std::to_string(speed));
             Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new HitEffect(ship->GetPosition()));
         }
         else {
             Engine::GetLogger().LogEvent("@@@@ Error: No nearest rock!! @@@@");
         }
         ship->should_resolve_collision = false;
-    }
-}
-
-void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_unused]] double fixed_dt) {
-    Ship* ship = static_cast<Ship*>(object);
-    if (!ship->hit_with) {
-        ship->FuelUpdate(fixed_dt);
-        ship->SetVelocity(ship->force);
-        float base_dt = 1.0f / 240.f;
-        float adjusted_deceleration = (float)pow(deceleration, fixed_dt / base_dt);
-        ship->force *= adjusted_deceleration;
     }
 }
 void Ship::State_Move::CheckExit(GameObject* object) {
@@ -213,6 +223,7 @@ void Ship::Update(double dt)
     if (collide_timer->IsFinished()) {
         Engine::Instance().ResetSlowDownFactor();
         collide_timer->Reset();
+        slow_down = 0.0f;
         hit_with = false;
     }
 
