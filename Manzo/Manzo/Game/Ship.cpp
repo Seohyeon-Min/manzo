@@ -211,24 +211,24 @@ void Ship::Update(double dt)
 {
     GameObject::Update(dt);
 
-
-    if (collide_timer->Remaining() < 0.48) {
-        Engine::GetGameStateManager().GetGSComponent<Cam>()->GetCameraView().SetZoom(1.0f);
-        SetVelocity(force);
-        float base_dt = 1.0f / 240.f;
-        float adjusted_deceleration = (float)pow(deceleration / 2, dt / base_dt);
-        force *= adjusted_deceleration;
-    }
-
-    if (collide_timer->IsFinished()) {
-        Engine::Instance().ResetSlowDownFactor();
-        collide_timer->Reset();
-        slow_down = 0.0f;
-        hit_with = false;
-    }
-
     can_dash = true;
     if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
+
+        if (collide_timer->Remaining() < 0.48) {
+            Engine::GetGameStateManager().GetGSComponent<Cam>()->GetCameraView().SetZoom(1.0f);
+            SetVelocity(force);
+            float base_dt = 1.0f / 240.f;
+            float adjusted_deceleration = (float)pow(deceleration / 2, dt / base_dt);
+            force *= adjusted_deceleration;
+        }
+
+        if (collide_timer->IsFinished()) {
+            Engine::Instance().ResetSlowDownFactor();
+            collide_timer->Reset();
+            slow_down = 0.0f;
+            hit_with = false;
+        }
+
         Engine::GetGameStateManager().GetGSComponent<Cam>()->GetCamera().UpdateShake((float)dt);
         // World Boundary
         RectCollision* collider = GetGOComponent<RectCollision>();
