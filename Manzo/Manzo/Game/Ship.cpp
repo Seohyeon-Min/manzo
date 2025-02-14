@@ -148,7 +148,10 @@ void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_
     }
 #endif
 
-    if (ship->nearestRock == NULL) return;
+    if (ship->nearestRock == NULL) {
+        Engine::GetLogger().LogEvent("Nearest Rock : NULL");
+        return;
+    }
 
     if (ship->IsCollidingWithNextFrame(ship->before_nearest_rock, ship->GetVelocity(), (float)fixed_dt, ship->toi)) {
         Engine::GetLogger().LogEvent("Collision Detected, Its toi is : " + std::to_string(ship->toi));
