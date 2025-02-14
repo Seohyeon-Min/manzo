@@ -1,6 +1,6 @@
 #include "Icon.h"
 #include "GameObjectManager.h"
-#include "Dragging.h"
+#include "../Game/Dragging.h"
 #include "../Game/Mouse.h"
 
 Icon::Icon(const std::string& alias, const std::filesystem::path& filename, vec2 position, float scale) : GameObject(position), alias(alias), position(position), scale(scale)
@@ -37,6 +37,7 @@ void Icon::ResolveCollision(GameObject* other_object)
 	switch (other_object->Type())
 	{
 	case GameObjectTypes::Mouse:
+		selected = true;
 		break;
 	}
 }

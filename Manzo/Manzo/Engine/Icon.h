@@ -22,9 +22,12 @@ public:
 	const vec2 GetPosition() const { return position; }
 	const float GetScale() const { return scale; }
 	const std::string& GetAlias() const { return alias; }
+	bool IsSelected() { return selected; }
+	void SetSelected(bool select) { selected = select; }
 
 private:
 	std::string alias;
 	vec2 position;
 	float scale;
+	bool selected = false;
 };

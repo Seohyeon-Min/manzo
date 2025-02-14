@@ -139,20 +139,19 @@ void Inven::State_FC::Update(GameObject* object, double dt)
 	Inven* inven = static_cast<Inven*>(object);
 	inven->GetGOComponent<Sprite>()->Update(dt);
 
-	/*for (auto f : inven->fishCollection)
-	{
-		std::cout << f.first << ": " << f.second << std::endl;
-	}*/
-
 	// Sell system
-	if (Engine::GetInput().KeyJustPressed(Input::Keys::O)) {
+	if (Engine::GetInput().KeyJustPressed(Input::Keys::O)) 
+	{
 		//decrease each type of fish
-		inven->fishCollection[0]--;
+		inven->fishCollection[inven->todays_fish_index]--;
+
 		//earn money
-		inven->money++;
+		inven->money += inven->todays_price;
 	}
 
 	//std::cout << inven->money << std::endl;
+
+	// fish icons in collection
 }
 
 void Inven::State_FC::CheckExit(GameObject* object)

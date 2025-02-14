@@ -1,16 +1,15 @@
 #pragma once
 
-#include "Component.h"
-#include "GameObject.h"
+#include "../Engine/Component.h"
+#include "../Engine/Icon.h"
 
 class Dragging : public Component
 {
 public:
-    Dragging(GameObject& object);
+    Dragging(Icon& object);
     void Update(double dt) override;
 
 private:
-    GameObject& object;
+    Icon& object;
     vec2 icon_first_pos;
-    //GameObject& mouse;
 };

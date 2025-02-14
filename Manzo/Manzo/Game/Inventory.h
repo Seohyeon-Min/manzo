@@ -31,6 +31,7 @@ private:
 	int total_fishNum = 3;
 	int todays_fish_index = 0;
 	int todays_price = 0;
+
 	std::string todays_fish_icon;
 
 	std::mt19937 dre_todayFish;
