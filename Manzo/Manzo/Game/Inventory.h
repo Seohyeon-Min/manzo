@@ -26,6 +26,7 @@ private:
 
 	bool is_opened = false;
 	bool is_picked = false;
+	bool has_sold = false;
 	int page = 0;
 	int money = 0;
 	int total_fishNum = 3;

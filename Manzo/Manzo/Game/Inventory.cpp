@@ -3,6 +3,8 @@
 #include "Fish.h"
 
 #include "../Engine/Engine.h"
+#include "../Engine/Icon.h"
+#include "Dragging.h"
 
 Inven::Inven(vec2 position) : GameObject(position), page(0), dre_todayFish(rd()), dre_price(rd())
 {
@@ -136,7 +138,7 @@ void Inven::State_FC::Enter(GameObject* object)
 
 	for (auto& fish : inven->fishCollection)
 	{
-		std::string file_name = "fish" + std::to_string(fish.first+1);
+		std::string file_name = "fish" + std::to_string(fish.first + 1);
 		Engine::GetIconManager().AddIcon(file_name, { 100,float(position += 80) }, 1.0f);
 	}
 }
@@ -146,19 +148,41 @@ void Inven::State_FC::Update(GameObject* object, double dt)
 	Inven* inven = static_cast<Inven*>(object);
 	inven->GetGOComponent<Sprite>()->Update(dt);
 
-	// Sell system
+	// Sell all
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::O))
 	{
-		//decrease each type of fish
-		inven->fishCollection[inven->todays_fish_index]--;
-
 		//earn money
-		inven->money += inven->todays_price;
+		inven->money += (inven->todays_price * inven->fishCollection[inven->todays_fish_index]);
+
+		//decrease each type of fish
+		inven->fishCollection[inven->todays_fish_index] = 0;
 	}
 
-	//std::cout << inven->money << std::endl;
+	Icon* draggedIcon = Engine::GetGameStateManager().GetGSComponent<Dragging>()->GetCurrentDraggingIcon();
 
-	// fish icons in collection
+	if (draggedIcon != nullptr)
+	{
+		std::string dragged_fish_alias = draggedIcon->GetAlias();
+
+		if ((dragged_fish_alias == inven->todays_fish_icon) && draggedIcon->IsColliding() && !inven->has_sold)
+		{
+			inven->has_sold = true;
+			if (inven->fishCollection[inven->todays_fish_index] > 0)
+			{
+				inven->fishCollection[inven->todays_fish_index]--;
+				std::cout << "Sold 1 fish! Remaining: " << inven->fishCollection[inven->todays_fish_index] << "\n";
+			}
+			else
+			{
+				std::cout << "No more fish of this type left!\n";
+			}
+
+		}
+	}
+	else
+	{
+		inven->has_sold = false;
+	}
 }
 
 void Inven::State_FC::CheckExit(GameObject* object)

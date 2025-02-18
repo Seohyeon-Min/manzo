@@ -23,6 +23,7 @@ public:
 	const float GetScale() const { return scale; }
 	const std::string& GetAlias() const { return alias; }
 	bool IsSelected() { return selected; }
+	bool IsColliding() { return resolve_collision; }
 	void SetSelected(bool select) { selected = select; }
 
 private:
@@ -31,4 +32,5 @@ private:
 	float scale;
 	bool selected = false;
 	bool can_drag = false;
+	bool resolve_collision = false;
 };
