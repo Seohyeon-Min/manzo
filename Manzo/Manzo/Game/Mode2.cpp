@@ -133,7 +133,8 @@ void Mode2::Draw() {
 }
 
 void Mode2::Unload() {
-    std::ofstream saveFile("save_data.txt");
+    std::string savePath = "assets/scenes/save_data.txt";
+    std::ofstream saveFile(savePath);
 
     if (saveFile.is_open()) {
         saveFile.clear();

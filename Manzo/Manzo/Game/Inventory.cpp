@@ -132,7 +132,7 @@ void Inven::State_FC::Enter(GameObject* object)
 	int position = -100;
 	Inven* inven = static_cast<Inven*>(object);
 	inven->GetGOComponent<Sprite>()->PlayAnimation(static_cast<int>(Animations::FishCollection));
-	inven->ReadSaveFile("save_data.txt");
+	inven->ReadSaveFile("assets/scenes/save_data.txt");
 
 	for (auto& fish : inven->fishCollection)
 	{
@@ -159,7 +159,6 @@ void Inven::State_FC::Update(GameObject* object, double dt)
 	//std::cout << inven->money << std::endl;
 
 	// fish icons in collection
-	Engine::GetFontManager().PrintText(FontType::Bold, "E", { 0.1f,0.f }, 0.8f, { 1.f,1.f,1.f }, 1.f, false);
 }
 
 void Inven::State_FC::CheckExit(GameObject* object)

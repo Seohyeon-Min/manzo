@@ -6,7 +6,6 @@
 #include <map>
 
 extern std::map<int, int> fishCaptureCount;
-void SaveFishCapture(int type);
 
 class Fish : public GameObject
 {

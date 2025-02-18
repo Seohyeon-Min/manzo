@@ -232,9 +232,15 @@ void Mode1::Draw() {
 
 void Mode1::Unload() {
 
-	std::ofstream saveFile("save_data.txt", std::ios::app);
+	std::string savePath = "assets/scenes/save_data.txt";
+	std::ofstream saveFile(savePath);
 
 	if (saveFile.is_open()) {
+
+		for (const auto& entry : fishCaptureCount) {
+			saveFile << entry.first + 1 << " " << entry.second << "\n";
+		}
+
 		saveFile << "Money: " << GetGSComponent<Fish>()->GetMoney() << "\n";
 		saveFile.close();
 	}
