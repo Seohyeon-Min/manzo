@@ -37,7 +37,7 @@ void Inven::Update(double dt)
 			is_picked = true;
 		}
 		todays_fish_icon = "fish" + std::to_string(todays_fish_index + 1);
-		Engine::GetIconManager().AddIcon(todays_fish_icon, {-200,0}, 1.0f);
+		Engine::GetIconManager().AddIcon(todays_fish_icon, { -200,0 }, 1.0f, false);
 	}
 	else
 	{
@@ -129,9 +129,16 @@ void Inven::State_Module::CheckExit(GameObject* object)
 
 void Inven::State_FC::Enter(GameObject* object)
 {
+	int position = -100;
 	Inven* inven = static_cast<Inven*>(object);
 	inven->GetGOComponent<Sprite>()->PlayAnimation(static_cast<int>(Animations::FishCollection));
 	inven->ReadSaveFile("save_data.txt");
+
+	for (auto& fish : inven->fishCollection)
+	{
+		std::string file_name = "fish" + std::to_string(fish.first+1);
+		Engine::GetIconManager().AddIcon(file_name, { 100,float(position += 80) }, 1.0f);
+	}
 }
 
 void Inven::State_FC::Update(GameObject* object, double dt)
@@ -140,7 +147,7 @@ void Inven::State_FC::Update(GameObject* object, double dt)
 	inven->GetGOComponent<Sprite>()->Update(dt);
 
 	// Sell system
-	if (Engine::GetInput().KeyJustPressed(Input::Keys::O)) 
+	if (Engine::GetInput().KeyJustPressed(Input::Keys::O))
 	{
 		//decrease each type of fish
 		inven->fishCollection[inven->todays_fish_index]--;

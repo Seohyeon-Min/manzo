@@ -136,6 +136,7 @@ void Mode2::Unload() {
     std::ofstream saveFile("save_data.txt");
 
     if (saveFile.is_open()) {
+        saveFile.clear();
         for (const auto& entry : inven_ptr->fishCollection) {
             saveFile << entry.first + 1 << " " << entry.second << "\n";
         }

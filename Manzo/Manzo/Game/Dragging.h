@@ -7,6 +7,7 @@ class Dragging : public Component
 {
 public:
     Dragging(Icon& object);
+    ~Dragging();
     void Update(double dt) override;
 
 private:
