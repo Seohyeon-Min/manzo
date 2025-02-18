@@ -159,6 +159,7 @@ void Inven::State_FC::Update(GameObject* object, double dt)
 	//std::cout << inven->money << std::endl;
 
 	// fish icons in collection
+	Engine::GetFontManager().PrintText(FontType::Bold, "E", { 0.1f,0.f }, 0.8f, { 1.f,1.f,1.f }, 1.f, false);
 }
 
 void Inven::State_FC::CheckExit(GameObject* object)

@@ -521,6 +521,74 @@ public:
 		glBindVertexArray(0);
 	}
 
+	void draw(float x, float y, const std::string& text) {
+		float originalX = x;
+
+		glBindVertexArray(vao);
+
+		std::vector<BufferVertex> vertices;
+		std::vector<int32_t> indices;
+
+		FT_UInt previous = 0;
+		for (const char* textIt = text.c_str(); *textIt != '\0'; ) {
+			uint32_t charcode = decodeCharcode(&textIt);
+
+			if (charcode == '\r') continue;
+
+			if (charcode == '\n') {
+				x = originalX;
+				y -= (float)face->height / (float)face->units_per_EM * worldSize;
+				if (hinting) y = std::round(y);
+				continue;
+			}
+
+			auto glyphIt = glyphs.find(charcode);
+			Glyph& glyph = (glyphIt == glyphs.end()) ? glyphs[0] : glyphIt->second;
+
+			if (previous != 0 && glyph.index != 0) {
+				FT_Vector kerning;
+				FT_Error error = FT_Get_Kerning(face, previous, glyph.index, kerningMode, &kerning);
+				if (!error) {
+					x += (float)kerning.x / emSize * worldSize;
+				}
+			}
+
+			// Do not emit quad for empty glyphs (whitespace).
+			if (glyph.curveCount) {
+				FT_Pos d = (FT_Pos)(emSize * dilation);
+
+				float u0 = (float)(glyph.bearingX - d) / emSize;
+				float v0 = (float)(glyph.bearingY - glyph.height - d) / emSize;
+				float u1 = (float)(glyph.bearingX + glyph.width + d) / emSize;
+				float v1 = (float)(glyph.bearingY + d) / emSize;
+
+				float x0 = x + u0 * worldSize;
+				float y0 = y + v0 * worldSize;
+				float x1 = x + u1 * worldSize;
+				float y1 = y + v1 * worldSize;
+
+				int32_t base = static_cast<int32_t>(vertices.size());
+				vertices.push_back(BufferVertex{ x0, y0, u0, v0, glyph.bufferIndex });
+				vertices.push_back(BufferVertex{ x1, y0, u1, v0, glyph.bufferIndex });
+				vertices.push_back(BufferVertex{ x1, y1, u1, v1, glyph.bufferIndex });
+				vertices.push_back(BufferVertex{ x0, y1, u0, v1, glyph.bufferIndex });
+				indices.insert(indices.end(), { base, base + 1, base + 2, base + 2, base + 3, base });
+			}
+
+			x += (float)glyph.advance / emSize * worldSize;
+			previous = glyph.index;
+		}
+
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(BufferVertex) * vertices.size(), vertices.data(), GL_STREAM_DRAW);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int32_t) * indices.size(), indices.data(), GL_STREAM_DRAW);
+
+		glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0);
+
+		glBindVertexArray(0);
+	}
 
 private:
 	FT_Face face;

@@ -43,7 +43,7 @@ std::unique_ptr<Font> FontManager::loadFont(const std::string& filename, float w
 	return std::make_unique<Font>(face, worldSize, hinting);
 }
 
-void FontManager::PrintText(FontType font, std::string txt, vec2 position, float scale, vec3 color, float alpha)
+void FontManager::PrintText(FontType font, std::string txt, vec2 position, float scale, vec3 color, float alpha, bool in_world)
 {
 	FT_Error error = FT_Init_FreeType(&library);
 	if (error) {
@@ -58,11 +58,19 @@ void FontManager::PrintText(FontType font, std::string txt, vec2 position, float
 	shader->SendUniform("color", color.x, color.y, color.z);
 	shader->SendUniform("alphaV", alpha);
 
-	mat3 model_to_world = mat3::build_translation(position);
-	mat3 WORLD_TO_NDC = Engine::GetGameStateManager().GetGSComponent<Cam>()->world_to_ndc;
-	const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
-
 	font_list[font]->drawSetup(shader);
 	font_list[font]->setWorldSize(scale);
-	font_list[font]->draw(model_to_ndc * vec3(position.x, position.y, 1.0), txt);
+
+	if (in_world)
+	{
+		mat3 model_to_world = mat3::build_translation(position);
+		mat3 WORLD_TO_NDC = Engine::GetGameStateManager().GetGSComponent<Cam>()->world_to_ndc;
+		const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
+		font_list[font]->draw(model_to_ndc * vec3(position.x, position.y, 1.0), txt);
+	}
+	else
+	{
+		font_list[font]->draw(position.x, position.y, txt);
+	}
+
 }
