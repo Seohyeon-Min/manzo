@@ -12,7 +12,7 @@ public:
 	~IconManager();
 
 	void LoadIconList();
-	void AddIcon(std::string alias, vec2 position, float scale, bool drag = true);
+	void AddIcon(std::string alias, vec2 position, float scale, bool drag = true, bool change_pos = false);
 	void RemoveAllIcon();
 
 private: 

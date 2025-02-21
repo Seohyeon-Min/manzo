@@ -17,14 +17,14 @@ void Module::Draw(DrawLayer drawlayer)
 	GameObject::Draw(drawlayer);
 }
 
-//void Module::State_First_Module::Enter(GameObject* object)
-//{
-//}
-//
-//void Module::State_First_Module::Update(GameObject* object, double dt)
-//{
-//}
-//
-//void Module::State_First_Module::CheckExit(GameObject* object)
-//{
-//}
+void Module::State_First_Module::Enter(GameObject* object)
+{
+}
+
+void Module::State_First_Module::Update(GameObject* object, double dt)
+{
+}
+
+void Module::State_First_Module::CheckExit(GameObject* object)
+{
+}

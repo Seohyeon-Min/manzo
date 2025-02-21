@@ -16,7 +16,7 @@ private:
     Ship* ship;
 
     
-    /*class State_First_Module : public State 
+    class State_First_Module : public State 
     {
     public:
         virtual void Enter(GameObject* object) override;
@@ -28,5 +28,5 @@ private:
         vec2 dash_destination;
     };
 
-    State_First_Module first_module;*/
+    State_First_Module first_module;
 };

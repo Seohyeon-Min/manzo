@@ -41,7 +41,7 @@ void IconManager::LoadIconList()
 }
 
 
-void IconManager::AddIcon(std::string alias, vec2 position, float scale, bool drag)
+void IconManager::AddIcon(std::string alias, vec2 position, float scale, bool drag, bool change_pos)
 {
     auto it = icon_list.find(alias);
     if (it != icon_list.end()) {
@@ -52,7 +52,7 @@ void IconManager::AddIcon(std::string alias, vec2 position, float scale, bool dr
                 return;
             }
         }
-        Icon* newIcon = new Icon(it->first, it->second, position, scale, drag);
+        Icon* newIcon = new Icon(it->first, it->second, position, scale, drag, change_pos);
         icons.push_back(newIcon);
     }
     else 

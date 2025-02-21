@@ -3,7 +3,7 @@
 #include "../Game/Dragging.h"
 #include "../Game/Mouse.h"
 
-Icon::Icon(const std::string& alias, const std::filesystem::path& filename, vec2 position, float scale, bool drag) : GameObject(position), alias(alias), position(position), scale(scale), can_drag(drag)
+Icon::Icon(const std::string& alias, const std::filesystem::path& filename, vec2 position, float scale, bool drag, bool change_pos) : GameObject(position), alias(alias), position(position), scale(scale), can_drag(drag), can_change_pos(change_pos)
 {
 	AddGOComponent(new Sprite(filename, this));
 	SetScale({ scale,scale });

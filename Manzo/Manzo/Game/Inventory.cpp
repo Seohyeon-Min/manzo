@@ -107,6 +107,12 @@ void Inven::State_Module::Enter(GameObject* object)
 	Inven* inven = static_cast<Inven*>(object);
 	inven->GetGOComponent<Sprite>()->PlayAnimation(static_cast<int>(Animations::Module));
 	inven->page = 1;
+
+	Engine::GetIconManager().AddIcon("module", { 0,100 }, 0.7f, false);
+
+	Engine::GetIconManager().AddIcon("module1", { -130,-100 }, 0.7f, true, true);
+	Engine::GetIconManager().AddIcon("module2", { 0,-100 }, 0.7f, true, true);
+	Engine::GetIconManager().AddIcon("module3", { 130,-100 }, 0.7f, true, true);
 }
 
 void Inven::State_Module::Update(GameObject* object, double dt)

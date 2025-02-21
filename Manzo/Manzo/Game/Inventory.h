@@ -32,6 +32,7 @@ private:
 	int total_fishNum = 3;
 	int todays_fish_index = 0;
 	int todays_price = 0;
+	int current_module = 0;
 
 	std::string todays_fish_icon;
 
