@@ -129,6 +129,10 @@ void Mode1::Load() {
 		skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
 		skill_ptr->SetShipPtr(ship_ptr);
 	}
+
+	// Module
+	module = new Module({ 0, 0 },ship_ptr);
+	GetGSComponent<GameObjectManager>()->Add(module);
 }
 
 void Mode1::Update(double dt) {

@@ -41,6 +41,8 @@ public:
     bool IsFuelZero();
     bool IsShipUnder();
 
+    const vec2 GetDashPos() { return dash_target; }
+
 private:
     static constexpr double speed = 6500.f;
     static constexpr float deceleration = 0.88f;
@@ -74,6 +76,7 @@ private:
 
     //
 
+    vec2 dash_target;
 
 
     class State_Idle : public State {
