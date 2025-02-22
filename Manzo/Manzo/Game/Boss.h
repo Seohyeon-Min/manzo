@@ -35,7 +35,7 @@ public:
 	void RunMusic();
 	void InitializeStates();
 	void AfterDied();
-	std::array<int, 2> GetFirstPosition() { return position; }
+	const std::array<int, 2> GetFirstPosition() { return position; }
 
 
 private:
@@ -51,10 +51,10 @@ private:
 	
 	static void Check_BossBehavior(int targetEntryNum, GameObject* object);
 	//------
-	static void Movingtolocation_fun(int targetEntryNum, Boss* object);
-	static void Chasingplayer_fun(int targetEntryNum, Boss* object);
-	static void Shooting_fun(int targetEntryNum, Boss* object);
-	static void MultiInstance_fun(int targetEntryNum, Boss* object);
+	static void Movingtolocation_Boss(int targetEntryNum, Boss* object);
+	static void Chasingplayer_Boss(int targetEntryNum, Boss* object);
+	static void Shooting_Boss(int targetEntryNum, Boss* object);
+	static void MultiInstance_Boss(int targetEntryNum, Boss* object);
 
 	BossType bossType;
 	//std::unique_ptr<BossBehavior> behavior; // Polymorphic behavior
@@ -73,7 +73,7 @@ private:
 		virtual void Enter(GameObject* object) override;
 		virtual void Update(GameObject* object, double dt) override;
 		virtual void CheckExit(GameObject* object) override;
-		std::string GetName() override { return "Idle"; }
+		std::string GetName() override { return "Entry1"; }
 	};
 
 	class Entry2 : public State {
@@ -81,21 +81,21 @@ private:
 		virtual void Enter(GameObject* object) override;
 		virtual void Update(GameObject* object, double dt) override;
 		virtual void CheckExit(GameObject* object) override;
-		std::string GetName() override { return "Idle"; }
+		std::string GetName() override { return "Entry2"; }
 	};
 	class Entry3 : public State {
 	public:
 		virtual void Enter(GameObject* object) override;
 		virtual void Update(GameObject* object, double dt) override;
 		virtual void CheckExit(GameObject* object) override;
-		std::string GetName() override { return "Idle"; }
+		std::string GetName() override { return "Entry3"; }
 	};
 	class Entry4 : public State {
 	public:
 		virtual void Enter(GameObject* object) override;
 		virtual void Update(GameObject* object, double dt) override;
 		virtual void CheckExit(GameObject* object) override;
-		std::string GetName() override { return "Idle"; }
+		std::string GetName() override { return "Entry4"; }
 	};
 
 

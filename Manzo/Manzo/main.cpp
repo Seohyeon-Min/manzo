@@ -5,8 +5,6 @@
 #include "Game/Splash.h"
 #include "Game/Mode1.h"
 #include "Game/Mode2.h"
-#include "Game/GameOver.h"
-#include "Game/Clear.h"
 
 util::owner<IProgram*> create_program(int viewport_width, int viewport_height)
 {

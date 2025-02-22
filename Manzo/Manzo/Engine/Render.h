@@ -18,60 +18,105 @@
 
 // A structure to represent a draw call
 enum class DrawLayer {
-    DrawBackground,
-    DrawFirst,
-    Draw,
-    DrawLast,
+    DrawBackground = 0,
+    DrawFirst = 1,
+    Draw = 2,
+    DrawLast = 3,
+    DrawPlayer,
+    DrawPlayerTop,
     DrawUI,
     DrawDialog
 };
 
-
+enum class DrawType {
+    Regular,
+    Line,
+    Circle
+};
 
 class Sprite;
 
-struct DrawCall {
-    std::variant<Sprite*, GLTexture*> drawable;
-    const mat3* transform;
-    const GLShader* shader;
-    std::function<void(const GLShader*)> SetUniforms = nullptr;
-    DrawSettings settings; // later, change it to pointer
-};
-
-struct LineDrawCall {
-    vec2 start;
-    vec2 end;
-    color3 color;
-    const GLShader* shader;
-};
-
-struct LineDrawCallPro {
-    vec2 start;
-    vec2 end;
-    color3 color;
-    const float width;
-    const float alpha;
-    const GLShader* shader;
-};
-
-struct CircleDrawCall {
-    float radius;
-    vec2 pos;
-    const GLShader* shader;
-    std::function<void(const GLShader*)> SetUniforms = nullptr;
+struct BaseDrawCall {
+    const GLShader* shader = nullptr;
+    DrawLayer sorting_layer = DrawLayer::Draw;
+    int order_in_layer = 0; 
+    std::function<void(const GLShader*)> SetUniforms = nullptr; 
     DrawSettings settings;
+
+    virtual ~BaseDrawCall() = default;
+    virtual DrawType GetDrawType() const = 0;
+};
+
+struct DrawCall : public BaseDrawCall {
+    std::variant<Sprite*, GLTexture*> drawable;
+    const mat3* transform = nullptr;
+
+    DrawCall() = default;
+
+    DrawCall(Sprite* sprite, const mat3* transform_matrix, const GLShader* shader_ptr = nullptr)
+        : drawable(sprite), transform(transform_matrix) {
+        shader = shader_ptr;
+    }
+
+    DrawCall(GLTexture* texture, const mat3* transform_matrix, const GLShader* shader_ptr = nullptr)
+        : drawable(texture), transform(transform_matrix) {
+        shader = shader_ptr;
+    }
+
+    DrawType GetDrawType() const override {
+        return DrawType::Regular;
+    }
+};
+
+struct LineDrawCall : public BaseDrawCall {
+    vec2 start;
+    vec2 end;
+    color3 color;
+
+    DrawType GetDrawType() const override {
+        return DrawType::Line;
+    }
+};
+
+struct LineDrawCallPro : public BaseDrawCall {
+    vec2 start;
+    vec2 end;
+    color3 color;
+    float width = 1.0f;
+    float alpha = 255.0f;
+    DrawType draw_type = DrawType::Line;
+
+    LineDrawCallPro() = default;
+    LineDrawCallPro(vec2 start, vec2 end, color3 color, float width, float alpha, const GLShader* shader = nullptr, bool iscollision = false)
+        :start(start), end(end), color(color), width(width), alpha(alpha)
+    { }
+
+    DrawType GetDrawType() const override {
+        return DrawType::Line;
+    }
+};
+
+struct CircleDrawCall : public BaseDrawCall {
+    float radius = 0.0f;
+    vec2 pos;
+    DrawType draw_type = DrawType::Circle;
+
+    CircleDrawCall() = default;
+    CircleDrawCall(float radius, vec2 pos) : radius(radius), pos(pos) {}
+
+    DrawType GetDrawType() const override {
+        return DrawType::Circle;
+    }
 };
 
 class Render {
 public:
     Render();
 
-    // 매개변수를 스트럭트로 넘길수도 있다!!! 그게 더 좋을거같다!!!
-
-    void AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase = DrawLayer::Draw);
+    void AddDrawCall(std::unique_ptr<BaseDrawCall> drawCall);
+    void AddBackgroundDrawCall(const DrawCall& drawCall);
     void AddDrawCall
-    (vec2 start, vec2 end, color3 color, float width = 1.0f, float alpha = 255.0f, const GLShader* shader = nullptr, bool iscollision = true);
-    void AddDrawCall(const CircleDrawCall& drawcall, const DrawLayer& phase = DrawLayer::Draw);
+    (vec2 start, vec2 end, color3 color, float width = 1.0f, float alpha = 255.0f, const GLShader* shader = nullptr);
     void RenderAll();
 
     void ApplyPostProcessing();
@@ -93,25 +138,15 @@ private:
 
     mat3 GetWorldtoNDC();
 
-
-    // Vectors for draw calls
-    // z 발류 갖고있는 스트럭트로 불투명 리스트 하나, 투명 리스트 하나 할 수 있다!!
-    // 이게 더 좋을듯
-
+    std::vector<std::vector<std::unique_ptr<BaseDrawCall>>> all_draw_calls;
     std::vector<DrawCall> draw_background_calls;
-    std::vector<DrawCall> draw_first_calls;
-    std::vector<DrawCall> draw_calls;
-    std::vector<DrawCall> draw_late_calls;
-    std::vector<DrawCall> draw_ui_calls;
-    std::vector<DrawCall> draw_dialog_calls;
-    std::vector<LineDrawCallPro> draw_line_calls;
     std::vector<LineDrawCall> draw_collision_calls;
-    std::vector<CircleDrawCall> draw_circle_calls;
 
     GLVertexArray model;
     GLVertexArray line_model;
     GLVertexArray circle_line_model;
-    GLFrameBuffer postProcessFramebuffer;
+
+    GLFrameBuffer postProcessFramebuffer[2];
 
     mat3 projection_matrix;
 };

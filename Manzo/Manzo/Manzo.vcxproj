@@ -37,16 +37,17 @@
     <ClCompile Include="Game\Background.cpp" />
     <ClCompile Include="Game\BeatSystem.cpp" />
     <ClCompile Include="Game\Boss.cpp" />
-    <ClCompile Include="Game\Clear.cpp" />
     <ClCompile Include="Game\DialogBox.cpp" />
+    <ClCompile Include="Game\Effect.cpp" />
     <ClCompile Include="Game\Fish.cpp" />
     <ClCompile Include="Game\FishEcosystem.cpp" />
     <ClCompile Include="Game\GameObjectTypes.cpp" />
-    <ClCompile Include="Game\GameOver.cpp" />
-    <ClCompile Include="Game\GodRay.cpp" />
+    <ClCompile Include="Game\Icon.cpp" />
+    <ClCompile Include="Game\IconManager.cpp" />
     <ClCompile Include="Game\Mode1.cpp" />
     <ClCompile Include="Game\Mode2.cpp" />
     <ClCompile Include="Game\Mouse.cpp" />
+    <ClCompile Include="Game\Player.cpp" />
     <ClCompile Include="Game\ScreenWrap.cpp" />
     <ClCompile Include="Game\Rock.cpp" />
     <ClCompile Include="Game\RockGroup.cpp" />
@@ -92,23 +93,22 @@
     <ClInclude Include="Engine\TextureManager.h" />
     <ClInclude Include="Engine\Timer.h" />
     <ClInclude Include="Engine\UI.h" />
-    <ClInclude Include="Engine\UIManager.h" />
     <ClInclude Include="Game\AI.h" />
     <ClInclude Include="Game\Background.h" />
     <ClInclude Include="Game\BeatSystem.h" />
     <ClInclude Include="Game\Boss.h" />
-    <ClInclude Include="Game\Clear.h" />
-    <ClInclude Include="Game\DashEffect.h" />
+    <ClInclude Include="Game\Effect.h" />
     <ClInclude Include="Game\DialogBox.h" />
     <ClInclude Include="Game\Fish.h" />
     <ClInclude Include="Game\FishEcosystem.h" />
     <ClInclude Include="Game\GameObjectTypes.h" />
-    <ClInclude Include="Game\GameOver.h" />
-    <ClInclude Include="Game\GodRay.h" />
+    <ClInclude Include="Game\Icon.h" />
+    <ClInclude Include="Game\IconManager.h" />
     <ClInclude Include="Game\Mode1.h" />
     <ClInclude Include="Game\Mode2.h" />
     <ClInclude Include="Game\Mouse.h" />
     <ClInclude Include="Game\Particles.h" />
+    <ClInclude Include="Game\Player.h" />
     <ClInclude Include="Game\ScreenWrap.h" />
     <ClInclude Include="Game\Rock.h" />
     <ClInclude Include="Game\RockGroup.h" />
@@ -168,6 +168,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)external\include\glm;$(SolutionDir)external\include\freetype\config;$(SolutionDir)external\include\freetype;$(ProjectDir)include;$(SolutionDir)common_gl\include;$(SolutionDir)external\include;$(SolutionDir)external\include\backends;$(SolutionDir)external\include\rapidjson;$(SolutionDir)external\include\FMOD;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -191,7 +192,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)external\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)external\lib; &lt; different options &gt;</AdditionalLibraryDirectories>
       <AdditionalDependencies>Opengl32.lib;glew32.lib;imgui.lib;SDL2.lib;freetype.lib;fmodL_vc.lib;fmodstudioL_vc.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

@@ -1,5 +1,5 @@
 #include "Fish.h"
-#include "DashEffect.h"
+#include "Effect.h"
 #include "ScreenWrap.h"
 
 #include "../Engine/GameObjectManager.h"
@@ -191,7 +191,7 @@ vec2 Fish::AvoidRock(vec2 thisPos, vec2 rockPos) {
 
 
 void Fish::Draw() {
-    GameObject::Draw();
+    GameObject::Draw(DrawLayer::DrawLast);
 }
 void Fish::ReadFishCSV(const std::string& filename) {
     std::ifstream file(filename);

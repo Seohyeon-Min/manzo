@@ -5,7 +5,6 @@
 
 Cam::Cam()
 {
-	//this->player_zone = player_zone;
 	caminfo.camera_view.SetFramebufferSize((int)Engine::window_width, (int)Engine::window_height);
 }
 
@@ -25,22 +24,7 @@ void Cam::Update(double dt, const vec2& player_position, bool playerMove)
 	// world_to_ndc <- cam_to_ndc * world_to_cam
 	world_to_ndc = cam_to_ndc * world_to_cam;
 
-
-
-
-    //if (caminfo.camera.Position.x < limit.Left()) {
-    //    caminfo.camera.Position.x = limit.Left();
-    //}
-    //if (caminfo.camera.Position.x > limit.Right()) {
-    //    caminfo.camera.Position.x = limit.Right();
-    //}
-    //if (caminfo.camera.Position.y > limit.Top()) {
-    //    caminfo.camera.Position.y = limit.Top();
-    //}
-
-
     LoadMap();
-    
 }
 
 

@@ -36,17 +36,21 @@ public:
     virtual std::string TypeName() = 0;
     bool IsCollidingWith(GameObject* other_object);
     bool IsCollidingWith(vec2 point);
+    bool IsVisible(const Math::rect& camera_bounds) const;
+    bool isCameraFixed() const { return is_camera_fixed; }
+    void SetCameraFixed(bool fixed) { is_camera_fixed = fixed; }
     virtual bool CanCollideWith(GameObjectTypes other_object_type);
     virtual void ResolveCollision([[maybe_unused]] GameObject* other_object) { };
     virtual void Update(double dt);
     virtual void FixedUpdate(double fixed_dt);
     virtual void Draw(DrawLayer drawlayer = DrawLayer::Draw);
-    virtual void Draw(const DrawCall& draw_call, DrawLayer drawlayer = DrawLayer::Draw);
+    virtual void Draw(const DrawCall& draw_call);
     virtual void Destroy() { destroy = true; }
     virtual bool Destroyed() { return destroy; }
     virtual void SetShader(GLShader* new_shader) { shader = new_shader; };
 
     const mat3& GetMatrix();
+    const Math::rect& GetAABB() const;
     const vec2& GetPosition() const;
     const vec2& GetVelocity() const;
     const vec2& GetScale() const;
@@ -104,11 +108,14 @@ private:
 
     double rotation;
     bool matrix_outdated = true;
+    bool is_camera_fixed = false;
     bool destroy;
     vec2 scale;
     vec2 position;
     vec2 velocity;
     GLShader* shader = nullptr;
+    Math::rect cached_aabb;
+    vec2 frame_size;
 
     class State_None : public State {
     public:

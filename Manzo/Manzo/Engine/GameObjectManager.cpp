@@ -11,6 +11,7 @@ Created:    Aprill 29, 2023
 
 #include "GameObjectManager.h"
 #include "MapManager.h"
+#include "Camera.h"
 
 void GameObjectManager::Add(GameObject* object)
 {
@@ -46,11 +47,21 @@ void GameObjectManager::FixedUpdateAll(double dt)
 
 void GameObjectManager::DrawAll()
 {
+	auto camera_bounds = Engine::GetGameStateManager().GetGSComponent<Cam>()->GetBounds();
+
 	for (auto object : objects) {
-		object->Draw();
+		if (object->isCameraFixed()) {
+			object->Draw();
+		}
+		else if (object->IsVisible(camera_bounds)) {
+			object->Draw();
+		}
+
 	}
+
 	Engine::GetRender().RenderAll();
 }
+
 
 void GameObjectManager::CollisionTest() {
 	for (auto object_1 : objects) {

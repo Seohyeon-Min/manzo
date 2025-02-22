@@ -61,7 +61,7 @@ namespace Particles {
         HitPraticle() : Particle("assets/images/Smoke.spt")
         {
             scale = util::random(0.26f, 0.36f); shader = Engine::GetShaderManager().GetShader("change_alpha");
-            drawlayer = DrawLayer::DrawUI;
+            drawlayer = DrawLayer::DrawPlayerTop;
         };
         std::string TypeName() override { return "HitEffect Particle"; }
         static constexpr int MaxCount = 20;
@@ -87,10 +87,10 @@ namespace Particles {
         CaptureEffect() : Particle("assets/images/Capture_particle.spt")
         {
             scale = util::random(.15f, .25f); shader = Engine::GetShaderManager().GetShader("change_alpha");
-            drawlayer = DrawLayer::DrawUI;
+            drawlayer = DrawLayer::DrawPlayerTop;
         };
         std::string TypeName() override { return "CaptureEffect Particle"; }
-        static constexpr int MaxCount = 8;
+        static constexpr int MaxCount = 71;
         static constexpr double MaxLife = 0.25;
         float scale;
     };

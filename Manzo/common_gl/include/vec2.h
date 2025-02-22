@@ -126,6 +126,13 @@ constexpr vec2& operator+=(vec2& v, const vec2& adding_vector) noexcept
     return v;
 }
 
+constexpr vec2& operator-=(vec2& v, const vec2& adding_vector) noexcept
+{
+    v.x -= adding_vector.x;
+    v.y -= adding_vector.y;
+    return v;
+}
+
 constexpr vec2 operator*(const vec2& v, float scale) noexcept
 {
     return vec2{ v.x * scale, v.y * scale };
@@ -216,6 +223,14 @@ struct [[nodiscard]] ivec2
     explicit operator vec2() const
     {
         return vec2(static_cast<float>(x), static_cast<float>(y));
+    }
+
+    bool operator==(const ivec2& other) const noexcept {
+        return x == other.x && y == other.y;
+    }
+
+    bool operator!=(const ivec2& other) const noexcept {
+        return !(*this == other);
     }
 
 };

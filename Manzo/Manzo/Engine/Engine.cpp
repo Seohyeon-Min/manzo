@@ -60,6 +60,8 @@ void Engine::Update() {
             accumulator -= fixed_delta_time;
         }
     }
+
+    //FPS = 1.0 / dt;
     gamestatemanager.Update(dt);
     input.Update();
 

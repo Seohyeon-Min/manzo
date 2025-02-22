@@ -40,21 +40,20 @@ void Particle::Draw(DrawLayer dl)
 	if(Alive())
 		if(shader == nullptr) GameObject::Draw(drawlayer);
 		else {
-			DrawSettings settings;
-			settings.do_blending = true;
+
 			Sprite* sprite = GetGOComponent<Sprite>();
 
 			DrawCall draw_call = {
 				sprite,                       // Texture to draw
 				&GetMatrix(),                          // Transformation matrix
 				Engine::GetShaderManager().GetShader("change_alpha"), // Shader to use
-				[this](const GLShader* shader) {
-					SetAlpha(shader);
-				},
-				settings
 			};
 
-			GameObject::Draw(draw_call, drawlayer);
+			draw_call.settings.do_blending = true;
+			draw_call.SetUniforms = [this](const GLShader* shader) { SetAlpha(shader);};
+			draw_call.sorting_layer = drawlayer;
+
+			GameObject::Draw(draw_call);
 		}
 }
 

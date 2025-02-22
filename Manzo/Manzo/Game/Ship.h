@@ -36,7 +36,7 @@ public:
     float GetMaxFuel() { return (float)Maxfuel; }
     void FuelUpdate(double dt);
     void SetMaxFuel(double input);
-    void HitWithReef(vec2 normal);
+    void HitWithReef(vec2 normal, vec2 velocity);
     bool IsTouchingReef();
     bool IsFuelZero();
     bool IsShipUnder();
@@ -111,7 +111,7 @@ class Pump : public GameObject {
 public:
     Pump();
     GameObjectTypes Type() override { return GameObjectTypes::Ship; }
-    std::string TypeName() override { return "Ship:Dal"; }
+    std::string TypeName() override { return "Ship:Dal_Pump"; }
     void Update(double dt) override;
     void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
     float GetRadius() { return radius; }

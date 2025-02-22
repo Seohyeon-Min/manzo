@@ -24,7 +24,7 @@ Boss::Boss(vec2 start_position, BossName name, BossType type)
 
 }
 
-void Boss::Movingtolocation_fun(int targetEntryNum, Boss* object) {
+void Boss::Movingtolocation_Boss(int targetEntryNum, Boss* object) {
 	if (targetEntryNum - 1 < object->parttern.size()) {
 		const auto& entryVec = object->parttern[targetEntryNum - 1];
 		for (const auto& entryData : entryVec) {
@@ -34,7 +34,7 @@ void Boss::Movingtolocation_fun(int targetEntryNum, Boss* object) {
 		}
 	}
 }
-void Boss::Chasingplayer_fun(int targetEntryNum, Boss* boss) {
+void Boss::Chasingplayer_Boss(int targetEntryNum, Boss* boss) {
 
 	if (targetEntryNum - 1 < boss->parttern.size()) {
 		const auto& entryVec = boss->parttern[targetEntryNum - 1];
@@ -66,34 +66,34 @@ void Boss::Chasingplayer_fun(int targetEntryNum, Boss* boss) {
 	}
 }
 
-void Boss::Shooting_fun(int targetEntryNum, Boss* object) {
+void Boss::Shooting_Boss(int targetEntryNum, Boss* object) {
 
 }
-void Boss::MultiInstance_fun(int targetEntryNum, Boss* object) {
+void Boss::MultiInstance_Boss(int targetEntryNum, Boss* object) {
 
 }
 
 void Boss::Check_BossBehavior(int targetEntryNum, GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
-	if (boss->bossType == Boss::BossType::MovingToLocation)
+
+	switch (boss->bossType)
 	{
-		Movingtolocation_fun(targetEntryNum, boss);
-	}
-	else if (boss->bossType == Boss::BossType::ChasingPlayer)
-	{
-		Chasingplayer_fun(targetEntryNum, boss);
-	}
-	else if (boss->bossType == Boss::BossType::Shooting)
-	{
-		Shooting_fun(targetEntryNum, boss);
-	}
-	else if (boss->bossType == Boss::BossType::MultiInstance)
-	{
-		MultiInstance_fun(targetEntryNum, boss);
-	}
-	else
-	{
+	case Boss::BossType::MovingToLocation:
+		Movingtolocation_Boss(targetEntryNum, boss);
+		break;
+	case Boss::BossType::ChasingPlayer:
+		Chasingplayer_Boss(targetEntryNum, boss);
+		break;
+	case Boss::BossType::Shooting:
+		Shooting_Boss(targetEntryNum, boss);
+		break;
+	case Boss::BossType::MultiInstance:
+		MultiInstance_Boss(targetEntryNum, boss);
+		break;
+
+	default:
 		Engine::GetLogger().LogError("TYPE ERROR : There is no boss type like that... check one more time!");
+		break;
 	}
 }
 
@@ -124,7 +124,6 @@ void Boss::Entry1::Enter(GameObject* object) {
 }
 void Boss::Entry1::Update(GameObject* object, double dt) {
 	int targetEntryNum = 1;
-	Check_BossBehavior(targetEntryNum, object);
 }
 void Boss::Entry1::CheckExit(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
@@ -274,17 +273,13 @@ void Boss::RunMusic()
 
 void Boss::Draw(DrawLayer drawlayer)
 {
-	DrawSettings settings;
-	settings.do_blending = true;
-
 	DrawCall draw_call = {
-		GetGOComponent<Sprite>()->GetTexture(),// Texture to draw
+		GetGOComponent<Sprite>()->GetTexture(),                       // Texture to draw
 		&GetMatrix(),                          // Transformation matrix
-		Engine::GetShaderManager().GetDefaultShader(),
-		nullptr,
-		settings
+		Engine::GetShaderManager().GetDefaultShader()
 	};
 
+	draw_call.settings.do_blending = true;
 	GameObject::Draw(draw_call);
 }
 

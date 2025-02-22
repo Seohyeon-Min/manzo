@@ -17,97 +17,67 @@
 
 const float WORLD_SIZE_MAX = (float)std::max(Engine::window_width, Engine::window_height);
 
-Render::Render()
-    : postProcessFramebuffer((unsigned int)Engine::window_width, (unsigned int)Engine::window_height) { // 프레임 버퍼 생성
-    CreatModel();  // 모델 생성
+Render::Render(){
+    CreatModel();
     CreatLineModel();
     CreateCircleLineModel();
+    postProcessFramebuffer[0].Creat((unsigned int)Engine::window_width, (unsigned int)Engine::window_height);
+    postProcessFramebuffer[1].Creat((unsigned int)Engine::window_width, (unsigned int)Engine::window_height);
+    //all_draw_calls.reserve(1000);
+
 }
 
-// Add a draw call to the corresponding vector based on the draw layer
-// Draw calls are grouped into first, normal, and late phases
-void Render::AddDrawCall(const DrawCall& drawCall, const DrawLayer& phase) {
-    if (phase == DrawLayer::DrawFirst) {
-        draw_first_calls.push_back(drawCall); // Add to early phase
+void Render::AddDrawCall(std::unique_ptr<BaseDrawCall> drawCall) {
+    //all_draw_calls.push_back(std::move(drawCall));
+    int layer = static_cast<int>(drawCall->sorting_layer);
+
+    if (layer >= all_draw_calls.size()) {
+        all_draw_calls.resize(layer + 1);
     }
-    else if (phase == DrawLayer::DrawLast) {
-        draw_late_calls.push_back(drawCall); // Add to late phase
-    }
-    else if (phase == DrawLayer::DrawBackground)
-    {
-        draw_background_calls.push_back(drawCall);
-    }
-    else if (phase == DrawLayer::DrawUI)
-    {
-        draw_ui_calls.push_back(drawCall);
-    }
-    else if (phase == DrawLayer::DrawDialog)
-    {
-        draw_dialog_calls.push_back(drawCall);
-    }
-    else {
-        draw_calls.push_back(drawCall); // Add to normal phase
-    }
+
+    all_draw_calls[layer].push_back(std::move(drawCall));
 }
 
-// Overloaded function to add a line or collision draw call
-// depending on whether it is a collision line
+void Render::AddBackgroundDrawCall(const DrawCall& drawCall) {
+    draw_background_calls.push_back(drawCall);
+}
+
 void Render::AddDrawCall
-(vec2 start, vec2 end, color3 color,float width, float alpha ,const GLShader* shader, bool iscollision) {
-    if (iscollision) {
-        draw_collision_calls.push_back({ start, end, color, shader }); // Collision line
-    }
-    else {
-        draw_line_calls.push_back({ start, end, color, width, alpha, shader }); // Regular line
-    }
-}
-
-void Render::AddDrawCall (const CircleDrawCall& drawcall, const DrawLayer& phase) {
-    draw_circle_calls.push_back(drawcall); // Regular line
+(vec2 start, vec2 end, color3 color,float width, float alpha ,const GLShader* shader) {
+    LineDrawCall line;
+    line.start = start; line.end = end; line.color = color;
+    draw_collision_calls.push_back(line); // Collision line
 }
 
 // Render all stored draw calls, starting with early phase, normal phase, and then late phase
 // Also handles rendering of lines and collision shapes
 void Render::RenderAll() {
     if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
-        postProcessFramebuffer.Bind();
+        postProcessFramebuffer[0].Bind();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
     for (const auto& draw_call : draw_background_calls) {
         DrawBackground(draw_call);
     }
-    // Draw calls in the early phase
-    for (const auto& draw_call : draw_first_calls) {
-        Draw(draw_call);
-    }
 
-    // Draw normal draw calls
-    for (const auto& draw_call : draw_calls) {
-        Draw(draw_call);
-    }
+    // Render all draw calls
+    for (auto& layer : all_draw_calls) {
 
-    for (const auto& draw_call : draw_circle_calls) {
-        DrawCircleLine(draw_call);
-    }
-
-    // Draw calls in the late phase
-    for (const auto& draw_call : draw_late_calls) {
-        Draw(draw_call);
-    }
-
-    // Draw UI
-    for (const auto& draw_call : draw_ui_calls) {
-        Draw(draw_call);
-    }
-    for (const auto& draw_call : draw_dialog_calls) {
-        Draw(draw_call);
-    }
-
-    // Draw lines
-    float line_width = 2.0f;
-    for (const auto& draw_call : draw_line_calls) {
-        DrawLinePro(draw_call);
+        for (auto& draw_call : layer) {
+            if (auto* call = dynamic_cast<DrawCall*>(draw_call.get())) {
+                Draw(*call);
+            }
+            else if (auto* call = dynamic_cast<LineDrawCall*>(draw_call.get())) {
+                DrawLine(*call);
+            }
+            else if (auto* call = dynamic_cast<LineDrawCallPro*>(draw_call.get())) {
+                DrawLinePro(*call);
+            }
+            else if (auto* call = dynamic_cast<CircleDrawCall*>(draw_call.get())) {
+                DrawCircleLine(*call);
+            }
+        }
     }
 
     // If collision debug mode is enabled, render collision lines
@@ -119,7 +89,7 @@ void Render::RenderAll() {
     }
 
     if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
-        postProcessFramebuffer.Unbind();
+        postProcessFramebuffer[1].Unbind();
         ApplyPostProcessing();
     }
 
@@ -129,22 +99,70 @@ void Render::RenderAll() {
 
 void Render::ApplyPostProcessing()
 {
-    auto* bloomShader = Engine::GetShaderManager().GetShader("post_bloom");
-    bloomShader->Use();
+    bool horizontal = true, first_iteration = true;
+    int num_passes = 2; // Number of post process
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0); // 기본 프레임버퍼로 출력
-    glClear(GL_COLOR_BUFFER_BIT);
+    for (int i = 0; i < num_passes; i++) {
+        postProcessFramebuffer[horizontal].Bind();
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        GLShader* shader = Engine::GetShaderManager().GetShader("under_water_god_ray");
+
+        switch (i) {
+        case 1:
+            shader = Engine::GetShaderManager().GetShader("under_water_god_ray");
+            break;
+        case 0:
+            shader = Engine::GetShaderManager().GetShader("post_bloom"); 
+            break;
+        }
+        shader->Use();
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer[!horizontal].GetColorAttachment());
+
+        double currentTime = Engine::GetAudioManager().GetCurrentMusicTime("background1");
+
+        switch (i) {
+        case 1: // God Ray
+            shader->SendUniform("uSceneTexture", 0);
+            shader->SendUniform("iResolution", Engine::window_width, Engine::window_height);
+            shader->SendUniform("iTime", float(currentTime));
+            break;
+        case 0: // Bloom
+            shader->SendUniform("uSceneTexture", 0);
+            shader->SendUniform("uThreshold", 0.8f);
+            shader->SendUniform("uBlurDirection", 1.0f, 1.0f);
+            shader->SendUniform("uResolution", static_cast<float>(Engine::window_width));
+            shader->SendUniform("uBloomIntensity", 1.1f);
+            break;
+        }
+
+        RenderQuad();
+        shader->Use(false);
+
+        horizontal = !horizontal;
+        first_iteration = false;
+    }
+
+    // Post pass-through
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    auto* finalShader = Engine::GetShaderManager().GetShader("post_default");
+    finalShader->Use();
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer.GetColorAttachment());
-    bloomShader->SendUniform("uSceneTexture", 0);
-    bloomShader->SendUniform("uThreshold", 0.70f);
-    bloomShader->SendUniform("uBlurDirection", 1.0f, 0.0f); // 수평 블러
-    bloomShader->SendUniform("uResolution", static_cast<float>(Engine::window_width));
-    bloomShader->SendUniform("uBloomIntensity", 1.2f);
+    glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer[!horizontal].GetColorAttachment()); // 마지막 패스 결과를 사용
 
     RenderQuad();
-    bloomShader->Use(false);
+    finalShader->Use(false);
+}
+
+
+void Render::ClearDrawCalls()
+{
+    all_draw_calls.clear();
+    draw_collision_calls.clear();
+    draw_background_calls.clear();
 }
 
 
@@ -163,20 +181,28 @@ void Render::Draw(const DrawCall& draw_call) {
         if constexpr (std::is_same_v<T, Sprite*>) {
             if (drawable != nullptr) {
                 Sprite* sprite = drawable;
-                texture = drawable->GetTexture(); // Sprite 텍스처
-                texel_position = (vec2)sprite->GetFrameTexel(sprite->GetCurrentFrame()); // 프레임 시작 좌표
-                frame_size = sprite->GetFrameSize(); // 프레임 크기
+                texture = drawable->GetTexture();
+                texel_position = (vec2)sprite->GetFrameTexel(sprite->GetCurrentFrame());
+                frame_size = sprite->GetFrameSize();
 
             }
         }
         else if constexpr (std::is_same_v<T, GLTexture*>) {
             if (drawable != nullptr) {
-                texture = drawable; // GLTexture 텍스처
-                texel_position = { 0, 0 }; // 기본값
-                frame_size = { texture->GetSize().x, texture->GetSize().y }; // 전체 텍스처 크기
+                texture = drawable; 
+                texel_position = { 0, 0 };
+                frame_size = { texture->GetSize().x, texture->GetSize().y };
             }
         }
         }, draw_call.drawable);
+
+
+    mat3 model_to_world = *draw_call.transform * mat3::build_scale(vec2((float)frame_size.x, (float)frame_size.y));
+    mat3 WORLD_TO_NDC = settings.is_camera_fixed
+        ? mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height)
+        : GetWorldtoNDC();
+    const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
+
 
     if (shader == nullptr) {
         shader = Engine::GetShaderManager().GetShader("default_collision");
@@ -218,11 +244,9 @@ void Render::Draw(const DrawCall& draw_call) {
 
     shader->SendUniform("uUV", left_u, top_v, right_u, bottom_v);
 
-    mat3 model_to_world = *draw_call.transform * mat3::build_scale(vec2((float)frame_size.x, (float)frame_size.y)); // 프레임 크기 적용
-    mat3 WORLD_TO_NDC = settings.is_UI
-        ? mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height)
-        : GetWorldtoNDC();
-    const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
+
+    //glEnable(GL_SCISSOR_TEST);
+    //glScissor(camera_left, camera_bottom, camera_width, camera_height);
 
     shader->SendUniform("uModelToNDC", util::to_span(model_to_ndc)); // Send transformation matrix to shader
     if (Engine::GetShaderManager().GetShader("pixelate") == shader) 				
@@ -241,74 +265,71 @@ void Render::Draw(const DrawCall& draw_call) {
 }
 
 
-void Render::ClearDrawCalls()
-{
-    draw_first_calls.clear();
-    draw_calls.clear();
-    draw_late_calls.clear();
-    draw_line_calls.clear();
-    draw_ui_calls.clear();
-    draw_collision_calls.clear();
-    draw_circle_calls.clear();
-    draw_background_calls.clear();
-}
-
-
-void Render::DrawBackground(const DrawCall& draw_call)
-{
+void Render::DrawBackground(const DrawCall& draw_call) {
     const GLShader* shader = draw_call.shader;
     auto settings = draw_call.settings;
+    GLTexture* texture = nullptr;
+    vec2 texel_position;
+    ivec2 frame_size;
 
-    GLTexture* texture;
+    // Drawable 객체 처리
     std::visit([&](auto&& drawable) {
         using T = std::decay_t<decltype(drawable)>;
         if constexpr (std::is_same_v<T, Sprite*>) {
             if (drawable != nullptr) {
-                texture = drawable->GetTexture(); // sprite
+                Sprite* sprite = drawable;
+                texture = sprite->GetTexture();
+                texel_position = (vec2)sprite->GetFrameTexel(sprite->GetCurrentFrame());
+                frame_size = sprite->GetFrameSize();
             }
         }
         else if constexpr (std::is_same_v<T, GLTexture*>) {
             if (drawable != nullptr) {
-                texture = drawable; // texture
+                texture = drawable;
+                texel_position = { 0, 0 };
+                frame_size = { texture->GetSize().x, texture->GetSize().y };
             }
         }
         }, draw_call.drawable);
 
-    shader->Use();
-
-    if (texture) {
-        texture->UseForSlot(1);
-        shader->SendUniform("uTex2d", 1);
+    if (!texture) {
+        throw std::runtime_error("No texture provided for background drawing.");
     }
-    else {
-        throw std::runtime_error("no texture!");
-    }
-
-    if (settings.do_blending || settings.glow || settings.modulate_color) {
-        glCheck(glEnable(GL_BLEND));
-    }
-    else {
-        glCheck(glDisable(GL_BLEND)); // 블렌딩 비활성화
-    }
-
-    if (settings.glow) {
-        glCheck(glBlendFunc(GL_ONE, GL_ONE)); // Glow 블렌딩 설정
-    }
-    else if (settings.do_blending) {
-        glCheck(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)); // 일반 알파 블렌딩 설정
-    }
-    else if (settings.modulate_color) {
-        glCheck(glBlendFunc(GL_DST_COLOR, GL_ZERO));
-    }
-
 
     vec2 texture_size = (vec2)texture->GetSize();
+
+    // 모델 -> 월드 변환
     mat3 model_to_world = *draw_call.transform * mat3::build_scale(texture_size);
 
+    // 월드 -> NDC 변환
     mat3 WORLD_TO_NDC = GetWorldtoNDC();
+    mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
 
-    const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
+    // 렌더링
+    shader->Use();
+    texture->UseForSlot(0);
+    shader->SendUniform("uTex2d", 0);
+
+    // 블렌딩 설정
+    if (settings.do_blending || settings.glow || settings.modulate_color) {
+        glCheck(glEnable(GL_BLEND));
+        if (settings.glow) {
+            glCheck(glBlendFunc(GL_ONE, GL_ONE));
+        }
+        else if (settings.do_blending) {
+            glCheck(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+        }
+        else if (settings.modulate_color) {
+            glCheck(glBlendFunc(GL_DST_COLOR, GL_ZERO));
+        }
+    }
+    else {
+        glCheck(glDisable(GL_BLEND));
+    }
+
     shader->SendUniform("uModelToNDC", util::to_span(model_to_ndc));
+
+    // 모델 렌더링
     model.Use();
     GLDrawIndexed(model);
 
@@ -361,6 +382,7 @@ void Render::DrawLinePro(LineDrawCallPro drawcall)
     const GLShader* shader = drawcall.shader;
     const float width = drawcall.width;
     const float alpha = drawcall.alpha;
+    auto settings = drawcall.settings;
 
     // Use default collision shader if no shader is provided
     if (shader == nullptr) {
@@ -375,9 +397,9 @@ void Render::DrawLinePro(LineDrawCallPro drawcall)
 
     mat3 model_to_world = mat3::build_translation(start) * mat3::build_rotation(angle)* mat3::build_scale(length);
     
-    mat3 WORLD_TO_NDC =
-        mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height) *
-        mat3::build_translation({ -(Engine::window_width / 2), -(Engine::window_height / 2) });
+    mat3 WORLD_TO_NDC = settings.is_camera_fixed
+        ? mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height)
+        : GetWorldtoNDC();
     const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
 
     shader->Use(); // Use shader
@@ -421,7 +443,7 @@ void Render::DrawCircleLine(CircleDrawCall draw_call) {
 
     mat3 model_to_world = mat3::build_translation(position) * mat3::build_scale(radius);
 
-    mat3 WORLD_TO_NDC = settings.is_UI
+    mat3 WORLD_TO_NDC = settings.is_camera_fixed
         ? mat3::build_scale(2.0f / Engine::window_width, 2.0f / Engine::window_height)
         : GetWorldtoNDC();
 

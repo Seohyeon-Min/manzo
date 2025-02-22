@@ -32,7 +32,6 @@ public:
     void Update(double dt, const vec2& player_position, bool playerMove);
     void SetPosition(vec2 new_position);
     const vec2& GetPosition() const;
-    void SetLimit(Math::rect new_limit);
     CameraView& GetCameraView() { return caminfo.camera_view; }
     Camera& GetCamera() { return caminfo.camera; }
     Math::rect GetCameraBoundary() const;
@@ -43,16 +42,26 @@ public:
     mat3 cam_to_ndc;
     mat3 world_to_ndc;
 
-private:
-    Math::rect limit;
+    Math::rect GetBounds() const {
+        vec2 view_size = caminfo.camera_view.CalcViewSizeWithZoom();
+        float half_width = view_size.x / 2.0f;
+        float half_height = view_size.y / 2.0f;
 
-    struct CamInfo
-    {
+        vec2 position = caminfo.camera.Position;
+
+        return {
+            {position.x - half_width, position.y - half_height}, // LeftBottom
+            {position.x + half_width, position.y + half_height}  // RightTop
+        };
+    }
+
+private:
+    float lerpFactor = 0.03f;
+    vec2 target_position;
+
+    struct CamInfo {
         Camera     camera{};
         CameraView camera_view{};
-        float      move_scalar = 0;
-        float      turn_scalar = 0;
-        float      strafe_scalar = 0;
-        float      move_speed = 240.0f;
     } caminfo;
 };
+

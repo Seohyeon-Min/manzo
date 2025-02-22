@@ -10,17 +10,24 @@
 
 
 
-Mouse::Mouse() : mouse_cursor(nullptr),
+Mouse::Mouse() : GameObject({}),
 mouse_position({ 0, 0 }),
-trails(trail_length, { vec2(0, 0), 1.0f }) {
-    mouse_cursor = Engine::GetTextureManager().Load("assets/images/mouse.png");
-    mouse_cursor->SetFiltering(GLTexture::Linear);
+trails(trail_length, { vec2(0, 0), 1.0f })
+{
+    AddGOComponent(new Sprite("assets/images/mouse.spt", this));
+    SetCameraFixed(true);
 }
 
 
-void Mouse::Update(double dt) {
-    mouse_position = Engine::GetInput().GetMousePosition();
+void Mouse::Update(double dt) 
+{
+    GameObject::Update(dt);
+
+    mouse_position.x = Engine::GetInput().GetMousePos().mouseCamSpaceX;
+    mouse_position.y = Engine::GetInput().GetMousePos().mouseCamSpaceY;
+    SetPosition(mouse_position);
     FollowMouse(mouse_position);
+
     if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT)) {
         scale = scale_big;
     }
@@ -29,7 +36,7 @@ void Mouse::Update(double dt) {
     else scale -= (float)dt * scale_decrease_factor;
 }
 
-void Mouse::AddDrawCall()
+void Mouse::Draw(DrawLayer drawlayer)
 {
     DrawLaserCurve();
     DrawMouseCursor();
@@ -39,7 +46,6 @@ void Mouse::FollowMouse(const vec2& mouse_position) {
     UpdateTrail(mouse_position);
 }
 
-
 void Mouse::UpdateTrail(const vec2& new_position) {
     trails.push_back({ new_position, 1.0f });
 
@@ -48,24 +54,20 @@ void Mouse::UpdateTrail(const vec2& new_position) {
     }
 }
 
-
 void Mouse::DrawMouseCursor()
 {
-    DrawSettings settings;
-    settings.is_UI = true;
-    settings.do_blending = true;
-
-    pos_matrix = mat3::build_translation({ mouse_position.x - Engine::window_width / 2 , mouse_position.y - Engine::window_height / 2 }) * mat3::build_scale(scale);
-
-    draw_call = {
-        mouse_cursor,                       // Texture to draw
-        &pos_matrix,                          // Transformation matrix
-        Engine::GetShaderManager().GetDefaultShader(), // Shader to use
-        nullptr,
-        settings
+    //SetFiltering(GLTexture::Linear);
+    DrawCall draw_call = {
+        GetGOComponent<Sprite>()->GetTexture(),
+        &GetMatrix(),
+        Engine::GetShaderManager().GetDefaultShader()
     };
 
-    Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawUI);
+    draw_call.settings.is_camera_fixed = true;
+    draw_call.settings.do_blending = true;
+    draw_call.sorting_layer = DrawLayer::DrawUI;
+
+    GameObject::Draw(draw_call);
 }
 
 
@@ -80,7 +82,11 @@ void Mouse::DrawLaserCurve() {
                 line_width = 0.0001f;
             }
 
-            Engine::GetRender().AddDrawCall(previous_point, current_point, { 255,255,255 }, line_width, 255.0f, nullptr, false);
+            LineDrawCallPro draw_call{ previous_point, current_point, { 255,255,255 }, line_width, 255.0f, nullptr, false };
+            draw_call.settings.is_camera_fixed = true;
+            draw_call.sorting_layer = DrawLayer::DrawUI;
+
+            Engine::GetRender().AddDrawCall(std::make_unique<LineDrawCallPro>(draw_call));
 
             previous_point = current_point;
         }

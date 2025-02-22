@@ -1,12 +1,11 @@
 #version 450 core
 
-layout(location = 0) in vec3 vColor;
-layout(location = 1) in vec2 vTextureCoordinates;
+in vec2 TexCoords;
+out vec4 FragColor;
 
 uniform vec2 iResolution;
 uniform float iTime;
-
-out vec4 fragColor;
+uniform sampler2D uSceneTexture;
 
 const mat2 myt = mat2(.12121212, .13131313, -.13131313, .12121212);
 const vec2 mys = vec2(1e4, 1e6);
@@ -58,13 +57,13 @@ void main() {
     float n3 = min(n1, n2);
 
     // Alpha
-    float mask = smoothstep(.15, .96, p.y);
+    float mask = smoothstep(.05, .96, p.y);
     float brightness = n3 * mask * 0.4;         // increase light
     float alpha = n3 * mask * 1.;               // increase oqaque
 
     // light color
     vec3 glowColor = vec3(1.0, 0.9, 0.8) * brightness;
-    vec3 baseColor = mix(vec3(0.2,0.4,0.5), vec3(1.0), alpha);
 
-    fragColor = vec4(baseColor + glowColor, max(alpha, glowColor.r * 2));
+    vec3 color = texture(uSceneTexture, TexCoords).rgb;
+    FragColor = vec4(color + glowColor, 1.0);
 }

@@ -12,14 +12,12 @@ Created:    March 8, 2023
 #include "../Engine/GameState.h"
 #include "../Engine/Sprite.h"
 #include "..\Engine\GameObjectManager.h"
-#include "../Engine/UIManager.h"
 #include "../Engine/Timer.h"
 #include "FishEcosystem.h"
 #include "../Engine/Camera.h"
 #include "Background.h"
 #include "Skill.h"
 #include "Fish.h"
-#include "GodRay.h"
 #include "Shop.h"
 
 class Reef;
@@ -47,14 +45,10 @@ private:
     Fish* fish;
     Background* background;
     Boss* boss_ptr;
-    UIManager* ui_manager;
     Cam* camera;
     Beat* beat_system;
-    GodRay* god_ray;
     Skillsys* skill_ptr;
     Skillsys::Skill_Net* Net_ptr;
-    float BoundaryX = 1860;
-    float BoundaryY = 1040;
 
     bool Isboss = false;
     bool soundPlaying = false;

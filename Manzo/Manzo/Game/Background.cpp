@@ -40,23 +40,19 @@ void Background::Draw(const Cam& camera)
 
 
     for (ParallaxLayer& background : backgrounds) {
-        DrawSettings settings;
-        settings.do_blending = true;
-        settings.is_UI = true;
-        // Build the translation matrix with parallax effect
-        //background.matrix = mat3::build_translation({ (0 - cameraPos.x) * background.speed, (0 - cameraPos.y) * background.speed });
-        //background.matrix = mat3::build_translation({ 0 + cameraPos.x, 0 + cameraPos.y });
+
         background.matrix = mat3::build_translation({ (0 + cameraPos.x) * background.speed, (0 + cameraPos.y) * background.speed });
-        //std::cout << parallax_matrix;
+
         DrawCall draw_call = {
             background.texture,                       // Texture to draw
             &background.matrix,                          // Transformation matrix
-            Engine::GetShaderManager().GetDefaultShader(),
-            nullptr,
-            settings
+            Engine::GetShaderManager().GetDefaultShader()
         };
 
-        Engine::GetRender().AddDrawCall(draw_call, background.drawlayer);
+        draw_call.settings.do_blending = true;
+        draw_call.settings.is_camera_fixed = true;
+
+        Engine::GetRender().AddBackgroundDrawCall(draw_call);
     }
 }
 

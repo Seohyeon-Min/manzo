@@ -51,7 +51,7 @@ RectCollision::RectCollision(Math::irect boundary, GameObject* object) :
     Engine::GetShaderManager().LoadShader("default_collision", "assets/shaders/default_collision.vert", "assets/shaders/default_collision.frag");
 }
 
-Math::rect RectCollision::WorldBoundary_rect() {
+Math::rect RectCollision::WorldBoundary_rect() const {
     //std::cout << object->GetMatrix().column2.x << std::endl;
     return {
         {(object->GetMatrix() * mat3::build_translation((vec2)boundary.point_1)).column2.x,
@@ -61,7 +61,7 @@ Math::rect RectCollision::WorldBoundary_rect() {
     };
 }
 
-Polygon MAP_SATCollision::WorldBoundary_poly() {
+Polygon MAP_SATCollision::WorldBoundary_poly() const {
     Polygon boundary_poly;
     vec2 transformedPoint;
 
@@ -296,6 +296,7 @@ bool MAP_SATCollision::IsCollidingWith(GameObject* other_object)
 
 
 void MAP_SATCollision::Draw() {
+    // need to be changed I think... Everything is drawn at once.
     Polygon boundary = WorldBoundary_poly();
     for (int j = 1; j < boundary.vertexCount; ++j) {
         Engine::GetRender().AddDrawCall(vec2{ boundary.vertices[j - 1].x, boundary.vertices[j - 1].y },
