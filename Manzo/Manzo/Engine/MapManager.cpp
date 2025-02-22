@@ -27,6 +27,48 @@ Created:    September 12, 2024
 #endif
 
 
+//MapManager
+void MapManager::AddMapFile(const std::string& filename) {
+    mapFiles.push_back(filename);
+}
+
+void MapManager::LoadFirstMap() {
+    if (mapFiles.empty()) return;
+
+    Map* initialMap = new Map();
+    initialMap->ParseSVG(mapFiles[currentMapIndex]);
+    maps.push_back(initialMap);
+}
+
+void MapManager::LoadNextMap() {
+    if (currentMapIndex + 1 >= mapFiles.size()) return;
+
+    currentMapIndex++;
+
+    Map* nextMap = new Map();
+    nextMap->ParseSVG(mapFiles[currentMapIndex]);
+
+    float EndY = -1000.0f;
+    nextMap->Translate({ 0, EndY });
+
+    maps.push_back(nextMap);
+}
+
+
+void MapManager::UpdateMaps(const Math::rect& camera_boundary) {
+    if (currentMapIndex < maps.size()) {
+        Map* map = maps[0];
+        map->LoadMapInBoundary(camera_boundary);
+
+        if(true){
+        //if (camera_boundary.Bottom() <= EndY + 100) {
+            LoadNextMap();
+        }
+    }
+}
+
+
+//===============================================================Map
 std::vector<Polygon> EarClipping(const std::vector<vec2>& points);
 
 void Map::ParseSVG(const std::string& filename) {
@@ -226,18 +268,44 @@ void Map::ParseSVG(const std::string& filename) {
                 std::cout << "-----------------------------" << std::endl;
 
                 // Rock Point
-
+                //=======ear clipping=========
                 //std::vector<Polygon> Polys = EarClipping(positions);
-                std::cout << (poly.polyindex).substr(4, 1) << std::endl;
+                //for (auto& poly : Polys) {
+                //    Rock* rock = new Rock(poly);
+                //    rocks.push_back(rock);
+
+                //    RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new group
+                //    rockgroup->AddRock(rock);                                       //add poly into new group
+
+                //    rock->SetRockGroup(rockgroup);
+                //    rock_groups.push_back(rockgroup);
+                //}
+
+                //rock->AddGOComponent(new MAP_SATCollision(poly, rock));
+                
+
+                //======== We have no index, so we don't have to match the rock ========
+
+                Rock* rock = new Rock(poly);
+
+                rocks.push_back(rock);
+
+                //rock->AddGOComponent(new MAP_SATCollision(poly, rock));
+                RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new group
+                rockgroup->AddRock(rock);                                       //add poly into new group
+
+                rock->SetRockGroup(rockgroup);
+                rock_groups.push_back(rockgroup);
+                /*
                     if ((poly.polyindex).substr(4, 1) == "2") {
-                        MovingRock* moving_rock = new MovingRock(poly);
+                        Rock* moving_rock = new Rock(poly);
                         
                         rocks.push_back(moving_rock);
 
                         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(moving_rock);
                         moving_rock->AddGOComponent(new MAP_SATCollision(poly, moving_rock));
                         RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new group
-                        rockgroup->AddMovingRock(moving_rock);                                       //add poly into new group
+                        rockgroup->AddRock(moving_rock);                                       //add poly into new group
 
                         moving_rock->SetRockGroup(rockgroup);
                         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rockgroup);
@@ -254,7 +322,7 @@ void Map::ParseSVG(const std::string& filename) {
 
                         rock->SetRockGroup(rockgroup);
                         rock_groups.push_back(rockgroup);
-                    }
+                    }*/
 
                 
 
@@ -295,7 +363,9 @@ void Map::ParseSVG(const std::string& filename) {
         std::cout << "Group Index : " << r_group->GetIndex() << "\n";
         std::cout << "Group Rocks Size : " << r_group->GetRocks().size() << "\n";
         std::cout << "Group Moving Rocks Size : " << r_group->GetMovingRocks().size() << "\n";*/
-        r_group->MatchIndex();
+        //r_group->MatchIndex(); 
+        // don't have to match index
+
         r_group->SetPoints();
         
         //std::cout <<"How Many Points? : " << r_group->GetPoints().size() <<"\n";
@@ -304,6 +374,25 @@ void Map::ParseSVG(const std::string& filename) {
 }
 
 // Ear Clipping
+float PolygonArea(const std::vector<vec2>& points) {
+    float area = 0;
+    for (size_t i = 0; i < points.size(); ++i) {
+        const vec2& p1 = points[i];
+        const vec2& p2 = points[(i + 1) % points.size()];
+        area += (p1.x * p2.y) - (p2.x * p1.y);
+    }
+    return area * 0.5f;
+}
+
+std::vector<vec2> EnsureCCW(const std::vector<vec2>& points) {
+    std::vector<vec2> ordered_points = points;
+    if (PolygonArea(ordered_points) < 0) {
+        std::reverse(ordered_points.begin(), ordered_points.end());
+    }
+    return ordered_points;
+}
+
+
 constexpr bool IsConvex(const vec2& a, const vec2& b, const vec2& c) noexcept {
     vec2 ab = b - a;
     vec2 bc = c - b;
@@ -337,7 +426,7 @@ std::vector<Polygon> EarClipping(const std::vector<vec2>& points) {
 
     // for the concave polygon
     
-    std::vector<vec2> remaining_points = points;
+    std::vector<vec2> remaining_points = EnsureCCW(points);
     std::vector<Polygon> triangles;
 
 
@@ -547,6 +636,19 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
         
     }
 }
+
+void Map::Translate(const vec2& offset) {
+    for (Rock* rock : rocks) {
+        vec2 pos = rock->GetPosition();
+        rock->SetPosition({ pos.x, pos.y + offset.y });
+    }
+
+    for (RockGroup* rockgroup : rock_groups) {
+        vec2 pos = rockgroup->GetPosition();
+        rockgroup->SetPosition({ pos.x, pos.y + offset.y });
+    }
+}
+
 
 void Map::UnloadAll() {
     for (Rock* rock : rocks) {

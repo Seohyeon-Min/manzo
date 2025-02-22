@@ -116,9 +116,10 @@ void Mode1::Load() {
     ui_manager->AddUI(std::make_unique<Mouse>());
 
     // Map
-	AddGSComponent(new Map());
-    GetGSComponent<Map>()->ParseSVG("assets/maps/map6.svg");
-    //GetGSComponent<Map>()->ParseSVG("assets/maps/map6-2.svg");
+	AddGSComponent(new MapManager());
+    GetGSComponent<MapManager>()->AddMapFile("assets/maps/TemporaryMap.svg");
+    //GetGSComponent<MapManager>()->AddMapFile("assets/maps/map7.svg");
+	GetGSComponent<MapManager>()->LoadFirstMap();
 
 	//Boss
 	Boss::LoadBossfile();

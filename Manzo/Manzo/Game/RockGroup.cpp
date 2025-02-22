@@ -152,11 +152,11 @@ void RockGroup::SetPoints() {
 
 bool RockGroup::CanCollideWith(GameObjectTypes other_object)
 {
-    switch (other_object) {
+    /*switch (other_object) {
     case GameObjectTypes::Ship:
         return true;
         break;
-    }
+    }*/
 
     return false;
 }

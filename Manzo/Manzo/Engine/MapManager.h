@@ -20,6 +20,23 @@ Created:    September 12, 2024
 #include "..\Game\RockPoint.h"
 
 #include <vector>
+class Map;
+
+class MapManager : public Component {
+public:
+	void AddMapFile(const std::string& filename);
+	void LoadFirstMap();
+	void LoadNextMap();
+	void UpdateMaps(const Math::rect& camera_boundary);
+	
+
+
+private:
+	std::vector<Map*> maps;
+	std::vector<std::string> mapFiles;
+	int currentMapIndex = 0;
+	float EndY = -1363.0f;
+};
 
 class Map : public Component {
 public:
@@ -33,7 +50,7 @@ public:
 	void LoadMapInBoundary(const Math::rect& camera_boundary);
 	bool IsOverlapping(const Math::rect& a, const Math::rect& b);
 
-	void AddMap();
+	void Translate(const vec2& offset);
 	void UnloadAll();
 
 private:
@@ -42,6 +59,7 @@ private:
 	std::vector<Rock*> rocks;
 	std::vector<RockGroup*> rock_groups;
 	vec2 circle_position{ 0,0 };
+	float EndY = 1363.0f;
 
 
 };

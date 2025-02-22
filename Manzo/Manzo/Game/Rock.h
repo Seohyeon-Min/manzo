@@ -68,8 +68,8 @@ public:
 
 private:
 	bool hit = false;
-	float pop_speed = 300;
-	float pop_back_speed = 300;
+	float pop_speed = 0.f;	//no delayyyyyyyyyy
+	float pop_back_speed = 0.f;
 	float range = 50.f;
 	RockGroup* rockgroup;
 	Polygon poly;
