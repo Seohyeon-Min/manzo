@@ -10,7 +10,7 @@ Cam::Cam()
 
 void Cam::Update(double dt, const vec2& player_position, bool playerMove)
 {
-    caminfo.camera_view.SetFramebufferSize((int)Engine::window_width*5, (int)Engine::window_height*5);
+    caminfo.camera_view.SetFramebufferSize((int)Engine::window_width*3, (int)Engine::window_height*3);
     float lerpFactor = 0.03f; // (0.0 ~ 1.0)
     vec2 target_position = player_position;
     caminfo.camera.Position.x += (target_position.x - caminfo.camera.Position.x) * lerpFactor;
@@ -39,10 +39,6 @@ const vec2& Cam::GetPosition() const
 	return caminfo.camera.Position;
 }
 
-void Cam::SetLimit(Math::rect new_limit)
-{
-	limit = new_limit;
-}
 
 Math::rect Cam::GetCameraBoundary() const
 {

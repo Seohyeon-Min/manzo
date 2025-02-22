@@ -41,6 +41,7 @@ void MapManager::LoadFirstMap() {
 }
 
 void MapManager::LoadNextMap() {
+    /*
     if (currentMapIndex + 1 >= mapFiles.size()) return;
 
     currentMapIndex++;
@@ -48,10 +49,11 @@ void MapManager::LoadNextMap() {
     Map* nextMap = new Map();
     nextMap->ParseSVG(mapFiles[currentMapIndex]);
 
-    float EndY = -1000.0f;
+    float EndY = -10000.0f;
     nextMap->Translate({ 0, EndY });
 
     maps.push_back(nextMap);
+    */
 }
 
 
@@ -622,6 +624,7 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
                         rock->Active(false);
                         //rock->AddGOComponent(new MAP_SATCollision(poly2, rock));
                         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Remove(rock);
+                        std::cout << "Unloaded Rock!!!!!!!!!!!!!!!!!" << "\n";
                     }
                 }
 

@@ -35,7 +35,7 @@ private:
 	std::vector<Map*> maps;
 	std::vector<std::string> mapFiles;
 	int currentMapIndex = 0;
-	float EndY = -1363.0f;
+	float EndY = -10000.0f;
 };
 
 class Map : public Component {
@@ -55,7 +55,7 @@ public:
 
 private:
 	char currentCommand = '\0';
-	float margin = 100.0f;
+	float margin = 10000.0f;
 	std::vector<Rock*> rocks;
 	std::vector<RockGroup*> rock_groups;
 	vec2 circle_position{ 0,0 };
