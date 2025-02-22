@@ -491,41 +491,72 @@ void Map::MakeMovingRockGroups(MovingRock* moving_rock, Polygon poly) {
 
 
 bool Map::IsOverlapping(const Math::rect& camera_boundary, const Math::rect& rock) {
-    return !(camera_boundary.Right() < rock.Left() || camera_boundary.Left() > rock.Right() ||
-        camera_boundary.Top() < rock.Bottom() || camera_boundary.Bottom() > rock.Top());
+    return !(camera_boundary.Right() + margin < rock.Left() ||
+        camera_boundary.Left() - margin > rock.Right() ||
+        camera_boundary.Top() + margin < rock.Bottom() ||
+        camera_boundary.Bottom() - margin > rock.Top());
 }
 
 void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
     for (auto& rockgroup : rock_groups) {
-
         std::vector<Rock*> rocks = rockgroup->GetRocks();
+
         if(!rocks.empty()){
             Polygon poly2 = rocks[0]->GetPolygon();
 
-            if (IsOverlapping(camera_boundary, poly2.FindBoundary())) {
+            bool overlapping = IsOverlapping(camera_boundary, poly2.FindBoundary());
 
-
+            if (overlapping) {
                 for (Rock* rock : rocks) {
                     //Add Rock in GameState
-                    if (!rock->IsLoaded()) {
+                    if (!rock->IsActivated()) {
 
-                        rock->Loaded();
+                        rock->Active(true);
                         rock->AddGOComponent(new MAP_SATCollision(poly2, rock));
                         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rock);
                     }
-
                 }
 
                 // Add RockGroup in GameState
-                if (!rockgroup->IsLoaded()) {
+                if (!rockgroup->IsActivated()) {
 
-                    rockgroup->Loaded();
+                    rockgroup->Active(true);
                     Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rockgroup);
                 }
                 
+            }
+            else {
+                for (Rock* rock : rocks) {
+                    //Remove Rock in GameState
+                    if (rock->IsActivated()) {
+
+                        rock->Active(false);
+                        //rock->AddGOComponent(new MAP_SATCollision(poly2, rock));
+                        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Remove(rock);
+                    }
+                }
+
+                // Remove RockGroup in GameState
+                if (rockgroup->IsActivated()) {
+
+                    rockgroup->Active(false);
+                    Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Remove(rockgroup);
+                }
             }
         }
         
     }
 }
 
+void Map::UnloadAll() {
+    for (Rock* rock : rocks) {
+        if (!rock->IsActivated()) {
+            delete rock;
+        }
+    }
+    for (RockGroup* rockgroup : rock_groups) {
+        if (!rockgroup->IsActivated()) {
+            delete rockgroup;
+        }
+    }
+}

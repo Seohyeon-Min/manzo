@@ -48,8 +48,8 @@ public:
 	vec2 FindCenterPoly();
 	std::string GetIndex() { return index; }
 
-	void Loaded() { loaded = true; }
-	bool IsLoaded() { return loaded; }
+	void Active(bool active) { loaded = active; }
+	bool IsActivated() { return loaded; }
 
 	// Points
 	std::vector<vec2> GetPoints() { return points; }

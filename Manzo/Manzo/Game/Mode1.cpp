@@ -118,6 +118,7 @@ void Mode1::Load() {
     // Map
 	AddGSComponent(new Map());
     GetGSComponent<Map>()->ParseSVG("assets/maps/map6.svg");
+    //GetGSComponent<Map>()->ParseSVG("assets/maps/map6-2.svg");
 
 	//Boss
 	Boss::LoadBossfile();

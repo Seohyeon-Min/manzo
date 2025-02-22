@@ -43,13 +43,14 @@ public:
 	RockGroup* GetRockGroup() { return rockgroup; }
 
 	// Map Loading
-	void Loaded() { loaded = true; }
-	bool IsLoaded() { return loaded; }
+	void Active(bool active) { loaded = active; }
+	bool IsActivated() { return loaded; }
 private:
 	RockGroup* rockgroup;
 	Polygon poly;
 	bool loaded = false;
 };
+
 
 class MovingRock : public Rock {
 public:

@@ -33,8 +33,12 @@ public:
 	void LoadMapInBoundary(const Math::rect& camera_boundary);
 	bool IsOverlapping(const Math::rect& a, const Math::rect& b);
 
+	void AddMap();
+	void UnloadAll();
+
 private:
 	char currentCommand = '\0';
+	float margin = 100.0f;
 	std::vector<Rock*> rocks;
 	std::vector<RockGroup*> rock_groups;
 	vec2 circle_position{ 0,0 };

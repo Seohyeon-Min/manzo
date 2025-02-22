@@ -95,3 +95,15 @@ vec2 GameObjectManager::FindNearestRock(GameObject* object) {
 
 	return nearestRockpoints;
 }
+
+void GameObjectManager::Remove(GameObject* object) {
+	auto it = std::find(objects.begin(), objects.end(), object);
+
+	if (it != objects.end()) {
+		objects.erase(it);
+		std::cout << "GameObject Removed from Vector.\n";
+	}
+	else {
+		std::cout << "GameObject Not Found.\n";
+	}
+}
