@@ -28,11 +28,25 @@ void Dragging::Update(double dt)
 	}
 	else
 	{
+
 		object.SetSelected(false);
 		
 		if (object.CanChangePosition() == false)
 		{
 			object.SetPosition(icon_first_pos);
+		}
+		else
+		{
+			Icon* collidedIcon = Engine::GetIconManager().GetCollidingIcon(object);
+
+			if (collidedIcon)
+			{
+				object.SetPosition(collidedIcon->GetPosition());
+			}
+			else
+			{
+				object.SetPosition(icon_first_pos);
+			}
 		}
 
 		currentDraggingIcon = nullptr;

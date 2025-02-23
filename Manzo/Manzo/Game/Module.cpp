@@ -11,7 +11,10 @@ void Module::Update(double dt)
 
 void Module::Draw(DrawLayer drawlayer)
 {
-	GameObject::Draw(drawlayer);
+	if (Engine::GetGameStateManager().GetStateName() == "Mode1")
+	{
+		GameObject::Draw(drawlayer);
+	}
 }
 
 
