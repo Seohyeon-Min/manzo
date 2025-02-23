@@ -597,7 +597,7 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
 
             bool overlapping = IsOverlapping(camera_boundary, poly2.FindBoundary());
 
-            if (overlapping) {
+            if (true) {
                 for (Rock* rock : rocks) {
                     //Add Rock in GameState
                     if (!rock->IsActivated()) {
