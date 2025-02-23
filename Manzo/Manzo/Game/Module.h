@@ -6,27 +6,30 @@
 class Module : public GameObject
 {
 public:
-    Module(vec2 start_position, Ship* ship);
+    Module();
+    Module(vec2 start_position);
     GameObjectTypes Type() override { return GameObjectTypes::Module; }
     std::string TypeName() override { return "Module"; }
     void Update(double dt) override;
     void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
 
+    bool IsFirstSetted() { return first_module_setted; }
+    bool IsSecondSetted() { return second_module_setted; }
+    bool IsThirdSetted() { return third_module_setted; }
+
+private:
+    bool first_module_setted = true;
+    bool second_module_setted = false;
+    bool third_module_setted = false;
+};
+
+class FirstModule : public Module
+{
+public:
+    FirstModule(Ship* ship);
+    void Update(double dt) override;
+    void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
+
 private:
     Ship* ship;
-
-    
-    class State_First_Module : public State 
-    {
-    public:
-        virtual void Enter(GameObject* object) override;
-        virtual void Update(GameObject* object, double dt) override;
-        virtual void CheckExit(GameObject* object) override;
-        std::string GetName() override { return "First Module"; }
-
-    private:
-        vec2 dash_destination;
-    };
-
-    State_First_Module first_module;
 };

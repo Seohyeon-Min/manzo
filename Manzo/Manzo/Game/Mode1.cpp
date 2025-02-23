@@ -131,8 +131,13 @@ void Mode1::Load() {
 	}
 
 	// Module
-	module = new Module({ 0, 0 },ship_ptr);
+	module = new Module({ 0, 0 });
 	GetGSComponent<GameObjectManager>()->Add(module);
+
+	if (module->IsFirstSetted())
+	{
+		GetGSComponent<GameObjectManager>()->Add(new FirstModule(ship_ptr));
+	}
 }
 
 void Mode1::Update(double dt) {
