@@ -59,7 +59,7 @@ void MapManager::LoadNextMap() {
 
 void MapManager::UpdateMaps(const Math::rect& camera_boundary) {
     if (currentMapIndex < maps.size()) {
-        Map* map = maps[0];
+        Map* map = maps[currentMapIndex];
         map->LoadMapInBoundary(camera_boundary);
 
         if(true){
