@@ -120,7 +120,7 @@ void Mode1::Load() {
 	GetGSComponent<GameObjectManager>()->Add(new FuelUI(ship_ptr));
 
 	// monster
-	GetGSComponent<GameObjectManager>()->Add(new Monster(ship_ptr));
+	GetGSComponent<GameObjectManager>()->Add(new Monster(ship_ptr, {300,300}));
 
 
 	// Skill

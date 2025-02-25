@@ -2,8 +2,8 @@
 #include "BeatSystem.h"
 #include "Monster.h"
 
-Monster::Monster(Ship* ship): 
-	GameObject(init_pos), ship_ptr(ship)
+Monster::Monster(Ship* ship, vec2 pos): 
+	GameObject(pos), ship_ptr(ship), init_pos(pos)
 {
     current_state = &state_stanby;
     current_state->Enter(this);
@@ -11,12 +11,22 @@ Monster::Monster(Ship* ship):
     beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
     dash_timer = new RealTimeTimer(dash_time);
     AddGOComponent(dash_timer);
-    movement_range = { 700, {100,100} };
+    movement_range = { 900, {100,100} };
 }
 
 void Monster::Update(double dt)
 {
 	GameObject::Update(dt);
+
+    if (!IsPlayerInRange(ship_ptr->GetPosition())) {
+        std::cout << "Player out of range\n";
+        change_state(&state_goback);
+    }
+    else if ((GetPosition() - ship_ptr->GetPosition()).Length() > dist_from_ship) {
+        std::cout << "Player too far\n";
+        change_state(&state_goback);
+    }
+
 
     float decrease_duration = (float)beat->GetFixedDuration() - 0.1f;
     float delta_radius = (max_scale - 1.0f) / decrease_duration;
@@ -61,6 +71,27 @@ bool Monster::IsPlayerInRange(const vec2& playerPos)
 
     return distanceSquared <= (movement_range.radius * movement_range.radius);
 }
+
+bool Monster::CanCollideWith(GameObjectTypes other_object)
+{
+    switch (other_object) {
+    case GameObjectTypes::Ship:
+        return true;
+        break;
+    }
+
+    return false;
+}
+
+void Monster::ResolveCollision(GameObject* other_object)
+{
+    if (other_object->Type() == GameObjectTypes::Ship) {
+        if (ship_ptr->IsShipMoving()) {
+            std::cout << "yammy\n";
+        }
+    }
+}
+
 
 void Monster::DrawSight()
 {
@@ -115,7 +146,7 @@ void Monster::Alert::Enter(GameObject* object)
 void Monster::Alert::Update(GameObject* object, double dt)
 {
     Monster* monster = static_cast<Monster*>(object);
-    monster->offset *= -0.977f;
+    monster->offset *= -0.957f;
     monster->SetPosition({ monster->GetPosition().x, monster->position.y + monster->offset });
 }
 
@@ -146,8 +177,20 @@ void Monster::Dash::Enter(GameObject* object)
 
 void Monster::Dash::Update(GameObject* object, double dt)
 {
+    Monster* monster = static_cast<Monster*>(object);
 
+    // 1. 플레이어 방향 벡터 계산
+    vec2 target_direction = (monster->ship_ptr->GetPosition() - monster->GetPosition()).Normalize();
+
+    // 2. 기존 방향과 타겟 방향을 보간하여 조금씩 조정 (α 값 조절 가능)
+    float alpha = 0.05f;  // 회전 속도 (값이 클수록 빠르게 꺾임)
+    monster->direction = monster->direction * (1.0f - alpha) + target_direction * alpha;
+    monster->direction = monster->direction.Normalize(); // 정규화
+
+    // 3. 새로운 방향을 적용하여 속도 설정
+    monster->SetVelocity(monster->direction * monster->speed);
 }
+
 
 void Monster::Dash::CheckExit(GameObject* object)
 {
@@ -160,3 +203,33 @@ void Monster::Dash::CheckExit(GameObject* object)
         }
     }
 }
+
+
+
+// It needs a better AI
+void Monster::Goback::Enter(GameObject* object)
+{
+    Monster* monster = static_cast<Monster*>(object);
+    monster->direction = { monster->init_pos.x - (monster->GetPosition().x), monster->init_pos.y - (monster->GetPosition().y) };
+    monster->direction = monster->direction.Normalize();
+    monster->SetVelocity(monster->direction * monster->speed);
+}
+
+void Monster::Goback::Update(GameObject* object, double dt)
+{
+
+}
+
+void Monster::Goback::CheckExit(GameObject* object)
+{
+    Monster* monster = static_cast<Monster*>(object);
+    float threshold = 15.0f; // 이 거리 이내로 도착하면 멈춤
+
+    if ((monster->GetPosition() - monster->init_pos).Length() < threshold) {
+        monster->SetVelocity({}); // 속도 0으로 설정
+        monster->SetPosition(monster->init_pos); // 정확한 위치로 스냅 (선택 사항)
+        monster->change_state(&monster->state_stanby);
+        std::cout << "Move finish\n";
+    }
+}
+

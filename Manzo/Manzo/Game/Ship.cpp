@@ -403,6 +403,7 @@ bool Ship::CanCollideWith(GameObjectTypes other_object)
     switch (other_object) {
     case GameObjectTypes::Fish:
     case GameObjectTypes::Rock:
+    case GameObjectTypes::Monster:
         return true;
         break;
     }
@@ -424,6 +425,10 @@ void Ship::ResolveCollision(GameObject* other_object)
             can_dash = false;
             return;
         }
+    }
+
+    if (other_object->Type() == GameObjectTypes::Monster) {
+        SetVelocity({ other_object->GetVelocity()});
     }
     
 }
