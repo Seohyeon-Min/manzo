@@ -59,6 +59,10 @@ void Mode2::Load() {
     dialog_ptr = new Dialog({0,0});
     GetGSComponent<GameObjectManager>()->Add(dialog_ptr);
 
+    // Module
+   module_ptr = new Module({ 0, 0 });
+    GetGSComponent<GameObjectManager>()->Add(module_ptr);
+
     // Inven
     inven_ptr = new Inven({0,0});
     GetGSComponent<GameObjectManager>()->Add(inven_ptr);
@@ -79,9 +83,6 @@ void Mode2::Load() {
         skill_ptr->SetShipPtr(ship_ptr);
     }
 
-    // Module
-    /*Module* module = new Module({ 0, 0 });
-    GetGSComponent<GameObjectManager>()->Add(module);*/
 
     // Mouse
     GetGSComponent<GameObjectManager>()->Add(new Mouse);
@@ -138,6 +139,7 @@ void Mode2::Unload() {
             saveFile << entry.first + 1 << " " << entry.second << "\n";
         }
         saveFile << "Money: " << inven_ptr->GetMoney() << "\n";
+        saveFile << "Module1: " << module_ptr->IsFirstSetted() << "\n";
         saveFile.close();
     }
 

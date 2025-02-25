@@ -21,6 +21,7 @@ void Module::Draw(DrawLayer drawlayer)
 FirstModule::FirstModule(Ship* ship) : ship(ship)
 {
 	AddGOComponent(new Sprite("assets/images/module1.spt", this));
+	SetFirstModule(true);
 }
 
 void FirstModule::Update(double dt)

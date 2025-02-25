@@ -12,6 +12,13 @@ Inven::Inven(vec2 position) : GameObject(position), page(0), dre_todayFish(rd())
 	change_state(&state_none);
 
 	ReadSaveFile("assets/scenes/save_data.txt");
+
+	module_ptr = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Module>();
+
+	if (module_ptr == nullptr)
+	{
+		std::cout << "Module is not game obj" << std::endl;
+	}
 }
 
 void Inven::Update(double dt)
@@ -126,7 +133,7 @@ void Inven::State_Module::Update(GameObject* object, double dt)
 
 	if (Engine::GetIconManager().IsCollidingWith("module", "module1"))
 	{
-		// 모듈 1 장착 중임 -> 넘기기
+		inven->module_ptr->SetFirstModule(true);
 	}
 }
 

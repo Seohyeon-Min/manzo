@@ -3,6 +3,7 @@
 #include "../Engine/GameObject.h"
 
 #include <random>
+#include "Module.h"
 
 class Inven : public GameObject
 {
@@ -32,7 +33,6 @@ private:
 	int total_fishNum = 3;
 	int todays_fish_index = 0;
 	int todays_price = 0;
-	int current_module = 0;
 
 	std::string todays_fish_icon;
 
@@ -81,4 +81,6 @@ private:
 	State_Module state_module;
 	State_FC state_fc;
 	State_SC state_sc;
+
+	Module* module_ptr;
 };
