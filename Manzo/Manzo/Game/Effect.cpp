@@ -50,6 +50,7 @@ DashEffect::DashEffect()
     vec2 dir = ship->GetVelocity().Normalize();
     float angle_radians = std::atan2(dir.y, dir.x);
     force = -dir * speed;
+    SetScale({-1,1});
     SetPosition(ship->GetPosition());
     SetRotation(angle_radians);
 

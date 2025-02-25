@@ -27,6 +27,7 @@ Created:    March 8, 2023
 #include "Fish.h"
 #include "Skill.h"
 #include "Boss.h"
+#include "Monster.h"
 
 
 #include <utility>
@@ -117,6 +118,10 @@ void Mode1::Load() {
 	// UI
 	GetGSComponent<GameObjectManager>()->Add(new Mouse);
 	GetGSComponent<GameObjectManager>()->Add(new FuelUI(ship_ptr));
+
+	// monster
+	GetGSComponent<GameObjectManager>()->Add(new Monster(ship_ptr));
+
 
 	// Skill
 	if (!Engine::Instance().GetTmpPtr())

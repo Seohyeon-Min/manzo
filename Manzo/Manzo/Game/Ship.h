@@ -118,8 +118,8 @@ public:
 
 private:
     Beat* beat;
-    float max_pump_radius = 100;
-    float min_pump_radius = 55;
+    float max_pump_radius = 50;
+    float min_pump_radius = 27.8f;
     float radius = 0;
     float alpha = 0.0;
     bool wait = false;

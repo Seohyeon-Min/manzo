@@ -552,7 +552,7 @@ void Render::CreatLineModel()
 
 void Render::CreateCircleLineModel() {
     int segments = 30;
-    float radius = 0.5;
+    float radius = 1;
 
     std::vector<vec2> positions;
     positions.reserve(segments);

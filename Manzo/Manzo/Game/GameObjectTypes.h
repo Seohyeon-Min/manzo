@@ -27,7 +27,8 @@ enum class GameObjectTypes {
     Mouse,
     UI,
     Player,
-    Icon
+    Icon,
+    Monster
 };
 
 bool IsPixelShaderApplicable(GameObjectTypes type);

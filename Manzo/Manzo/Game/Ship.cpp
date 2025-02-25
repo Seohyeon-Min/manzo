@@ -146,6 +146,10 @@ void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_
         ship->change_state(&ship->state_idle);
         ship->hit_with = false;
     }
+#else
+    if (ship->nearestRock) {
+        ship->before_nearest_rock = ship->nearestRock;
+    }
 #endif
 
     if (ship->nearestRock == NULL) {

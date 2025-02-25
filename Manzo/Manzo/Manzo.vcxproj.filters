@@ -49,6 +49,7 @@
     <ClCompile Include="Game\Splash.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\MathUtils.cpp" />
+    <ClCompile Include="Game\Monster.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h" />
@@ -106,5 +107,6 @@
     <ClInclude Include="Game\Splash.h" />
     <ClInclude Include="Game\States.h" />
     <ClInclude Include="Engine\MathUtils.h" />
+    <ClInclude Include="Game\Monster.h" />
   </ItemGroup>
 </Project>
