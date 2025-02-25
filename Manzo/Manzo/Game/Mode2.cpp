@@ -23,6 +23,7 @@ Created:    March 8, 2023
 
 
 #include <iostream>     // for debug
+#include "Module.h"
 
 Mode2::Mode2() {}
 
@@ -62,12 +63,6 @@ void Mode2::Load() {
     inven_ptr = new Inven({0,0});
     GetGSComponent<GameObjectManager>()->Add(inven_ptr);
  
-    //// audio
-    //Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("assets/audios/basic_beat_100_4.wav", "sample");
-    //if (sample) {
-    //    GetGSComponent<AudioManager>()->PlayMusic(sample, -1);
-    //}
-
     // Icon
     Engine::GetIconManager().LoadIconList();
 
@@ -84,10 +79,11 @@ void Mode2::Load() {
         skill_ptr->SetShipPtr(ship_ptr);
     }
 
-    //Shop
-    /*shop_ptr = new Shop();
-    GetGSComponent<GameObjectManager>()->Add(shop_ptr);*/
+    // Module
+    /*Module* module = new Module({ 0, 0 });
+    GetGSComponent<GameObjectManager>()->Add(module);*/
 
+    // Mouse
     GetGSComponent<GameObjectManager>()->Add(new Mouse);
 
     std::cout << "Left money : " << Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() << std::endl;

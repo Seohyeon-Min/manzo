@@ -17,9 +17,7 @@ void Module::Draw(DrawLayer drawlayer)
 	}
 }
 
-
 // First Module
-
 FirstModule::FirstModule(Ship* ship) : ship(ship)
 {
 	AddGOComponent(new Sprite("assets/images/module1.spt", this));

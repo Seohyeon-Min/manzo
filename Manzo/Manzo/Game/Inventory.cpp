@@ -10,6 +10,8 @@ Inven::Inven(vec2 position) : GameObject(position), page(0), dre_todayFish(rd())
 {
 	AddGOComponent(new Sprite("assets/images/window.spt", this));
 	change_state(&state_none);
+
+	ReadSaveFile("assets/scenes/save_data.txt");
 }
 
 void Inven::Update(double dt)
@@ -108,7 +110,9 @@ void Inven::State_Module::Enter(GameObject* object)
 	inven->GetGOComponent<Sprite>()->PlayAnimation(static_cast<int>(Animations::Module));
 	inven->page = 1;
 
+	Engine::GetIconManager().AddIcon("module", { -130,100 }, 0.7f, false);
 	Engine::GetIconManager().AddIcon("module", { 0,100 }, 0.7f, false);
+	Engine::GetIconManager().AddIcon("module", { 130,100 }, 0.7f, false);
 
 	Engine::GetIconManager().AddIcon("module1", { -130,-100 }, 0.7f, true, true);
 	Engine::GetIconManager().AddIcon("module2", { 0,-100 }, 0.7f, true, true);
@@ -119,6 +123,11 @@ void Inven::State_Module::Update(GameObject* object, double dt)
 {
 	Inven* inven = static_cast<Inven*>(object);
 	inven->GetGOComponent<Sprite>()->Update(dt);
+
+	if (Engine::GetIconManager().IsCollidingWith("module", "module1"))
+	{
+		// 모듈 1 장착 중임 -> 넘기기
+	}
 }
 
 void Inven::State_Module::CheckExit(GameObject* object)
@@ -140,7 +149,6 @@ void Inven::State_FC::Enter(GameObject* object)
 	int position = -100;
 	Inven* inven = static_cast<Inven*>(object);
 	inven->GetGOComponent<Sprite>()->PlayAnimation(static_cast<int>(Animations::FishCollection));
-	inven->ReadSaveFile("assets/scenes/save_data.txt");
 
 	for (auto& fish : inven->fishCollection)
 	{
