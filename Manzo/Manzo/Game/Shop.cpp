@@ -8,6 +8,7 @@ static bool Ready_to_sell = false;
 
 Shop::Shop() : GameObject(back_position_default)
 {
+	Read_Shop_Csv("assets/scenes/shop.csv");
 }
 
 Shop::~Shop()
@@ -17,50 +18,36 @@ Shop::~Shop()
 
 void Shop::Update(double dt)
 {
-	//if (Engine::GetInput().KeyJustPressed(Input::Keys::Y) && !shop_available)
-	//{
-	//	shop_available = true;
-	//	std::cout << "Shop active" << std::endl;
-	//}
+	if (Engine::GetInput().KeyJustPressed(Input::Keys::Y) && !shop_available)
+	{
+		shop_available = true;
+		std::cout << "Shop active" << std::endl;
+	}
 
-	//if (shop_available) // Is shop available?
-	//{
-	//	Shop_Back_draw(); // draw shop background
-	//	Inventory_Back_draw();
-	//	icon_manager_ptr->UpdateAll(dt);
-	//	icon_manager_ptr->DrawAll();
+	if (shop_available) // Is shop available?
+	{
+		/*
+		* 1. 일단 파일 내에 있는걸 읽어오는지 확인하기 // 되네
+		* 2. 아이콘 먼저 띄워보기 // 이거 해야함
+		* 3. 아이콘 갖고오면 일단 그 문자열을 가져오게 // 그냥 다 되는거같은데?
+		*/
 
-	//	if (pick == First)
-	//	{
-	//		if (Engine::Instance().GetInput().KeyJustPressed(Input::Keys::Enter) || Ready_to_buy) 
-	//		/*
-	//		*  I'll change this if statements later, I implemented the function to buy with Enter and the function to buy by dragging, and this is what happened!
-	//		*/
-	//		{
-	//			Buy(skill_ptr->Net, Net_Money);
-	//			Ready_to_buy = false;
-	//		}
-	//	}
+		if (is_on_shop == false)
+		{
+			int count = 1;
+			for (auto& info : shop_infos)
+			{
+				std::cout << count << "th: " << std::endl;
+				std::cout << "name: "<< info.name << std::endl;
+				std::cout << "icon name: " << info.icon << std::endl;
+				std::cout << "price : " << info.price << std::endl;
+				std::cout << "script : " << info.script << std::endl;
+				++count;
+			}
+			is_on_shop = true;
+		}
 
-	//	if (pick == Second)
-	//	{
-	//		if (Engine::Instance().GetInput().KeyJustPressed(Input::Keys::Enter) || Ready_to_buy)
-	//		{
-	//			Buy(skill_ptr->Light, Net_Money);
-	//			Ready_to_buy = false;
-	//		}
-	//	}
-
-	//	if (pick == Third)
-	//	{
-	//		if (Engine::Instance().GetInput().KeyJustPressed(Input::Keys::Enter) || Ready_to_buy)
-	//		{
-	//			Buy(skill_ptr->TEMP1, Net_Money);
-	//			Ready_to_buy = false;
-	//		}
-	//	}
-
-	//}
+	}
 }
 
 void Shop::Buy(Skillsys::Skill_list skill,int input)
@@ -76,18 +63,22 @@ void Shop::Sell(Skillsys::Skill_list skill, int input)
 void Shop::Shop_Back_draw()
 {
 
-	//back_matrix = mat3::build_translation({ back_position_default }) * mat3::build_scale(1.0f); //* mat3::build_rotation(3.141592f/2.0f);
+	back_matrix = mat3::build_translation({ back_position_default }) * mat3::build_scale(1.0f); //* mat3::build_rotation(3.141592f/2.0f);
 
-	//draw_call = 
-	//{
-	//	shop_background,                       // Texture to draw
-	//	&back_matrix,                          // Transformation matrix
-	//	Engine::GetShaderManager().GetDefaultShader(), // Shader to use
-	//	nullptr,
-	//	settings
-	//};
+	DrawCall draw_call = 
+	{
+		shop_background,                       // Texture to draw
+		&back_matrix,                          // Transformation matrix
+		Engine::GetShaderManager().GetDefaultShader(), // Shader to use
+		//nullptr,
+		//settings
+	};
 
-	//Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawFirst);
+	draw_call.settings.is_camera_fixed = true;
+	draw_call.settings.do_blending = true;
+	draw_call.sorting_layer = DrawLayer::DrawFirst;
+
+	Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call));
 }
 
 void Shop::Shop_button_draw()
@@ -156,6 +147,40 @@ void Shop::Inventory_Back_draw()
 	draw_call.sorting_layer = DrawLayer::DrawFirst;
 
 	Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call));
+}
+void Shop::Read_Shop_Csv(const std::string& filename)
+{
+	std::ifstream file(filename);
+	if (!file.is_open()) 
+	{
+		std::cerr << "Failed to open file: " << filename << std::endl;
+		return;
+	}
+
+	std::string line, cell;
+	std::getline(file, line);
+
+	while (std::getline(file, line)) 
+	{
+		std::stringstream linestream(line);
+		shop_info shop_i;
+
+		std::getline(linestream, cell, ',');
+		shop_i.name = cell;
+
+		std::getline(linestream, cell, ',');
+		shop_i.icon = cell;
+
+		std::getline(linestream, cell, ',');
+		shop_i.price = static_cast<int>(std::stol(cell));
+
+		std::getline(linestream, cell, ',');
+		shop_i.script = cell;
+		
+		shop_infos.push_back(shop_i);
+	}
+	file.close();
+	std::cout << "Shop loaded successfully." << std::endl;
 }
 /*
 void Shop::Inventory_Icon_draw()

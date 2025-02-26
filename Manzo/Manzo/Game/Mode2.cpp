@@ -85,8 +85,8 @@ void Mode2::Load() {
     }
 
     //Shop
-    /*shop_ptr = new Shop();
-    GetGSComponent<GameObjectManager>()->Add(shop_ptr);*/
+    shop_ptr = new Shop();
+    GetGSComponent<GameObjectManager>()->Add(shop_ptr);
 
     GetGSComponent<GameObjectManager>()->Add(new Mouse);
 

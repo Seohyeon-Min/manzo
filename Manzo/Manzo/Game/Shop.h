@@ -9,6 +9,7 @@
 #include "..\Engine\Engine.h"
 #include "Fish.h"
 #include "Skill.h"
+#include "..\Engine\Sprite.h"
 
 // class Skillsys;
 
@@ -39,10 +40,12 @@ public:
 		Third,
 	};
 
-	struct Inventory_info // each Inventory's info
+	struct shop_info
 	{
-		Skillsys::Skill_list skill; //set Empty
-		GLTexture* icon_texture = nullptr;
+		std::string name = "None";
+		std::string icon = "None";
+		int price = 0;
+		std::string script = "Defualt script";
 	};
 
 	Shop();
@@ -55,6 +58,7 @@ public:
 	void					Shop_Back_draw();
 	void					Shop_button_draw();
 	void					Inventory_Back_draw();
+	void					Read_Shop_Csv(const std::string& filename);
 
 
 private:
@@ -84,7 +88,7 @@ private:
 	std::vector<DrawCall>		icon_draw_calls;
 	std::vector<DrawCall>		inv_icon_draw_calls; //for inventory icon
 	std::vector<vec2>			icon_direction;
-	std::vector<Inventory_info>	inv_info;
+	std::vector<shop_info>		shop_infos;
 
 };   
 
