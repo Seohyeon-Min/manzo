@@ -271,23 +271,23 @@ void Map::ParseSVG(const std::string& filename) {
 
                 // Rock Point
                 //=======ear clipping=========
-                //std::vector<Polygon> Polys = EarClipping(positions);
-                //for (auto& poly : Polys) {
-                //    Rock* rock = new Rock(poly);
-                //    rocks.push_back(rock);
+                std::vector<Polygon> Polys = EarClipping(positions);
+                for (auto& poly : Polys) {
+                    Rock* rock = new Rock(poly);
+                    rocks.push_back(rock);
 
-                //    RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new group
-                //    rockgroup->AddRock(rock);                                       //add poly into new group
+                    RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new group
+                    rockgroup->AddRock(rock);                                       //add poly into new group
 
-                //    rock->SetRockGroup(rockgroup);
-                //    rock_groups.push_back(rockgroup);
-                //}
+                    rock->SetRockGroup(rockgroup);
+                    rock_groups.push_back(rockgroup);
+                }
 
                 //rock->AddGOComponent(new MAP_SATCollision(poly, rock));
                 
 
                 //======== We have no index, so we don't have to match the rock ========
-
+                /*
                 Rock* rock = new Rock(poly);
 
                 rocks.push_back(rock);
@@ -298,6 +298,7 @@ void Map::ParseSVG(const std::string& filename) {
 
                 rock->SetRockGroup(rockgroup);
                 rock_groups.push_back(rockgroup);
+                */
                 /*
                     if ((poly.polyindex).substr(4, 1) == "2") {
                         Rock* moving_rock = new Rock(poly);
@@ -433,7 +434,7 @@ std::vector<Polygon> EarClipping(const std::vector<vec2>& points) {
 
 
     while (remaining_points.size() > 3) {
-        bool ear_found = false;
+        bool ear_found = false;     // reset ear_found
 
         for (size_t i = 0; i < remaining_points.size(); ++i) {
             size_t prev = (i == 0) ? remaining_points.size() - 1 : i - 1;
@@ -470,7 +471,7 @@ std::vector<Polygon> EarClipping(const std::vector<vec2>& points) {
         }
 
         if (!ear_found) {
-            throw std::runtime_error("EarClipping failed: Invalid polygon or input");
+            std::cout<<"EarClipping failed: Invalid polygon or input"<<"\n";
         }
     }
 

@@ -53,7 +53,7 @@ public:
 
 private:
 	char currentCommand = '\0';
-	float margin = 100000.0f;
+	float margin = 10000.0f;
 	std::vector<Rock*> rocks;
 	std::vector<RockGroup*> rock_groups;
 	vec2 circle_position{ 0,0 };

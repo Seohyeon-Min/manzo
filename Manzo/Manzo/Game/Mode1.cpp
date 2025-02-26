@@ -98,8 +98,10 @@ void Mode1::Load() {
 
     // Map
 	AddGSComponent(new MapManager());
-    GetGSComponent<MapManager>()->AddMapFile("assets/maps/TemporaryMap.svg");
-    //GetGSComponent<MapManager>()->AddMapFile("assets/maps/map7.svg");
+    //GetGSComponent<MapManager>()->AddMapFile("assets/maps/TemporaryMap.svg");
+    
+	//Ear Clipping Test
+	GetGSComponent<MapManager>()->AddMapFile("assets/maps/OurFirstMap3.svg");
 	GetGSComponent<MapManager>()->LoadFirstMap();
 
 	//Boss
@@ -134,10 +136,10 @@ void Mode1::Load() {
 }
 
 void Mode1::Update(double dt) {
-	
+	/*
 	std::cout << "Player's X position : "<< ship_ptr->GetPosition().x << "\n";
 	std::cout << "Player's Y position : "<< ship_ptr->GetPosition().y << "\n";
-	
+	*/
 
 	//audio play
 	if (!playing)
