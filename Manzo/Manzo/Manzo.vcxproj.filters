@@ -50,6 +50,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\MathUtils.cpp" />
     <ClCompile Include="Game\Monster.cpp" />
+    <ClCompile Include="Game\BounceBehavior.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h" />

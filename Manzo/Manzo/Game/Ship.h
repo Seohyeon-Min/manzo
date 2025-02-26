@@ -1,13 +1,3 @@
-/*
-Copyright (C) 2023 DigiPen Institute of Technology
-Reproduction or distribution of this file or its contents without
-prior written consent is prohibited
-File Name:  Pelican.h
-Project:    CS230 Engine
-Author:     Seohyeon Min, Won Kim
-Created:    June 13, 2024
-*/
-
 #pragma once
 #include "..\Engine\GameObject.h"
 #include "GameObjectTypes.h"
@@ -15,9 +5,9 @@ Created:    June 13, 2024
 #include "..\Game\Skill.h"
 #include "../Engine/Rect.h"
 #include "Rock.h"
+#include "BounceBehavior.h"  // 추가: 반사 로직 책임 분리
 
 class Beat;
-
 class Skillsys;
 
 class Ship : public GameObject {
@@ -30,20 +20,19 @@ public:
     void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
     bool IsShipMoving() { return move; }
     bool CanCollideWith(GameObjectTypes) override;
-    void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
-    void HitWithRock(Rock* other_object);
-    const vec2& GetPosition() const { return GameObject::GetPosition(); }
-    //for fuel
+    void ResolveCollision(GameObject* other_object) override;
+    void SetMaxFuel(double input);
     float GetFuel() { return (float)fuel; }
     float GetMaxFuel() { return (float)Maxfuel; }
     void FuelUpdate(double dt);
-    void SetMaxFuel(double input);
-    vec2 CalculateHitDirection(vec2 normal, vec2 velocity);
     bool IsTouchingReef();
     bool IsFuelZero();
     bool IsShipUnder();
 
 private:
+    void HitWithBounce(GameObject* other_object);
+
+    // 이동, 충돌, 연료 등 Ship의 기본 속성들
     static constexpr double speed = 6500.f;
     static constexpr float deceleration = 0.88f;
     static constexpr double skidding_speed = 150.f;
@@ -56,7 +45,7 @@ private:
     vec2 force = {};
     vec2 destination;
     vec2 direction = { 0,0 };
-    vec2 normal;
+    vec2 normal; // 충돌 시 계산된 노말 벡터
     vec2 collisionPos;
     Beat* beat;
     Skillsys* skill;
@@ -66,9 +55,6 @@ private:
     const float camera_shake = 10;
     Timer* fuel_bubble_timer;
     RealTimeTimer* collide_timer;
-
-    //for fuel
-
     bool isCollidingWithReef;
     bool FuelFlag = false;
     bool can_dash = true;
@@ -80,10 +66,11 @@ private:
     double fuelcounter = 0;
     Rock* before_nearest_rock = nullptr;
     Rock* nearestRock = nullptr;
-    //
 
+    // 추가: 반사 로직을 위한 행동 객체 (의존성 주입 가능)
+    BounceBehavior* bounceBehavior;
 
-
+    // 내부 상태 관련 클래스들 (세부 구현은 기존과 동일)
     class State_Idle : public State {
     public:
         virtual void Enter(GameObject* object) override;

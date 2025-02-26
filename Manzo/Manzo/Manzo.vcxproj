@@ -38,6 +38,7 @@
     <ClCompile Include="Game\Background.cpp" />
     <ClCompile Include="Game\BeatSystem.cpp" />
     <ClCompile Include="Game\Boss.cpp" />
+    <ClCompile Include="Game\BounceBehavior.h" />
     <ClCompile Include="Game\DialogBox.cpp" />
     <ClCompile Include="Game\Effect.cpp" />
     <ClCompile Include="Game\Dragging.cpp" />

@@ -22,6 +22,7 @@ Ship::Ship(vec2 start_position) :
     SetVelocity({ 0,0 });
 
     if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
+        bounceBehavior = new DefaultBounceBehavior();
         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new Pump);
         current_state = &state_idle;
         current_state->Enter(this);
@@ -178,11 +179,11 @@ void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_
         //ship->nearestRock = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRock(ship); // it should be FindNearestRockNextFrame
         if (ship->before_nearest_rock) {
             ship->collide_timer->Start();
-            ship->HitWithRock(ship->nearestRock); // calculate normal
+            ship->HitWithBounce(ship->nearestRock); // calculate normal
 
             Engine::GetLogger().LogEvent("Velocity: " + std::to_string(velocity.x) + ", " + std::to_string(velocity.y));
             Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
-            ship->direction = ship->CalculateHitDirection(ship->normal, velocity);
+            ship->direction = ship->bounceBehavior->CalculateBounceDirection(velocity, ship->normal);
 
             float speed = velocity.Length();
 
@@ -411,72 +412,71 @@ bool Ship::CanCollideWith(GameObjectTypes other_object)
     return false;
 }
 
-void Ship::ResolveCollision(GameObject* other_object)
-{
+void Ship::ResolveCollision(GameObject* other_object) {
+    // Fish 충돌은 기존대로 처리
     if (other_object->Type() == GameObjectTypes::Fish) {
         change_state(&state_idle);
+        return;
     }
+    // Rock 및 Monster 충돌 시 공통 반사 로직 호출
+    else if (other_object->Type() == GameObjectTypes::Rock ||
+        other_object->Type() == GameObjectTypes::Monster) {
+        HitWithBounce(other_object);
+    }
+}
 
+
+void Ship::HitWithBounce(GameObject* other_object) {
+    // Rock 충돌 시 추가 효과 적용
     if (other_object->Type() == GameObjectTypes::Rock) {
-
-        if (GetVelocity().Length() <= skidding_speed + 30.f) { // if it was skidding, don't reflect
-            vec2 smallCorrection = -GetVelocity().Normalize(); // with this, ship should not able to move!
-            UpdatePosition(smallCorrection);
-            can_dash = false;
-            return;
+        fuel -= HitDecFuel;
+        if (fuel < 0.0f) {
+            fuel = 0.0f;
         }
-    }
+        auto cam = Engine::GetGameStateManager().GetGSComponent<Cam>();
+        cam->GetCamera().StartShake(camera_shake, 5);
 
-    if (other_object->Type() == GameObjectTypes::Monster) {
-        SetVelocity({ other_object->GetVelocity()});
+        // Rock 전용: 충돌 시 노말 벡터 계산
+        Rock* rock = static_cast<Rock*>(other_object);
+        std::vector<vec2> points = rock->GetRockGroup()->GetPoints();
+        vec2 center = rock->GetRockGroup()->FindCenterPoly();
+        normal = ComputeCollisionNormal(points, GetPosition(), center);
     }
-    
+    // Monster 충돌의 경우: 충돌 노말 정보가 불분명하여 기본값 사용 (추측입니다)
+    else if (other_object->Type() == GameObjectTypes::Monster) {
+        normal = { 0.0f, 1.0f };  // 필요 시 Monster 전용 로직으로 변경 가능
+    }
+    // BounceBehavior를 사용하여 새로운 이동 방향 계산
+    vec2 newDirection = bounceBehavior->CalculateBounceDirection(GetVelocity(), normal);
+    float currentSpeed = GetVelocity().Length();
+    SetVelocity(newDirection * currentSpeed);
 }
 
-void Ship::HitWithRock(Rock* rock)
-{
-    fuel -= HitDecFuel;
-
-    if (fuel < 0.0f) {
-        fuel = 0.0f;
-    }
-
-    auto cam = Engine::GetGameStateManager().GetGSComponent<Cam>();
-    //cam->GetCameraView().SetZoom(1.05f);
-    cam->GetCamera().StartShake(camera_shake, 5);
-
-    std::vector<vec2> points = rock->GetRockGroup()->GetPoints();
-    vec2 center = rock->GetRockGroup()->FindCenterPoly();
-
-    normal = ComputeCollisionNormal(points, GetPosition(), center);
-}
-
-
-vec2 Ship::CalculateHitDirection(vec2 normal, vec2 velocity) {
-    float dot_product = velocity.x * normal.x + velocity.y * normal.y;
-
-    vec2 direction;
-
-    vec2 reflection = {
-        velocity.x - 2 * dot_product * normal.x,
-        velocity.y - 2 * dot_product * normal.y
-    };
-
-    float incoming_speed = velocity.Length();
-
-    if (reflection.Length() > 0.0f) {
-        direction = reflection.Normalize();
-    }
-    else {
-        direction = { 1.0f, 0.0f };
-    }
-
-    move = false;
-
-    Engine::GetLogger().LogEvent("Direction: " + std::to_string(direction.x) + ", " + std::to_string(direction.y));
-    return direction;
-
-}
+//vec2 Ship::CalculateHitDirection(vec2 normal, vec2 velocity) {
+//    float dot_product = velocity.x * normal.x + velocity.y * normal.y;
+//
+//    vec2 direction;
+//
+//    vec2 reflection = {
+//        velocity.x - 2 * dot_product * normal.x,
+//        velocity.y - 2 * dot_product * normal.y
+//    };
+//
+//    float incoming_speed = velocity.Length();
+//
+//    if (reflection.Length() > 0.0f) {
+//        direction = reflection.Normalize();
+//    }
+//    else {
+//        direction = { 1.0f, 0.0f };
+//    }
+//
+//    move = false;
+//
+//    Engine::GetLogger().LogEvent("Direction: " + std::to_string(direction.x) + ", " + std::to_string(direction.y));
+//    return direction;
+//
+//}
 
 //for fuel
 void Ship::FuelUpdate(double dt)
