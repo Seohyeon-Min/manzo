@@ -53,7 +53,9 @@ void Monster::Update(double dt)
 void Monster::Draw(DrawLayer drawlayer)
 {
     GameObject::Draw(drawlayer);
+#ifdef _DEBUG
     DrawSight();
+#endif // _DEBUG
 }
 
 bool Monster::IsPlayerInSight(const vec2& playerPos)
@@ -173,21 +175,23 @@ void Monster::Dash::Enter(GameObject* object)
     monster->SetVelocity(monster->direction * monster->speed);
     std::cout << "Dash_STart\n";
     monster->dash_timer->Start();
+    alpha = init_alpha;
+    
 }
 
 void Monster::Dash::Update(GameObject* object, double dt)
 {
     Monster* monster = static_cast<Monster*>(object);
 
-    // 1. 플레이어 방향 벡터 계산
     vec2 target_direction = (monster->ship_ptr->GetPosition() - monster->GetPosition()).Normalize();
 
-    // 2. 기존 방향과 타겟 방향을 보간하여 조금씩 조정 (α 값 조절 가능)
-    float alpha = 0.05f;  // 회전 속도 (값이 클수록 빠르게 꺾임)
+    alpha -= (float)dt; std::cout << alpha << std::endl;
+    if (alpha <= 0.02f) {
+        alpha = 0.02f;
+    }
     monster->direction = monster->direction * (1.0f - alpha) + target_direction * alpha;
-    monster->direction = monster->direction.Normalize(); // 정규화
+    monster->direction = monster->direction.Normalize();
 
-    // 3. 새로운 방향을 적용하여 속도 설정
     monster->SetVelocity(monster->direction * monster->speed);
 }
 
@@ -203,7 +207,6 @@ void Monster::Dash::CheckExit(GameObject* object)
         }
     }
 }
-
 
 
 // It needs a better AI

@@ -61,6 +61,8 @@ private:
         virtual void Update(GameObject* object, double dt) override;
         virtual void CheckExit(GameObject* object) override;
         std::string GetName() override { return "State_Move"; }
+        float alpha = 0.32f;
+        static constexpr float init_alpha = 0.32f;
     };
 
     class Goback : public State {
