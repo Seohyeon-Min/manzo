@@ -134,6 +134,11 @@ void Mode1::Load() {
 }
 
 void Mode1::Update(double dt) {
+	
+	std::cout << "Player's X position : "<< ship_ptr->GetPosition().x << "\n";
+	std::cout << "Player's Y position : "<< ship_ptr->GetPosition().y << "\n";
+	
+
 	//audio play
 	if (!playing)
 	{

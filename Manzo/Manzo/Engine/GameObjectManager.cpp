@@ -53,7 +53,7 @@ void GameObjectManager::DrawAll()
 		if (object->isCameraFixed()) {
 			object->Draw();
 		}
-		else if (object->IsVisible(camera_bounds)) {
+		else if (true) {
 			object->Draw();
 		}
 
