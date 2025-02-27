@@ -91,9 +91,6 @@ void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
 }
 void Ship::State_Idle::CheckExit(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
-    //if (ship->hit_with) {
-    //    ship->change_state(&ship->state_hit);
-    //}
     if (ship->can_dash && Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT) && ship->beat->GetIsOnBeat()) {
         // Get mouse position relative to the center of the screen
         vec2 window = { Engine::window_width / 2, Engine::window_height / 2 };
@@ -410,9 +407,7 @@ void Ship::ResolveCollision(GameObject* other_object) {
 
 }
 
-
 void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
-    // Rock 충돌 시 추가 효과 적용
     if (other_object->Type() == GameObjectTypes::Rock) {
         fuel -= HitDecFuel;
         if (fuel < 0.0f) {
@@ -421,15 +416,14 @@ void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
         auto cam = Engine::GetGameStateManager().GetGSComponent<Cam>();
         cam->GetCamera().StartShake(camera_shake, 5);
 
-        // Rock 전용: 충돌 시 노말 벡터 계산
         Rock* rock = static_cast<Rock*>(other_object);
         std::vector<vec2> points = rock->GetRockGroup()->GetPoints();
         vec2 center = rock->GetRockGroup()->FindCenterPoly();
         normal = ComputeCollisionNormal(points, GetPosition(), center);
     }
-    // Monster 충돌의 경우: 충돌 노말 정보가 불분명하여 기본값 사용 (추측입니다)
+
     else if (other_object->Type() == GameObjectTypes::Monster) {
-        normal = { 0.0f, 1.0f };  // 필요 시 Monster 전용 로직으로 변경 가능
+        normal = { 0.0f, 1.0f }; // temp
     }
 
     Engine::GetLogger().LogEvent("Velocity: " + std::to_string(velocity.x) + ", " + std::to_string(velocity.y));
@@ -452,37 +446,7 @@ void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
 
     Engine::GetLogger().LogEvent("velocity.Length(), speed : " + std::to_string(velocity.Length()) + " : " + std::to_string(speed));
     Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new HitEffect(GetPosition()));
-    // BounceBehavior를 사용하여 새로운 이동 방향 계산
-    //vec2 newDirection = bounceBehavior->CalculateBounceDirection(GetVelocity(), normal);
-    //float currentSpeed = GetVelocity().Length();
-    //SetVelocity(newDirection * currentSpeed);
 }
-
-//vec2 Ship::CalculateHitDirection(vec2 normal, vec2 velocity) {
-//    float dot_product = velocity.x * normal.x + velocity.y * normal.y;
-//
-//    vec2 direction;
-//
-//    vec2 reflection = {
-//        velocity.x - 2 * dot_product * normal.x,
-//        velocity.y - 2 * dot_product * normal.y
-//    };
-//
-//    float incoming_speed = velocity.Length();
-//
-//    if (reflection.Length() > 0.0f) {
-//        direction = reflection.Normalize();
-//    }
-//    else {
-//        direction = { 1.0f, 0.0f };
-//    }
-//
-//    move = false;
-//
-//    Engine::GetLogger().LogEvent("Direction: " + std::to_string(direction.x) + ", " + std::to_string(direction.y));
-//    return direction;
-//
-//}
 
 //for fuel
 void Ship::FuelUpdate(double dt)

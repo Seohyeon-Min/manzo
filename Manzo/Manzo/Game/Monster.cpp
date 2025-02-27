@@ -88,6 +88,9 @@ bool Monster::CanCollideWith(GameObjectTypes other_object)
 void Monster::ResolveCollision(GameObject* other_object)
 {
     if (other_object->Type() == GameObjectTypes::Ship) {
+        if (current_state == &state_go) {
+            change_state(&state_stanby);
+        }
         if (ship_ptr->IsShipMoving()) {
             std::cout << "yammy\n";
         }
@@ -148,8 +151,13 @@ void Monster::Alert::Enter(GameObject* object)
 void Monster::Alert::Update(GameObject* object, double dt)
 {
     Monster* monster = static_cast<Monster*>(object);
+
+    vec2 target_direction = (monster->ship_ptr->GetPosition() - monster->GetPosition()).Normalize();
+    float angle = std::atan2(target_direction.y, target_direction.x);
+    monster->SetRotation(angle);
+
     monster->offset *= -0.957f;
-    monster->SetPosition({ monster->GetPosition().x, monster->position.y + monster->offset });
+    //monster->SetPosition({ monster->GetPosition().x, monster->position.y + monster->offset });
 }
 
 

@@ -21,6 +21,8 @@ public:
     bool IsShipMoving() { return move; }
     bool CanCollideWith(GameObjectTypes) override;
     void ResolveCollision(GameObject* other_object) override;
+
+    // fuel
     void SetMaxFuel(double input);
     float GetFuel() { return (float)fuel; }
     float GetMaxFuel() { return (float)Maxfuel; }
