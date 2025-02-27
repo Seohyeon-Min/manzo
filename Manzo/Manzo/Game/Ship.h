@@ -30,7 +30,7 @@ public:
     bool IsShipUnder();
 
 private:
-    void HitWithBounce(GameObject* other_object);
+    void HitWithBounce(GameObject* other_object, vec2 initial_velocity);
 
     // 이동, 충돌, 연료 등 Ship의 기본 속성들
     static constexpr double speed = 6500.f;

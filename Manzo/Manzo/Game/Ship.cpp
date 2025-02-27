@@ -179,24 +179,7 @@ void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_
         //ship->nearestRock = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRock(ship); // it should be FindNearestRockNextFrame
         if (ship->before_nearest_rock) {
             ship->collide_timer->Start();
-            ship->HitWithBounce(ship->nearestRock); // calculate normal
-
-            Engine::GetLogger().LogEvent("Velocity: " + std::to_string(velocity.x) + ", " + std::to_string(velocity.y));
-            Engine::Instance().SetSlowDownFactor(ship->slow_down_factor);
-            ship->direction = ship->bounceBehavior->CalculateBounceDirection(velocity, ship->normal);
-
-            float speed = velocity.Length();
-
-            if (speed >= 6000.f) {
-                speed = 6000.f - ship->slow_down;
-                ship->slow_down += 1500.f;
-                std::cout << "ship->slow_down: " << ship->slow_down << std::endl;
-            }
-
-            ship->force = ship->direction * speed * 0.8f;
-            ship->force *= 7.0f;
-            Engine::GetLogger().LogEvent("velocity.Length(), speed : " + std::to_string(velocity.Length()) + " : " + std::to_string(speed));
-            Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new HitEffect(ship->GetPosition()));
+            ship->HitWithBounce(ship->nearestRock, velocity); // calculate normal
         }
         else {
             Engine::GetLogger().LogEvent("@@@@ Error: No nearest rock!! @@@@");
@@ -268,23 +251,6 @@ void Ship::Update(double dt)
 
 void Ship::FixedUpdate(double fixed_dt) {
     GameObject::FixedUpdate(fixed_dt);
-
-
-
-    //if (nearestRock) {
-    //    float t_hit;
-    //    MAP_SATCollision* rockCollider = nearestRock->GetGOComponent<MAP_SATCollision>();
-
-    //    //std::cout << "There is a nearest rock at " << nearestRock->GetPosition().x << std::endl;
-    //    if (ComputeTOIWithRock(currentPos, velocity, rockCollider, t_hit)) {
-    //        vec2 hitPos = currentPos + velocity * t_hit;  // 충돌 지점까지만 이동
-    //        SetPosition(hitPos); // 경계선에서 멈춤
-    //        //std::cout << "exist" << hitPos.x << " : " << hitPos.y << std::endl;
-    //        // **속도를 0으로 하여 완전 정지**
-    //        SetVelocity({ 0, 0 });
-    //        return;
-    //    }
-    //}
 }
 
 
@@ -419,14 +385,14 @@ void Ship::ResolveCollision(GameObject* other_object) {
         return;
     }
     // Rock 및 Monster 충돌 시 공통 반사 로직 호출
-    else if (other_object->Type() == GameObjectTypes::Rock ||
-        other_object->Type() == GameObjectTypes::Monster) {
-        HitWithBounce(other_object);
-    }
+    //else if (/*other_object->Type() == GameObjectTypes::Rock ||*/
+    //    other_object->Type() == GameObjectTypes::Monster) {
+    //    HitWithBounce(other_object, GetVelocity());
+    //}
 }
 
 
-void Ship::HitWithBounce(GameObject* other_object) {
+void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
     // Rock 충돌 시 추가 효과 적용
     if (other_object->Type() == GameObjectTypes::Rock) {
         fuel -= HitDecFuel;
@@ -446,10 +412,31 @@ void Ship::HitWithBounce(GameObject* other_object) {
     else if (other_object->Type() == GameObjectTypes::Monster) {
         normal = { 0.0f, 1.0f };  // 필요 시 Monster 전용 로직으로 변경 가능
     }
+
+    Engine::GetLogger().LogEvent("Velocity: " + std::to_string(velocity.x) + ", " + std::to_string(velocity.y));
+    Engine::Instance().SetSlowDownFactor(slow_down_factor);
+    direction = bounceBehavior->CalculateBounceDirection(velocity,normal);
+
+    float speed = velocity.Length();
+
+    slow_down += 1500.f;
+    if (speed >= 5000.f) {
+        speed = 5000.f - slow_down;
+        std::cout << "ship->slow_down: " << slow_down << std::endl;
+    }
+    else {
+        speed -= slow_down;
+    }
+
+    force = direction * speed * 0.8f;
+    force *= 5.0f;
+
+    Engine::GetLogger().LogEvent("velocity.Length(), speed : " + std::to_string(velocity.Length()) + " : " + std::to_string(speed));
+    Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new HitEffect(GetPosition()));
     // BounceBehavior를 사용하여 새로운 이동 방향 계산
-    vec2 newDirection = bounceBehavior->CalculateBounceDirection(GetVelocity(), normal);
-    float currentSpeed = GetVelocity().Length();
-    SetVelocity(newDirection * currentSpeed);
+    //vec2 newDirection = bounceBehavior->CalculateBounceDirection(GetVelocity(), normal);
+    //float currentSpeed = GetVelocity().Length();
+    //SetVelocity(newDirection * currentSpeed);
 }
 
 //vec2 Ship::CalculateHitDirection(vec2 normal, vec2 velocity) {

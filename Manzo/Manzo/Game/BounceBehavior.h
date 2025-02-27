@@ -2,7 +2,7 @@
 #include "vec2.h"
 #include "..\Engine\Component.h"
 
-class BounceBehavior: Public Component {
+class BounceBehavior: public Component {
 public:
     virtual ~BounceBehavior() = default;
     virtual vec2 CalculateBounceDirection(const vec2& incomingVelocity, const vec2& collisionNormal) const = 0;
