@@ -113,6 +113,7 @@ void Ship::State_Move::Enter(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
     ship->move = true;
     vec2 dir = ship->GetVelocity().Normalize();
+    if (skip_enter) return;
     Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new DashEffect());
     
 }
@@ -178,7 +179,9 @@ void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_
         //this should be started in a next frame
         //ship->nearestRock = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRock(ship); // it should be FindNearestRockNextFrame
         if (ship->before_nearest_rock) {
-            ship->collide_timer->Start();
+            if (!ship->collide_timer->IsRunning()) {
+                ship->collide_timer->Start();
+            }
             ship->HitWithBounce(ship->nearestRock, velocity); // calculate normal
         }
         else {
@@ -192,6 +195,7 @@ void Ship::State_Move::CheckExit(GameObject* object) {
     if (!ship->beat->GetIsOnBeat() && !ship->hit_with) {
         ship->move = false;
         ship->change_state(&ship->state_idle);
+        skip_enter = false;
     }
 }
 
@@ -379,16 +383,31 @@ bool Ship::CanCollideWith(GameObjectTypes other_object)
 }
 
 void Ship::ResolveCollision(GameObject* other_object) {
-    // Fish 충돌은 기존대로 처리
-    if (other_object->Type() == GameObjectTypes::Fish) {
+
+    switch (other_object->Type()) {
+    case GameObjectTypes::Fish:
         change_state(&state_idle);
-        return;
+        break;
+    case GameObjectTypes::Rock:
+        if (GetVelocity().Length() <= skidding_speed + 30.f) { // if it was skidding, don't reflect
+            vec2 smallCorrection = -GetVelocity().Normalize(); // with this, ship should not able to move!
+            UpdatePosition(smallCorrection);
+            can_dash = false;
+            return;
+        }
+        break;
+    case GameObjectTypes::Monster:
+        if (!collide_timer->IsRunning()) {
+            collide_timer->Start();
+        }
+        if (current_state != &state_move) {
+            state_move.skip_enter = true;
+            change_state(&state_move);
+        }
+        HitWithBounce(other_object, -other_object->GetVelocity());
+        break;
     }
-    // Rock 및 Monster 충돌 시 공통 반사 로직 호출
-    //else if (/*other_object->Type() == GameObjectTypes::Rock ||*/
-    //    other_object->Type() == GameObjectTypes::Monster) {
-    //    HitWithBounce(other_object, GetVelocity());
-    //}
+
 }
 
 

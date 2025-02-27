@@ -86,6 +86,7 @@ private:
         virtual void FixedUpdate(GameObject* object, double fixed_dt) override;
         virtual void CheckExit(GameObject* object) override;
         std::string GetName() override { return "State_Move"; }
+        bool skip_enter = false;
     };
 
     State_Idle state_idle;
