@@ -40,17 +40,22 @@ void Shop::Update(double dt)
 				std::cout << count << "th: " << std::endl;
 				std::cout << "name: "<< info.name << std::endl;
 				std::cout << "icon name: " << info.icon << std::endl;
-				Engine::GetIconManager().AddIcon(info.icon, { 50, 50 }, 0.7f, true);
 				std::cout << "price : " << info.price << std::endl;
 				std::cout << "script : " << info.script << std::endl;
 				++count;
 			}
 			is_on_shop = true;
 		}
-
-		Shop_Back_draw();
-
+		for (auto& info : shop_infos)
+		{
+			Engine::GetIconManager().AddIcon(info.icon, { Engine::window_width / 10 , Engine::window_height / 10 }, 1.0f);
+		}
 	}
+}
+
+void Shop::Draw()
+{
+	GameObject::Draw();
 }
 
 void Shop::Buy(Skillsys::Skill_list skill,int input)

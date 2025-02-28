@@ -1,4 +1,3 @@
 assets/images/Temp_icon.png
-HotSpot 22 22
-Anim assets/images/None.anm
-RectCollision -8 -8 8 8
+HotSpot 50 50
+RectCollision -50 -50 50 50
