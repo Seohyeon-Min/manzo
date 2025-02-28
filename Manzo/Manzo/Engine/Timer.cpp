@@ -39,7 +39,7 @@ void Timer::Reset()
 	timer = timer_max;
 }
 
-double Timer::Remaining()
+double Timer::Remaining() const
 {
 	return timer;
 }
@@ -52,6 +52,11 @@ int Timer::RemainingInt()
 bool Timer::TickTock()
 {
 	return pendulum;
+}
+
+bool Timer::IsFinished() const
+{
+    return Remaining() <= 0.0;
 }
 
 

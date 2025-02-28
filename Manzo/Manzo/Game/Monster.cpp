@@ -85,6 +85,17 @@ bool Monster::CanCollideWith(GameObjectTypes other_object)
     return false;
 }
 
+std::array<vec2, 4> Monster::GetCollisionBoxPoints()
+{
+    Math::rect box = GetCollisionBox();
+    return {
+        vec2{ box.Left(), box.Top() },
+        vec2{ box.Right(), box.Top() },
+        vec2{ box.Right(), box.Bottom() },
+        vec2{ box.Left(), box.Bottom() }
+    };
+}
+
 void Monster::ResolveCollision(GameObject* other_object)
 {
     if (other_object->Type() == GameObjectTypes::Ship) {

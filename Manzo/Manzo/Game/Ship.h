@@ -5,7 +5,7 @@
 #include "..\Game\Skill.h"
 #include "../Engine/Rect.h"
 #include "Rock.h"
-#include "BounceBehavior.h"  // 추가: 반사 로직 책임 분리
+#include "BounceBehavior.h"
 
 class Beat;
 class Skillsys;
@@ -34,7 +34,6 @@ public:
 private:
     void HitWithBounce(GameObject* other_object, vec2 initial_velocity);
 
-    // 이동, 충돌, 연료 등 Ship의 기본 속성들
     static constexpr double speed = 6500.f;
     static constexpr float deceleration = 0.88f;
     static constexpr double skidding_speed = 150.f;
@@ -47,7 +46,7 @@ private:
     vec2 force = {};
     vec2 destination;
     vec2 direction = { 0,0 };
-    vec2 normal; // 충돌 시 계산된 노말 벡터
+    vec2 normal;
     vec2 collisionPos;
     Beat* beat;
     Skillsys* skill;
@@ -55,7 +54,9 @@ private:
     const double fuel_bubble_time = 0.03;
     const double collide_time = 1.1;
     const float camera_shake = 10;
+    const double invincibility_time = 0.7;
     Timer* fuel_bubble_timer;
+    Timer* invincibility_timer;
     RealTimeTimer* collide_timer;
     bool isCollidingWithReef;
     bool FuelFlag = false;
@@ -64,15 +65,14 @@ private:
     double Maxfuel = 1000;
     double baseDecfuel = 2;
     double MoveDecfuel = 0.5;
-    double HitDecFuel = 50;
+    double RockHitDecFuel = 50;
+    double MonsHitDecFuel = 80;
     double fuelcounter = 0;
     Rock* before_nearest_rock = nullptr;
     Rock* nearestRock = nullptr;
 
-    // 추가: 반사 로직을 위한 행동 객체 (의존성 주입 가능)
     BounceBehavior* bounceBehavior;
 
-    // 내부 상태 관련 클래스들 (세부 구현은 기존과 동일)
     class State_Idle : public State {
     public:
         virtual void Enter(GameObject* object) override;

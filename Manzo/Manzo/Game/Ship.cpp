@@ -7,6 +7,7 @@
 #include "angles.h"
 #include "Effect.h"
 #include "WindowState.h"
+#include "Monster.h"
 
 #include <iostream>
 
@@ -28,6 +29,8 @@ Ship::Ship(vec2 start_position) :
         current_state->Enter(this);
         fuel_bubble_timer = new Timer(0.0);
         AddGOComponent(fuel_bubble_timer);
+        invincibility_timer = new Timer(0.0);
+        AddGOComponent(invincibility_timer);
         collide_timer = new RealTimeTimer(collide_time);
         AddGOComponent(collide_timer);
         fuel_bubble_timer->Set(fuel_bubble_time);
@@ -221,6 +224,7 @@ void Ship::Update(double dt)
             hit_with = false;
         }
 
+
         Engine::GetGameStateManager().GetGSComponent<Cam>()->GetCamera().UpdateShake((float)dt);
         // World Boundary
         RectCollision* collider = GetGOComponent<RectCollision>();
@@ -269,9 +273,8 @@ vec2 CatmullRomSpline(const vec2& p0, const vec2& p1, const vec2& p2, const vec2
         (-p0 + 3.0f * p1 - 3.0f * p2 + p3) * t3);
 }
 
-std::vector<vec2> SortPointsCounterClockwise(const std::vector<vec2>& points, const vec2& center) {
-    std::vector<vec2> sorted_points = points;
-
+std::vector<vec2> SortPointsCounterClockwise(std::span<const vec2> points, const vec2& center) {
+    std::vector<vec2> sorted_points(points.begin(), points.end()); // 불필요한 복사 제거
     std::sort(sorted_points.begin(), sorted_points.end(),
         [&center](const vec2& a, const vec2& b) {
             float angle_a = atan2(a.y - center.y, a.x - center.x);
@@ -282,11 +285,10 @@ std::vector<vec2> SortPointsCounterClockwise(const std::vector<vec2>& points, co
     return sorted_points;
 }
 
-std::vector<vec2> ExtendBoundaryPoints(const std::vector<vec2>& points) {
-    std::vector<vec2> extended_points = points;
+std::vector<vec2> ExtendBoundaryPoints(std::span<const vec2> points) {
+    std::vector<vec2> extended_points(points.begin(), points.end());
 
     if (points.size() > 3) {
-
         extended_points.insert(extended_points.begin(), points.back());
         extended_points.push_back(points.front());
         extended_points.push_back(points[1]);
@@ -295,7 +297,7 @@ std::vector<vec2> ExtendBoundaryPoints(const std::vector<vec2>& points) {
     return extended_points;
 }
 
-std::vector<vec2> GenerateSplinePoints(const std::vector<vec2>& points, int resolution) {
+std::vector<vec2> GenerateSplinePoints(std::span<const vec2> points, int resolution) {
     std::vector<vec2> spline_points;
 
     if (points.size() < 2) {
@@ -315,7 +317,7 @@ std::vector<vec2> GenerateSplinePoints(const std::vector<vec2>& points, int reso
     return spline_points;
 }
 
-vec2 FindClosestPointOnSpline(const std::vector<vec2>& spline_points, const vec2& position) {
+vec2 FindClosestPointOnSpline(std::span<const vec2> spline_points, const vec2& position) {
     float min_distance = std::numeric_limits<float>::max();
     vec2 closest_point;
     size_t closest_index = 0;
@@ -349,29 +351,49 @@ vec2 ComputeNormalAtPoint(const vec2& p0, const vec2& p1) {
     return { 0.0f, 0.0f };
 }
 
-vec2 ComputeCollisionNormal(const std::vector<vec2>& points, const vec2& pos, const vec2& center, int resolution = 20) {
-    std::vector<vec2> closest_points = points;
-    std::vector<vec2> sorted_point = SortPointsCounterClockwise(closest_points, center);
+void DrawSpline(const std::vector<vec2>& spline_points, color3 color, float width, float alpha, const GLShader* shader) {
+    if (spline_points.size() < 2) return; // 최소한 두 개의 점이 필요
 
-    spline_points = GenerateSplinePoints(sorted_point, resolution);
+    for (size_t i = 0; i < spline_points.size() - 1; ++i) {
+        Engine::GetRender().AddDrawCall(spline_points[i], spline_points[i + 1], color, width, alpha, shader);
+    }
+}
 
-    vec2 closest_point_on_spline = FindClosestPointOnSpline(spline_points, pos);
+vec2 ComputeCollisionNormal(std::span<const vec2> points, const vec2& pos, const vec2& center, int resolution = 20) {
+    // 불필요한 복사 제거, span 유지
+    auto sorted_point = SortPointsCounterClockwise(points, center);
 
-    size_t closest_index = std::find(spline_points.begin(), spline_points.end(), closest_point_on_spline) - spline_points.begin();
-    vec2 tangent_point1 = spline_points[std::max(0, static_cast<int>(closest_index) - 1)];
-    vec2 tangent_point2 = spline_points[std::min(static_cast<int>(spline_points.size() - 1), static_cast<int>(closest_index) + 1)];
-    vec2 normal = ComputeNormalAtPoint(tangent_point1, tangent_point2);
+    // Spline 포인트 생성 (불필요한 복사 방지)
+    auto spline_points = GenerateSplinePoints(sorted_point, resolution);
+    DrawSpline(spline_points, { 1.0f, 0.0f, 0.0f }, 2.0f, 1.0f, nullptr);
+
+    // 가장 가까운 스플라인 점 찾기
+    const vec2& closest_point_on_spline = FindClosestPointOnSpline(spline_points, pos);
+
+    // std::find() 제거: 직접 인덱스 찾기
+    size_t closest_index = std::distance(spline_points.begin(),
+        std::find(spline_points.begin(), spline_points.end(), closest_point_on_spline));
+
+    // 경계 처리 없이 안전하게 인덱스 접근
+    size_t index1 = (closest_index == 0) ? 0 : closest_index - 1;
+    size_t index2 = (closest_index == spline_points.size() - 1) ? closest_index : closest_index + 1;
+
+    vec2 normal = ComputeNormalAtPoint(spline_points[index1], spline_points[index2]);
 
     Engine::GetLogger().LogEvent("Normal: " + std::to_string(normal.x) + ", " + std::to_string(normal.y));
     return normal;
 }
+
 
 bool Ship::CanCollideWith(GameObjectTypes other_object)
 {
     switch (other_object) {
     case GameObjectTypes::Fish:
     case GameObjectTypes::Rock:
+        return true;
+        break;
     case GameObjectTypes::Monster:
+        if(invincibility_timer->IsFinished())
         return true;
         break;
     }
@@ -386,7 +408,7 @@ void Ship::ResolveCollision(GameObject* other_object) {
         change_state(&state_idle);
         break;
     case GameObjectTypes::Rock:
-        if (GetVelocity().Length() <= skidding_speed + 30.f) { // if it was skidding, don't reflect
+        if (GetVelocity().Length() <= skidding_speed + 10.f) { // if it was skidding, don't reflect
             vec2 smallCorrection = -GetVelocity().Normalize(); // with this, ship should not able to move!
             UpdatePosition(smallCorrection);
             can_dash = false;
@@ -401,7 +423,8 @@ void Ship::ResolveCollision(GameObject* other_object) {
             state_move.skip_enter = true;
             change_state(&state_move);
         }
-        HitWithBounce(other_object, -other_object->GetVelocity());
+        invincibility_timer->Set(invincibility_time);
+        HitWithBounce(other_object, -other_object->GetVelocity()*10.f);
         break;
     }
 
@@ -409,7 +432,7 @@ void Ship::ResolveCollision(GameObject* other_object) {
 
 void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
     if (other_object->Type() == GameObjectTypes::Rock) {
-        fuel -= HitDecFuel;
+        fuel -= RockHitDecFuel;
         if (fuel < 0.0f) {
             fuel = 0.0f;
         }
@@ -420,10 +443,20 @@ void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
         std::vector<vec2> points = rock->GetRockGroup()->GetPoints();
         vec2 center = rock->GetRockGroup()->FindCenterPoly();
         normal = ComputeCollisionNormal(points, GetPosition(), center);
+        Engine::GetLogger().LogEvent("normal: " + std::to_string(normal.x) + ", " + std::to_string(normal.y));
+        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new HitEffect(GetPosition()));
     }
 
     else if (other_object->Type() == GameObjectTypes::Monster) {
-        normal = { 0.0f, 1.0f }; // temp
+        fuel -= MonsHitDecFuel;
+        if (fuel < 0.0f) {
+            fuel = 0.0f;
+        }
+        Monster* monster = static_cast<Monster*>(other_object);
+        std::array<vec2, 4> points = monster->GetCollisionBoxPoints();
+        normal = ComputeCollisionNormal(points, GetPosition(), monster->GetPosition());
+        Engine::GetLogger().LogEvent("normal: " + std::to_string(normal.x) + ", " + std::to_string(normal.y));
+        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new MonsterHitEffect(GetPosition()));
     }
 
     Engine::GetLogger().LogEvent("Velocity: " + std::to_string(velocity.x) + ", " + std::to_string(velocity.y));
@@ -445,7 +478,6 @@ void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
     force *= 5.0f;
 
     Engine::GetLogger().LogEvent("velocity.Length(), speed : " + std::to_string(velocity.Length()) + " : " + std::to_string(speed));
-    Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new HitEffect(GetPosition()));
 }
 
 //for fuel
@@ -507,7 +539,7 @@ bool Ship::IsTouchingReef()
 bool Ship::IsFuelZero()
 {
     return FuelFlag;
-    fuel -= HitDecFuel;
+    fuel -= RockHitDecFuel;
     //std::cout << "Collision with Reef!" << std::endl;
 
 }

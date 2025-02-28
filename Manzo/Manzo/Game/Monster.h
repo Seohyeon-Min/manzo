@@ -17,10 +17,12 @@ public:
 	bool IsPlayerInSight(const vec2& playerPos);
     bool IsPlayerInRange(const vec2& playerPos);
     bool CanCollideWith(GameObjectTypes other_object) override;
+    std::array<vec2, 4> GetCollisionBoxPoints();
     void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
-	void DrawSight();
 
 private:
+	void DrawSight();
+    Math::rect GetCollisionBox() { return this->GetGOComponent<RectCollision>()->WorldBoundary_rect(); }
 	Ship* ship_ptr;
     Beat* beat;
     float dist_from_ship = 750.f;
