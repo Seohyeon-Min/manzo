@@ -274,6 +274,7 @@ void Map::ParseSVG(const std::string& filename) {
                 std::vector<Polygon> Polys = EarClipping(positions);
                 for (auto& poly : Polys) {
                     Rock* rock = new Rock(poly);
+                    rock->AddGOComponent(new MAP_SATCollision(poly, rock));
                     rocks.push_back(rock);
 
                     RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new group
@@ -399,7 +400,7 @@ std::vector<vec2> EnsureCCW(const std::vector<vec2>& points) {
 constexpr bool IsConvex(const vec2& a, const vec2& b, const vec2& c) noexcept {
     vec2 ab = b - a;
     vec2 bc = c - b;
-    return cross(ab, bc) < 0;
+    return cross(ab, bc) > 0;
 }
 
 bool PointInTriangle(const vec2& p, const vec2& a, const vec2& b, const vec2& c) {
@@ -429,7 +430,7 @@ std::vector<Polygon> EarClipping(const std::vector<vec2>& points) {
 
     // for the concave polygon
     
-    std::vector<vec2> remaining_points = EnsureCCW(points);
+    std::vector<vec2> remaining_points = points;
     std::vector<Polygon> triangles;
 
 
@@ -467,6 +468,7 @@ std::vector<Polygon> EarClipping(const std::vector<vec2>& points) {
             //eleminate current point
             remaining_points.erase(remaining_points.begin() + i);
             ear_found = true;
+            std::cout << "Ear Found!" << "\n";
             break;
         }
 
@@ -479,6 +481,7 @@ std::vector<Polygon> EarClipping(const std::vector<vec2>& points) {
     Polygon triangle;
     triangle.vertices = { remaining_points[0], remaining_points[1], remaining_points[2] };
     triangles.push_back(triangle);
+    std::cout << "Added Triangle" << "\n";
 
     return triangles;
 
