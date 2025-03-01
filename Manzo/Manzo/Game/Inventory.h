@@ -33,6 +33,7 @@ private:
 	int total_fishNum = 3;
 	int todays_fish_index = 0;
 	int todays_price = 0;
+	int how_much_sold = 0;
 
 	std::string todays_fish_icon;
 

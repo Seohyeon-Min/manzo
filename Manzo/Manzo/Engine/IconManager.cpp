@@ -112,3 +112,15 @@ Icon* IconManager::GetCollidingIcon(Icon& icon)
 	}
 	return nullptr;
 }
+
+Icon* IconManager::GetCollidingIconWithMouse(vec2 mousePosition)
+{
+	for (Icon* icon : icons)
+	{
+		if (icon->IsCollidingWith(mousePosition))
+		{
+			return icon;
+		}
+	}
+	return nullptr;
+}

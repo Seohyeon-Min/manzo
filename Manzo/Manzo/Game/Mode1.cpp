@@ -146,11 +146,11 @@ void Mode1::Load() {
 		{
 			if (line.find("Module1:") != std::string::npos) 
 			{
-				int moduleValue;
+				int module1Value;
 				std::istringstream ss_module(line.substr(9));
-				ss_module >> moduleValue;
+				ss_module >> module1Value;
 
-				if (module && (moduleValue == 1)) {
+				if (module && (module1Value == 1)) {
 					GetGSComponent<GameObjectManager>()->Add(new FirstModule(ship_ptr));
 				}
 			}
@@ -269,6 +269,7 @@ void Mode1::Unload() {
 		}
 
 		saveFile << "Money: " << GetGSComponent<Fish>()->GetMoney() << "\n";
+		saveFile << "Module1: " << module->IsFirstSetted() << "\n";
 		saveFile.close();
 	}
 
