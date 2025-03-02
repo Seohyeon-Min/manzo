@@ -23,6 +23,7 @@ Created:    March 8, 2023
 
 
 #include <iostream>     // for debug
+#include "Module.h"
 
 Mode2::Mode2() {}
 
@@ -57,12 +58,17 @@ void Mode2::Load() {
     // Dialog
     dialog_ptr = new Dialog({0,0});
     GetGSComponent<GameObjectManager>()->Add(dialog_ptr);
+
+    // Module
+   module_ptr = new Module({ 0, 0 });
+    GetGSComponent<GameObjectManager>()->Add(module_ptr);
+
+    // Inven
+    inven_ptr = new Inven({0,0});
+    GetGSComponent<GameObjectManager>()->Add(inven_ptr);
  
-    //// audio
-    //Mix_Music* sample = GetGSComponent<AudioManager>()->LoadMusic("assets/audios/basic_beat_100_4.wav", "sample");
-    //if (sample) {
-    //    GetGSComponent<AudioManager>()->PlayMusic(sample, -1);
-    //}
+    // Icon
+    Engine::GetIconManager().LoadIconList();
 
     // skill
     if (!Engine::Instance().GetTmpPtr())
@@ -77,9 +83,9 @@ void Mode2::Load() {
         skill_ptr->SetShipPtr(ship_ptr);
     }
 
-    //Shop
-    shop_ptr = new Shop();
-    GetGSComponent<GameObjectManager>()->Add(shop_ptr);
+
+    // Mouse
+    GetGSComponent<GameObjectManager>()->Add(new Mouse);
 
     std::cout << "Left money : " << Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() << std::endl;
 }
@@ -105,6 +111,13 @@ void Mode2::Update(double dt) {
        dialog_ptr->LoadDialog(1, 0.05);
        isLoaded = true;
     }
+
+    // Open Inven
+    if (Engine::GetInput().KeyJustPressed(Input::Keys::X))
+    {
+        if (!inven_ptr->GetIsOpened()) inven_ptr->SetIsOpened(true);
+        else inven_ptr->SetIsOpened(false);
+    }
 }
 
 void Mode2::FixedUpdate(double dt)
@@ -117,6 +130,19 @@ void Mode2::Draw() {
 }
 
 void Mode2::Unload() {
+    std::string savePath = "assets/scenes/save_data.txt";
+    std::ofstream saveFile(savePath);
+
+    if (saveFile.is_open()) {
+        saveFile.clear();
+        for (const auto& entry : inven_ptr->fishCollection) {
+            saveFile << entry.first + 1 << " " << entry.second << "\n";
+        }
+        saveFile << "Money: " << inven_ptr->GetMoney() << "\n";
+        saveFile << "Module1: " << module_ptr->IsFirstSetted() << "\n";
+        saveFile.close();
+    }
+
     GetGSComponent<GameObjectManager>()->Unload();
     GetGSComponent<Background>()->Unload();
     ClearGSComponents();

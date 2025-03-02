@@ -8,41 +8,10 @@ static bool Ready_to_sell = false;
 
 Shop::Shop() : GameObject(back_position_default)
 {
-	skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
-
-
-	shop_background = Engine::GetTextureManager().Load("assets/images/temp_box1.png");
-	shop_button = Engine::GetTextureManager().Load("assets/images/temp_box3.png");
-	shop_icon = Engine::GetTextureManager().Load("assets/images/temp_box2.png");
-	inven_background = Engine::GetTextureManager().Load("assets/images/temp_box1.png");
-
-
-	base_icon_direction = { static_cast<float>(-shop_background->GetWidth()), static_cast<float>(Engine::window_height - (inven_background->GetHeight() * 0.9)) }; // ������ �⺻��
-	inven_back_pos = { 300, static_cast<float>(Engine::window_height - (inven_background->GetHeight() * 1.3)) };
-	botton_pos = { static_cast<float>(-shop_background->GetWidth() + shop_button->GetWidth()), static_cast<float>(Engine::window_height - (inven_background->GetHeight() * 0.9)) };
-	back_position_default = { static_cast<float>(100 - shop_background->GetWidth()), static_cast<float>(Engine::window_height - (inven_background->GetHeight() * 1.3)) };
-
-	// Setup for icon and add it to IconManager, will be update more :(
-
-	Icon* test_icon_ptr = new Icon({ base_icon_direction.x , base_icon_direction.y - (float)((shop_background->GetHeight() / 4)) }, shop_icon);
-	Icon* test_icon_ptr2 = new Icon({ base_icon_direction.x , base_icon_direction.y - (float)((shop_background->GetHeight() / 4) * 2) }, shop_icon);
-	icon_manager_ptr = new IconManager();
-	icon_manager_ptr->Add(test_icon_ptr);
-	icon_manager_ptr->Add(test_icon_ptr2);
-	
-	Dragging* test_drag = new Dragging(test_icon_ptr, shop_icon);
-	test_icon_ptr->AddGOComponent(test_drag);
-	Dragging* test_drag2 = new Dragging(test_icon_ptr2, shop_icon);
-	test_icon_ptr2->AddGOComponent(test_drag2);
-
-	test_icon_ptr->GetGOComponent<Dragging>()->RevertPosition(true);
-	test_icon_ptr2->GetGOComponent<Dragging>()->RevertPosition(false);
-	
 }
 
 Shop::~Shop()
 {
-	delete icon_manager_ptr;
 }
 
 

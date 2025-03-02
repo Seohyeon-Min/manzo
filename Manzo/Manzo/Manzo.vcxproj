@@ -21,6 +21,8 @@
     <ClCompile Include="Engine\GameObject.cpp" />
     <ClCompile Include="Engine\GameObjectManager.cpp" />
     <ClCompile Include="Engine\GameStateManager.cpp" />
+    <ClCompile Include="Engine\Icon.cpp" />
+    <ClCompile Include="Engine\IconManager.cpp" />
     <ClCompile Include="Engine\Input.cpp" />
     <ClCompile Include="Engine\logger.cpp" />
     <ClCompile Include="Engine\MapManager.cpp" />
@@ -44,10 +46,10 @@
     <ClCompile Include="Game\Fish.cpp" />
     <ClCompile Include="Game\FishEcosystem.cpp" />
     <ClCompile Include="Game\GameObjectTypes.cpp" />
-    <ClCompile Include="Game\Icon.cpp" />
-    <ClCompile Include="Game\IconManager.cpp" />
+    <ClCompile Include="Game\Inventory.cpp" />
     <ClCompile Include="Game\Mode1.cpp" />
     <ClCompile Include="Game\Mode2.cpp" />
+    <ClCompile Include="Game\Module.cpp" />
     <ClCompile Include="Game\Mouse.cpp" />
     <ClCompile Include="Game\Player.cpp" />
     <ClCompile Include="Game\ScreenWrap.cpp" />
@@ -79,6 +81,8 @@
     <ClInclude Include="Engine\GameObjectManager.h" />
     <ClInclude Include="Engine\GameState.h" />
     <ClInclude Include="Engine\GameStateManager.h" />
+    <ClInclude Include="Engine\Icon.h" />
+    <ClInclude Include="Engine\IconManager.h" />
     <ClInclude Include="Engine\Input.h" />
     <ClInclude Include="Engine\logger.h" />
     <ClInclude Include="Engine\MapManager.h" />
@@ -105,10 +109,10 @@
     <ClInclude Include="Game\Fish.h" />
     <ClInclude Include="Game\FishEcosystem.h" />
     <ClInclude Include="Game\GameObjectTypes.h" />
-    <ClInclude Include="Game\Icon.h" />
-    <ClInclude Include="Game\IconManager.h" />
+    <ClInclude Include="Game\Inventory.h" />
     <ClInclude Include="Game\Mode1.h" />
     <ClInclude Include="Game\Mode2.h" />
+    <ClInclude Include="Game\Module.h" />
     <ClInclude Include="Game\Mouse.h" />
     <ClInclude Include="Game\Particles.h" />
     <ClInclude Include="Game\Player.h" />

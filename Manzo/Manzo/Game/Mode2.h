@@ -18,6 +18,8 @@ Created:    Sept 12, 2024
 #include "Shop.h"
 #include "DialogBox.h"
 #include "Player.h"
+#include "Inventory.h"
+#include "Module.h"
 
 class Fish;
 
@@ -48,6 +50,8 @@ private:
     Shop* shop_ptr;
     Dialog* dialog_ptr;
     Player* player_ptr;
+    Inven* inven_ptr;
+    Module* module_ptr;
 
     float y_limit = 15.0f;
     float frequency = 0.9f;

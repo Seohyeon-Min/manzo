@@ -21,9 +21,13 @@ Created:    March 8, 2023
 #include "AudioManager.h"
 #include "FontManager.h"
 #include "WindowState.h"
+#include "IconManager.h"
 
 #include <chrono>
 #include <time.h>
+#include <random>
+
+extern std::random_device rd;
 
 class Engine : public IProgram {
 public:
@@ -62,6 +66,10 @@ public:
 
     static FontManager& GetFontManager() {
         return Instance().fontmanager;
+    }
+
+    static IconManager& GetIconManager() {
+        return Instance().iconmanager;
     }
 
     void Start(std::string window_title);
@@ -104,4 +112,5 @@ private:
     TextureManager texturemanager;
     Render render;
     FontManager fontmanager;
+    IconManager iconmanager;
 };

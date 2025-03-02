@@ -49,7 +49,7 @@ void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
     vec2 mouse_pos = { (float)Engine::GetInput().GetMousePos().mouseWorldSpaceX, (float)Engine::GetInput().GetMousePos().mouseWorldSpaceY };
     vec2 pos = mouse_pos - window;
 
-
+    ship->dash_target = pos;
     vec2 destination = pos;
     vec2 direction = destination - ship_position;
     float distance = direction.Length();
@@ -81,8 +81,15 @@ void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
     ship_position.y + bubble_direction.y * -30.f
     };
 
+    // max distance 조정해야됨. 일단 최대 대시 가능한 거리
+    if (distance > max_distance) {
+        ship->dash_target = ship_position + direction * max_distance;
+    }
+    else {
+        ship->dash_target = pos;
+    }
     ship->SetVelocity(force);
-    
+
     if (ship->fuel_bubble_timer->Remaining() == 0.0 && force_multiplier > 0.4) {
         Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::FuelBubble>>()->Emit(1, target_position, { 0,0 }, -force * 0.4f, 1.5);
         ship->fuel_bubble_timer->Reset();
@@ -90,23 +97,17 @@ void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
 }
 void Ship::State_Idle::CheckExit(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
-    //if (ship->hit_with) {
-    //    ship->change_state(&ship->state_hit);
-    //}
+
     if (ship->can_dash && Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT) && ship->beat->GetIsOnBeat()) {
-        // Get mouse position relative to the center of the screen
-        vec2 window = { Engine::window_width / 2, Engine::window_height / 2 };
-        vec2 mouse_pos = { (float)Engine::GetInput().GetMousePos().mouseWorldSpaceX, (float)Engine::GetInput().GetMousePos().mouseWorldSpaceY };
-        vec2 pos = mouse_pos - window;
-        ship->destination.x = pos.x;
-        ship->destination.y = pos.y;
-        ship->direction = { ship->destination.x - (ship->GetPosition().x), ship->destination.y - (ship->GetPosition().y) };
+        ship->destination = ship->dash_target;
+        ship->direction = { ship->destination.x - ship->GetPosition().x,
+                            ship->destination.y - ship->GetPosition().y };
         ship->direction = ship->direction.Normalize();
-        ship->force = { (ship->direction * speed) };
+        ship->force = ship->direction * speed;
+
         ship->change_state(&ship->state_move);
     }
 }
-
 
 void Ship::State_Move::Enter(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
