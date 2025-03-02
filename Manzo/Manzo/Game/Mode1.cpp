@@ -28,7 +28,13 @@ Created:    March 8, 2023
 #include "Reef.h"
 #include "Skill.h"
 #include "Boss.h"
+<<<<<<< Updated upstream
 
+=======
+#include "BossBullet.h"
+
+#include <utility>
+>>>>>>> Stashed changes
 #include <iostream>
 
 Mode1::Mode1()
@@ -66,6 +72,7 @@ void Mode1::Load() {
     AddGSComponent(camera);
     camera->SetLimit(Boundary);
 
+<<<<<<< Updated upstream
     //// background
     background = new Background();
     AddGSComponent(background);    
@@ -73,6 +80,16 @@ void Mode1::Load() {
     //// to generate fish
     fishGenerator = new FishGenerator();
     Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
+=======
+	
+	//// background
+	background = new Background();
+	AddGSComponent(background);
+    
+	//// to generate fish
+	fishGenerator = new FishGenerator();
+	Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
+>>>>>>> Stashed changes
 
     background->Add("assets/images/background/temp_background.png", 0.0f);
     background->Add("assets/images/background/bg1.png", 0.3f);
@@ -131,7 +148,65 @@ void Mode1::Update(double dt) {
         boss_ptr = new Boss({ 750,500 }, Boss::BossName::y, Boss::BossType::ChasingPlayer);
         GetGSComponent<CS230::GameObjectManager>()->Add(boss_ptr);
         Isboss = true;
+
     }
+<<<<<<< Updated upstream
+=======
+
+	//camera postion update
+	camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
+
+	// Update Fish Generator
+	fishGenerator->GenerateFish(dt);
+
+	// Update Skills
+	skill_ptr->Update();
+
+	
+
+	// Update 3D Audio with smooth transition for ship position
+	smoothShipPosition.x = std::lerp(previousPosition.x, ship_ptr->GetPosition().x, 0.1f);
+	smoothShipPosition.y = std::lerp(previousPosition.y, ship_ptr->GetPosition().y, 0.1f);
+	previousPosition = smoothShipPosition;
+
+	// Calculate the distance between ship and boss positions
+	float dx = smoothShipPosition.x - bossPosition.x;
+	float dy = smoothShipPosition.y - bossPosition.y;
+	float distance = std::sqrt(dx * dx + dy * dy);
+
+	// Check if within the max distance and apply 3D audio accordingly
+	bool isWithinRange = distance < maxDistance;
+
+	Engine::GetAudioManager().Set3dListenerAndOrientation(smoothShipPosition,vec3{ 0.0f, -1.0f, 0.0f },vec3{ 0.0f, 0.0f, 1.0f }	);
+
+	// Apply 3D position for the boss and calculate volume based on the distance
+	if (isWithinRange) {
+		if (!soundPlaying)
+		{
+			Engine::GetAudioManager().PlayMusics("e morse");
+			soundPlaying = true;
+		}
+		else
+		{
+			if(!replay)
+			{
+				Engine::GetAudioManager().RestartPlayMusic("e morse");
+				replay = true;
+			}
+		}
+		Engine::GetAudioManager().SetChannel3dPosition("e morse", bossPosition);
+
+		// Calculate the volume based on the distance
+		float volumeFactor = 1.0f - std::clamp(distance / 300.0f, 0.0f, 1.0f);
+		float volume = std::lerp(0.0f, 1.0f, volumeFactor);
+		Engine::GetAudioManager().SetChannelVolume("e morse", volume);
+	}
+	else
+	{
+		Engine::GetAudioManager().StopPlayingMusic("e morse");
+		replay = false;
+	}
+>>>>>>> Stashed changes
 }
 
 void Mode1::FixedUpdate(double dt)

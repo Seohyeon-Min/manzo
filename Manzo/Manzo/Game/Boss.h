@@ -2,6 +2,7 @@
 #include "../Engine/GameObject.h"
 #include "GameObjectTypes.h"
 #include "BeatSystem.h"
+#include "BossBullet.h"
 
 #include <vector>
 
@@ -105,6 +106,7 @@ private:
 	Entry4 entry4;
 
 	Beat* beat;
+	
 	std::string boss_name;
 	int index;
 	bool is_boss_fight;

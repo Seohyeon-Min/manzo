@@ -19,7 +19,14 @@ enum class GameObjectTypes {
     BackgroundFish,
     Particle,
     Boss,
+<<<<<<< Updated upstream
     Count
+=======
+    Count,
+    Shop,
+    Icon,
+    BossBullet
+>>>>>>> Stashed changes
 };
 
 bool IsPixelShaderApplicable(GameObjectTypes type);

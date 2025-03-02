@@ -1,7 +1,12 @@
 #include "../Engine/Rapidjson.h"
+#include "../Engine/Engine.h"
+#include "../Engine/GameStateManager.h"
+#include "../Engine/GameObjectManager.h"
 #include "../Engine/AudioManager.h"
+#include "../Engine/ComponentManager.h"
 #include "Boss.h"
 #include "Ship.h"
+#include "BossBullet.h"
 
 
 std::vector<CS230::GameObject::State*> stateMap;
@@ -28,8 +33,16 @@ void Boss::Movingtolocation_fun(int targetEntryNum, Boss* object) {
 	if (targetEntryNum - 1 < object->parttern.size()) {
 		const auto& entryVec = object->parttern[targetEntryNum - 1];
 		for (const auto& entryData : entryVec) {
+			bool booldata = false;
 			if (entryData.delay + 1 == object->beat->GetDelayCount()) {
 				object->current_position = entryData.position;
+				
+				if (!booldata) {
+					BossBullet* bullet_ptr = new BossBullet(object->GetPosition(), 3);
+					Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bullet_ptr);
+					//std::cout << "bullet" << std::endl;
+					booldata = true;
+				}
 			}
 		}
 	}
@@ -59,8 +72,9 @@ void Boss::Chasingplayer_fun(int targetEntryNum, Boss* boss) {
 					boss->current_position = playerPosition;
 				}
 
-				/*std::cout << "Boss is moving towards player. New position: ("
-					<< boss->current_position.x << ", " << boss->current_position.y << ")" << std::endl;*/
+
+				BossBullet* bullet_ptr = new BossBullet(bossPosition, 3);
+				Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bullet_ptr);
 			}
 		}
 	}
@@ -114,7 +128,11 @@ void Boss::State_CutScene::CheckExit(GameObject* object) {
 			Engine::GetAudioManager().PlayMusic(e_music, -1);
 		}
 		boss->beat->SetBPM(boss->bpm);
+<<<<<<< Updated upstream
 		std::cout <<"boss bpm:" << boss->bpm << std::endl;
+=======
+		//std::cout << "boss bpm:" << boss->bpm << std::endl;
+>>>>>>> Stashed changes
 		boss->change_state(&boss->entry1);
 	}
 }

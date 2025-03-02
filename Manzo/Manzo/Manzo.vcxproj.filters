@@ -124,6 +124,36 @@
     <ClCompile Include="Game\AI.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+<<<<<<< Updated upstream
+=======
+    <ClCompile Include="Game\GodRay.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\ScreenWrap.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\DialogBox.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Shop.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Rock.cpp" />
+    <ClCompile Include="Game\RockGroup.cpp" />
+    <ClCompile Include="Game\RockPoint.cpp" />
+    <ClCompile Include="Game\Icon.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\IconManager.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Dragging.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\BossBullet.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+>>>>>>> Stashed changes
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h">
@@ -270,9 +300,6 @@
     <ClInclude Include="Engine\UI.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\UIManager.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\DrawSetting.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -297,5 +324,41 @@
     <ClInclude Include="Engine\AABB.h">
       <Filter>Engine</Filter>
     </ClInclude>
+<<<<<<< Updated upstream
+=======
+    <ClInclude Include="Game\GodRay.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\ScreenWrap.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\DialogBox.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Shop.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\DashEffect.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Rock.h" />
+    <ClInclude Include="Game\RockGroup.h" />
+    <ClInclude Include="Game\RockPoint.h" />
+    <ClInclude Include="Game\Icon.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\IconManager.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Dragging.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\UIManager.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\BossBullet.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+>>>>>>> Stashed changes
   </ItemGroup>
 </Project>
