@@ -275,52 +275,21 @@ void Map::ParseSVG(const std::string& filename) {
                 RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new rockgroup
 
                 std::vector<Polygon> Polys = EarClipping(positions);
+                int i = 0;
                 for (auto& pol : Polys) {
                     Rock* rock = new Rock(pol);
                     rock->AddGOComponent(new MAP_SATCollision(pol, rock));
                     rocks.push_back(rock);
+                    //RockGroup* rockgroup = new RockGroup(poly.polyindex);
 
                     rockgroup->AddRock(rock);                                       //add poly into new group
 
                     rock->SetRockGroup(rockgroup);
+
                 }
 
                 rock_groups.push_back(rockgroup);
 
-                /*
-                    if ((poly.polyindex).substr(4, 1) == "2") {
-                        Rock* moving_rock = new Rock(poly);
-                        
-                        rocks.push_back(moving_rock);
-
-                        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(moving_rock);
-                        moving_rock->AddGOComponent(new MAP_SATCollision(poly, moving_rock));
-                        RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new group
-                        rockgroup->AddRock(moving_rock);                                       //add poly into new group
-
-                        moving_rock->SetRockGroup(rockgroup);
-                        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rockgroup);
-                        rock_groups.push_back(rockgroup);
-                    }
-                    else {
-                        Rock* rock = new Rock(poly);
-                        
-                        rocks.push_back(rock);
-                        
-                        //rock->AddGOComponent(new MAP_SATCollision(poly, rock));
-                        RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new group
-                        rockgroup->AddRock(rock);                                       //add poly into new group
-
-                        rock->SetRockGroup(rockgroup);
-                        rock_groups.push_back(rockgroup);
-                    }*/
-
-                
-
-
-                
-
-                
             }
 
             //std::cout << "vertex count : " << poly.vertexCount << std::endl;
