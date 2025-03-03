@@ -275,16 +275,17 @@ void Map::ParseSVG(const std::string& filename) {
                 RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new rockgroup
 
                 std::vector<Polygon> Polys = EarClipping(positions);
-                for (auto& poly : Polys) {
-                    Rock* rock = new Rock(poly);
-                    rock->AddGOComponent(new MAP_SATCollision(poly, rock));
+                for (auto& pol : Polys) {
+                    Rock* rock = new Rock(pol);
+                    rock->AddGOComponent(new MAP_SATCollision(pol, rock));
                     rocks.push_back(rock);
 
                     rockgroup->AddRock(rock);                                       //add poly into new group
 
                     rock->SetRockGroup(rockgroup);
-                    rock_groups.push_back(rockgroup);
                 }
+
+                rock_groups.push_back(rockgroup);
 
                 /*
                     if ((poly.polyindex).substr(4, 1) == "2") {
@@ -347,6 +348,9 @@ void Map::ParseSVG(const std::string& filename) {
 
     //debugging & matching index, points
     for (auto& r_group : rock_groups) {
+
+        std::cout << "Group Index : " << r_group->GetIndex() << "\n";
+        std::cout << "Group Rocks Size : " << r_group->GetRocks().size() << "\n";
         /*std::cout << "Group Position: " << r_group->GetPosition().x << "," << r_group->GetPosition().y << "\n";
         std::cout << "Group Index : " << r_group->GetIndex() << "\n";
         std::cout << "Group Rocks Size : " << r_group->GetRocks().size() << "\n";
@@ -442,12 +446,17 @@ std::vector<Polygon> EarClipping(const std::vector<vec2>& points) {
             //eleminate current point
             remaining_points.erase(remaining_points.begin() + i);
             ear_found = true;
-            std::cout << "Ear Found!" << "\n";
+            //std::cout << "Ear Found!" << "\n";
             break;
         }
 
-        if (!ear_found) {
-            std::cout<<"EarClipping failed: Invalid polygon or input"<<"\n";
+        if (!ear_found) {   //If the polygon is convex polygon or could not find the ear...
+            std::cout<<"EarClipping failed: Invalid polygon or It is Convex Polygon"<<"\n";
+            Polygon poly;
+            poly.vertices = points;
+
+            triangles.push_back(poly);
+            return triangles;
         }
     }
 
@@ -602,7 +611,7 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
                         rock->Active(false);
                         //rock->AddGOComponent(new MAP_SATCollision(poly2, rock));
                         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Remove(rock);
-                        std::cout << "Unloaded Rock!!!!!!!!!!!!!!!!!" << "\n";
+                        //std::cout << "Unloaded Rock!!!!!!!!!!!!!!!!!" << "\n";
                     }
                 }
 
