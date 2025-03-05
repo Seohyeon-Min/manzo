@@ -85,7 +85,6 @@ void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
     ship_position.y + bubble_direction.y * -30.f
     };
 
-    // max distance �����ؾߵ�. �ϴ� �ִ� ��� ������ �Ÿ�
     if (distance > max_distance) {
         ship->dash_target = ship_position + direction * max_distance;
     }
@@ -355,7 +354,7 @@ vec2 ComputeNormalAtPoint(const vec2& p0, const vec2& p1) {
 }
 
 void DrawSpline(const std::vector<vec2>& spline_points, color3 color, float width, float alpha, const GLShader* shader) {
-    if (spline_points.size() < 2) return; // �ּ��� �� ���� ���� �ʿ�
+    if (spline_points.size() < 2) return; 
 
     for (size_t i = 0; i < spline_points.size() - 1; ++i) {
         Engine::GetRender().AddDrawCall(spline_points[i], spline_points[i + 1], color, width, alpha, shader);
@@ -363,21 +362,17 @@ void DrawSpline(const std::vector<vec2>& spline_points, color3 color, float widt
 }
 
 vec2 ComputeCollisionNormal(std::span<const vec2> points, const vec2& pos, const vec2& center, int resolution = 20) {
-    // ���ʿ��� ���� ����, span ����
     auto sorted_point = SortPointsCounterClockwise(points, center);
 
-    // Spline ����Ʈ ���� (���ʿ��� ���� ����)
     auto spline_points = GenerateSplinePoints(sorted_point, resolution);
     DrawSpline(spline_points, { 1.0f, 0.0f, 0.0f }, 2.0f, 1.0f, nullptr);
 
-    // ���� ����� ���ö��� �� ã��
     const vec2& closest_point_on_spline = FindClosestPointOnSpline(spline_points, pos);
 
-    // std::find() ����: ���� �ε��� ã��
+
     size_t closest_index = std::distance(spline_points.begin(),
         std::find(spline_points.begin(), spline_points.end(), closest_point_on_spline));
 
-    // ��� ó�� ���� �����ϰ� �ε��� ����
     size_t index1 = (closest_index == 0) ? 0 : closest_index - 1;
     size_t index2 = (closest_index == spline_points.size() - 1) ? closest_index : closest_index + 1;
 
