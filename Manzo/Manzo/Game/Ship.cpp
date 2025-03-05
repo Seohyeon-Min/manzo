@@ -53,7 +53,7 @@ void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
     vec2 mouse_pos = { (float)Engine::GetInput().GetMousePos().mouseWorldSpaceX, (float)Engine::GetInput().GetMousePos().mouseWorldSpaceY };
     vec2 pos = mouse_pos - window;
 
-
+    ship->dash_target = pos;
     vec2 destination = pos;
     vec2 direction = destination - ship_position;
     float distance = direction.Length();
@@ -85,8 +85,15 @@ void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
     ship_position.y + bubble_direction.y * -30.f
     };
 
+    // max distance ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ßµï¿½. ï¿½Ï´ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½
+    if (distance > max_distance) {
+        ship->dash_target = ship_position + direction * max_distance;
+    }
+    else {
+        ship->dash_target = pos;
+    }
     ship->SetVelocity(force);
-    
+
     if (ship->fuel_bubble_timer->Remaining() == 0.0 && force_multiplier > 0.4) {
         Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::FuelBubble>>()->Emit(1, target_position, { 0,0 }, -force * 0.4f, 1.5);
         ship->fuel_bubble_timer->Reset();
@@ -95,19 +102,15 @@ void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
 void Ship::State_Idle::CheckExit(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
     if (ship->can_dash && Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT) && ship->beat->GetIsOnBeat()) {
-        // Get mouse position relative to the center of the screen
-        vec2 window = { Engine::window_width / 2, Engine::window_height / 2 };
-        vec2 mouse_pos = { (float)Engine::GetInput().GetMousePos().mouseWorldSpaceX, (float)Engine::GetInput().GetMousePos().mouseWorldSpaceY };
-        vec2 pos = mouse_pos - window;
-        ship->destination.x = pos.x;
-        ship->destination.y = pos.y;
-        ship->direction = { ship->destination.x - (ship->GetPosition().x), ship->destination.y - (ship->GetPosition().y) };
+        ship->destination = ship->dash_target;
+        ship->direction = { ship->destination.x - ship->GetPosition().x,
+                            ship->destination.y - ship->GetPosition().y };
         ship->direction = ship->direction.Normalize();
-        ship->force = { (ship->direction * speed) };
+        ship->force = ship->direction * speed;
+
         ship->change_state(&ship->state_move);
     }
 }
-
 
 void Ship::State_Move::Enter(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
@@ -274,7 +277,7 @@ vec2 CatmullRomSpline(const vec2& p0, const vec2& p1, const vec2& p2, const vec2
 }
 
 std::vector<vec2> SortPointsCounterClockwise(std::span<const vec2> points, const vec2& center) {
-    std::vector<vec2> sorted_points(points.begin(), points.end()); // ºÒÇÊ¿äÇÑ º¹»ç Á¦°Å
+    std::vector<vec2> sorted_points(points.begin(), points.end()); // ï¿½ï¿½ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     std::sort(sorted_points.begin(), sorted_points.end(),
         [&center](const vec2& a, const vec2& b) {
             float angle_a = atan2(a.y - center.y, a.x - center.x);
@@ -352,7 +355,7 @@ vec2 ComputeNormalAtPoint(const vec2& p0, const vec2& p1) {
 }
 
 void DrawSpline(const std::vector<vec2>& spline_points, color3 color, float width, float alpha, const GLShader* shader) {
-    if (spline_points.size() < 2) return; // ÃÖ¼ÒÇÑ µÎ °³ÀÇ Á¡ÀÌ ÇÊ¿ä
+    if (spline_points.size() < 2) return; // ï¿½Ö¼ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½
 
     for (size_t i = 0; i < spline_points.size() - 1; ++i) {
         Engine::GetRender().AddDrawCall(spline_points[i], spline_points[i + 1], color, width, alpha, shader);
@@ -360,21 +363,21 @@ void DrawSpline(const std::vector<vec2>& spline_points, color3 color, float widt
 }
 
 vec2 ComputeCollisionNormal(std::span<const vec2> points, const vec2& pos, const vec2& center, int resolution = 20) {
-    // ºÒÇÊ¿äÇÑ º¹»ç Á¦°Å, span À¯Áö
+    // ï¿½ï¿½ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, span ï¿½ï¿½ï¿½ï¿½
     auto sorted_point = SortPointsCounterClockwise(points, center);
 
-    // Spline Æ÷ÀÎÆ® »ý¼º (ºÒÇÊ¿äÇÑ º¹»ç ¹æÁö)
+    // Spline ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
     auto spline_points = GenerateSplinePoints(sorted_point, resolution);
     DrawSpline(spline_points, { 1.0f, 0.0f, 0.0f }, 2.0f, 1.0f, nullptr);
 
-    // °¡Àå °¡±î¿î ½ºÇÃ¶óÀÎ Á¡ Ã£±â
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¶ï¿½ï¿½ï¿½ ï¿½ï¿½ Ã£ï¿½ï¿½
     const vec2& closest_point_on_spline = FindClosestPointOnSpline(spline_points, pos);
 
-    // std::find() Á¦°Å: Á÷Á¢ ÀÎµ¦½º Ã£±â
+    // std::find() ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ Ã£ï¿½ï¿½
     size_t closest_index = std::distance(spline_points.begin(),
         std::find(spline_points.begin(), spline_points.end(), closest_point_on_spline));
 
-    // °æ°è Ã³¸® ¾øÀÌ ¾ÈÀüÇÏ°Ô ÀÎµ¦½º Á¢±Ù
+    // ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Îµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     size_t index1 = (closest_index == 0) ? 0 : closest_index - 1;
     size_t index2 = (closest_index == spline_points.size() - 1) ? closest_index : closest_index + 1;
 

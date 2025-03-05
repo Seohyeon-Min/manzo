@@ -31,6 +31,8 @@ public:
     bool IsFuelZero();
     bool IsShipUnder();
 
+    const vec2 GetDashPos() { return dash_target; }
+
 private:
     void HitWithBounce(GameObject* other_object, vec2 initial_velocity);
 
@@ -70,6 +72,9 @@ private:
     double fuelcounter = 0;
     Rock* before_nearest_rock = nullptr;
     Rock* nearestRock = nullptr;
+    //
+
+    vec2 dash_target;
 
     BounceBehavior* bounceBehavior;
 

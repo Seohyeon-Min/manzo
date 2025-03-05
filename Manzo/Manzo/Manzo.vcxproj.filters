@@ -33,8 +33,6 @@
     <ClCompile Include="Game\Fish.cpp" />
     <ClCompile Include="Game\FishEcosystem.cpp" />
     <ClCompile Include="Game\GameObjectTypes.cpp" />
-    <ClCompile Include="Game\Icon.cpp" />
-    <ClCompile Include="Game\IconManager.cpp" />
     <ClCompile Include="Game\Mode1.cpp" />
     <ClCompile Include="Game\Mode2.cpp" />
     <ClCompile Include="Game\Mouse.cpp" />
@@ -51,6 +49,10 @@
     <ClCompile Include="Engine\MathUtils.cpp" />
     <ClCompile Include="Game\Monster.cpp" />
     <ClCompile Include="Game\BounceBehavior.h" />
+    <ClCompile Include="Game\Inventory.cpp" />
+    <ClCompile Include="Engine\Icon.cpp" />
+    <ClCompile Include="Engine\IconManager.cpp" />
+    <ClCompile Include="Game\Module.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h" />
@@ -91,8 +93,6 @@
     <ClInclude Include="Game\Fish.h" />
     <ClInclude Include="Game\FishEcosystem.h" />
     <ClInclude Include="Game\GameObjectTypes.h" />
-    <ClInclude Include="Game\Icon.h" />
-    <ClInclude Include="Game\IconManager.h" />
     <ClInclude Include="Game\Mode1.h" />
     <ClInclude Include="Game\Mode2.h" />
     <ClInclude Include="Game\Mouse.h" />
@@ -109,5 +109,9 @@
     <ClInclude Include="Game\States.h" />
     <ClInclude Include="Engine\MathUtils.h" />
     <ClInclude Include="Game\Monster.h" />
+    <ClInclude Include="Game\Inventory.h" />
+    <ClInclude Include="Engine\Icon.h" />
+    <ClInclude Include="Engine\IconManager.h" />
+    <ClInclude Include="Game\Module.h" />
   </ItemGroup>
 </Project>

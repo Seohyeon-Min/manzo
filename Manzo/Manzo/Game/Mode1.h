@@ -19,6 +19,7 @@ Created:    March 8, 2023
 #include "Skill.h"
 #include "Fish.h"
 #include "Shop.h"
+#include "Module.h"
 
 class Reef;
 class Ship;
@@ -49,6 +50,7 @@ private:
     Beat* beat_system;
     Skillsys* skill_ptr;
     Skillsys::Skill_Net* Net_ptr;
+    Module* module;
 
     bool Isboss = false;
     bool soundPlaying = false;

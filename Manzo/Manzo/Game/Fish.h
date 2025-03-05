@@ -1,9 +1,11 @@
-#ifndef FISH_H
-#define FISH_H
+#pragma once
 
 #include "../Engine/GameObject.h"
 #include "GameObjectTypes.h"
 #include "../Engine/MapManager.h"
+#include <map>
+
+extern std::map<int, int> fishCaptureCount;
 
 class Fish : public GameObject
 {
@@ -56,5 +58,3 @@ private:
 };
 
 extern int fishCnt;
-
-#endif

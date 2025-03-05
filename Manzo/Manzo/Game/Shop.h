@@ -9,8 +9,6 @@
 #include "..\Engine\Engine.h"
 #include "Fish.h"
 #include "Skill.h"
-#include "icon.h"
-#include "IconManager.h"
 
 // class Skillsys;
 
@@ -63,7 +61,7 @@ private:
 
 	Skillsys*					skill_ptr;
 	//Icon*						icon_ptr;
-	IconManager*				icon_manager_ptr;
+	//IconManager*				icon_manager_ptr;
 	int							Net_Money = 3;
 	bool						shop_available = false; // false = shop disappear / true = shop appear
 	GLTexture*					shop_background = nullptr; //texture
