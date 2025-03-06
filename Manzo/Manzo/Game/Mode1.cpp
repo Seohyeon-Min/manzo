@@ -125,15 +125,15 @@ void Mode1::Load() {
 
 
 	// Skill
-	if (!Engine::Instance().GetTmpPtr())
+	if (!Engine::Instance()->GetTmpPtr())
 	{
-		Engine::Instance().SetTmpPtr(new Skillsys);
-		skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
+		Engine::Instance()->SetTmpPtr(new Skillsys);
+		skill_ptr = static_cast<Skillsys*>(Engine::Instance()->GetTmpPtr());
 		skill_ptr->SetShipPtr(ship_ptr);
 	}
 	else
 	{
-		skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
+		skill_ptr = static_cast<Skillsys*>(Engine::Instance()->GetTmpPtr());
 		skill_ptr->SetShipPtr(ship_ptr);
 	}
 }
@@ -251,5 +251,5 @@ void Mode1::Unload() {
 	Engine::GetRender().ClearDrawCalls();
 	ClearGSComponents();
 	Engine::GetAudioManager().StopAllChannels();
-	Engine::Instance().ResetSlowDownFactor();
+	Engine::Instance()->ResetSlowDownFactor();
 }

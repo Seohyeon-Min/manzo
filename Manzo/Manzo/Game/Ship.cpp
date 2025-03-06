@@ -220,7 +220,7 @@ void Ship::Update(double dt)
         }
 
         if (collide_timer->IsFinished()) {
-            Engine::Instance().ResetSlowDownFactor();
+            Engine::Instance()->ResetSlowDownFactor();
             collide_timer->Reset();
             slow_down = 0.0f;
             hit_with = false;
@@ -458,7 +458,7 @@ void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
     }
 
     Engine::GetLogger().LogEvent("Velocity: " + std::to_string(velocity.x) + ", " + std::to_string(velocity.y));
-    Engine::Instance().SetSlowDownFactor(slow_down_factor);
+    Engine::Instance()->SetSlowDownFactor(slow_down_factor);
     direction = bounceBehavior->CalculateBounceDirection(velocity,normal);
 
     float speed = velocity.Length();
