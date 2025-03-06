@@ -33,6 +33,7 @@ bool Icon::CanCollideWith(GameObjectTypes other_object)
 	{
 	case GameObjectTypes::Mouse:
 		if (can_drag) return true;
+		return false;
 	case GameObjectTypes::Icon:
 		return true;
 	}

@@ -182,7 +182,7 @@ void Inven::State_FC::Enter(GameObject* object)
 	for (auto& fish : inven->fishCollection)
 	{
 		std::string file_name = "fish" + std::to_string(fish.first + 1);
-		Engine::GetIconManager().AddIcon(file_name, { 100,float(position += 80) }, 1.0f);
+		Engine::GetIconManager().AddIcon(file_name, { 100,float(position += 80) }, 1.0f, false);
 	}
 
 	Engine::GetIconManager().AddIcon("plus1", { 80,180 }, 0.2f, false);
