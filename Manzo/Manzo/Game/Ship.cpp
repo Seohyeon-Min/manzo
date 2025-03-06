@@ -117,11 +117,9 @@ void Ship::State_Move::Enter(GameObject* object) {
     vec2 dir = ship->GetVelocity().Normalize();
     if (skip_enter) return;
     Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new DashEffect());
-    
 }
 void Ship::State_Move::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
     Ship* ship = static_cast<Ship*>(object);
-
 }
 
 void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_unused]] double fixed_dt) {
@@ -161,7 +159,7 @@ void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_
         return;
     }
 
-    if (ship->IsCollidingWithNextFrame(ship->before_nearest_rock, ship->GetVelocity(), (float)fixed_dt, ship->toi)) {
+    if (ship->IsCollidingWithNextFrame(ship->nearestRock, ship->GetVelocity(), (float)fixed_dt, ship->toi)) {
         Engine::GetLogger().LogEvent("Collision Detected, Its toi is : " + std::to_string(ship->toi));
         //vec2 smallCorrection = -ship->GetVelocity().Normalize();
         if (ship->toi <= 0) { // just in case
@@ -180,7 +178,7 @@ void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_
         Engine::GetLogger().LogEvent("@@@@ In resolve_collision @@@@");
         //this should be started in a next frame
         //ship->nearestRock = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRock(ship); // it should be FindNearestRockNextFrame
-        if (ship->before_nearest_rock) {
+        if (ship->nearestRock) {
             if (!ship->collide_timer->IsRunning()) {
                 ship->collide_timer->Start();
             }
@@ -414,6 +412,8 @@ void Ship::ResolveCollision(GameObject* other_object) {
         }
         break;
     case GameObjectTypes::Monster:
+        hit_with = true;
+
         if (!collide_timer->IsRunning()) {
             collide_timer->Start();
         }
@@ -467,6 +467,9 @@ void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
     if (speed >= 5000.f) {
         speed = 5000.f - slow_down;
         std::cout << "ship->slow_down: " << slow_down << std::endl;
+    }
+    else if (speed <= 800.f) {
+        speed = 800.f;
     }
     else {
         speed -= slow_down;

@@ -27,7 +27,6 @@ void Monster::Update(double dt)
         change_state(&state_goback);
     }
 
-
     float decrease_duration = (float)beat->GetFixedDuration() - 0.1f;
     float delta_radius = (max_scale - 1.0f) / decrease_duration;
     float delta_alpha = 1 / decrease_duration;
@@ -195,7 +194,6 @@ void Monster::Dash::Enter(GameObject* object)
     std::cout << "Dash_STart\n";
     monster->dash_timer->Start();
     alpha = init_alpha;
-    
 }
 
 void Monster::Dash::Update(GameObject* object, double dt)

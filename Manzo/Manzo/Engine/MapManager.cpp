@@ -239,9 +239,8 @@ void Map::ParseSVG(const std::string& filename) {
                         Rock* rock = new Rock(poly);
                         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rock);
                         rock->AddGOComponent(new MAP_SATCollision(poly, rock));
-                        MakeRockGroups(rock, poly);
-                    }
-                
+                        MakeRockGroups(rock, poly);                       
+                    }   
             }
 
             //std::cout << "vertex count : " << poly.vertexCount << std::endl;
@@ -277,7 +276,6 @@ void Map::ParseSVG(const std::string& filename) {
         std::cout << "Group Moving Rocks Size : " << r_group->GetMovingRocks().size() << "\n";*/
         r_group->MatchIndex();
         r_group->SetPoints();
-        
         //std::cout <<"How Many Points? : " << r_group->GetPoints().size() <<"\n";
     }
     file.close();
