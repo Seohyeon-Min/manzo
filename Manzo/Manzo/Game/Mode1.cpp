@@ -122,20 +122,6 @@ void Mode1::Load() {
 
 	// monster
 	GetGSComponent<GameObjectManager>()->Add(new Monster(ship_ptr, {300,300}));
-
-
-	// Skill
-	if (!Engine::Instance()->GetTmpPtr())
-	{
-		Engine::Instance()->SetTmpPtr(new Skillsys);
-		skill_ptr = static_cast<Skillsys*>(Engine::Instance()->GetTmpPtr());
-		skill_ptr->SetShipPtr(ship_ptr);
-	}
-	else
-	{
-		skill_ptr = static_cast<Skillsys*>(Engine::Instance()->GetTmpPtr());
-		skill_ptr->SetShipPtr(ship_ptr);
-	}
 }
 
 void Mode1::Update(double dt) {
@@ -171,10 +157,6 @@ void Mode1::Update(double dt) {
 
 	// Update Fish Generator
 	fishGenerator->GenerateFish(dt);
-
-	// Update Skills
-	skill_ptr->Update();
-
 
 	// Update 3D Audio with smooth transition for ship position
 	smoothShipPosition.x = std::lerp(previousPosition.x, ship_ptr->GetPosition().x, 0.1f);
@@ -238,14 +220,27 @@ void Mode1::Draw() {
 }
 
 void Mode1::Unload() {
+    ship_ptr = nullptr;
+    delete ship_ptr;
+    fishGenerator = nullptr;
+    delete fishGenerator;
+    fish = nullptr;
+    delete fish;
+    background = nullptr;
+    delete background;
+    boss_ptr = nullptr;
+    delete boss_ptr;
+    camera = nullptr;
+    delete camera;
+    beat_system = nullptr;
+    delete beat_system;
+    module = nullptr;
+    delete module;
 
-	ship_ptr = nullptr;
-	delete fishGenerator;
-	fishGenerator = nullptr;
 	playing = false;
 	soundPlaying = false;
 	replay = false;
-	fishGenerator = nullptr;
+
 	GetGSComponent<GameObjectManager>()->Unload();
 	GetGSComponent<Background>()->Unload();
 	Engine::GetRender().ClearDrawCalls();

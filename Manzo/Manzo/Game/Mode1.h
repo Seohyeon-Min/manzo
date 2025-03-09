@@ -40,7 +40,6 @@ public:
         return "Mode1";
     }
 private:
-    Reef* reef;
     Ship* ship_ptr;
     FishGenerator* fishGenerator;
     Fish* fish;
@@ -48,8 +47,6 @@ private:
     Boss* boss_ptr;
     Cam* camera;
     Beat* beat_system;
-    Skillsys* skill_ptr;
-    Skillsys::Skill_Net* Net_ptr;
     Module* module;
 
     bool Isboss = false;
