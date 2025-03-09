@@ -100,20 +100,23 @@ void Render::RenderAll() {
 void Render::ApplyPostProcessing()
 {
     bool horizontal = true, first_iteration = true;
-    int num_passes = 2; // Number of post process
+    int num_passes = 3; // Number of post process
 
     for (int i = 0; i < num_passes; i++) {
         postProcessFramebuffer[horizontal].Bind();
         glClear(GL_COLOR_BUFFER_BIT);
 
-        GLShader* shader = Engine::GetShaderManager().GetShader("under_water_god_ray");
+        GLShader* shader = Engine::GetShaderManager().GetShader("post_underwater_distortion");
 
         switch (i) {
-        case 1:
-            shader = Engine::GetShaderManager().GetShader("under_water_god_ray");
+        case 0: // Distortion
+            shader = Engine::GetShaderManager().GetShader("post_underwater_distortion");
             break;
-        case 0:
+        case 1: // Bloom
             shader = Engine::GetShaderManager().GetShader("post_bloom"); 
+            break;
+        case 2: // God Ray
+            shader = Engine::GetShaderManager().GetShader("under_water_god_ray");
             break;
         }
         shader->Use();
@@ -124,17 +127,21 @@ void Render::ApplyPostProcessing()
         double currentTime = Engine::GetAudioManager().GetCurrentMusicTime("background1");
 
         switch (i) {
-        case 1: // God Ray
+        case 0: // Distortion
             shader->SendUniform("uSceneTexture", 0);
             shader->SendUniform("iResolution", Engine::window_width, Engine::window_height);
             shader->SendUniform("iTime", float(currentTime));
-            break;
-        case 0: // Bloom
+        case 1: // Bloom
             shader->SendUniform("uSceneTexture", 0);
             shader->SendUniform("uThreshold", 0.8f);
             shader->SendUniform("uBlurDirection", 1.0f, 1.0f);
             shader->SendUniform("uResolution", static_cast<float>(Engine::window_width));
             shader->SendUniform("uBloomIntensity", 1.1f);
+            break;
+        case 2: // God Ray
+            shader->SendUniform("uSceneTexture", 0);
+            shader->SendUniform("iResolution", Engine::window_width, Engine::window_height);
+            shader->SendUniform("iTime", float(currentTime));
             break;
         }
 
@@ -552,7 +559,7 @@ void Render::CreatLineModel()
 
 void Render::CreateCircleLineModel() {
     int segments = 30;
-    float radius = 0.5;
+    float radius = 1;
 
     std::vector<vec2> positions;
     positions.reserve(segments);

@@ -40,6 +40,7 @@
     <ClCompile Include="Game\Background.cpp" />
     <ClCompile Include="Game\BeatSystem.cpp" />
     <ClCompile Include="Game\Boss.cpp" />
+    <ClCompile Include="Game\BounceBehavior.h" />
     <ClCompile Include="Game\DialogBox.cpp" />
     <ClCompile Include="Game\Effect.cpp" />
     <ClCompile Include="Game\Dragging.cpp" />
@@ -49,6 +50,7 @@
     <ClCompile Include="Game\Inventory.cpp" />
     <ClCompile Include="Game\Mode1.cpp" />
     <ClCompile Include="Game\Mode2.cpp" />
+    <ClCompile Include="Game\Monster.cpp" />
     <ClCompile Include="Game\Module.cpp" />
     <ClCompile Include="Game\Mouse.cpp" />
     <ClCompile Include="Game\Player.cpp" />
@@ -112,6 +114,7 @@
     <ClInclude Include="Game\Inventory.h" />
     <ClInclude Include="Game\Mode1.h" />
     <ClInclude Include="Game\Mode2.h" />
+    <ClInclude Include="Game\Monster.h" />
     <ClInclude Include="Game\Module.h" />
     <ClInclude Include="Game\Mouse.h" />
     <ClInclude Include="Game\Particles.h" />

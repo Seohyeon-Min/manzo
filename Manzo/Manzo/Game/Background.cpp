@@ -20,7 +20,7 @@ void Background::Add(const std::filesystem::path& texture_path, float speed, Dra
 
 void Background::SetUniforms(const GLShader* shader) {
     double currentTime = Engine::GetAudioManager().GetCurrentMusicTime(Engine::GetAudioManager().GetID("assets/audios/bgm_original.wav"));
-    //counter += Engine::Instance().GetDt();
+    //counter += Engine::Instance()->GetDt();
     float texelSizeX = 1.0f / GetSize().width-70.f;
     float texelSizeY = 1.0f / GetSize().height - 70.f;
     shader->SendUniform("uResolution",texelSizeX, texelSizeY);    shader->SendUniform("uBlurDirection", 1.0f, 0.0f); // 가로 방향

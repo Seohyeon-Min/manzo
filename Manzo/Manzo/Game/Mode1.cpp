@@ -27,6 +27,7 @@ Created:    March 8, 2023
 #include "Fish.h"
 #include "Skill.h"
 #include "Boss.h"
+#include "Monster.h"
 
 
 #include <utility>
@@ -54,6 +55,7 @@ void Mode1::Load() {
 	Engine::GetShaderManager().LoadShader("under_water_god_ray", "assets/shaders/post_default.vert", "assets/shaders/underwater_god_ray.frag");
 	Engine::GetShaderManager().LoadShader("post_default", "assets/shaders/post_default.vert", "assets/shaders/post_default.frag");
     Engine::GetShaderManager().LoadShader("post_bloom", "assets/shaders/post_default.vert", "assets/shaders/post_bloom.frag");
+	Engine::GetShaderManager().LoadShader("post_underwater_distortion", "assets/shaders/post_default.vert", "assets/shaders/post_underwater_distortion.frag");
 
 	// audio
 	Engine::GetAudioManager().LoadMusic("assets/audios/bgm_original.wav", "background1", false);
@@ -118,16 +120,20 @@ void Mode1::Load() {
 	GetGSComponent<GameObjectManager>()->Add(new Mouse);
 	GetGSComponent<GameObjectManager>()->Add(new FuelUI(ship_ptr));
 
+	// monster
+	GetGSComponent<GameObjectManager>()->Add(new Monster(ship_ptr, {300,300}));
+
+
 	// Skill
-	if (!Engine::Instance().GetTmpPtr())
+	if (!Engine::Instance()->GetTmpPtr())
 	{
-		Engine::Instance().SetTmpPtr(new Skillsys);
-		skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
+		Engine::Instance()->SetTmpPtr(new Skillsys);
+		skill_ptr = static_cast<Skillsys*>(Engine::Instance()->GetTmpPtr());
 		skill_ptr->SetShipPtr(ship_ptr);
 	}
 	else
 	{
-		skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
+		skill_ptr = static_cast<Skillsys*>(Engine::Instance()->GetTmpPtr());
 		skill_ptr->SetShipPtr(ship_ptr);
 	}
 }
@@ -245,5 +251,5 @@ void Mode1::Unload() {
 	Engine::GetRender().ClearDrawCalls();
 	ClearGSComponents();
 	Engine::GetAudioManager().StopAllChannels();
-	Engine::Instance().ResetSlowDownFactor();
+	Engine::Instance()->ResetSlowDownFactor();
 }

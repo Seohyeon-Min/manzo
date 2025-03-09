@@ -114,7 +114,7 @@ Rock* GameObjectManager::FindNearestRock(GameObject* object) {
 	auto camera_bounds = Engine::GetGameStateManager().GetGSComponent<Cam>()->GetBounds();
 
 	for (GameObject* gameObj : objects) {
-		if (gameObj->Type() == GameObjectTypes::Rock && gameObj->IsVisible(camera_bounds)) {
+		if (gameObj->Type() == GameObjectTypes::Rock/* && gameObj->IsVisible(camera_bounds)*/) {
 			Rock* rock = static_cast<Rock*>(gameObj);
 			std::vector<vec2> rockPoints = rock->GetRockGroup()->GetPoints();
 

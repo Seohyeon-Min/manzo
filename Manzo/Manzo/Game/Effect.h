@@ -49,3 +49,10 @@ public:
     void Update(double dt) override;
     void Draw(DrawLayer drawlayer = DrawLayer::DrawLast) override;
 };
+
+class MonsterHitEffect : public Effect {
+public:
+    MonsterHitEffect(vec2 pos);
+    void Update(double dt) override;
+    void Draw(DrawLayer drawlayer = DrawLayer::DrawLast) override;
+};

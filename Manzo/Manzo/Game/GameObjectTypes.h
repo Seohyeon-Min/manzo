@@ -28,6 +28,7 @@ enum class GameObjectTypes {
     UI,
     Player,
     Icon,
+    Monster,
     Module
 };
 

@@ -68,7 +68,7 @@ public:
         virtual void CheckExit(GameObject* object) = 0;
         virtual std::string GetName() = 0;
     };
-    State* current_state;
+    State* current_state = nullptr;
     void change_state(State* new_state);
 
     void SetPosition(vec2 new_position);
@@ -122,7 +122,7 @@ private:
     public:
         void Enter(GameObject*) override {}
         void Update(GameObject*, double) override {}
-        void FixedUpdate(GameObject*, double) override {}
+        void FixedUpdate(GameObject* object, double dt) override {};
         void CheckExit(GameObject*) override {}
         std::string GetName() { return ""; }
     };

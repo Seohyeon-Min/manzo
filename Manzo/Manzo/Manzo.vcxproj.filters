@@ -46,6 +46,9 @@
     <ClCompile Include="Game\Skill.cpp" />
     <ClCompile Include="Game\Splash.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Engine\MathUtils.cpp" />
+    <ClCompile Include="Game\Monster.cpp" />
+    <ClCompile Include="Game\BounceBehavior.h" />
     <ClCompile Include="Game\Inventory.cpp" />
     <ClCompile Include="Engine\Icon.cpp" />
     <ClCompile Include="Engine\IconManager.cpp" />
@@ -104,6 +107,8 @@
     <ClInclude Include="Game\Skill.h" />
     <ClInclude Include="Game\Splash.h" />
     <ClInclude Include="Game\States.h" />
+    <ClInclude Include="Engine\MathUtils.h" />
+    <ClInclude Include="Game\Monster.h" />
     <ClInclude Include="Game\Inventory.h" />
     <ClInclude Include="Engine\Icon.h" />
     <ClInclude Include="Engine\IconManager.h" />
