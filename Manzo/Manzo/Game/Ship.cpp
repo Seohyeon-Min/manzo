@@ -254,7 +254,7 @@ std::vector<vec2> SortPointsCounterClockwise(const std::vector<vec2>& points, co
 std::vector<vec2> ExtendBoundaryPoints(const std::vector<vec2>& points) {
     std::vector<vec2> extended_points = points;
 
-    if (points.size() > 3) {
+    if (points.size() > 2) {
 
         extended_points.insert(extended_points.begin(), points.back());
         extended_points.push_back(points.front());
@@ -279,6 +279,7 @@ std::vector<vec2> GenerateSplinePoints(const std::vector<vec2>& points, int reso
             vec2 point = CatmullRomSpline(extended_points[i], extended_points[i + 1], extended_points[i + 2], extended_points[i + 3], t);
             spline_points.push_back(point);
         }
+
     }
 
     return spline_points;

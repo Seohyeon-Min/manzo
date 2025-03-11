@@ -272,23 +272,27 @@ void Map::ParseSVG(const std::string& filename) {
                 // Rock Point
                 //=======ear clipping=========
 
-                RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new rockgroup
+                //RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new rockgroup
 
                 std::vector<Polygon> Polys = EarClipping(positions);
+
                 int i = 0;
                 for (auto& pol : Polys) {
                     Rock* rock = new Rock(pol);
-                    rock->AddGOComponent(new MAP_SATCollision(pol, rock));
+                    //rock->AddGOComponent(new MAP_SATCollision(pol, rock));
                     rocks.push_back(rock);
-                    //RockGroup* rockgroup = new RockGroup(poly.polyindex);
+                    std::string index = poly.polyindex + std::to_string(i);
+                    RockGroup* rockgroup = new RockGroup(index);
 
                     rockgroup->AddRock(rock);                                       //add poly into new group
 
                     rock->SetRockGroup(rockgroup);
 
+                    rock_groups.push_back(rockgroup);
+                    i += 1;
                 }
 
-                rock_groups.push_back(rockgroup);
+                //rock_groups.push_back(rockgroup);
 
             }
 
@@ -553,7 +557,7 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
 
             bool overlapping = IsOverlapping(camera_boundary, poly2.FindBoundary());
 
-            if (true) {
+            if (overlapping) {
                 for (Rock* rock : rocks) {
                     //Add Rock in GameState
                     if (!rock->IsActivated()) {
@@ -561,6 +565,7 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
                         rock->Active(true);
                         rock->AddGOComponent(new MAP_SATCollision(poly2, rock));
                         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rock);
+                        std::cout << "Rock Added to GameState!!!!!!!!!!!!!!!!!!"<<"\n";
                     }
                 }
 
@@ -569,6 +574,7 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
 
                     rockgroup->Active(true);
                     Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rockgroup);
+                    std::cout << "RockGroup Added to GameState!!!!!!!!!!!!!!!!!!" << "\n";
                 }
                 
             }
@@ -578,7 +584,6 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
                     if (rock->IsActivated()) {
 
                         rock->Active(false);
-                        //rock->AddGOComponent(new MAP_SATCollision(poly2, rock));
                         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Remove(rock);
                         //std::cout << "Unloaded Rock!!!!!!!!!!!!!!!!!" << "\n";
                     }
