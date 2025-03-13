@@ -112,10 +112,10 @@ void Mode1::Load() {
     //    GetGSComponent<Boss>()->ReadBossJSON(static_cast<Boss::BossType>(i));
     //    BossFirstPos.push_back(GetGSComponent<Boss>()->GetFirstPosition());
     //}
-	boss_ptr = new Boss({ 750,500 }, Boss::BossName::e, Boss::BossType::MovingToLocation);
+	boss_ptr = new Boss({ 0,0 }, Boss::BossName::e, Boss::BossType::ChasingPlayer);
 	boss_ptr->ReadBossJSON(Boss::BossName::e);
 	BossFirstPos.push_back(std::make_pair(boss_ptr->GetFirstPosition()[0], boss_ptr->GetFirstPosition()[1]));
-	bossPosition = { 750,500, 0.0f };
+	bossPosition = { 0,0, 0.0f };
 
 	// UI
 	GetGSComponent<GameObjectManager>()->Add(new Mouse);

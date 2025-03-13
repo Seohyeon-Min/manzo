@@ -143,6 +143,9 @@
     <ClCompile Include="Game\Player.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Game\BossBullet.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h">
@@ -338,6 +341,9 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Game\RockPoint.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\BossBullet.h">
       <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>

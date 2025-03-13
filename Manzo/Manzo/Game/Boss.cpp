@@ -2,6 +2,7 @@
 #include "../Engine/AudioManager.h"
 #include "Boss.h"
 #include "Ship.h"
+#include "BossBullet.h"
 
 
 std::vector<GameObject::State*> stateMap;
@@ -58,9 +59,10 @@ void Boss::Chasingplayer_Boss(int targetEntryNum, Boss* boss) {
 				else {
 					boss->current_position = playerPosition;
 				}
+				BossBullet* bullet_ptr = new BossBullet(bossPosition, 3);
+				Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bullet_ptr);
 
-				/*std::cout << "Boss is moving towards player. New position: ("
-					<< boss->current_position.x << ", " << boss->current_position.y << ")" << std::endl;*/
+				
 			}
 		}
 	}
