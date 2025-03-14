@@ -154,6 +154,17 @@ void Mode1::Load() {
 					GetGSComponent<GameObjectManager>()->Add(new FirstModule(ship_ptr));
 				}
 			}
+
+			if (line.find("Module2:") != std::string::npos)
+			{
+				int module2Value;
+				std::istringstream ss_module(line.substr(9));
+				ss_module >> module2Value;
+
+				if (module && (module2Value == 1)) {
+					GetGSComponent<GameObjectManager>()->Add(new SecondModule(ship_ptr));
+				}
+			}
 		}
 	}
 }
@@ -270,6 +281,7 @@ void Mode1::Unload() {
 
 		saveFile << "Money: " << GetGSComponent<Fish>()->GetMoney() << "\n";
 		saveFile << "Module1: " << module->IsFirstSetted() << "\n";
+		saveFile << "Module2: " << module->IsSecondSetted() << "\n";
 		saveFile.close();
 	}
 

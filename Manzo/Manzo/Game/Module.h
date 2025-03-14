@@ -38,3 +38,14 @@ public:
 private:
     Ship* ship;
 };
+
+class SecondModule : public Module
+{
+public:
+    SecondModule(Ship* ship);
+    void Update(double dt) override;
+    void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
+
+private:
+    Ship* ship;
+};
