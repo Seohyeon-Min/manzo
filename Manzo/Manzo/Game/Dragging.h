@@ -9,6 +9,7 @@ public:
     Dragging(Icon& object);
     ~Dragging();
     void Update(double dt) override;
+
     static Icon* GetCurrentDraggingIcon() { return currentDraggingIcon; }
 
 private:
