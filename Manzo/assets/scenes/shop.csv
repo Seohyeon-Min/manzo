@@ -1,2 +1,5 @@
 alias(name),spt,price,script
-net,temp,5,it's a net!
+net1,temp,5,it's a net1!
+net2,temp,5,it's a net2!
+net3,temp,5,it's a net3!
+net4,temp,5,it's a net4!

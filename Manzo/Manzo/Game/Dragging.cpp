@@ -19,7 +19,7 @@ void Dragging::Update(double dt)
     {
         if (object.IsSelected() && (currentDraggingIcon == nullptr || currentDraggingIcon == &object))
         {
-            currentDraggingIcon = &object; 
+            currentDraggingIcon = &object;
             object.SetPosition({
                 Engine::GetInput().GetMousePosition().x - Engine::window_width / 2,
                 Engine::GetInput().GetMousePosition().y - Engine::window_height / 2

@@ -48,7 +48,7 @@ public:
 		std::string script = "Defualt script";
 	};
 
-	Shop();
+	Shop(vec2 postion);
 	~Shop();
 	GameObjectTypes			Type() override { return GameObjectTypes::Shop; };
 	std::string				TypeName() override { return "Shop"; };

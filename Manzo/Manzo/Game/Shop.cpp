@@ -1,14 +1,28 @@
 #include "Shop.h"
 #include "Dragging.h"
+#include "..\Engine\GameObject.h"
 
 static bool is_on_inven = false;
 static bool is_on_shop = false;
 static bool Ready_to_buy = false;
 static bool Ready_to_sell = false;
 
-Shop::Shop() : GameObject(back_position_default)
+Shop::Shop(vec2 postion) : GameObject(postion)
 {
 	Read_Shop_Csv("assets/scenes/shop.csv");
+	AddGOComponent(new Sprite("assets/images/window.spt", this));
+
+	int count = 1;
+	for (auto& info : shop_infos)
+	{
+		std::cout << count << "th: " << std::endl;
+		std::cout << "name: " << info.name << std::endl;
+		std::cout << "icon name: " << info.icon << std::endl;
+		std::cout << "price : " << info.price << std::endl;
+		std::cout << "script : " << info.script << std::endl;
+		++count;
+		is_on_shop = true;
+	}
 }
 
 Shop::~Shop()
@@ -18,10 +32,13 @@ Shop::~Shop()
 
 void Shop::Update(double dt)
 {
+	GameObject::Update(dt);
+
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::Y) && !shop_available)
 	{
 		shop_available = true;
 		std::cout << "Shop active" << std::endl;
+		is_on_shop = true;
 	}
 
 	if (shop_available) // Is shop available?
@@ -30,25 +47,30 @@ void Shop::Update(double dt)
 		* 1. 일단 파일 내에 있는걸 읽어오는지 확인하기 // 되네
 		* 2. 아이콘 먼저 띄워보기 // 이거 해야함
 		* 3. 아이콘 갖고오면 일단 그 문자열을 가져오게 // 그냥 다 되는거같은데?
+		* 4. 드래그 해야하는데 드래그 계속 안됨(이것만 되면 될거같은데) -> 드래그 시도는 하는데 아이콘이 움직이질 않음 왜 와이?
 		*/
+		//Shop_Back_draw();
 
-		if (is_on_shop == false)
+		if (Engine::GetInput().KeyJustPressed(Input::Keys::E) && shop_available)
 		{
-			int count = 1;
-			for (auto& info : shop_infos)
-			{
-				std::cout << count << "th: " << std::endl;
-				std::cout << "name: "<< info.name << std::endl;
-				std::cout << "icon name: " << info.icon << std::endl;
-				std::cout << "price : " << info.price << std::endl;
-				std::cout << "script : " << info.script << std::endl;
-				++count;
-			}
-			is_on_shop = true;
+			shop_available = false;
+			std::cout << "Shop inactive" << std::endl;
+			Engine::GetIconManager().RemoveAllIcon();
+			is_on_shop = false;
 		}
+
+		int count = 1;
 		for (auto& info : shop_infos)
 		{
-			Engine::GetIconManager().AddIcon(info.icon, { Engine::window_width / 10 , Engine::window_height / 10 }, 1.0f);
+			Engine::GetIconManager().AddIcon(info.icon, { -200.0, 300.0f - (120.0f * count) }, 1.0f);
+			count++;
+		}
+		count = 1;
+
+		if (Engine::GetGameStateManager().GetGSComponent<Dragging>()->GetCurrentDraggingIcon() != nullptr)
+		{
+			Icon* draggedIcon = Engine::GetGameStateManager().GetGSComponent<Dragging>()->GetCurrentDraggingIcon();
+			std::cout << draggedIcon->GetAlias() << std::endl;
 		}
 	}
 }
