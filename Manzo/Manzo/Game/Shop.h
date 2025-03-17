@@ -53,7 +53,7 @@ public:
 	GameObjectTypes			Type() override { return GameObjectTypes::Shop; };
 	std::string				TypeName() override { return "Shop"; };
 	void					Update(double dt); // maybe not used dt..
-	void					Draw();
+	void					Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
 	void					Buy(Skillsys::Skill_list skill, int input); //Skill = which player's buy? input = How much use money for that skill?
 	void					Sell(Skillsys::Skill_list skill, int input);
 	void					Shop_Back_draw();

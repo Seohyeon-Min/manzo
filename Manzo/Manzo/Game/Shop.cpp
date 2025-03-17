@@ -23,6 +23,7 @@ Shop::Shop(vec2 postion) : GameObject(postion)
 		++count;
 		is_on_shop = true;
 	}
+	std::cout << this->GetAABB().Size().height << " , " << this->GetAABB().Size().width << std::endl;
 }
 
 Shop::~Shop()
@@ -51,6 +52,8 @@ void Shop::Update(double dt)
 		*/
 		//Shop_Back_draw();
 
+		Engine::GetIconManager().AddIcon("fish3", { 0, 0 }, 2.0f);
+
 		if (Engine::GetInput().KeyJustPressed(Input::Keys::E) && shop_available)
 		{
 			shop_available = false;
@@ -62,20 +65,55 @@ void Shop::Update(double dt)
 		int count = 1;
 		for (auto& info : shop_infos)
 		{
-			Engine::GetIconManager().AddIcon(info.icon, { -200.0, 300.0f - (120.0f * count) }, 1.0f);
+			Engine::GetIconManager().AddIcon(info.icon, { 500 , 300.0f - (120.0f * count) }, 1.0f);
 			count++;
 		}
 		count = 1;
 
-		if (Engine::GetGameStateManager().GetGSComponent<Dragging>()->GetCurrentDraggingIcon() != nullptr)
+		Ready_to_sell = true;
+		if (Engine::GetGameStateManager().GetGSComponent<Dragging>()->GetCurrentDraggingIcon() != nullptr && Ready_to_sell)
 		{
 			Icon* draggedIcon = Engine::GetGameStateManager().GetGSComponent<Dragging>()->GetCurrentDraggingIcon();
-			std::cout << draggedIcon->GetAlias() << std::endl;
+			std::cout << "you dragged... : " << draggedIcon->GetAlias() << std::endl;
+			std::string icon_name = draggedIcon->GetAlias();
+
+			if (Engine::GetIconManager().IsCollidingWith("fish3", icon_name))
+			{
+				std::cout << "For check(collided)" << std::endl;
+				for (auto it = shop_infos.begin(); it != shop_infos.end(); ++it)
+				{
+					if (it->icon == icon_name)
+					{
+						int money = Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney();
+						Engine::GetGameStateManager().GetGSComponent<Fish>()->SetMoney(money + it->price);
+						std::cout << "Sell Complete, left money is : "
+							<< Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() << std::endl;
+							Engine::GetIconManager().RemoveAllIcon();
+
+						shop_infos.erase(it);  // 요소 삭제
+						std::cout << "Item erased, exiting loop." << std::endl;
+						Ready_to_sell = false;
+						break;  // 삭제 후 반복 종료
+					}
+				}
+
+				int count = 1;
+				for (auto& info : shop_infos)
+				{
+					std::cout << count << "th: " << std::endl;
+					std::cout << "name: " << info.name << std::endl;
+					std::cout << "icon name: " << info.icon << std::endl;
+					std::cout << "price : " << info.price << std::endl;
+					std::cout << "script : " << info.script << std::endl;
+					++count;
+					is_on_shop = true;
+				}
+			}
 		}
 	}
 }
 
-void Shop::Draw()
+void Shop::Draw(DrawLayer drawlayer)
 {
 	GameObject::Draw();
 }
