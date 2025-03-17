@@ -56,7 +56,7 @@ private:
     const double fuel_bubble_time = 0.03;
     const double collide_time = 1.1;
     const float camera_shake = 10;
-    const double invincibility_time = 0.7;
+    const double invincibility_time = 1.6;
     Timer* fuel_bubble_timer;
     Timer* invincibility_timer;
     RealTimeTimer* collide_timer;

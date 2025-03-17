@@ -22,7 +22,7 @@ Ship::Ship(vec2 start_position) :
     FuelFlag = false;
     SetVelocity({ 0,0 });
 
-    if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
+    if (Engine::GetGameStateManager().GetStateName() == "Mode1" || Engine::GetGameStateManager().GetStateName() == "Tutorial") {
         bounceBehavior = new DefaultBounceBehavior();
         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new Pump);
         current_state = &state_idle;
@@ -207,9 +207,11 @@ void Ship::Update(double dt)
     GameObject::Update(dt);
 
     can_dash = true;
-    if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
+    if (Engine::GetGameStateManager().GetStateName() == "Mode1" || Engine::GetGameStateManager().GetStateName() == "Tutorial") {
 
         if (collide_timer->Remaining() < 0.48) {
+            // there's gonna be an error if the bgm changes
+
             Engine::GetGameStateManager().GetGSComponent<Cam>()->GetCameraView().SetZoom(1.0f);
             SetVelocity(force);
             float base_dt = 1.0f / 240.f;
@@ -219,11 +221,18 @@ void Ship::Update(double dt)
 
         if (collide_timer->IsFinished()) {
             Engine::Instance()->ResetSlowDownFactor();
+
             collide_timer->Reset();
             slow_down = 0.0f;
             hit_with = false;
         }
 
+        if (invincibility_timer->Remaining() < 1.48 && invincibility_timer->TickTock() && !invincibility_timer->IsFinished()) {
+            SetShader(Engine::GetShaderManager().GetShader("change_color"));
+        }
+        else {
+            SetShader(Engine::GetShaderManager().GetDefaultShader());
+        }
 
         Engine::GetGameStateManager().GetGSComponent<Cam>()->GetCamera().UpdateShake((float)dt);
         // World Boundary
@@ -260,7 +269,16 @@ void Ship::FixedUpdate(double fixed_dt) {
 
 
 void Ship::Draw(DrawLayer drawlayer) {
-    GameObject::Draw(DrawLayer::DrawPlayer);
+    DrawCall draw_call = {
+    GetGOComponent<Sprite>()->GetTexture(),                       // Texture to draw
+    &GetMatrix(),                          // Transformation matrix
+    GetShader()
+    };
+
+    draw_call.settings.do_blending = true;
+    draw_call.sorting_layer = DrawLayer::DrawPlayer;
+    GameObject::Draw(draw_call);
+
 }
 
 vec2 CatmullRomSpline(const vec2& p0, const vec2& p1, const vec2& p2, const vec2& p3, float t) {
@@ -429,6 +447,8 @@ void Ship::ResolveCollision(GameObject* other_object) {
 }
 
 void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
+
+
     if (other_object->Type() == GameObjectTypes::Rock) {
         fuel -= RockHitDecFuel;
         if (fuel < 0.0f) {

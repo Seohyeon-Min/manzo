@@ -13,6 +13,8 @@ Created:    Sept 12, 2024
 #include "..\Engine\GameObjectManager.h"
 
 class Beat;
+class Background;
+class Ship;
 
 class Tutorial : public GameState {
 public:
@@ -29,4 +31,8 @@ public:
 
 private:
     Beat* beat_system;
+    Background* background;
+    Ship* ship_ptr;
+
+    bool playing = false;
 };

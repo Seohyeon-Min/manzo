@@ -49,6 +49,7 @@ public:
     virtual void Destroy() { destroy = true; }
     virtual bool Destroyed() { return destroy; }
     virtual void SetShader(GLShader* new_shader) { shader = new_shader; };
+    virtual const GLShader* GetShader() { return shader; };
 
     const mat3& GetMatrix();
     const Math::rect& GetAABB() const;

@@ -24,7 +24,13 @@ void Timer::Set(double time_remaining)
 
 void Timer::Update(double dt)
 {
-	pendulum = !pendulum;
+    if (pendulum_cnt >= 12) {
+        pendulum = !pendulum;
+        pendulum_cnt = 0;
+    }
+
+    pendulum_cnt++;
+
 	if (timer >= 0) {
 		timer -= dt;
 	}

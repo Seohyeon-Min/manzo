@@ -29,6 +29,7 @@ private:
     double timer;
     double timer_max;
     bool pendulum;
+    int pendulum_cnt = 0;
 };
 
 class RealTimeTimer : public Component {
