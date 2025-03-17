@@ -1,4 +1,5 @@
 
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 
 #include "TextureManager.h"
 
@@ -17,9 +18,9 @@ GLTexture* TextureManager::Load(const std::filesystem::path& file_name)
         return textures[file_name];
     }
     else {
-        GLTexture* new_texture = new GLTexture(std::filesystem::path(file_name));
-        //new_texture->SetShader(shader);
-        textures.insert(std::make_pair(file_name, new_texture));
+        GLTexture* DEBUG_NEW_texture = DEBUG_NEW GLTexture(std::filesystem::path(file_name));
+        //DEBUG_NEW_texture->SetShader(shader);
+        textures.insert(std::make_pair(file_name, DEBUG_NEW_texture));
         Engine::GetLogger().LogEvent("Loading Texture: " + file_name.string());
         return textures[file_name];
     }

@@ -48,7 +48,7 @@ public:
     virtual void Draw(const DrawCall& draw_call);
     virtual void Destroy() { destroy = true; }
     virtual bool Destroyed() { return destroy; }
-    virtual void SetShader(GLShader* new_shader) { shader = new_shader; };
+    virtual void SetShader(GLShader* DEBUG_NEW_shader) { shader = DEBUG_NEW_shader; };
 
     const mat3& GetMatrix();
     const Math::rect& GetAABB() const;
@@ -69,9 +69,9 @@ public:
         virtual std::string GetName() = 0;
     };
     State* current_state = nullptr;
-    void change_state(State* new_state);
+    void change_state(State* DEBUG_NEW_state);
 
-    void SetPosition(vec2 new_position);
+    void SetPosition(vec2 DEBUG_NEW_position);
 
     template<typename T>
     T* GetGOComponent() {
@@ -81,12 +81,12 @@ public:
 
     //   protected:
     void UpdatePosition(vec2 delta);
-    void SetVelocity(vec2 new_velocity);
+    void SetVelocity(vec2 DEBUG_NEW_velocity);
     void UpdateVelocity(vec2 delta);
-    void SetScale(vec2 new_scale);
+    void SetScale(vec2 DEBUG_NEW_scale);
     void SetFlipX(bool flip);
     void UpdateScale(vec2 delta);
-    void SetRotation(double new_rotation);
+    void SetRotation(double DEBUG_NEW_rotation);
     void UpdateRotation(double delta);
 
     void AddGOComponent(Component* component) {

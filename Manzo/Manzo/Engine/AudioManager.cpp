@@ -4,6 +4,7 @@
 #include "../FMOD/fmod_errors.h"
 #include "../FMOD/fmod_studio.hpp"
 
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 Implementation::Implementation() {
 	mpStudioSystem = NULL;
 	mpSystem = NULL;
@@ -54,7 +55,7 @@ Implementation* sgpImplementation = nullptr;
 
 AudioManager::AudioManager()
 {
-	sgpImplementation = new Implementation;
+	sgpImplementation = DEBUG_NEW Implementation;
 }
 
 AudioManager::~AudioManager()

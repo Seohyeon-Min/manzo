@@ -6,6 +6,7 @@
 #include "../Engine/AABB.h"
 #include "WindowState.h"
 
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 class BackgroundFish : public GameObject
 {
 public:
@@ -129,10 +130,10 @@ private:
         vec2 half = boundary.halfSize * 0.5f;
         vec2 center = boundary.center;
 
-        northeast = new Quadtree(AABB{ center + vec2{half.x, -half.y}, half });
-        northwest = new Quadtree(AABB{ center + vec2{-half.x, -half.y}, half });
-        southeast = new Quadtree(AABB{ center + vec2{half.x, half.y}, half });
-        southwest = new Quadtree(AABB{ center + vec2{-half.x, half.y}, half });
+        northeast = DEBUG_NEW Quadtree(AABB{ center + vec2{half.x, -half.y}, half });
+        northwest = DEBUG_NEW Quadtree(AABB{ center + vec2{-half.x, -half.y}, half });
+        southeast = DEBUG_NEW Quadtree(AABB{ center + vec2{half.x, half.y}, half });
+        southwest = DEBUG_NEW Quadtree(AABB{ center + vec2{-half.x, half.y}, half });
 
         divided = true;
     }

@@ -8,6 +8,7 @@ Author:     Won Kim
 Created:    November 25, 2024
 */
 
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 #include "Rock.h"
 
 Rock::Rock(Polygon poly) :GameObject({ 0,0 }), poly(poly)

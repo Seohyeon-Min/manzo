@@ -6,9 +6,10 @@
 #include "../Engine/Icon.h"
 #include "Dragging.h"
 
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 Inven::Inven(vec2 position) : GameObject(position), page(0), dre_todayFish(rd()), dre_price(rd())
 {
-	AddGOComponent(new Sprite("assets/images/window.spt", this));
+	AddGOComponent(DEBUG_NEW Sprite("assets/images/window.spt", this));
 	change_state(&state_none);
 
 	ReadSaveFile("assets/scenes/save_data.txt");

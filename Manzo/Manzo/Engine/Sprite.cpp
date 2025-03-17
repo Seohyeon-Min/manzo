@@ -8,6 +8,7 @@ Author:     Seohyeon Min
 Created:    March 22, 2023
 */
 
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 
 #include "Sprite.h"
 
@@ -92,7 +93,7 @@ void Sprite::Load(const std::filesystem::path& sprite_file, GameObject* object) 
         }
         else if (text == "Anim") {
             in_file >> anim_file_path;
-            Animation* animation = new Animation(std::filesystem::path(anim_file_path));
+            Animation* animation = DEBUG_NEW Animation(std::filesystem::path(anim_file_path));
             animations.push_back( animation );
         }
         else if (text == "RectCollision") {
@@ -102,7 +103,7 @@ void Sprite::Load(const std::filesystem::path& sprite_file, GameObject* object) 
                 Engine::GetLogger().LogError("Cannot add collision to a null object");
             }
             else {
-                object->AddGOComponent(new RectCollision(boundary, object));
+                object->AddGOComponent(DEBUG_NEW RectCollision(boundary, object));
             }
         }
         else {
@@ -114,7 +115,7 @@ void Sprite::Load(const std::filesystem::path& sprite_file, GameObject* object) 
         frame_texels.push_back({ 0,0 });
     }
     if (animations.empty() == true) {
-        Animation* animation = new Animation();
+        Animation* animation = DEBUG_NEW Animation();
         animations.push_back(animation);
         PlayAnimation(0);
     }

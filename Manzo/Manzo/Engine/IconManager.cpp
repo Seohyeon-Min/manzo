@@ -1,6 +1,7 @@
 #include "IconManager.h"
 #include "Icon.h"
 
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -52,8 +53,8 @@ void IconManager::AddIcon(std::string alias, vec2 position, float scale, bool dr
 				return;
 			}
 		}
-		Icon* newIcon = new Icon(it->first, it->second, position, scale, drag, change_pos);
-		icons.push_back(newIcon);
+		Icon* DEBUG_NEWIcon = DEBUG_NEW Icon(it->first, it->second, position, scale, drag, change_pos);
+		icons.push_back(DEBUG_NEWIcon);
 	}
 	else
 	{

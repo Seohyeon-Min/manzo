@@ -3,6 +3,7 @@
 #include "Boss.h"
 #include "Ship.h"
 
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 
 std::vector<GameObject::State*> stateMap;
 std::vector<std::string> BossJSONfileMap;
@@ -12,7 +13,7 @@ Boss::Boss(vec2 start_position, BossName name, BossType type)
 {
 	ReadBossJSON(name);
 	InitializeStates();
-	AddGOComponent(new Sprite("assets/images/boss_E.spt", this));
+	AddGOComponent(DEBUG_NEW Sprite("assets/images/boss_E.spt", this));
 	SetVelocity({ start_position });
 	current_position = start_position;
 	// cutscean
@@ -59,7 +60,7 @@ void Boss::Chasingplayer_Boss(int targetEntryNum, Boss* boss) {
 					boss->current_position = playerPosition;
 				}
 
-				/*std::cout << "Boss is moving towards player. New position: ("
+				/*std::cout << "Boss is moving towards player. DEBUG_NEW position: ("
 					<< boss->current_position.x << ", " << boss->current_position.y << ")" << std::endl;*/
 			}
 		}
@@ -250,7 +251,7 @@ void Boss::LoadBossfile() {
 
 void Boss::ReadBossJSON(BossName name)
 {
-	JsonParser_boss* ReadJson = new JsonParser_boss(BossJSONfileMap[name]);
+	JsonParser_boss* ReadJson = DEBUG_NEW JsonParser_boss(BossJSONfileMap[name]);
 	AddGOComponent(ReadJson);
 
 	boss_name = ReadJson->GetBossName();

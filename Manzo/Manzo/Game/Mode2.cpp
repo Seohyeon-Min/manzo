@@ -8,6 +8,9 @@ Author:     Jonathan Holmes
 Created:    March 8, 2023
 */
 
+
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
+
 #include "../Engine/Engine.h"
 #include "../Engine/ShowCollision.h"
 #include "../Engine/AudioManager.h"
@@ -32,39 +35,39 @@ int dialog_test_int = 0;
 void Mode2::Load() {
 
 #ifdef _DEBUG
-    AddGSComponent(new ShowCollision());
+    AddGSComponent(DEBUG_NEW ShowCollision());
 #else
 #endif
     // compenent
-    AddGSComponent(new GameObjectManager());
+    AddGSComponent(DEBUG_NEW GameObjectManager());
 
     // ship
-    ship_ptr = new Ship({ 0, -250 });
+    ship_ptr = DEBUG_NEW Ship({ 0, -250 });
     GetGSComponent<GameObjectManager>()->Add(ship_ptr);
 
     // player
-    player_ptr = new Player({ 0, -115 });
+    player_ptr = DEBUG_NEW Player({ 0, -115 });
     GetGSComponent<GameObjectManager>()->Add(player_ptr);
 
     // camera
-    AddGSComponent(new Cam());
+    AddGSComponent(DEBUG_NEW Cam());
     GetGSComponent<Cam>()->SetPosition({ 0, 0 });
 
     // background
-    background = new Background();
+    background = DEBUG_NEW Background();
     AddGSComponent(background);
     background->Add("assets/images/background/house.png", 0.25f);
 
     // Dialog
-    dialog_ptr = new Dialog({0,0});
+    dialog_ptr = DEBUG_NEW Dialog({0,0});
     GetGSComponent<GameObjectManager>()->Add(dialog_ptr);
 
     // Module
-   module_ptr = new Module({ 0, 0 });
+   module_ptr = DEBUG_NEW Module({ 0, 0 });
     GetGSComponent<GameObjectManager>()->Add(module_ptr);
 
     // Inven
-    inven_ptr = new Inven({0,0});
+    inven_ptr = DEBUG_NEW Inven({0,0});
     GetGSComponent<GameObjectManager>()->Add(inven_ptr);
  
     // Icon
@@ -73,7 +76,7 @@ void Mode2::Load() {
     // skill
     if (!Engine::Instance()->GetTmpPtr())
     {
-        Engine::Instance()->SetTmpPtr(new Skillsys);
+        Engine::Instance()->SetTmpPtr(DEBUG_NEW Skillsys);
         skill_ptr = static_cast<Skillsys*>(Engine::Instance()->GetTmpPtr());
         skill_ptr->SetShipPtr(ship_ptr);
     }
@@ -85,7 +88,7 @@ void Mode2::Load() {
 
 
     // Mouse
-    GetGSComponent<GameObjectManager>()->Add(new Mouse);
+    GetGSComponent<GameObjectManager>()->Add(DEBUG_NEW Mouse);
 
     std::cout << "Left money : " << Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() << std::endl;
 }

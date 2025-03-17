@@ -2,6 +2,7 @@
 #include "Skill.h"
 #include "..\Engine\GameObjectManager.h"
 
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 void Skillsys::Active_skill(Skill_list skill)
 {
     switch (skill)
@@ -21,7 +22,7 @@ void Skillsys::SkillNet()
 {
     if (!skill_net)
     {
-        skill_net = new Skillsys::Skill_Net({ ship_ptr->GetPosition() }, this);
+        skill_net = DEBUG_NEW Skillsys::Skill_Net({ ship_ptr->GetPosition() }, this);
         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(skill_net);
     }
 }
@@ -239,7 +240,7 @@ Skillsys::Skill_Net::Skill_Net(vec2 position, Skillsys* skillsys) : GameObject(p
     ship_ptr = skillsys->GetShipPtr();
     SetPosition({ ship_ptr->GetPosition() });
     SetScale({ ship_ptr->GetScale() });
-    AddGOComponent(new Sprite("assets/images/ship.spt", this));
+    AddGOComponent(DEBUG_NEW Sprite("assets/images/ship.spt", this));
 };
 
 

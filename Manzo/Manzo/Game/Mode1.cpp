@@ -8,6 +8,7 @@ Author:     Jonathan Holmes
 Created:    March 8, 2023
 */
 
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 #include "../Engine/Engine.h"
 #include "../Engine/Timer.h"
 #include "../Engine/ShowCollision.h"
@@ -41,7 +42,7 @@ Mode1::Mode1()
 void Mode1::Load() {
 
 #ifdef _DEBUG
-    AddGSComponent(new ShowCollision());
+    AddGSComponent(DEBUG_NEW ShowCollision());
 #else
 #endif
     //shader
@@ -63,33 +64,33 @@ void Mode1::Load() {
 	Engine::GetAudioManager().Set3DMode(FMOD_3D_LINEARROLLOFF);
 
     // component
-    AddGSComponent(new GameObjectManager());
-    beat_system = new Beat();
+    AddGSComponent(DEBUG_NEW GameObjectManager());
+    beat_system = DEBUG_NEW Beat();
     AddGSComponent(beat_system);
 	beat_system->LoadMusicToSync("background1");
 
     // Particle
-    AddGSComponent(new ParticleManager<Particles::Plankton>());
-    AddGSComponent(new ParticleManager<Particles::FuelBubble>());
-    AddGSComponent(new ParticleManager<Particles::BubblePop>());
-    AddGSComponent(new ParticleManager<Particles::HitPraticle>());
-	AddGSComponent(new ParticleManager<Particles::HitPraticle2>());
-    AddGSComponent(new ParticleManager<Particles::CaptureEffect>());
+    AddGSComponent(DEBUG_NEW ParticleManager<Particles::Plankton>());
+    AddGSComponent(DEBUG_NEW ParticleManager<Particles::FuelBubble>());
+    AddGSComponent(DEBUG_NEW ParticleManager<Particles::BubblePop>());
+    AddGSComponent(DEBUG_NEW ParticleManager<Particles::HitPraticle>());
+	AddGSComponent(DEBUG_NEW ParticleManager<Particles::HitPraticle2>());
+    AddGSComponent(DEBUG_NEW ParticleManager<Particles::CaptureEffect>());
 
     //// camera
-    camera = new Cam();
+    camera = DEBUG_NEW Cam();
     AddGSComponent(camera);
 
     //// ship
-    ship_ptr = new Ship({ 0, 0 });
+    ship_ptr = DEBUG_NEW Ship({ 0, 0 });
     GetGSComponent<GameObjectManager>()->Add(ship_ptr);
 
 	//// background
-	background = new Background();
+	background = DEBUG_NEW Background();
 	AddGSComponent(background);
     
 	//// to generate fish
-	fishGenerator = new FishGenerator();
+	fishGenerator = DEBUG_NEW FishGenerator();
 	Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
 
 	//background
@@ -100,7 +101,7 @@ void Mode1::Load() {
 	//background->Add("assets/images/background/bubble.png", 1.5f, DrawLayer::DrawUI);
 
     // Map
-	AddGSComponent(new Map());
+	AddGSComponent(DEBUG_NEW Map());
     GetGSComponent<Map>()->ParseSVG("assets/maps/map6.svg");
 
 	//Boss
@@ -111,17 +112,17 @@ void Mode1::Load() {
     //    GetGSComponent<Boss>()->ReadBossJSON(static_cast<Boss::BossType>(i));
     //    BossFirstPos.push_back(GetGSComponent<Boss>()->GetFirstPosition());
     //}
-	boss_ptr = new Boss({ 750,500 }, Boss::BossName::e, Boss::BossType::MovingToLocation);
+	boss_ptr = DEBUG_NEW Boss({ 750,500 }, Boss::BossName::e, Boss::BossType::MovingToLocation);
 	boss_ptr->ReadBossJSON(Boss::BossName::e);
 	BossFirstPos.push_back(std::make_pair(boss_ptr->GetFirstPosition()[0], boss_ptr->GetFirstPosition()[1]));
 	bossPosition = { 750,500, 0.0f };
 
 	// UI
-	GetGSComponent<GameObjectManager>()->Add(new Mouse);
-	GetGSComponent<GameObjectManager>()->Add(new FuelUI(ship_ptr));
+	GetGSComponent<GameObjectManager>()->Add(DEBUG_NEW Mouse);
+	GetGSComponent<GameObjectManager>()->Add(DEBUG_NEW FuelUI(ship_ptr));
 
 	// monster
-	GetGSComponent<GameObjectManager>()->Add(new Monster(ship_ptr, {300,300}));
+	GetGSComponent<GameObjectManager>()->Add(DEBUG_NEW Monster(ship_ptr, {300,300}));
 }
 
 void Mode1::Update(double dt) {
@@ -216,7 +217,7 @@ void Mode1::Draw() {
 
 
     // Draw Font
-	Engine::GetFontManager().PrintText(FontType::Bold,"E", { 0.f,0.f }, 0.2f,{ 1.f,1.f,1.f }, 0.5f);
+	//Engine::GetFontManager().PrintText(FontType::Bold,"E", { 0.f,0.f }, 0.2f,{ 1.f,1.f,1.f }, 0.5f);
 }
 
 void Mode1::Unload() {

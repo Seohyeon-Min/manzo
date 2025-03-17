@@ -9,6 +9,7 @@ Created:    March 8, 2023
 Updated:    April 17, 2023
 */
 
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 #include "Animation.h"
 
 
@@ -30,15 +31,15 @@ Animation::Animation(const std::filesystem::path& animation_file) : current_comm
             in_file >> frame;
             in_file >> target_time;
 
-            commands.push_back(new PlayFrame(frame, target_time));
+            commands.push_back(DEBUG_NEW PlayFrame(frame, target_time));
         }
         else if (command == "Loop") {
             int loop_to_frame;
             in_file >> loop_to_frame;
-            commands.push_back(new Loop(loop_to_frame));
+            commands.push_back(DEBUG_NEW Loop(loop_to_frame));
         }
         else if (command == "End") {
-            commands.push_back(new End());
+            commands.push_back(DEBUG_NEW End());
         }
         else {
             Engine::GetLogger().LogError(command + " in " + animation_file.generic_string());

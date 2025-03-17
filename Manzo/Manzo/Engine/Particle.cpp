@@ -9,11 +9,12 @@ Created:    June 8, 2024
 */
 
 #include "Particle.h"
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 
 Particle::Particle(const std::filesystem::path& sprite_file):
 	GameObject({0,0})
 {
-	AddGOComponent(new Sprite(sprite_file, this));
+	AddGOComponent(DEBUG_NEW Sprite(sprite_file, this));
 }
 
 void Particle::Start(vec2 position, vec2 velocity, double _max_life, vec2 scale)

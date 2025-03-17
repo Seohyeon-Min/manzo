@@ -25,9 +25,9 @@ void Cam::Update(double dt, const vec2& player_position, bool playerMove)
 }
 
 
-void Cam::SetPosition(vec2 new_position)
+void Cam::SetPosition(vec2 DEBUG_NEW_position)
 {
-	caminfo.camera.Position = new_position;
+	caminfo.camera.Position = DEBUG_NEW_position;
 }
 
 const vec2& Cam::GetPosition() const

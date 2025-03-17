@@ -10,6 +10,7 @@ Created:    November 25, 2024
 
 #include "RockGroup.h"
 
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 RockGroup::RockGroup(const std::string& index) :GameObject({ 0,0 }), index(index)
 {}
 
@@ -49,7 +50,7 @@ bool RockGroup::MatchIndex()
             if (index == polyind) {
                 std::getline(linestream, file_path, ',');
                 SetPosition(FindCenterRect());
-                AddGOComponent(new Sprite(file_path, this));
+                AddGOComponent(DEBUG_NEW Sprite(file_path, this));
 
                 return true;
 

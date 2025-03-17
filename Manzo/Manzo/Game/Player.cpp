@@ -1,9 +1,10 @@
 #include "Player.h"
 
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 Player::Player(vec2 start_position) :
     GameObject(start_position)
 {
-    AddGOComponent(new Sprite("assets/images/ship.spt", this));
+    AddGOComponent(DEBUG_NEW Sprite("assets/images/ship.spt", this));
     current_state = &state_idle;
     current_state->Enter(this);
 }

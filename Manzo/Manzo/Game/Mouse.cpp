@@ -9,12 +9,13 @@
 #endif
 
 
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 
 Mouse::Mouse() : GameObject({}),
 mouse_position({ 0, 0 }),
 trails(trail_length, { vec2(0, 0), 1.0f })
 {
-    AddGOComponent(new Sprite("assets/images/mouse.spt", this));
+    AddGOComponent(DEBUG_NEW Sprite("assets/images/mouse.spt", this));
     SetCameraFixed(true);
 }
 
@@ -46,8 +47,8 @@ void Mouse::FollowMouse(const vec2& mouse_position) {
     UpdateTrail(mouse_position);
 }
 
-void Mouse::UpdateTrail(const vec2& new_position) {
-    trails.push_back({ new_position, 1.0f });
+void Mouse::UpdateTrail(const vec2& DEBUG_NEW_position) {
+    trails.push_back({ DEBUG_NEW_position, 1.0f });
 
     if (trails.size() > trail_length) {
         trails.erase(trails.begin());

@@ -2,6 +2,9 @@
 #include "Effect.h"
 #include "ScreenWrap.h"
 
+
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
+
 #include "../Engine/GameObjectManager.h"
 #include "../Engine/AABB.h"
 #include "../Engine/Camera.h"
@@ -63,10 +66,10 @@ Fish::Fish(Fish* parent) : GameObject({ 0, 0 }) {
         parentFish = parent;
     }
 
-    AddGOComponent(new Sprite(fishBook[index].filePath, this));
+    AddGOComponent(DEBUG_NEW Sprite(fishBook[index].filePath, this));
     fishCnt++;
 
-    AddGOComponent(new ScreenWrap(*this));
+    AddGOComponent(DEBUG_NEW ScreenWrap(*this));
 }
 
 bool Fish::CanCollideWith(GameObjectTypes other_object) {
@@ -82,7 +85,7 @@ bool Fish::CanCollideWith(GameObjectTypes other_object) {
 void Fish::ResolveCollision(GameObject* other_object) {
     switch (other_object->Type()) {
     case GameObjectTypes::Ship:
-        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new CaptureEffect(GetPosition()));
+        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(DEBUG_NEW CaptureEffect(GetPosition()));
         if (!collided)
         {
             collided = true;
@@ -94,7 +97,7 @@ void Fish::ResolveCollision(GameObject* other_object) {
         break;
 
     case GameObjectTypes::Net:
-        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new CaptureEffect(GetPosition()));
+        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(DEBUG_NEW CaptureEffect(GetPosition()));
         if (!collided)
         {
             collided = true;

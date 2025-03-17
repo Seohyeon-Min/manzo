@@ -1,6 +1,10 @@
 #define SDL_MAIN_HANDLED 
 #include <iostream>
 
+#define _CRTDBG_MAP_ALLOC
+#include <cstdlib>
+#include <crtdbg.h>
+
 #include "Engine/Engine.h"
 #include "Game/Splash.h"
 #include "Game/Mode1.h"
@@ -16,9 +20,10 @@ int main() {
     try {
         GLApp OpenGLAPPlication("Manzo");
         Engine* engine = Engine::Instance();
+        _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-        engine->GetFontManager().AddFontType("assets/fonts/Font1.ttf");
-        engine->GetFontManager().AddFontType("assets/fonts/Font2.ttf");
+        //engine->GetFontManager().AddFontType("assets/fonts/Font1.ttf");
+        //engine->GetFontManager().AddFontType("assets/fonts/Font2.ttf");
 
         Mode1 mode1;
         engine->GetGameStateManager().AddGameState(mode1);

@@ -10,11 +10,12 @@
 #include "Monster.h"
 
 #include <iostream>
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 
 Ship::Ship(vec2 start_position) :
     GameObject(start_position), move(false)
 {
-    AddGOComponent(new Sprite("assets/images/ship.spt", this));
+    AddGOComponent(DEBUG_NEW Sprite("assets/images/ship.spt", this));
     beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
     skill = Engine::GetGameStateManager().GetGSComponent<Skillsys>();
 
@@ -23,15 +24,15 @@ Ship::Ship(vec2 start_position) :
     SetVelocity({ 0,0 });
 
     if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
-        bounceBehavior = new DefaultBounceBehavior();
-        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new Pump);
+        bounceBehavior = DEBUG_NEW DefaultBounceBehavior();
+        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(DEBUG_NEW Pump);
         current_state = &state_idle;
         current_state->Enter(this);
-        fuel_bubble_timer = new Timer(0.0);
+        fuel_bubble_timer = DEBUG_NEW Timer(0.0);
         AddGOComponent(fuel_bubble_timer);
-        invincibility_timer = new Timer(0.0);
+        invincibility_timer = DEBUG_NEW Timer(0.0);
         AddGOComponent(invincibility_timer);
-        collide_timer = new RealTimeTimer(collide_time);
+        collide_timer = DEBUG_NEW RealTimeTimer(collide_time);
         AddGOComponent(collide_timer);
         fuel_bubble_timer->Set(fuel_bubble_time);
     }
@@ -116,7 +117,7 @@ void Ship::State_Move::Enter(GameObject* object) {
     ship->move = true;
     vec2 dir = ship->GetVelocity().Normalize();
     if (skip_enter) return;
-    Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new DashEffect());
+    Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(DEBUG_NEW DashEffect());
 }
 void Ship::State_Move::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
     Ship* ship = static_cast<Ship*>(object);
@@ -442,7 +443,7 @@ void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
         vec2 center = rock->GetRockGroup()->FindCenterPoly();
         normal = ComputeCollisionNormal(points, GetPosition(), center);
         Engine::GetLogger().LogEvent("normal: " + std::to_string(normal.x) + ", " + std::to_string(normal.y));
-        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new HitEffect(GetPosition()));
+        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(DEBUG_NEW HitEffect(GetPosition()));
     }
 
     else if (other_object->Type() == GameObjectTypes::Monster) {
@@ -454,7 +455,7 @@ void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
         std::array<vec2, 4> points = monster->GetCollisionBoxPoints();
         normal = ComputeCollisionNormal(points, GetPosition(), monster->GetPosition());
         Engine::GetLogger().LogEvent("normal: " + std::to_string(normal.x) + ", " + std::to_string(normal.y));
-        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new MonsterHitEffect(GetPosition()));
+        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(DEBUG_NEW MonsterHitEffect(GetPosition()));
     }
 
     Engine::GetLogger().LogEvent("Velocity: " + std::to_string(velocity.x) + ", " + std::to_string(velocity.y));

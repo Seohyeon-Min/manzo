@@ -10,9 +10,10 @@ Created:    November 25, 2024
 
 #include "RockPoint.h"
 
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 RockPoint::RockPoint(vec2 position, std::string index) :GameObject(position), index(index)
 {
-    AddGOComponent(new Sprite("assets/images/rockpoint_temp.spt", this));
+    AddGOComponent(DEBUG_NEW Sprite("assets/images/rockpoint_temp.spt", this));
 }
 
 void RockPoint::Update(double dt)

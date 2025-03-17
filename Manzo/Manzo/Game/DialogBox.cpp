@@ -1,9 +1,10 @@
 #include "DialogBox.h"
 #include "../Engine/Engine.h"
 
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 Dialog::Dialog(vec2 start_position)
     : GameObject(start_position), currentIndex(0), elapsedTime(0.0), typingSpeed(0.05), IsTyping(false) {
-    dialog = new JsonParser_dialog("en");
+    dialog = DEBUG_NEW JsonParser_dialog("en");
     DialogBox = Engine::GetTextureManager().Load("assets/images/temp_dial.png");
     Box_effect = Engine::GetTextureManager().Load("assets/images/box_effect.png");
     Me = Engine::GetTextureManager().Load("assets/images/Me.png");

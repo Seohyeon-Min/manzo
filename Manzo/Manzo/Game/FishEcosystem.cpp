@@ -1,16 +1,17 @@
 
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 #include "../Engine/GameObjectManager.h"
 #include "FishEcosystem.h"
 #include "AI.h"
 
 FishGenerator::FishGenerator()
 {
-	timer = new Timer(2.0);
+	timer = DEBUG_NEW Timer(2.0);
 
 	//leader fish
 	for (int i = 0; i < 6; i++)
 	{
-		BackgroundFish* bg_fish = new BackgroundFish();
+		BackgroundFish* bg_fish = DEBUG_NEW BackgroundFish();
 		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bg_fish);
 		//bg_fish->change_state(&bg_fish->state_leader);
 		bg_fish->current_state = &bg_fish->state_leader;
@@ -20,7 +21,7 @@ FishGenerator::FishGenerator()
 	//non leader fish
 	for (int i = 0; i < 60; i++)
 	{
-		BackgroundFish* bg_fish = new BackgroundFish();
+		BackgroundFish* bg_fish = DEBUG_NEW BackgroundFish();
 		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bg_fish);
 		//bg_fish->change_state(&bg_fish->state_nonleader);
 
@@ -41,21 +42,21 @@ void FishGenerator::GenerateFish(double dt)
 		if (fishList.size() < 15) //limit of fish num
 		{
 
-			Fish* newFish = new Fish();
-			fishList.push_back(newFish);
-			Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(newFish);
+			Fish* DEBUG_NEWFish = DEBUG_NEW Fish();
+			fishList.push_back(DEBUG_NEWFish);
+			Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(DEBUG_NEWFish);
 
 			timer->Reset();
 
 			//generate object fishes
-			if (newFish->type == Fish::FishType::Fish3)
+			if (DEBUG_NEWFish->type == Fish::FishType::Fish3)
 			{
 				int shape_index = rand() % formations.size();
 				const auto& selectedFormation = formations[shape_index];
 
 				for (const auto& offset : selectedFormation.offsets)
 				{
-					Fish* additionalFish = new Fish(newFish);
+					Fish* additionalFish = DEBUG_NEW Fish(DEBUG_NEWFish);
 
 					float randomX = rand() % (int)(selectedFormation.randomOffsetMaxX - selectedFormation.randomOffsetMinX)
 						+ selectedFormation.randomOffsetMinX;
@@ -64,8 +65,8 @@ void FishGenerator::GenerateFish(double dt)
 
 					vec2 randomOffset = { randomX, randomY };
 
-					additionalFish->SetPosition(newFish->GetPosition() + offset + randomOffset);
-					additionalFish->SetVelocity(newFish->GetVelocity());
+					additionalFish->SetPosition(DEBUG_NEWFish->GetPosition() + offset + randomOffset);
+					additionalFish->SetVelocity(DEBUG_NEWFish->GetVelocity());
 
 					fishList.push_back(additionalFish);
 					Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(additionalFish);

@@ -30,7 +30,7 @@ class Cam : public Component {
 public:
     Cam();
     void Update(double dt, const vec2& player_position, bool playerMove);
-    void SetPosition(vec2 new_position);
+    void SetPosition(vec2 DEBUG_NEW_position);
     const vec2& GetPosition() const;
     CameraView& GetCameraView() { return caminfo.camera_view; }
     Camera& GetCamera() { return caminfo.camera; }

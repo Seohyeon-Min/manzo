@@ -1,9 +1,12 @@
 #include "Effect.h"
 #include "../Engine/Sprite.h"
 
+
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
+
 Effect::Effect(vec2 position, double effect_time)
     : GameObject(position), effect_time(effect_time) {
-    effect_timer = new Timer(effect_time);
+    effect_timer = DEBUG_NEW Timer(effect_time);
     AddGOComponent(effect_timer);
     SetPosition(position);
     SetCameraFixed(true);
@@ -45,7 +48,7 @@ void Effect::SetAlpha(const GLShader* shader) {
 
 DashEffect::DashEffect()
     : Effect({}, 0.5) {
-    AddGOComponent(new Sprite("assets/images/dash_effect.spt", this));
+    AddGOComponent(DEBUG_NEW Sprite("assets/images/dash_effect.spt", this));
     ship = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>();
     vec2 dir = ship->GetVelocity().Normalize();
     float angle_radians = std::atan2(dir.y, dir.x);
@@ -85,7 +88,7 @@ void DashEffect::Draw(DrawLayer drawlayer) {
 CaptureEffect::CaptureEffect(vec2 pos)
     : Effect(pos, 0.5) {
     SetScale({ 0.6f, 0.6f });
-    AddGOComponent(new Sprite("assets/images/Capture_effect.spt", this));
+    AddGOComponent(DEBUG_NEW Sprite("assets/images/Capture_effect.spt", this));
     GetGOComponent<Sprite>()->PlayAnimation(0);
 }
 
@@ -120,7 +123,7 @@ CaptureEffect::~CaptureEffect()
 HitEffect::HitEffect(vec2 pos)
     : Effect(pos, 0.5) {
     SetScale({ 0.6f, 0.6f });
-    AddGOComponent(new Sprite("assets/images/hit_effect.spt", this));
+    AddGOComponent(DEBUG_NEW Sprite("assets/images/hit_effect.spt", this));
     GetGOComponent<Sprite>()->PlayAnimation(0);
 
     Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::HitPraticle>>()
@@ -154,7 +157,7 @@ void HitEffect::Draw(DrawLayer drawlayer)
 MonsterHitEffect::MonsterHitEffect(vec2 pos)
 : Effect(pos, 0.5) {
         SetScale({ 0.6f, 0.6f });
-        AddGOComponent(new Sprite("assets/images/monster_hit_effect.spt", this));
+        AddGOComponent(DEBUG_NEW Sprite("assets/images/monster_hit_effect.spt", this));
         GetGOComponent<Sprite>()->PlayAnimation(0);
 
         Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::HitPraticle>>()

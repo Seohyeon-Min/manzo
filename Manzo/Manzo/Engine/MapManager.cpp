@@ -8,6 +8,7 @@ Author:     SeokWha Hong
 Created:    September 12, 2024
 */
 
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 #include "MapManager.h"
 #include "GameObjectManager.h"
 #include "vec2.h"
@@ -230,15 +231,15 @@ void Map::ParseSVG(const std::string& filename) {
                 //std::vector<Polygon> Polys = EarClipping(positions);
                 std::cout << (poly.polyindex).substr(4, 1) << std::endl;
                     if ((poly.polyindex).substr(4, 1) == "2") {
-                        MovingRock* moving_rock = new MovingRock(poly);
+                        MovingRock* moving_rock = DEBUG_NEW MovingRock(poly);
                         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(moving_rock);
-                        moving_rock->AddGOComponent(new MAP_SATCollision(poly, moving_rock));
+                        moving_rock->AddGOComponent(DEBUG_NEW MAP_SATCollision(poly, moving_rock));
                         MakeMovingRockGroups(moving_rock, poly);
                     }
                     else {
-                        Rock* rock = new Rock(poly);
+                        Rock* rock = DEBUG_NEW Rock(poly);
                         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rock);
-                        rock->AddGOComponent(new MAP_SATCollision(poly, rock));
+                        rock->AddGOComponent(DEBUG_NEW MAP_SATCollision(poly, rock));
                         MakeRockGroups(rock, poly);                       
                     }   
             }
@@ -247,9 +248,9 @@ void Map::ParseSVG(const std::string& filename) {
             //std::cout << "poly count : " << poly.polycount << std::endl;
             
             if (circle_position.x != 0.f && circle_position.y != 0.f && circleIndex != "") {
-                RockPoint* rockpoint = new RockPoint(circle_position, circleIndex);
+                RockPoint* rockpoint = DEBUG_NEW RockPoint(circle_position, circleIndex);
                 Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rockpoint);
-                //std::cout << "New Circle! " << "\n";
+                //std::cout << "DEBUG_NEW Circle! " << "\n";
 
                 for (auto& group : rock_groups) {
                     if (group->GetIndex() == circleIndex) {//if index is equal
@@ -451,8 +452,8 @@ std::vector<vec2> Map::parsePathData(const std::string& pathData) {
 
 void Map::MakeRockGroups(Rock* rock, Polygon poly) {// Making RockGroups
     if (rock_groups.empty()) {
-        RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new group
-        rockgroup->AddRock(rock);                                       //add poly into new group
+        RockGroup* rockgroup = DEBUG_NEW RockGroup(poly.polyindex);   // make DEBUG_NEW group
+        rockgroup->AddRock(rock);                                       //add poly into DEBUG_NEW group
 
         rock->SetRockGroup(rockgroup);
         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rockgroup);
@@ -460,8 +461,8 @@ void Map::MakeRockGroups(Rock* rock, Polygon poly) {// Making RockGroups
     }
     else {
         if (rock_groups.back()->GetIndex() != poly.polyindex) {             // if poly has different index
-            RockGroup* rockgroup = new RockGroup(poly.polyindex);           // make new group
-            rockgroup->AddRock(rock);                                       //add poly into new group
+            RockGroup* rockgroup = DEBUG_NEW RockGroup(poly.polyindex);           // make DEBUG_NEW group
+            rockgroup->AddRock(rock);                                       //add poly into DEBUG_NEW group
 
             rock->SetRockGroup(rockgroup);
             Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rockgroup);
@@ -477,8 +478,8 @@ void Map::MakeMovingRockGroups(MovingRock* moving_rock, Polygon poly) {
 
     // Making RockGroups
     if (rock_groups.empty()) {
-        RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new group
-        rockgroup->AddMovingRock(moving_rock);                                       //add poly into new group
+        RockGroup* rockgroup = DEBUG_NEW RockGroup(poly.polyindex);   // make DEBUG_NEW group
+        rockgroup->AddMovingRock(moving_rock);                                       //add poly into DEBUG_NEW group
 
         moving_rock->SetRockGroup(rockgroup);
         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rockgroup);
@@ -486,8 +487,8 @@ void Map::MakeMovingRockGroups(MovingRock* moving_rock, Polygon poly) {
     }
     else {
         if (rock_groups.back()->GetIndex() != poly.polyindex) {             // if poly has different index
-            RockGroup* rockgroup = new RockGroup(poly.polyindex);           // make new group
-            rockgroup->AddMovingRock(moving_rock);                                       //add poly into new group
+            RockGroup* rockgroup = DEBUG_NEW RockGroup(poly.polyindex);           // make DEBUG_NEW group
+            rockgroup->AddMovingRock(moving_rock);                                       //add poly into DEBUG_NEW group
 
             moving_rock->SetRockGroup(rockgroup);
             Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rockgroup);

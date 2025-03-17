@@ -27,12 +27,13 @@ Created:    March 8, 2023
 #include <time.h>
 #include <random>
 
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 extern std::random_device rd;
 
 class Engine : public IProgram {
 public:
     static Engine* Instance() {
-        static Engine* instance = new Engine();
+        static Engine* instance = DEBUG_NEW Engine();
         return instance;
     }
 

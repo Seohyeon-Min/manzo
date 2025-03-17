@@ -19,7 +19,7 @@ public:
 private:
     void FollowMouse(const vec2& mouse_position);
     void ExplodeOnClick(const vec2& click_position);
-    void UpdateTrail(const vec2& new_position);
+    void UpdateTrail(const vec2& DEBUG_NEW_position);
     void DrawMouseCursor();
     void DrawLaserCurve();
 

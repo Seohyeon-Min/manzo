@@ -62,8 +62,8 @@ void GameObject::FixedUpdate(double fixed_dt)
 	}
 }
 
-void GameObject::change_state(State* new_state) {
-	current_state = new_state;
+void GameObject::change_state(State* DEBUG_NEW_state) {
+	current_state = DEBUG_NEW_state;
 	current_state->Enter(this);
 }
 
@@ -194,8 +194,8 @@ double GameObject::GetRotation() const
 	return rotation;
 }
 
-void GameObject::SetPosition(vec2 new_position) {
-	position = new_position;
+void GameObject::SetPosition(vec2 DEBUG_NEW_position) {
+	position = DEBUG_NEW_position;
 	// why was this commented?
 	matrix_outdated = true;
 }
@@ -205,9 +205,9 @@ void GameObject::UpdatePosition(vec2 delta) {
 	matrix_outdated = true;
 }
 
-void GameObject::SetVelocity(vec2 new_velocity)
+void GameObject::SetVelocity(vec2 DEBUG_NEW_velocity)
 {
-	velocity = new_velocity;
+	velocity = DEBUG_NEW_velocity;
 	// why was this commented?
 	matrix_outdated = true;
 }
@@ -218,9 +218,9 @@ void GameObject::UpdateVelocity(vec2 delta)
 	matrix_outdated = true;
 }
 
-void GameObject::SetScale(vec2 new_scale)
+void GameObject::SetScale(vec2 DEBUG_NEW_scale)
 {
-	scale = new_scale;
+	scale = DEBUG_NEW_scale;
 	//matrix_outdated = true;
 }
 
@@ -238,9 +238,9 @@ void GameObject::UpdateScale(vec2 delta)
 	matrix_outdated = true;
 }
 
-void GameObject::SetRotation(double new_rotation)
+void GameObject::SetRotation(double DEBUG_NEW_rotation)
 {
-	rotation = new_rotation;
+	rotation = DEBUG_NEW_rotation;
 	matrix_outdated = true;
 }
 

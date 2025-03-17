@@ -10,6 +10,7 @@
 #include "ShaderManager.h"
 #include <vec3.h>
 
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 class Font {
 	struct Glyph {
 		FT_UInt index;

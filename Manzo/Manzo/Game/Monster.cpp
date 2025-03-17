@@ -2,14 +2,17 @@
 #include "BeatSystem.h"
 #include "Monster.h"
 
+
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
+
 Monster::Monster(Ship* ship, vec2 pos): 
 	GameObject(pos), ship_ptr(ship), init_pos(pos)
 {
     current_state = &state_stanby;
     current_state->Enter(this);
-	AddGOComponent(new Sprite("assets/images/ship.spt", this));
+	AddGOComponent(DEBUG_NEW Sprite("assets/images/ship.spt", this));
     beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
-    dash_timer = new RealTimeTimer(dash_time);
+    dash_timer = DEBUG_NEW RealTimeTimer(dash_time);
     AddGOComponent(dash_timer);
     movement_range = { 900, {100,100} };
 }

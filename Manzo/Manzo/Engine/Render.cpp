@@ -15,6 +15,7 @@
 #include <iostream>
 
 
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 const float WORLD_SIZE_MAX = (float)std::max(Engine::window_width, Engine::window_height);
 
 Render::Render(){

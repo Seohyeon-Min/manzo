@@ -1,6 +1,7 @@
 #include "Shop.h"
 #include "Dragging.h"
 
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 static bool is_on_inven = false;
 static bool is_on_shop = false;
 static bool Ready_to_buy = false;

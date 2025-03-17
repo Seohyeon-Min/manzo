@@ -19,6 +19,7 @@ Created:    March 8, 2023
 #include "GameObjectManager.h"
 #include "logger.h"
 
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 
 #pragma once
 
@@ -59,7 +60,7 @@ template<typename T>
 inline ParticleManager<T>::ParticleManager()
 {
     for (int i = 0; i < T::MaxCount; i++) {
-        T* data = new T;
+        T* data = DEBUG_NEW T;
         particles.push_back(data);
         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(data);
     }

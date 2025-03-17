@@ -2,6 +2,9 @@
 #include "ScreenWrap.h"
 #include "FishEcosystem.h"
 
+
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
+
 float BackgroundFish::a = 0.2957f, BackgroundFish::b = 0.0f, BackgroundFish::c = 3.6f, BackgroundFish::d = 0.0174f;
 
 BackgroundFish::BackgroundFish() : GameObject({ start_position })
@@ -19,9 +22,9 @@ BackgroundFish::BackgroundFish() : GameObject({ start_position })
 	SetPosition(start_position);
 	SetVelocity({ 30,0 });
 
-    AddGOComponent(new Sprite("assets/images/BackgroundFish.spt", this));
+    AddGOComponent(DEBUG_NEW Sprite("assets/images/BackgroundFish.spt", this));
 
-	AddGOComponent(new ScreenWrap(*this));
+	AddGOComponent(DEBUG_NEW ScreenWrap(*this));
 }
 
 void BackgroundFish::Update(double dt)
@@ -60,9 +63,9 @@ void BackgroundFish::State_Leader::Update(GameObject* object, double dt)
 	quadtree.query(searchRange, backgroundFishList);
 
 	bgf->boidForce = bgf->alignment * a + bgf->cohesion * b + bgf->separation * c + bgf->wanderForce * d;
-	vec2 newVelocity = bgf->GetVelocity().Normalize() + bgf->boidForce;
-	newVelocity = newVelocity.Normalize() * std::min(newVelocity.Length(), 15.0f);
-	bgf->SetVelocity(newVelocity);
+	vec2 DEBUG_NEWVelocity = bgf->GetVelocity().Normalize() + bgf->boidForce;
+	DEBUG_NEWVelocity = DEBUG_NEWVelocity.Normalize() * std::min(DEBUG_NEWVelocity.Length(), 15.0f);
+	bgf->SetVelocity(DEBUG_NEWVelocity);
 }
 
 void BackgroundFish::State_Leader::CheckExit(GameObject* object)
@@ -110,9 +113,9 @@ void BackgroundFish::State_Nonleader::Update(GameObject* object, double dt)
 	}
 
 	bgf->boidForce = bgf->alignment * a + bgf->cohesion * b + bgf->separation * c + bgf->wanderForce * d;
-	vec2 newVelocity = bgf->GetVelocity().Normalize() + bgf->boidForce;
-	newVelocity = newVelocity.Normalize() * std::min(newVelocity.Length(), 15.0f);
-	bgf->SetVelocity(newVelocity);
+	vec2 DEBUG_NEWVelocity = bgf->GetVelocity().Normalize() + bgf->boidForce;
+	DEBUG_NEWVelocity = DEBUG_NEWVelocity.Normalize() * std::min(DEBUG_NEWVelocity.Length(), 15.0f);
+	bgf->SetVelocity(DEBUG_NEWVelocity);
 }
 
 void BackgroundFish::State_Nonleader::CheckExit(GameObject* object)

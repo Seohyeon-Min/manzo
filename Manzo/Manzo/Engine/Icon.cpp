@@ -3,13 +3,14 @@
 #include "../Game/Dragging.h"
 #include "../Game/Mouse.h"
 
+#define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 Icon::Icon(const std::string& alias, const std::filesystem::path& filename, vec2 position, float scale, bool drag, bool change_pos) : GameObject(position), alias(alias), position(position), scale(scale), can_drag(drag), can_change_pos(change_pos)
 {
-	AddGOComponent(new Sprite(filename, this));
+	AddGOComponent(DEBUG_NEW Sprite(filename, this));
 	SetScale({ scale,scale });
 
 	Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(this);
-	AddGOComponent(new Dragging(*this));
+	AddGOComponent(DEBUG_NEW Dragging(*this));
 }
 
 Icon::~Icon()
