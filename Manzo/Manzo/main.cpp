@@ -5,6 +5,7 @@
 #include "Game/Splash.h"
 #include "Game/Mode1.h"
 #include "Game/Mode2.h"
+#include "Game/TutorialMap.h"
 
 util::owner<IProgram*> create_program(int viewport_width, int viewport_height)
 {
@@ -25,6 +26,9 @@ int main() {
 
         Mode2 mode2;
         engine->GetGameStateManager().AddGameState(mode2);
+
+        Tutorial tutorial;
+        engine->GetGameStateManager().AddGameState(tutorial);
 
         SDL_GL_SetSwapInterval(1);
 

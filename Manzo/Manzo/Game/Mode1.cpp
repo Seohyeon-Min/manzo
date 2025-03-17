@@ -199,6 +199,11 @@ void Mode1::Update(double dt) {
         Engine::GetGameStateManager().ReloadState();
     }
 
+	if (Engine::GetInput().KeyJustPressed(Input::Keys::V)) {
+		Engine::GetGameStateManager().ClearNextGameState();
+		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Tutorial));
+	}
+
     if (Engine::GetInput().KeyJustPressed(Input::Keys::E) && !Isboss) {
         GetGSComponent<GameObjectManager>()->Add(boss_ptr);
         Isboss = true;
