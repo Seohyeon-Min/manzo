@@ -101,6 +101,16 @@ void Inven::ReadSaveFile(const std::string& filename)
 				module_ptr->SetFirstModule(true);
 			}
 		}
+		else if (line.find("Module2:") != std::string::npos) {
+			int module2Value;
+			std::istringstream ss_module(line.substr(9));
+			ss_module >> module2Value;
+
+			if (module2Value == 1)
+			{
+				module_ptr->SetSecondModule(true);
+			}
+		}
 	}
 
 	file.close();
@@ -143,7 +153,12 @@ void Inven::State_Module::Enter(GameObject* object)
 	}
 	else Engine::GetIconManager().AddIcon("module1", { -130,-100 }, 0.7f, true, true);
 
-	Engine::GetIconManager().AddIcon("module2", { 0,-100 }, 0.7f, true, true);
+	if (inven->module_ptr->IsSecondSetted())
+	{
+		Engine::GetIconManager().AddIcon("module2", { 0,100 }, 0.7f, true, true);
+	}
+	else Engine::GetIconManager().AddIcon("module2", { 0,-100 }, 0.7f, true, true);
+
 	Engine::GetIconManager().AddIcon("module3", { 130,-100 }, 0.7f, true, true);
 }
 
@@ -155,6 +170,11 @@ void Inven::State_Module::Update(GameObject* object, double dt)
 	if (Engine::GetIconManager().IsCollidingWith("module", "module1"))
 	{
 		inven->module_ptr->SetFirstModule(true);
+	}
+
+	if (Engine::GetIconManager().IsCollidingWith("module", "module2"))
+	{
+		inven->module_ptr->SetSecondModule(true);
 	}
 }
 
@@ -181,8 +201,8 @@ void Inven::State_FC::Enter(GameObject* object)
 
 	for (auto& fish : inven->fishCollection)
 	{
-		std::string file_name = "fish" + std::to_string(fish.first + 1);
-		Engine::GetIconManager().AddIcon(file_name, { 100,float(position += 80) }, 1.0f);
+		std::string file_name = "fish" + std::to_string(fish.first + 1);		
+		Engine::GetIconManager().AddIcon(file_name, { 100,float(position += 80) }, 1.0f, false);
 	}
 
 	Engine::GetIconManager().AddIcon("plus1", { 80,180 }, 0.2f, false);

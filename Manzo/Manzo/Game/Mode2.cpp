@@ -140,6 +140,7 @@ void Mode2::Unload() {
         }
         saveFile << "Money: " << inven_ptr->GetMoney() << "\n";
         saveFile << "Module1: " << module_ptr->IsFirstSetted() << "\n";
+        saveFile << "Module2: " << module_ptr->IsSecondSetted() << "\n";
         saveFile.close();
     }
 

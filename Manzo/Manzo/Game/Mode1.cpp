@@ -136,6 +136,44 @@ void Mode1::Load() {
 		skill_ptr = static_cast<Skillsys*>(Engine::Instance()->GetTmpPtr());
 		skill_ptr->SetShipPtr(ship_ptr);
 	}
+
+	// Module
+	module = new Module({ 0, 0 });
+	GetGSComponent<GameObjectManager>()->Add(module);
+
+	// Read fitted module
+	std::string savePath = "assets/scenes/save_data.txt";
+	std::ifstream saveFile(savePath);
+
+	if (saveFile.is_open()) {
+
+		std::string line;
+
+		while (std::getline(saveFile, line)) 
+		{
+			if (line.find("Module1:") != std::string::npos) 
+			{
+				int module1Value;
+				std::istringstream ss_module(line.substr(9));
+				ss_module >> module1Value;
+
+				if (module && (module1Value == 1)) {
+					GetGSComponent<GameObjectManager>()->Add(new FirstModule(ship_ptr));
+				}
+			}
+
+			if (line.find("Module2:") != std::string::npos)
+			{
+				int module2Value;
+				std::istringstream ss_module(line.substr(9));
+				ss_module >> module2Value;
+
+				if (module && (module2Value == 1)) {
+					GetGSComponent<GameObjectManager>()->Add(new SecondModule(ship_ptr));
+				}
+			}
+		}
+	}
 }
 
 void Mode1::Update(double dt) {
@@ -238,6 +276,21 @@ void Mode1::Draw() {
 }
 
 void Mode1::Unload() {
+
+	std::string savePath = "assets/scenes/save_data.txt";
+	std::ofstream saveFile(savePath);
+
+	if (saveFile.is_open()) {
+
+		for (const auto& entry : fishCaptureCount) {
+			saveFile << entry.first + 1 << " " << entry.second << "\n";
+		}
+
+		saveFile << "Money: " << GetGSComponent<Fish>()->GetMoney() << "\n";
+		saveFile << "Module1: " << module->IsFirstSetted() << "\n";
+		saveFile << "Module2: " << module->IsSecondSetted() << "\n";
+		saveFile.close();
+	}
 
 	ship_ptr = nullptr;
 	delete fishGenerator;

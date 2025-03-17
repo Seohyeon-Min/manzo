@@ -40,3 +40,27 @@ void FirstModule::Draw(DrawLayer drawlayer)
 		Module::Draw(drawlayer);
 	}
 }
+
+SecondModule::SecondModule(Ship* ship) : ship(ship)
+{
+	SetSecondModule(true);
+}
+
+void SecondModule::Update(double dt)
+{
+	if (Module::IsSecondSetted())
+	{
+		Module::Update(dt);
+
+
+		Engine::GetFontManager().PrintText(FontType::Bold, std::to_string(ship->GetPosition().x), ship->GetPosition(), 0.2f, {1.f,1.f,1.f}, 0.5f);
+	}
+}
+
+void SecondModule::Draw(DrawLayer drawlayer)
+{
+	if (Module::IsSecondSetted())
+	{
+		Module::Draw(drawlayer);
+	}
+}
