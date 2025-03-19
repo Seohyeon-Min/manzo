@@ -9,8 +9,12 @@
 #define PI  3.14159265358979
 #define DEG2RAD (PI/180.0f)
 
+int GetRandomValue(int min, int max) {
+    return min + rand() % ((max - min) + 1);
+}
+
 BossBullet::BossBullet(vec2 Boss_position, float lifetime)
-    :GameObject(Boss_position), lifetime(lifetime), timeElapsed(0.0f)
+    : GameObject(Boss_position), lifetime(lifetime), timeElapsed(0.0f)
 {
     AddGOComponent(new Sprite("assets/images/bullet.spt", this));
 
@@ -19,6 +23,7 @@ BossBullet::BossBullet(vec2 Boss_position, float lifetime)
         srand(static_cast<unsigned int>(time(nullptr)));
         seedInitialized = true;
     }
+
     Ship* ship = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>();
     vec2 shipPos = ship->GetPosition();
     vec2 direction = { shipPos.x - Boss_position.x, shipPos.y - Boss_position.y };
@@ -26,9 +31,8 @@ BossBullet::BossBullet(vec2 Boss_position, float lifetime)
     direction.x /= length;
     direction.y /= length;
 
-
-    this->velocity = vec2(0.0f, 0.0f); 
-    float angleOffset = (float)(60 * DEG2RAD);
+    this->velocity = vec2(0.0f, 0.0f);
+    float angleOffset = (float)(GetRandomValue(-60, 60) * DEG2RAD); 
     float cosA = cos(angleOffset);
     float sinA = sin(angleOffset);
 
@@ -38,39 +42,43 @@ BossBullet::BossBullet(vec2 Boss_position, float lifetime)
     };
 
     velocity = { -modifiedDirection.x * 200, -modifiedDirection.y * 200 };
+    speed = 100;
+    position = Boss_position;
+    timeElapsed = 0.0f;
 }
 
 void BossBullet::Update(double dt) {
     GameObject::Update(dt);
-
     Move(dt);
 
     if (lifetime <= 0.0f) {
         this->Destroy();
     }
     else {
-        lifetime -= dt; 
+        lifetime -= dt;
     }
 }
 
+
 void BossBullet::Move(double dt) {
     Ship* ship = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>();
-    vec2 shipPos = ship->GetPosition();
-
-    vec2 toPlayer = shipPos - this->position;
-    float distanceToPlayer = sqrt(toPlayer.x * toPlayer.x + toPlayer.y * toPlayer.y);
-
+    if (ship != nullptr) {
+        this->targetPosition = ship->GetPosition();
+    }
+    toPlayer = this->targetPosition - this->position;
+    distanceToPlayer = sqrt(toPlayer.x * toPlayer.x + toPlayer.y * toPlayer.y);
     this->timeElapsed += dt;
-    float speed = (float)(distanceToPlayer / this->lifetime) * (float)(this->timeElapsed / this->lifetime);  
-    float timeToReachPlayer = distanceToPlayer / speed; 
 
-    this->velocity += (normalize(toPlayer) * speed * (float)dt);
-    this->position += -(this->velocity * (float)dt);
-    SetVelocity(position);
+   
+    float bulletspeed = (float)speed + (float)(this->distanceToPlayer / this->lifetime) * (float)(this->timeElapsed / this->lifetime);
+
+    this->velocity += (normalize(this->toPlayer) * bulletspeed * (float)dt);
+    this->position += this->velocity * (float)dt;
+    SetVelocity(this->velocity);
 }
 
-void BossBullet::Draw(DrawLayer drawlayer) {
 
+void BossBullet::Draw(DrawLayer drawlayer) {
     DrawCall draw_call = {
         GetGOComponent<Sprite>()->GetTexture(),
         &GetMatrix()

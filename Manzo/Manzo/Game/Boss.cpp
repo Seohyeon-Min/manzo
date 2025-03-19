@@ -4,7 +4,7 @@
 #include "Ship.h"
 #include "BossBullet.h"
 
-
+static bool bulletSpawned = false;
 std::vector<GameObject::State*> stateMap;
 std::vector<std::string> BossJSONfileMap;
 
@@ -59,9 +59,13 @@ void Boss::Chasingplayer_Boss(int targetEntryNum, Boss* boss) {
 				else {
 					boss->current_position = playerPosition;
 				}
-				BossBullet* bullet_ptr = new BossBullet(bossPosition, 3);
-				Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bullet_ptr);
 
+				{
+					BossBullet* bullet_ptr = new BossBullet(bossPosition, 3);
+					Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bullet_ptr);
+
+					
+				}
 				
 			}
 		}
@@ -116,7 +120,7 @@ void Boss::State_CutScene::CheckExit(GameObject* object) {
 		Engine::GetAudioManager().PlayMusics("e boss");
 
 		boss->beat->SetBPM(boss->bpm);
-		std::cout << "boss bpm:" << boss->bpm << std::endl;
+		//std::cout << "boss bpm:" << boss->bpm << std::endl;
 		boss->change_state(&boss->entry1);
 	}
 }
@@ -183,7 +187,7 @@ void Boss::Update(double dt) {
 		if (GameObject::current_state->GetName() != Boss::state_cutscene.GetName()) {
 
 			int barCount = beat->GetBarCount();
-			std::cout << barCount << std::endl;
+			//std::cout << barCount << std::endl;
 			if (barCount < 14) {
 				if (barCount < total_entry.size() && total_entry[barCount] - 1 < stateMap.size()) {
 					change_state(stateMap[total_entry[barCount] - 1]);

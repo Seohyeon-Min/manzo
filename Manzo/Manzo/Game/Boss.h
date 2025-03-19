@@ -121,5 +121,6 @@ private:
 	int channelId = 1;
 	bool isPlaying = false;
 	std::array<int, 2> start_pos;
+	
 };
 

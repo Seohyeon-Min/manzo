@@ -19,7 +19,10 @@ private:
 
 	vec2 position;
 	vec2 velocity;
+	vec2 targetPosition;
 	double lifetime; //same with bpm 
 	double speed;
 	double timeElapsed;
+	vec2 toPlayer;
+	float distanceToPlayer;
 };
