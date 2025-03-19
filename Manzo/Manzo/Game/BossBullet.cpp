@@ -32,7 +32,7 @@ BossBullet::BossBullet(vec2 Boss_position, float lifetime)
     direction.y /= length;
 
     this->velocity = vec2(0.0f, 0.0f);
-    float angleOffset = (float)(GetRandomValue(-60, 60) * DEG2RAD); 
+    float angleOffset = (float)(GetRandomValue(0,0) * DEG2RAD); 
     float cosA = cos(angleOffset);
     float sinA = sin(angleOffset);
 
@@ -41,8 +41,8 @@ BossBullet::BossBullet(vec2 Boss_position, float lifetime)
                 direction.x * sinA + direction.y * cosA
     };
 
-    velocity = { -modifiedDirection.x * 200, -modifiedDirection.y * 200 };
-    speed = 100;
+    velocity = { -modifiedDirection.x * 300, -modifiedDirection.y * 300 };
+    speed = 50;
     position = Boss_position;
     timeElapsed = 0.0f;
 }
@@ -72,8 +72,12 @@ void BossBullet::Move(double dt) {
    
     float bulletspeed = (float)speed + (float)(this->distanceToPlayer / this->lifetime) * (float)(this->timeElapsed / this->lifetime);
 
-    this->velocity += (normalize(this->toPlayer) * bulletspeed * (float)dt);
-    this->position += this->velocity * (float)dt;
+    if (distanceToPlayer > 0.0f) {
+        this->velocity += (normalize(this->toPlayer) * bulletspeed * (float)dt);
+    }
+
+    //
+    //this->position += this->velocity * (float)dt;
     SetVelocity(this->velocity);
 }
 

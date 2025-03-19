@@ -3,8 +3,9 @@
 #include "Boss.h"
 #include "Ship.h"
 #include "BossBullet.h"
+#include "BeatSystem.h"
 
-static bool bulletSpawned = false;
+bool bulletSpawned = false;
 std::vector<GameObject::State*> stateMap;
 std::vector<std::string> BossJSONfileMap;
 
@@ -25,12 +26,18 @@ Boss::Boss(vec2 start_position, BossName name, BossType type)
 
 }
 
-void Boss::Movingtolocation_Boss(int targetEntryNum, Boss* object) {
-	if (targetEntryNum - 1 < object->parttern.size()) {
-		const auto& entryVec = object->parttern[targetEntryNum - 1];
+void Boss::Movingtolocation_Boss(int targetEntryNum, Boss* boss) {
+	if (targetEntryNum - 1 < boss->parttern.size()) {
+		const auto& entryVec = boss->parttern[targetEntryNum - 1];
+		bulletSpawned = false;
 		for (const auto& entryData : entryVec) {
-			if (entryData.delay + 1 == object->beat->GetDelayCount()) {
-				object->current_position = entryData.position;
+			if (entryData.delay + 1 == boss->beat->GetDelayCount()) {
+				boss->current_position = entryData.position;
+				if (!bulletSpawned) {
+					BossBullet* bullet_ptr = new BossBullet(boss->GetPosition(), (float)(boss->beat->GetFixedDuration())*2);
+					Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bullet_ptr);
+					bulletSpawned = true;
+				}
 			}
 		}
 	}
@@ -60,12 +67,11 @@ void Boss::Chasingplayer_Boss(int targetEntryNum, Boss* boss) {
 					boss->current_position = playerPosition;
 				}
 
-				{
-					BossBullet* bullet_ptr = new BossBullet(bossPosition, 3);
-					Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bullet_ptr);
+				
+					
 
 					
-				}
+				
 				
 			}
 		}
@@ -249,8 +255,8 @@ void Boss::Move(double dt) {
 
 
 void Boss::LoadBossfile() {
-	BossJSONfileMap.push_back("assets/jsons/boss_e.json");
-	BossJSONfileMap.push_back("assets/jsons/boss_y.json");
+	BossJSONfileMap.push_back("assets/jsons/boss/boss_e.json");
+	BossJSONfileMap.push_back("assets/jsons/boss/boss_y.json");
 	BossJSONfileMap.push_back("Please add file path here");
 }
 
