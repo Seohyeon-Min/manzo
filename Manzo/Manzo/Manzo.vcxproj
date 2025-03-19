@@ -21,9 +21,12 @@
     <ClCompile Include="Engine\GameObject.cpp" />
     <ClCompile Include="Engine\GameObjectManager.cpp" />
     <ClCompile Include="Engine\GameStateManager.cpp" />
+    <ClCompile Include="Engine\Icon.cpp" />
+    <ClCompile Include="Engine\IconManager.cpp" />
     <ClCompile Include="Engine\Input.cpp" />
     <ClCompile Include="Engine\logger.cpp" />
     <ClCompile Include="Engine\MapManager.cpp" />
+    <ClCompile Include="Engine\MathUtils.cpp" />
     <ClCompile Include="Engine\Particle.cpp" />
     <ClCompile Include="Engine\Rapidjson.cpp" />
     <ClCompile Include="Engine\Render.cpp" />
@@ -38,15 +41,18 @@
     <ClCompile Include="Game\BeatSystem.cpp" />
     <ClCompile Include="Game\Boss.cpp" />
     <ClCompile Include="Game\BossBullet.cpp" />
+    <ClCompile Include="Game\BounceBehavior.h" />
     <ClCompile Include="Game\DialogBox.cpp" />
     <ClCompile Include="Game\Effect.cpp" />
+    <ClCompile Include="Game\Dragging.cpp" />
     <ClCompile Include="Game\Fish.cpp" />
     <ClCompile Include="Game\FishEcosystem.cpp" />
     <ClCompile Include="Game\GameObjectTypes.cpp" />
-    <ClCompile Include="Game\Icon.cpp" />
-    <ClCompile Include="Game\IconManager.cpp" />
+    <ClCompile Include="Game\Inventory.cpp" />
     <ClCompile Include="Game\Mode1.cpp" />
     <ClCompile Include="Game\Mode2.cpp" />
+    <ClCompile Include="Game\Monster.cpp" />
+    <ClCompile Include="Game\Module.cpp" />
     <ClCompile Include="Game\Mouse.cpp" />
     <ClCompile Include="Game\Player.cpp" />
     <ClCompile Include="Game\ScreenWrap.cpp" />
@@ -57,6 +63,7 @@
     <ClCompile Include="Game\Shop.cpp" />
     <ClCompile Include="Game\Skill.cpp" />
     <ClCompile Include="Game\Splash.cpp" />
+    <ClCompile Include="Game\TutorialMap.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -73,15 +80,17 @@
     <ClInclude Include="Engine\ComponentManager.h" />
     <ClInclude Include="Engine\DrawSetting.h" />
     <ClInclude Include="Engine\Engine.h" />
-    <ClInclude Include="Engine\Font.h" />
     <ClInclude Include="Engine\FontManager.h" />
     <ClInclude Include="Engine\GameObject.h" />
     <ClInclude Include="Engine\GameObjectManager.h" />
     <ClInclude Include="Engine\GameState.h" />
     <ClInclude Include="Engine\GameStateManager.h" />
+    <ClInclude Include="Engine\Icon.h" />
+    <ClInclude Include="Engine\IconManager.h" />
     <ClInclude Include="Engine\Input.h" />
     <ClInclude Include="Engine\logger.h" />
     <ClInclude Include="Engine\MapManager.h" />
+    <ClInclude Include="Engine\MathUtils.h" />
     <ClInclude Include="Engine\Particle.h" />
     <ClInclude Include="Engine\Polygon.h" />
     <ClInclude Include="Engine\AABB.h" />
@@ -101,13 +110,15 @@
     <ClInclude Include="Game\BossBullet.h" />
     <ClInclude Include="Game\Effect.h" />
     <ClInclude Include="Game\DialogBox.h" />
+    <ClInclude Include="Game\Dragging.h" />
     <ClInclude Include="Game\Fish.h" />
     <ClInclude Include="Game\FishEcosystem.h" />
     <ClInclude Include="Game\GameObjectTypes.h" />
-    <ClInclude Include="Game\Icon.h" />
-    <ClInclude Include="Game\IconManager.h" />
+    <ClInclude Include="Game\Inventory.h" />
     <ClInclude Include="Game\Mode1.h" />
     <ClInclude Include="Game\Mode2.h" />
+    <ClInclude Include="Game\Monster.h" />
+    <ClInclude Include="Game\Module.h" />
     <ClInclude Include="Game\Mouse.h" />
     <ClInclude Include="Game\Particles.h" />
     <ClInclude Include="Game\Player.h" />
@@ -120,6 +131,7 @@
     <ClInclude Include="Game\Skill.h" />
     <ClInclude Include="Game\Splash.h" />
     <ClInclude Include="Game\States.h" />
+    <ClInclude Include="Game\TutorialMap.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -188,6 +200,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)external\include\glm;$(SolutionDir)external\include\freetype\config;$(SolutionDir)external\include\freetype;$(ProjectDir)include;$(SolutionDir)common_gl\include;$(SolutionDir)external\include;$(SolutionDir)external\include\backends;$(SolutionDir)external\include\rapidjson;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

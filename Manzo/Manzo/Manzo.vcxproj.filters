@@ -1,350 +1,119 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Engine">
-      <UniqueIdentifier>{bf7c972f-4826-4eb7-9875-beaa31992a0d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game">
-      <UniqueIdentifier>{e2ea8811-5723-4ec6-88c5-e20e77c9ecd8}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Engine\Animation.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\AudioManager.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Camera.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Collision.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Engine.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObject.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjectManager.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameStateManager.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Input.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\logger.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Particle.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Render.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\ShaderManager.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\ShowCollision.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Sprite.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\TextureManager.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Timer.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Background.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\BeatSystem.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Fish.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\FishEcosystem.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Mode1.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Ship.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Splash.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Mode2.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Skill.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Mouse.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\MapManager.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Boss.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Rapidjson.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\UI.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObjectTypes.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Font.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\FontManager.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\AI.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\ScreenWrap.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\DialogBox.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Shop.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Rock.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\RockGroup.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\RockPoint.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Icon.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\IconManager.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
+    <ClCompile Include="Engine\Animation.cpp" />
+    <ClCompile Include="Engine\AudioManager.cpp" />
+    <ClCompile Include="Engine\Camera.cpp" />
+    <ClCompile Include="Engine\Collision.cpp" />
+    <ClCompile Include="Engine\Engine.cpp" />
+    <ClCompile Include="Engine\Font.cpp" />
+    <ClCompile Include="Engine\FontManager.cpp" />
+    <ClCompile Include="Engine\GameObject.cpp" />
+    <ClCompile Include="Engine\GameObjectManager.cpp" />
+    <ClCompile Include="Engine\GameStateManager.cpp" />
+    <ClCompile Include="Engine\Input.cpp" />
+    <ClCompile Include="Engine\logger.cpp" />
+    <ClCompile Include="Engine\MapManager.cpp" />
+    <ClCompile Include="Engine\Particle.cpp" />
+    <ClCompile Include="Engine\Rapidjson.cpp" />
+    <ClCompile Include="Engine\Render.cpp" />
+    <ClCompile Include="Engine\ShaderManager.cpp" />
+    <ClCompile Include="Engine\ShowCollision.cpp" />
+    <ClCompile Include="Engine\Sprite.cpp" />
+    <ClCompile Include="Engine\TextureManager.cpp" />
+    <ClCompile Include="Engine\Timer.cpp" />
+    <ClCompile Include="Engine\UI.cpp" />
+    <ClCompile Include="Game\AI.cpp" />
+    <ClCompile Include="Game\Background.cpp" />
+    <ClCompile Include="Game\BeatSystem.cpp" />
+    <ClCompile Include="Game\Boss.cpp" />
+    <ClCompile Include="Game\DialogBox.cpp" />
     <ClCompile Include="Game\Effect.cpp" />
-    <ClCompile Include="Game\Player.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\BossBullet.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
+    <ClCompile Include="Game\Dragging.cpp" />
+    <ClCompile Include="Game\Fish.cpp" />
+    <ClCompile Include="Game\FishEcosystem.cpp" />
+    <ClCompile Include="Game\GameObjectTypes.cpp" />
+    <ClCompile Include="Game\Mode1.cpp" />
+    <ClCompile Include="Game\Mode2.cpp" />
+    <ClCompile Include="Game\Mouse.cpp" />
+    <ClCompile Include="Game\Player.cpp" />
+    <ClCompile Include="Game\ScreenWrap.cpp" />
+    <ClCompile Include="Game\Rock.cpp" />
+    <ClCompile Include="Game\RockGroup.cpp" />
+    <ClCompile Include="Game\RockPoint.cpp" />
+    <ClCompile Include="Game\Ship.cpp" />
+    <ClCompile Include="Game\Shop.cpp" />
+    <ClCompile Include="Game\Skill.cpp" />
+    <ClCompile Include="Game\Splash.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Engine\MathUtils.cpp" />
+    <ClCompile Include="Game\Monster.cpp" />
+    <ClCompile Include="Game\BounceBehavior.h" />
+    <ClCompile Include="Game\Inventory.cpp" />
+    <ClCompile Include="Engine\Icon.cpp" />
+    <ClCompile Include="Engine\IconManager.cpp" />
+    <ClCompile Include="Game\Module.cpp" />
+    <ClCompile Include="Game\TutorialMap.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine\Animation.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\AudioManager.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Camera.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Collision.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Component.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\ComponentManager.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Engine.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObject.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObjectManager.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameState.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameStateManager.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Input.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\logger.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Particle.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Rect.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Render.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\ShaderManager.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\ShowCollision.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Sprite.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\TextureManager.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Timer.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Background.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\BeatSystem.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Fish.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\FishEcosystem.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObjectTypes.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Mode1.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Ship.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Splash.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\States.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\BeatSystem.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Ship.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\AudioManager.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Fish.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Render.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\ShaderManager.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\FishEcosystem.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Mode2.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Skill.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Particles.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Mouse.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\MapManager.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Polygon.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Rapidjson.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Boss.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\UI.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\DrawSetting.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Font.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\FontManager.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\AI.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\AABB.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\ScreenWrap.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\DialogBox.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Shop.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Effect.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Rock.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\RockGroup.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\RockPoint.h">
-      <Filter>Game</Filter>
-    </ClInclude>
+    <ClInclude Include="Engine\Animation.h" />
+    <ClInclude Include="Engine\AudioManager.h" />
+    <ClInclude Include="Engine\Camera.h" />
+    <ClInclude Include="Engine\Collision.h" />
+    <ClInclude Include="Engine\Component.h" />
+    <ClInclude Include="Engine\ComponentManager.h" />
+    <ClInclude Include="Engine\DrawSetting.h" />
+    <ClInclude Include="Engine\Engine.h" />
+    <ClInclude Include="Engine\FontManager.h" />
+    <ClInclude Include="Engine\GameObject.h" />
+    <ClInclude Include="Engine\GameObjectManager.h" />
+    <ClInclude Include="Engine\GameState.h" />
+    <ClInclude Include="Engine\GameStateManager.h" />
+    <ClInclude Include="Engine\Input.h" />
+    <ClInclude Include="Engine\logger.h" />
+    <ClInclude Include="Engine\MapManager.h" />
+    <ClInclude Include="Engine\Particle.h" />
+    <ClInclude Include="Engine\Polygon.h" />
+    <ClInclude Include="Engine\AABB.h" />
+    <ClInclude Include="Engine\Rapidjson.h" />
+    <ClInclude Include="Engine\Rect.h" />
+    <ClInclude Include="Engine\Render.h" />
+    <ClInclude Include="Engine\ShaderManager.h" />
+    <ClInclude Include="Engine\ShowCollision.h" />
+    <ClInclude Include="Engine\Sprite.h" />
+    <ClInclude Include="Engine\TextureManager.h" />
+    <ClInclude Include="Engine\Timer.h" />
+    <ClInclude Include="Engine\UI.h" />
+    <ClInclude Include="Game\AI.h" />
+    <ClInclude Include="Game\Background.h" />
+    <ClInclude Include="Game\BeatSystem.h" />
+    <ClInclude Include="Game\Boss.h" />
+    <ClInclude Include="Game\Effect.h" />
+    <ClInclude Include="Game\DialogBox.h" />
+    <ClInclude Include="Game\Dragging.h" />
+    <ClInclude Include="Game\Fish.h" />
+    <ClInclude Include="Game\FishEcosystem.h" />
+    <ClInclude Include="Game\GameObjectTypes.h" />
+    <ClInclude Include="Game\Mode1.h" />
+    <ClInclude Include="Game\Mode2.h" />
+    <ClInclude Include="Game\Mouse.h" />
+    <ClInclude Include="Game\Particles.h" />
+    <ClInclude Include="Game\Player.h" />
+    <ClInclude Include="Game\ScreenWrap.h" />
     <ClInclude Include="Game\Rock.h" />
     <ClInclude Include="Game\RockGroup.h" />
     <ClInclude Include="Game\RockPoint.h" />
-    <ClInclude Include="Game\Icon.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\IconManager.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Player.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Rock.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\RockGroup.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\RockPoint.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\BossBullet.h">
-      <Filter>Game</Filter>
-    </ClInclude>
+    <ClInclude Include="Game\Ship.h" />
+    <ClInclude Include="Game\Shop.h" />
+    <ClInclude Include="Game\Skill.h" />
+    <ClInclude Include="Game\Splash.h" />
+    <ClInclude Include="Game\States.h" />
+    <ClInclude Include="Engine\MathUtils.h" />
+    <ClInclude Include="Game\Monster.h" />
+    <ClInclude Include="Game\Inventory.h" />
+    <ClInclude Include="Engine\Icon.h" />
+    <ClInclude Include="Engine\IconManager.h" />
+    <ClInclude Include="Game\Module.h" />
+    <ClInclude Include="Game\TutorialMap.h" />
   </ItemGroup>
 </Project>

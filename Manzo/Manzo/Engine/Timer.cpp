@@ -24,7 +24,13 @@ void Timer::Set(double time_remaining)
 
 void Timer::Update(double dt)
 {
-	pendulum = !pendulum;
+    if (pendulum_cnt >= 12) {
+        pendulum = !pendulum;
+        pendulum_cnt = 0;
+    }
+
+    pendulum_cnt++;
+
 	if (timer >= 0) {
 		timer -= dt;
 	}
@@ -39,7 +45,7 @@ void Timer::Reset()
 	timer = timer_max;
 }
 
-double Timer::Remaining()
+double Timer::Remaining() const
 {
 	return timer;
 }
@@ -52,6 +58,11 @@ int Timer::RemainingInt()
 bool Timer::TickTock()
 {
 	return pendulum;
+}
+
+bool Timer::IsFinished() const
+{
+    return Remaining() <= 0.0;
 }
 
 

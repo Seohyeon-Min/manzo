@@ -14,6 +14,7 @@ Created:    March 8, 2023
 #include "ShaderManager.h"
 #include "MapManager.h"
 #include "vec2.h"
+#include "MathUtils.h"
 
 #include <iostream>
 #include <array>
@@ -21,23 +22,14 @@ Created:    March 8, 2023
 #define RED color3(255, 0, 0)
 
 /// /////////////////////////////////////////////////////////////////////////////////////
-vec2 GetPerpendicular(const vec2& v) {
-    return { -v.y, v.x };
-}
-float Vector2DotProduct(const vec2& v1, const vec2& v2) {
-    return v1.x * v2.x + v1.y * v2.y;
-}
-vec2 NormalizeVector2(const vec2& v) {
-    float length = sqrt(v.x * v.x + v.y * v.y);
-    return { v.x / length, v.y / length };
-}
+
 void ProjectPolygon(const Polygon& polygon, const vec2& axis, float& min, float& max) {
-    float project_result = Vector2DotProduct(polygon.vertices[0], axis);
+    float project_result = dot(polygon.vertices[0], axis);
     min = project_result;
     max = project_result;
 
     for (int i = 1; i < polygon.vertexCount; i++) {
-        project_result = Vector2DotProduct(polygon.vertices[i], axis);
+        project_result = dot(polygon.vertices[i], axis);
         if (project_result < min) min = project_result;
         if (project_result > max) max = project_result;
     }
@@ -91,7 +83,6 @@ void RectCollision::Draw() {
     Engine::GetRender().AddDrawCall(top_left, bottom_left, GREEN);
 }
 
-
 bool RectCollision::IsCollidingWith(GameObject* other_object) {
     Collision* other_collider = other_object->GetGOComponent<Collision>();
     Math::rect rectangle_1 = WorldBoundary_rect();
@@ -128,7 +119,7 @@ bool RectCollision::IsCollidingWith(GameObject* other_object) {
         for (int i = 0; i < other_poly.vertexCount; i++) {
             vec2 edge = { other_poly.vertices[(i + 1) % other_poly.vertexCount].x - other_poly.vertices[i].x,
                          other_poly.vertices[(i + 1) % other_poly.vertexCount].y - other_poly.vertices[i].y };
-            vec2 axis = NormalizeVector2(GetPerpendicular(edge));
+            vec2 axis = normalize(GetPerpendicular(edge));
 
             float minA, maxA;
             ProjectPolygon({ std::vector<vec2>(rect_vertices, rect_vertices + 4), 4 }, axis, minA, maxA);
@@ -171,6 +162,127 @@ bool RectCollision::IsCollidingWith(GameObject* other_object) {
     return false;
 }
 
+bool RectCollision::IsCollidingWith(Collision* other_collider, Math::rect rectangle_1)
+{
+    if (other_collider == nullptr) {
+        return false;
+    }
+
+    if (other_collider->Shape() == CollisionShape::Rect) {
+        Math::rect rectangle_2 = dynamic_cast<RectCollision*>(other_collider)->WorldBoundary_rect();
+        if (rectangle_1.Right() > rectangle_2.Left() &&
+            rectangle_1.Left() < rectangle_2.Right() &&
+            rectangle_1.Top() > rectangle_2.Bottom() &&
+            rectangle_1.Bottom() < rectangle_2.Top()) {
+            return true;
+        }
+        return false;
+    }
+
+    if (other_collider->Shape() == CollisionShape::Poly) {
+        Polygon other_poly = dynamic_cast<MAP_SATCollision*>(other_collider)->WorldBoundary_poly();
+
+        vec2 rect_vertices[4] = {
+            {rectangle_1.Left(), rectangle_1.Bottom()},
+            {rectangle_1.Right(), rectangle_1.Bottom()},
+            {rectangle_1.Right(), rectangle_1.Top()},
+            {rectangle_1.Left(), rectangle_1.Top()}
+        };
+
+        float min_distance = std::numeric_limits<float>::max();
+        int closest_index = -1;
+        bool is_colliding = true;
+
+        for (int i = 0; i < other_poly.vertexCount; i++) {
+            vec2 edge = { other_poly.vertices[(i + 1) % other_poly.vertexCount].x - other_poly.vertices[i].x,
+                         other_poly.vertices[(i + 1) % other_poly.vertexCount].y - other_poly.vertices[i].y };
+            vec2 axis = normalize(GetPerpendicular(edge));
+
+            float minA, maxA;
+            ProjectPolygon({ std::vector<vec2>(rect_vertices, rect_vertices + 4), 4 }, axis, minA, maxA);
+
+            float minB, maxB;
+            ProjectPolygon(other_poly, axis, minB, maxB);
+
+            if (maxA < minB || maxB < minA) {
+                is_colliding = false;
+                break;
+            }
+
+            float distance = std::min(std::abs(maxA - minB), std::abs(maxB - minA));
+
+            if (distance < min_distance) {
+                min_distance = distance;
+                closest_index = i;
+            }
+        }
+
+        if (!is_colliding) {
+            return false;
+        }
+
+        float expanded_left = rectangle_1.Left() - 15;
+        float expanded_right = rectangle_1.Right() + 15;
+        float expanded_bottom = rectangle_1.Bottom() - 15;
+        float expanded_top = rectangle_1.Top() + 15;
+
+
+        {
+            vec2 CollidingSide_1 = other_poly.vertices[closest_index];
+            vec2 CollidingSide_2 = other_poly.vertices[(closest_index + 1) % other_poly.vertexCount];
+
+            colliding_edge = { CollidingSide_1, CollidingSide_2 };
+        }
+        return true;
+    }
+
+    return false;
+}
+
+bool RectCollision::IsCollidingWithNextFrame(GameObject* other_object, vec2 velocity, float dt, float& toi)
+{
+    Collision* other_collider = other_object->GetGOComponent<Collision>();
+    Math::rect startRect = WorldBoundary_rect();
+
+    Math::rect nextFrameRect = startRect;
+    nextFrameRect.point_1 += velocity * dt;
+    nextFrameRect.point_2 += velocity * dt;
+
+    //bool startCollide = IsCollidingWith(other_collider, startRect);
+
+    //if (startCollide) {
+    //    toi = 0.0f;
+    //    return true;
+    //}
+
+    if (!IsCollidingWith(other_collider, nextFrameRect)) {
+        return false;
+    }
+
+    float t_min = 0.0f, t_max = 1.0f;
+    float threshold = 0.001f;
+
+    while (t_max - t_min > threshold) {
+        float t_mid = (t_min + t_max) * 0.5f;
+        Math::rect testRect;
+        testRect.point_1 = startRect.point_1 + velocity * dt * t_mid;
+        testRect.point_2 = startRect.point_2 + velocity * dt * t_mid;
+
+        if (IsCollidingWith(other_collider, testRect)) {
+            t_max = t_mid;
+        }
+        else {
+            t_min = t_mid;
+        }
+    }
+
+    if (t_min < 1.0f) {
+        toi = t_min;
+        return true;
+    }
+    return false;
+}
+
 
 
 
@@ -199,12 +311,12 @@ bool MAP_SATCollision::IsCollidingWith(vec2 point) {
     for (int i = 0; i < poly_1.vertexCount; i++) {
         vec2 edge = { poly_1.vertices[(i + 1) % poly_1.vertexCount].x - poly_1.vertices[i].x,
                       poly_1.vertices[(i + 1) % poly_1.vertexCount].y - poly_1.vertices[i].y };
-        vec2 axis = NormalizeVector2(GetPerpendicular(edge));
+        vec2 axis = normalize(GetPerpendicular(edge));
 
         float minA, maxA;
         ProjectPolygon(poly_1, axis, minA, maxA);
 
-        float projection = Vector2DotProduct(point, axis);
+        float projection = dot(point, axis);
         float minB = projection;
         float maxB = projection;
         if (maxA < minB || maxB < minA) {
@@ -248,7 +360,7 @@ bool MAP_SATCollision::IsCollidingWith(GameObject* other_object)
     for (int i = 0; i < poly_1.vertexCount; i++) {
         vec2 edge = { poly_1.vertices[(i + 1) % poly_1.vertexCount].x - poly_1.vertices[i].x,
                          poly_1.vertices[(i + 1) % poly_1.vertexCount].y - poly_1.vertices[i].y };
-        vec2 axis = NormalizeVector2(GetPerpendicular(edge));
+        vec2 axis = normalize(GetPerpendicular(edge));
 
         float minA, maxA;
         ProjectPolygon(poly_1, axis, minA, maxA);
@@ -272,7 +384,7 @@ bool MAP_SATCollision::IsCollidingWith(GameObject* other_object)
     for (int i = 0; i < poly_2.vertexCount; i++) {
         vec2 edge = { poly_2.vertices[(i + 1) % poly_2.vertexCount].x - poly_2.vertices[i].x,
                          poly_2.vertices[(i + 1) % poly_2.vertexCount].y - poly_2.vertices[i].y };
-        vec2 axis = NormalizeVector2(GetPerpendicular(edge));
+        vec2 axis = normalize(GetPerpendicular(edge));
 
         float minA, maxA;
         ProjectPolygon(poly_1, axis, minA, maxA);

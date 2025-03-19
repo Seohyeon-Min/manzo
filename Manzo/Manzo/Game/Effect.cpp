@@ -50,6 +50,7 @@ DashEffect::DashEffect()
     vec2 dir = ship->GetVelocity().Normalize();
     float angle_radians = std::atan2(dir.y, dir.x);
     force = -dir * speed;
+    SetScale({-1,1});
     SetPosition(ship->GetPosition());
     SetRotation(angle_radians);
 
@@ -119,7 +120,7 @@ CaptureEffect::~CaptureEffect()
 HitEffect::HitEffect(vec2 pos)
     : Effect(pos, 0.5) {
     SetScale({ 0.6f, 0.6f });
-    AddGOComponent(new Sprite("assets/images/Hit_effect.spt", this));
+    AddGOComponent(new Sprite("assets/images/hit_effect.spt", this));
     GetGOComponent<Sprite>()->PlayAnimation(0);
 
     Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::HitPraticle>>()
@@ -136,6 +137,41 @@ void HitEffect::Update(double dt) {
 }
 
 void HitEffect::Draw(DrawLayer drawlayer)
+{
+    Sprite* sprite = GetGOComponent<Sprite>();
+    DrawCall draw_call = {
+        sprite,
+        &GetMatrix(),
+        Engine::GetShaderManager().GetShader("change_alpha") // Shader to use
+    };
+
+    draw_call.settings.do_blending = true;
+    draw_call.SetUniforms = [this](const GLShader* shader) { SetAlpha(shader); };
+    draw_call.sorting_layer = DrawLayer::DrawLast;
+    GameObject::Draw(draw_call);
+}
+
+MonsterHitEffect::MonsterHitEffect(vec2 pos)
+: Effect(pos, 0.5) {
+        SetScale({ 0.6f, 0.6f });
+        AddGOComponent(new Sprite("assets/images/monster_hit_effect.spt", this));
+        GetGOComponent<Sprite>()->PlayAnimation(0);
+
+        Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::HitPraticle>>()
+            ->EmitRound(20, GetPosition(), 1800.f, 600.f);
+        Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::HitPraticle2>>()
+            ->EmitRound(10, GetPosition(), 1500.f, 600.f);
+}
+
+void MonsterHitEffect::Update(double dt)
+{
+    Effect::Update(dt);
+    if (GetGOComponent<Sprite>()->AnimationEnded()) {
+        Destroy();
+    }
+}
+
+void MonsterHitEffect::Draw(DrawLayer drawlayer)
 {
     Sprite* sprite = GetGOComponent<Sprite>();
     DrawCall draw_call = {

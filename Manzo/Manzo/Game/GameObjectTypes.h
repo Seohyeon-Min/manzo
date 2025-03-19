@@ -28,7 +28,9 @@ enum class GameObjectTypes {
     UI,
     Player,
     Icon,
-    BossBullet
+    BossBullet,
+    Monster,
+    Module
 };
 
 bool IsPixelShaderApplicable(GameObjectTypes type);

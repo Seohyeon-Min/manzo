@@ -21,47 +21,55 @@ Created:    March 8, 2023
 #include "AudioManager.h"
 #include "FontManager.h"
 #include "WindowState.h"
+#include "IconManager.h"
 
 #include <chrono>
 #include <time.h>
+#include <random>
+
+extern std::random_device rd;
 
 class Engine : public IProgram {
 public:
-    static Engine& Instance() {
-        static Engine instance;
+    static Engine* Instance() {
+        static Engine* instance = new Engine();
         return instance;
     }
 
     static ShaderManager& GetShaderManager() {
-        return Instance().shadermanager;
+        return Instance()->shadermanager;
     }
     static Logger& GetLogger() {
-        return Instance().logger;
+        return Instance()->logger;
     }
 
     static GameStateManager& GetGameStateManager() {
-        return Instance().gamestatemanager;
+        return Instance()->gamestatemanager;
     }
 
     static Input& GetInput() {
-        return Instance().input;
+        return Instance()->input;
     }
 
     static TextureManager& GetTextureManager() {
-        return Instance().texturemanager;
+        return Instance()->texturemanager;
     }
 
     static Render& GetRender() {
-        return Instance().render;
+        return Instance()->render;
     }
 
 
     static AudioManager& GetAudioManager() {
-        return Instance().audiomanager;
+        return Instance()->audiomanager;
     }
 
     static FontManager& GetFontManager() {
-        return Instance().fontmanager;
+        return Instance()->fontmanager;
+    }
+
+    static IconManager& GetIconManager() {
+        return Instance()->iconmanager;
     }
 
     void Start(std::string window_title);
@@ -104,4 +112,5 @@ private:
     TextureManager texturemanager;
     Render render;
     FontManager fontmanager;
+    IconManager iconmanager;
 };

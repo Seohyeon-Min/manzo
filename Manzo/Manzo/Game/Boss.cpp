@@ -235,7 +235,7 @@ void Boss::Move(double dt) {
 	SetVelocity((lerped_position - GetPosition()) / (float)dt);
 	GameObjectManager* gameobjectmanager = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>();
 	GameObject::Update(dt);
-	vec2 nearestRockpoint = gameobjectmanager->FindNearestRock(boss);
+	vec2 nearestRockpoint = gameobjectmanager->FindNearestRockPoint(boss);
 
 	if ((current_position - GetPosition()).Length() < 10.0f) {
 		lerp_factor = 0.0f;
@@ -245,8 +245,8 @@ void Boss::Move(double dt) {
 
 
 void Boss::LoadBossfile() {
-	BossJSONfileMap.push_back("assets/jsons/boss_e.json");
-	BossJSONfileMap.push_back("assets/jsons/boss_y.json");
+	BossJSONfileMap.push_back("assets/jsons/boss/boss_e.json");
+	BossJSONfileMap.push_back("assets/jsons/boss/boss_y.json");
 	BossJSONfileMap.push_back("Please add file path here");
 }
 

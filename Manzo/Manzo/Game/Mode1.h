@@ -19,6 +19,7 @@ Created:    March 8, 2023
 #include "Skill.h"
 #include "Fish.h"
 #include "Shop.h"
+#include "Module.h"
 
 class Reef;
 class Ship;
@@ -49,12 +50,13 @@ private:
     Beat* beat_system;
     Skillsys* skill_ptr;
     Skillsys::Skill_Net* Net_ptr;
+    Module* module;
 
     bool Isboss = false;
     bool soundPlaying = false;
     bool replay = false;
     bool playing = false;
-    const float maxDistance = 350.0f;
+    const float maxDistance = 500.0f;
     std::vector<std::pair<int, int>> BossFirstPos;
     vec3 bossPosition;
     vec3 previousPosition = { 0,0,0 };

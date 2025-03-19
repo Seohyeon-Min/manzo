@@ -44,12 +44,15 @@ public:
 	}
 	void ParseSVG(const std::string& filename);
 	std::vector<vec2> parsePathData(const std::string& pathData);	// path parsing
+	std::vector<Rock>& GetRocks() { return objects; }
+	void MakeRockGroups(Rock* rock, Polygon poly);
 	void MakeMovingRockGroups(MovingRock* moving_rock, Polygon poly);
 	void LoadMapInBoundary(const Math::rect& camera_boundary);
 	bool IsOverlapping(const Math::rect& a, const Math::rect& b);
 
 	void Translate(const vec2& offset);
 	void UnloadAll();
+
 
 private:
 	char currentCommand = '\0';

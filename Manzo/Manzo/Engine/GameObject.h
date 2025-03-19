@@ -35,6 +35,7 @@ public:
     virtual GameObjectTypes Type() = 0;
     virtual std::string TypeName() = 0;
     bool IsCollidingWith(GameObject* other_object);
+    bool IsCollidingWithNextFrame(GameObject* other_object, vec2 velocity, float dt, float& toi);
     bool IsCollidingWith(vec2 point);
     bool IsVisible(const Math::rect& camera_bounds) const;
     bool isCameraFixed() const { return is_camera_fixed; }
@@ -48,6 +49,7 @@ public:
     virtual void Destroy() { destroy = true; }
     virtual bool Destroyed() { return destroy; }
     virtual void SetShader(GLShader* new_shader) { shader = new_shader; };
+    virtual const GLShader* GetShader() { return shader; };
 
     const mat3& GetMatrix();
     const Math::rect& GetAABB() const;
@@ -67,7 +69,7 @@ public:
         virtual void CheckExit(GameObject* object) = 0;
         virtual std::string GetName() = 0;
     };
-    State* current_state;
+    State* current_state = nullptr;
     void change_state(State* new_state);
 
     void SetPosition(vec2 new_position);
@@ -121,7 +123,7 @@ private:
     public:
         void Enter(GameObject*) override {}
         void Update(GameObject*, double) override {}
-        void FixedUpdate(GameObject*, double) override {}
+        void FixedUpdate(GameObject* object, double dt) override {};
         void CheckExit(GameObject*) override {}
         std::string GetName() { return ""; }
     };

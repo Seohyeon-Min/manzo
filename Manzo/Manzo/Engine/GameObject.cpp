@@ -51,14 +51,15 @@ void GameObject::Update(double dt) {
 	UpdateGOComponents(dt);
 	current_state->CheckExit(this);
 	GetMatrix();
-	if (velocity.x != 0 || velocity.y != 0) {
-		UpdatePosition(velocity * (float)dt);
-	}
+
 }
 
 void GameObject::FixedUpdate(double fixed_dt)
 {
 	current_state->FixedUpdate(this, fixed_dt); // dose only state update... not sure it's correct but works..
+	if (velocity.x != 0 || velocity.y != 0) {
+		UpdatePosition(velocity * (float)fixed_dt);
+	}
 }
 
 void GameObject::change_state(State* new_state) {
@@ -117,6 +118,13 @@ void GameObject::Draw(const DrawCall& draw_call)
 bool GameObject::IsCollidingWith(GameObject* other_object) {
 	Collision* collider = GetGOComponent<Collision>();
 	return collider != nullptr && collider->IsCollidingWith(other_object);
+}
+
+bool GameObject::IsCollidingWithNextFrame(GameObject* other_object, vec2 velocity, float dt, float& toi)
+{
+	if (other_object->Type() != GameObjectTypes::Rock) return false;
+	RectCollision* collider = GetGOComponent<RectCollision>();
+	return collider != nullptr && collider->IsCollidingWithNextFrame(other_object, velocity, dt, toi);
 }
 
 bool GameObject::IsCollidingWith(vec2 point) {

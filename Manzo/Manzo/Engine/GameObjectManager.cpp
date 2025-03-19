@@ -12,6 +12,7 @@ Created:    Aprill 29, 2023
 #include "GameObjectManager.h"
 #include "MapManager.h"
 #include "Camera.h"
+#include "MathUtils.h"
 
 void GameObjectManager::Add(GameObject* object)
 {
@@ -63,8 +64,10 @@ void GameObjectManager::DrawAll()
 }
 
 
-void GameObjectManager::CollisionTest() {
+void GameObjectManager::CollisionTest() 
+{
 	for (auto object_1 : objects) {
+		//if (!object_1->isActive(camera_bounds)) continue; <--- it is needfull
 		for (auto object_2 : objects) {
 			if (object_1 != object_2 && object_1->CanCollideWith(object_2->Type())) {
 				if (object_1->IsCollidingWith(object_2)) {
@@ -77,24 +80,19 @@ void GameObjectManager::CollisionTest() {
 }
 
 
-vec2 GameObjectManager::FindNearestRock(GameObject* object) {
-	GameObjectManager* gameObjectManager = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>();
-	if (gameObjectManager == nullptr) {
-		Engine::GetLogger().LogError("GameObjectManager not found");
-		return { 0,0 };
-	}
+vec2 GameObjectManager::FindNearestRockPoint(GameObject* object) {
 
 	vec2 nearestRockpoints;
 	float nearestDistance = std::numeric_limits<float>::max();
 	vec2 object_Position = object->GetPosition();
 
-	for (GameObject* gameObj : gameObjectManager->objects) {
+	for (GameObject* gameObj : objects) {
 		if (gameObj->Type() == GameObjectTypes::Rock) {
 			Rock* rock = static_cast<Rock*>(gameObj);
 			std::vector<vec2> rockPoints = rock->GetRockGroup()->GetPoints();
 
 			for (const vec2& rockPoint : rockPoints) {
-				float distance = sqrtf((float)pow(rockPoint.x - object_Position.x, 2) + (float)pow(rockPoint.y - object_Position.y, 2));
+				float distance = (rockPoint - object_Position).LengthSquared();
 
 				if (distance < nearestDistance) {
 					nearestDistance = distance;
@@ -118,3 +116,35 @@ void GameObjectManager::Remove(GameObject* object) {
 		std::cout << "GameObject Not Found.\n";
 	}
 }
+
+Rock* GameObjectManager::FindNearestRock(GameObject* object) {
+	Rock* nearestRock = nullptr;
+	float nearestDistance = std::numeric_limits<float>::max();
+	vec2 object_Position = object->GetPosition();
+
+	auto camera_bounds = Engine::GetGameStateManager().GetGSComponent<Cam>()->GetBounds();
+
+	for (GameObject* gameObj : objects) {
+		if (gameObj->Type() == GameObjectTypes::Rock/* && gameObj->IsVisible(camera_bounds)*/) {
+			Rock* rock = static_cast<Rock*>(gameObj);
+			std::vector<vec2> rockPoints = rock->GetRockGroup()->GetPoints();
+
+			for (size_t i = 0; i < rockPoints.size(); ++i) {
+				vec2 p1 = rockPoints[i];
+				vec2 p2 = rockPoints[(i + 1) % rockPoints.size()];
+
+				vec2 closestPoint = ClosestPoint(object_Position, p1, p2);
+				float distance = (closestPoint - object_Position).LengthSquared();
+
+				if (distance < nearestDistance) {
+					nearestDistance = distance;
+					nearestRock = rock;
+				}
+			}
+		}
+	}
+
+	return nearestRock;
+}
+
+

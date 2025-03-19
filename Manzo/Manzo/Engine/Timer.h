@@ -21,13 +21,15 @@ public:
     void Set(double time_remaining);
     void Update(double dt) override;
     void Reset();
-    double Remaining();
+    double Remaining() const;
     int RemainingInt();
     bool TickTock();
+    bool IsFinished() const;
 private:
     double timer;
     double timer_max;
     bool pendulum;
+    int pendulum_cnt = 0;
 };
 
 class RealTimeTimer : public Component {

@@ -237,6 +237,13 @@ void GLShader::SendUniform(std::string_view name, std::span<const float, 4 * 4> 
     glCheck(glUniformMatrix4fv(get_uniform_location(name), 1, (transpose) ? GL_TRUE : GL_FALSE, mat.data()));
 }
 
+void GLShader::SetTexture(const std::string& uniformName, GLuint textureUnit, GLuint textureID) {
+    glActiveTexture(GL_TEXTURE0 + textureUnit);
+    glBindTexture(GL_TEXTURE_BUFFER, textureID);
+    SendUniform(uniformName, static_cast<int>(textureUnit));
+}
+
+
 void GLShader::link_program(const std::vector<unsigned int>& shader)
 {
     glCheck(program_handle = glCreateProgram());

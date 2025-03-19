@@ -12,6 +12,7 @@ Created:    March 8, 2023
 #include <list>
 #include "GameObject.h"
 #include "mat3.h"
+#include "..\Game\Rock.h"
 
 namespace Math { class TransformationMatrix; }
 
@@ -26,9 +27,11 @@ public:
 
 
     void CollisionTest();
-    vec2 FindNearestRock(GameObject* object);
     void Remove(GameObject* object);
 
+    vec2 FindNearestRockPoint(GameObject* object);
+    Rock* FindNearestRock(GameObject* object);
+    
     template<typename T>
     T* GetGOComponent() {
         for (GameObject* object : objects) {

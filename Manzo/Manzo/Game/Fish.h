@@ -1,9 +1,11 @@
-#ifndef FISH_H
-#define FISH_H
+#pragma once
 
 #include "../Engine/GameObject.h"
 #include "GameObjectTypes.h"
 #include "../Engine/MapManager.h"
+#include <map>
+
+extern std::map<int, int> fishCaptureCount;
 
 class Fish : public GameObject
 {
@@ -32,11 +34,11 @@ public:
 		vec2 scale;
 		vec2 velocity;
 		std::filesystem::path filePath;
+		float possibility;
+		int money;
 	};
 
-	static std::vector<FishDex> fishBook;
 	int type = FishType::Fish1;
-
 	bool collided = false;
 
 	void Update(double dt);
@@ -56,5 +58,3 @@ private:
 };
 
 extern int fishCnt;
-
-#endif

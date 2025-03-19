@@ -27,6 +27,7 @@ Created:    March 8, 2023
 #include "Fish.h"
 #include "Skill.h"
 #include "Boss.h"
+#include "Monster.h"
 
 
 #include <utility>
@@ -44,15 +45,18 @@ void Mode1::Load() {
 #else
 #endif
     //shader
+	Engine::GetShaderManager().LoadShader("purple", "assets/shaders/default.vert", "assets/shaders/default_purple.frag");
     Engine::GetShaderManager().LoadShader("pixelate", "assets/shaders/default.vert", "assets/shaders/pixelate.frag");
     Engine::GetShaderManager().LoadShader("blur", "assets/shaders/default.vert", "assets/shaders/blur.frag");
     Engine::GetShaderManager().LoadShader("change_alpha", "assets/shaders/default.vert", "assets/shaders/change_alpha.frag");
+	Engine::GetShaderManager().LoadShader("change_color", "assets/shaders/default.vert", "assets/shaders/change_color.frag");
     Engine::GetShaderManager().LoadShader("change_alpha_no_texture", "assets/shaders/default.vert", "assets/shaders/change_alpha_no_texture.frag");
 	Engine::GetShaderManager().LoadShader("health_bar", "assets/shaders/default.vert", "assets/shaders/health_bar.frag");
 
 	Engine::GetShaderManager().LoadShader("under_water_god_ray", "assets/shaders/post_default.vert", "assets/shaders/underwater_god_ray.frag");
 	Engine::GetShaderManager().LoadShader("post_default", "assets/shaders/post_default.vert", "assets/shaders/post_default.frag");
     Engine::GetShaderManager().LoadShader("post_bloom", "assets/shaders/post_default.vert", "assets/shaders/post_bloom.frag");
+	Engine::GetShaderManager().LoadShader("post_underwater_distortion", "assets/shaders/post_default.vert", "assets/shaders/post_underwater_distortion.frag");
 
 	// audio
 	Engine::GetAudioManager().LoadMusic("assets/audios/bgm_original.wav", "background1", false);
@@ -121,17 +125,59 @@ void Mode1::Load() {
 	GetGSComponent<GameObjectManager>()->Add(new Mouse);
 	GetGSComponent<GameObjectManager>()->Add(new FuelUI(ship_ptr));
 
+	// monster
+	GetGSComponent<GameObjectManager>()->Add(new Monster(ship_ptr, {300,300}));
+
+
 	// Skill
-	if (!Engine::Instance().GetTmpPtr())
+	if (!Engine::Instance()->GetTmpPtr())
 	{
-		Engine::Instance().SetTmpPtr(new Skillsys);
-		skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
+		Engine::Instance()->SetTmpPtr(new Skillsys);
+		skill_ptr = static_cast<Skillsys*>(Engine::Instance()->GetTmpPtr());
 		skill_ptr->SetShipPtr(ship_ptr);
 	}
 	else
 	{
-		skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
+		skill_ptr = static_cast<Skillsys*>(Engine::Instance()->GetTmpPtr());
 		skill_ptr->SetShipPtr(ship_ptr);
+	}
+
+	// Module
+	module = new Module({ 0, 0 });
+	GetGSComponent<GameObjectManager>()->Add(module);
+
+	// Read fitted module
+	std::string savePath = "assets/scenes/save_data.txt";
+	std::ifstream saveFile(savePath);
+
+	if (saveFile.is_open()) {
+
+		std::string line;
+
+		while (std::getline(saveFile, line)) 
+		{
+			if (line.find("Module1:") != std::string::npos) 
+			{
+				int module1Value;
+				std::istringstream ss_module(line.substr(9));
+				ss_module >> module1Value;
+
+				if (module && (module1Value == 1)) {
+					GetGSComponent<GameObjectManager>()->Add(new FirstModule(ship_ptr));
+				}
+			}
+
+			if (line.find("Module2:") != std::string::npos)
+			{
+				int module2Value;
+				std::istringstream ss_module(line.substr(9));
+				ss_module >> module2Value;
+
+				if (module && (module2Value == 1)) {
+					GetGSComponent<GameObjectManager>()->Add(new SecondModule(ship_ptr));
+				}
+			}
+		}
 	}
 }
 
@@ -162,6 +208,11 @@ void Mode1::Update(double dt) {
     if (Engine::GetInput().KeyJustPressed(Input::Keys::W)) {
         Engine::GetGameStateManager().ReloadState();
     }
+
+	if (Engine::GetInput().KeyJustPressed(Input::Keys::V)) {
+		Engine::GetGameStateManager().ClearNextGameState();
+		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Tutorial));
+	}
 
     if (Engine::GetInput().KeyJustPressed(Input::Keys::E) && !Isboss) {
         GetGSComponent<GameObjectManager>()->Add(boss_ptr);
@@ -194,32 +245,31 @@ void Mode1::Update(double dt) {
 	Engine::GetAudioManager().Set3dListenerAndOrientation(smoothShipPosition,vec3{ 0.0f, -1.0f, 0.0f },vec3{ 0.0f, 0.0f, 1.0f }	);
 
 	// Apply 3D position for the boss and calculate volume based on the distance
-	if (isWithinRange) {
-		if (!soundPlaying)
-		{
-			Engine::GetAudioManager().PlayMusics("e morse");
-			soundPlaying = true;
-		}
-		else
-		{
-			if(!replay)
-			{
-				Engine::GetAudioManager().RestartPlayMusic("e morse");
-				replay = true;
-			}
-		}
-		Engine::GetAudioManager().SetChannel3dPosition("e morse", bossPosition);
+    if (isWithinRange) {
+        if (!soundPlaying) {
+            Engine::GetAudioManager().PlayMusics("e morse");
+            soundPlaying = true;
+        }
+        else {
+            if (!replay) {
+                Engine::GetAudioManager().RestartPlayMusic("e morse");
+                replay = true;
+            }
+        }
 
-		// Calculate the volume based on the distance
-		float volumeFactor = 1.0f - std::clamp(distance / 300.0f, 0.0f, 1.0f);
-		float volume = std::lerp(0.0f, 1.0f, volumeFactor);
-		Engine::GetAudioManager().SetChannelVolume("e morse", volume);
-	}
-	else
-	{
-		Engine::GetAudioManager().StopPlayingMusic("e morse");
-		replay = false;
-	}
+        Engine::GetAudioManager().SetChannel3dPosition("e morse", bossPosition);
+
+        float volumeFactor = 1.0f - std::clamp(distance / 300.0f, 0.0f, 1.0f);
+        //float volume = std::lerp(0.0f, 1.0f, volumeFactor);
+        float volume = std::lerp(-20.0f, 1.0f, volumeFactor);
+
+        Engine::GetAudioManager().SetChannelVolume("e morse", volume);
+    }
+    else {
+        Engine::GetAudioManager().StopPlayingMusic("e morse");
+        replay = false;
+    }
+
 }
 
 void Mode1::FixedUpdate(double dt)
@@ -235,12 +285,27 @@ void Mode1::Draw() {
     //GetGSComponent<Map>()->AddDrawCall();
     GetGSComponent<GameObjectManager>()->DrawAll();
 
+
     // Draw Font
-    //Engine::GetFontManager().PrintText(FontType::Bold, "HI", { 0.f,0.f }, 0.0f, 0.001f, { 1.0f,1.0f,1.0f });
-    //Engine::GetFontManager().PrintText(FontType::Thin, "A", { 0.5f,0.5f }, 0.0f, 0.0005f, { 0.0f,0.0f,0.0f });
+	Engine::GetFontManager().PrintText(FontType::Bold,"E", { 0.f,0.f }, 0.2f,{ 1.f,1.f,1.f }, 0.5f);
 }
 
 void Mode1::Unload() {
+
+	std::string savePath = "assets/scenes/save_data.txt";
+	std::ofstream saveFile(savePath);
+
+	if (saveFile.is_open()) {
+
+		for (const auto& entry : fishCaptureCount) {
+			saveFile << entry.first + 1 << " " << entry.second << "\n";
+		}
+
+		saveFile << "Money: " << GetGSComponent<Fish>()->GetMoney() << "\n";
+		saveFile << "Module1: " << module->IsFirstSetted() << "\n";
+		saveFile << "Module2: " << module->IsSecondSetted() << "\n";
+		saveFile.close();
+	}
 
 	ship_ptr = nullptr;
 	delete fishGenerator;
@@ -254,5 +319,5 @@ void Mode1::Unload() {
 	Engine::GetRender().ClearDrawCalls();
 	ClearGSComponents();
 	Engine::GetAudioManager().StopAllChannels();
-	Engine::Instance().ResetSlowDownFactor();
+	Engine::Instance()->ResetSlowDownFactor();
 }

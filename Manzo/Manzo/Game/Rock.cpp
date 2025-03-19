@@ -46,7 +46,7 @@ void Rock::SetCenter() {
     }
     center.x /= vertices.size();
     center.y /= vertices.size();
-    
+
 }
 
 void MovingRock::Pop(const vec2& direction, float speed) {
