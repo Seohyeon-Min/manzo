@@ -44,7 +44,7 @@ public:
 	}
 	void ParseSVG(const std::string& filename);
 	std::vector<vec2> parsePathData(const std::string& pathData);	// path parsing
-	std::vector<Rock>& GetRocks() { return objects; }
+	std::vector<Rock*>& GetRocks() { return rocks; }
 	void MakeRockGroups(Rock* rock, Polygon poly);
 	void MakeMovingRockGroups(MovingRock* moving_rock, Polygon poly);
 	void LoadMapInBoundary(const Math::rect& camera_boundary);
