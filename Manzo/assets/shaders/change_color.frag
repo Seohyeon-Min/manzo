@@ -14,5 +14,5 @@ void main() {
         discard;
     }
 
-    fFragClr = vec4(texColor.rgb, 0.0);
+    fFragClr = vec4(texColor.rgb, 0.32);
 }
