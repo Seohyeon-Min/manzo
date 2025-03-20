@@ -383,7 +383,7 @@ vec2 ComputeCollisionNormal(std::span<const vec2> points, const vec2& pos, const
     auto sorted_point = SortPointsCounterClockwise(points, center);
 
     auto spline_points = GenerateSplinePoints(sorted_point, resolution);
-    DrawSpline(spline_points, { 1.0f, 0.0f, 0.0f }, 2.0f, 1.0f, nullptr);
+    DrawSpline(spline_points, { 0.0f, 1.0f, 0.0f }, 2.0f, 1.0f, nullptr);
 
     const vec2& closest_point_on_spline = FindClosestPointOnSpline(spline_points, pos);
 

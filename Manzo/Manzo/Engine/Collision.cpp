@@ -112,8 +112,8 @@ bool RectCollision::IsCollidingWith(GameObject* other_object) {
             {rectangle_1.Left(), rectangle_1.Top()}
         };
 
-        float min_distance = std::numeric_limits<float>::max();
-        int closest_index = -1;
+        //float min_distance = std::numeric_limits<float>::max();
+        //int closest_index = -1;
         bool is_colliding = true;
 
         for (int i = 0; i < other_poly.vertexCount; i++) {
@@ -132,30 +132,18 @@ bool RectCollision::IsCollidingWith(GameObject* other_object) {
                 break;
             }
 
-            float distance = std::min(std::abs(maxA - minB), std::abs(maxB - minA));
+            /*float distance = std::min(std::abs(maxA - minB), std::abs(maxB - minA));
 
             if (distance < min_distance) {
                 min_distance = distance;
                 closest_index = i;
-            }
+            }*/
         }
 
         if (!is_colliding) {
             return false;
         }
 
-        float expanded_left = rectangle_1.Left() - 15;
-        float expanded_right = rectangle_1.Right() + 15;
-        float expanded_bottom = rectangle_1.Bottom() - 15;
-        float expanded_top = rectangle_1.Top() + 15;
-
-
-        {
-            vec2 CollidingSide_1 = other_poly.vertices[closest_index];
-            vec2 CollidingSide_2 = other_poly.vertices[(closest_index + 1) % other_poly.vertexCount];
-
-            colliding_edge = { CollidingSide_1, CollidingSide_2 };
-        }
         return true; // basic calculation
     }
 
@@ -221,18 +209,6 @@ bool RectCollision::IsCollidingWith(Collision* other_collider, Math::rect rectan
             return false;
         }
 
-        float expanded_left = rectangle_1.Left() - 15;
-        float expanded_right = rectangle_1.Right() + 15;
-        float expanded_bottom = rectangle_1.Bottom() - 15;
-        float expanded_top = rectangle_1.Top() + 15;
-
-
-        {
-            vec2 CollidingSide_1 = other_poly.vertices[closest_index];
-            vec2 CollidingSide_2 = other_poly.vertices[(closest_index + 1) % other_poly.vertexCount];
-
-            colliding_edge = { CollidingSide_1, CollidingSide_2 };
-        }
         return true;
     }
 
