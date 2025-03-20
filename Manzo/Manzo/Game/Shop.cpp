@@ -48,11 +48,10 @@ void Shop::Update(double dt)
 		* 1. 일단 파일 내에 있는걸 읽어오는지 확인하기 // 되네
 		* 2. 아이콘 먼저 띄워보기 // 이거 해야함
 		* 3. 아이콘 갖고오면 일단 그 문자열을 가져오게 // 그냥 다 되는거같은데?
-		* 4. 드래그 해야하는데 드래그 계속 안됨(이것만 되면 될거같은데) -> 드래그 시도는 하는데 아이콘이 움직이질 않음 왜 와이?
+		* 4. 드래그 해야하는데 드래그 계속 안됨(이것만 되면 될거같은데) -> 드래그 시도는 하는데 아이콘이 움직이질 않음 왜 와이? // 일단은 해결
 		*/
-		//Shop_Back_draw();
 
-		Engine::GetIconManager().AddIcon("fish3", { 0, 0 }, 2.0f);
+		Engine::GetIconManager().AddIcon("fish3", { 0, 0 }, 2.0f); // for the sell area, should be change to other icon
 
 		if (Engine::GetInput().KeyJustPressed(Input::Keys::E) && shop_available)
 		{
@@ -90,10 +89,9 @@ void Shop::Update(double dt)
 							<< Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() << std::endl;
 							Engine::GetIconManager().RemoveAllIcon();
 
-						shop_infos.erase(it);  // 요소 삭제
-						std::cout << "Item erased, exiting loop." << std::endl;
+						shop_infos.erase(it);  // Delete info
 						Ready_to_sell = false;
-						break;  // 삭제 후 반복 종료
+						break;  // After Delete break the loop
 					}
 				}
 
