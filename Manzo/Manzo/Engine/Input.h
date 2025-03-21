@@ -21,8 +21,11 @@ class Input {
 private:
     struct MousePos
     {
+        //offset for camera zoom in/out
         float mouseCamSpaceX = 0;
         float mouseCamSpaceY = 0;
+
+        //for debug
         float mouseWorldSpaceX = 0;
         float mouseWorldSpaceY = 0;
     };
@@ -113,6 +116,11 @@ public:
     bool IsMouseMoving();
     vec2 GetMousePosition() const;
     MousePos GetMousePos() const { return environment; }
+
+    void SetCamSpace(float camera_width, float camera_height) {
+        environment.mouseCamSpaceX = camera_width;
+        environment.mouseCamSpaceY = camera_height;
+    }
 
 private:
     MousePos environment;

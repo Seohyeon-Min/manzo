@@ -19,11 +19,11 @@ void Monster::Update(double dt)
 	GameObject::Update(dt);
 
     if (!IsPlayerInRange(ship_ptr->GetPosition())) {
-        std::cout << "Player out of range\n";
+        //std::cout << "Player out of range\n";
         change_state(&state_goback);
     }
     else if ((GetPosition() - ship_ptr->GetPosition()).Length() > dist_from_ship) {
-        std::cout << "Player too far\n";
+        //std::cout << "Player too far\n";
         change_state(&state_goback);
     }
 
@@ -249,7 +249,7 @@ void Monster::Goback::CheckExit(GameObject* object)
         monster->SetVelocity({}); // 속도 0으로 설정
         monster->SetPosition(monster->init_pos); // 정확한 위치로 스냅 (선택 사항)
         monster->change_state(&monster->state_stanby);
-        std::cout << "Move finish\n";
+        //std::cout << "Move finish\n";
     }
 }
 

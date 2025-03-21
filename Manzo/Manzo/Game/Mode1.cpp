@@ -105,7 +105,7 @@ void Mode1::Load() {
     //GetGSComponent<MapManager>()->AddMapFile("assets/maps/TemporaryMap.svg");
     
 	//Ear Clipping Test
-	GetGSComponent<MapManager>()->AddMapFile("assets/maps/Test5.svg");
+	GetGSComponent<MapManager>()->AddMapFile("assets/maps/Narrow.svg");
 	GetGSComponent<MapManager>()->LoadFirstMap();
 
 	//Boss
@@ -126,7 +126,7 @@ void Mode1::Load() {
 	GetGSComponent<GameObjectManager>()->Add(new FuelUI(ship_ptr));
 
 	// monster
-	GetGSComponent<GameObjectManager>()->Add(new Monster(ship_ptr, {300,300}));
+	//GetGSComponent<GameObjectManager>()->Add(new Monster(ship_ptr, {300,300}));
 
 
 	// Skill

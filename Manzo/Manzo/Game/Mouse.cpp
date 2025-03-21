@@ -22,9 +22,13 @@ trails(trail_length, { vec2(0, 0), 1.0f })
 void Mouse::Update(double dt) 
 {
     GameObject::Update(dt);
+    
+    mouse_position.x = Engine::GetInput().GetMousePos().mouseCamSpaceX + Engine::window_width;
+    mouse_position.y = Engine::GetInput().GetMousePos().mouseCamSpaceY + Engine::window_height;
 
-    mouse_position.x = Engine::GetInput().GetMousePos().mouseCamSpaceX;
+    /*mouse_position.x = Engine::GetInput().GetMousePos().mouseCamSpaceX;
     mouse_position.y = Engine::GetInput().GetMousePos().mouseCamSpaceY;
+    */
     SetPosition(mouse_position);
     FollowMouse(mouse_position);
 
@@ -92,4 +96,3 @@ void Mouse::DrawLaserCurve() {
         }
     }
 }
-
