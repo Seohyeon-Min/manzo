@@ -10,7 +10,7 @@
    inkscape:export-filename="..\..\..\..\..\..\Desktop\zz.png"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
-   sodipodi:docname="Test5 - 복사본.svg"
+   sodipodi:docname="Narrow.svg"
    inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
    xml:space="preserve"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -26,14 +26,14 @@
    inkscape:pagecheckerboard="0"
    inkscape:deskcolor="#d1d1d1"
    inkscape:document-units="mm"
-   inkscape:zoom="0.079999999"
-   inkscape:cx="4537.5"
-   inkscape:cy="4243.75"
-   inkscape:window-width="1920"
-   inkscape:window-height="1129"
-   inkscape:window-x="-8"
-   inkscape:window-y="-8"
-   inkscape:window-maximized="1"
+   inkscape:zoom="0.04"
+   inkscape:cx="4100"
+   inkscape:cy="2225"
+   inkscape:window-width="958"
+   inkscape:window-height="1120"
+   inkscape:window-x="953"
+   inkscape:window-y="0"
+   inkscape:window-maximized="0"
    inkscape:current-layer="g1" /><defs
    id="defs1" /><g
    inkscape:label="Layer 1"
@@ -134,9 +134,16 @@
      <g
    id="g2"
    transform="translate(962.42188,-168.67187)"><path
+   style="fill:#d62969;fill-opacity:0.498039;stroke:#738823;stroke-width:0.781"
+   d="M 310.88541,499.40104 76.067707,1207.1614 195.13021,2182.8125 836.74478,1465.1302 251.35417,1670.1823 Z"
+   id="path1" />
+     </g>
+     <g
+   id="g3"
+   transform="translate(66.145834,72.760418)"><path
      style="fill:#d62969;fill-opacity:0.498039;stroke:#738823;stroke-width:0.781"
-     d="M 310.88541,499.40104 76.067707,1207.1614 195.13021,2182.8125 836.74478,1465.1302 251.35417,1670.1823 Z"
-     id="path1" />
+     d="m 120.71615,1015.3386 200.0911,14.8828 36.3802,-720.98963 z"
+     id="path2" />
      </g>
      </g>
      </svg>
