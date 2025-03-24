@@ -46,6 +46,7 @@ public:
 	void Active(bool active) { loaded = active; }
 	bool IsActivated() { return loaded; }
 private:
+	std::string index;
 	RockGroup* rockgroup;
 	Polygon poly;
 	bool loaded = false;
