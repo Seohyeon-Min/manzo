@@ -42,16 +42,16 @@ public:
 		rocks.clear();
 		rock_groups.clear();
 	}
-	void ParseSVG(const std::string& filename);
+	void ParseSVG(const std::string& filename);	// SVG file parsing
 	std::vector<vec2> parsePathData(const std::string& pathData);	// path parsing
 	std::vector<Rock*>& GetRocks() { return rocks; }
-	void MakeRockGroups(Rock* rock, Polygon poly);
-	void MakeMovingRockGroups(MovingRock* moving_rock, Polygon poly);
-	void LoadMapInBoundary(const Math::rect& camera_boundary);
-	bool IsOverlapping(const Math::rect& a, const Math::rect& b);
+	void LoadMapInBoundary(const Math::rect& camera_boundary);// Load map in camera boundary
+	bool IsOverlapping(const Math::rect& a, const Math::rect& b);  // Check rock is in camera boundary
 
-	void Translate(const vec2& offset);
+	void Translate(const vec2& offset); // Translate map along the offset
 	void UnloadAll();
+
+	std::vector<Polygon> Triangulation(std::vector<vec2> positions);
 
 
 private:

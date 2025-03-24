@@ -71,7 +71,6 @@ void MapManager::UpdateMaps(const Math::rect& camera_boundary) {
 
 
 //===============================================================Map
-std::vector<Polygon> EarClipping(const std::vector<vec2>& points);
 
 void Map::ParseSVG(const std::string& filename) {
     std::ifstream file(filename);
@@ -182,7 +181,6 @@ void Map::ParseSVG(const std::string& filename) {
                 }
 
 
-
             }
             
             //circle
@@ -274,7 +272,7 @@ void Map::ParseSVG(const std::string& filename) {
 
                 //RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new rockgroup
 
-                std::vector<Polygon> Polys = EarClipping(positions);
+                std::vector<Polygon> Polys = Triangulation(positions);
 
                 int i = 0;
                 for (auto& pol : Polys) {
@@ -337,114 +335,7 @@ void Map::ParseSVG(const std::string& filename) {
     file.close();
 }
 
-// Ear Clipping
-float PolygonArea(const std::vector<vec2>& points) {
-    float area = 0;
-    for (size_t i = 0; i < points.size(); ++i) {
-        const vec2& p1 = points[i];
-        const vec2& p2 = points[(i + 1) % points.size()];
-        area += (p1.x * p2.y) - (p2.x * p1.y);
-    }
-    return area * 0.5f;
-}
 
-constexpr bool IsConvex(const vec2& a, const vec2& b, const vec2& c) noexcept {
-    vec2 ab = b - a;
-    vec2 bc = c - b;
-    return cross(ab, bc) > 0;
-}
-
-bool PointInTriangle(const vec2& p, const vec2& a, const vec2& b, const vec2& c) {
-    vec2 ab = b - a, bc = c - b, ca = a - c;
-    vec2 ap = p - a, bp = p - b, cp = p - c;
-
-    float cross1 = cross(ab, ap);
-    float cross2 = cross(bc, bp);
-    float cross3 = cross(ca, cp);
-
-    
-    return (cross1 < 0 && cross2 < 0 && cross3 < 0) || (cross1 > 0 && cross2 > 0 && cross3 > 0);
-}
-
-std::vector<Polygon> EarClipping(const std::vector<vec2>& points) {
-
-    // for convex polygon
-    /*std::vector<Polygon> triangles;
-
-    for (size_t i = 1; i < points.size() - 1; ++i) {
-        Polygon triangle;
-        triangle.vertices = { points[0], points[i], points[i + 1] };
-        triangles.push_back(triangle);
-    }
-
-    return triangles;*/
-
-    // for the concave polygon
-    
-    std::vector<vec2> remaining_points = points;
-    std::vector<Polygon> triangles;
-
-
-    while (remaining_points.size() > 3) {
-        bool ear_found = false;     // reset ear_found
-
-        for (size_t i = 0; i < remaining_points.size(); ++i) {
-            size_t prev = (i == 0) ? remaining_points.size() - 1 : i - 1;
-            size_t next = (i + 1) % remaining_points.size();
-
-            vec2 a = remaining_points[prev];
-            vec2 b = remaining_points[i];
-            vec2 c = remaining_points[next];
-
-
-            if (!IsConvex(a, b, c)) continue;
-
-
-            bool has_internal_point = false;
-            for (size_t j = 0; j < remaining_points.size(); ++j) {
-                if (j == prev || j == i || j == next) continue;
-                if (PointInTriangle(remaining_points[j], a, b, c)) {
-                    has_internal_point = true;
-                    break;
-                }
-            }
-
-            if (has_internal_point) continue;
-
-            //add triangle
-            Polygon triangle;
-            triangle.vertices = { a, b, c };
-            triangles.push_back(triangle);
-
-            //eleminate current point
-            remaining_points.erase(remaining_points.begin() + i);
-            ear_found = true;
-            //std::cout << "Ear Found!" << "\n";
-            break;
-        }
-
-        if (!ear_found) {   //If the polygon is convex polygon or could not find the ear...
-            std::cout<<"EarClipping failed: Invalid polygon or It is Convex Polygon"<<"\n";
-            Polygon poly;
-            poly.vertices = points;
-
-            triangles.push_back(poly);
-            return triangles;
-        }
-    }
-
-    // add last triangle
-    Polygon triangle;
-    triangle.vertices = { remaining_points[0], remaining_points[1], remaining_points[2] };
-    triangles.push_back(triangle);
-    std::cout << "Added Triangle" << "\n";
-
-    return triangles;
-
-}
-
-
-// Map Parsing
 std::vector<vec2> Map::parsePathData(const std::string& pathData) {
 
     std::istringstream stream(pathData);
@@ -511,35 +402,6 @@ std::vector<vec2> Map::parsePathData(const std::string& pathData) {
 
     return positions;
 }
-
-
-void Map::MakeMovingRockGroups(MovingRock* moving_rock, Polygon poly) {
-
-    // Making RockGroups
-    if (rock_groups.empty()) {
-        RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new group
-        rockgroup->AddMovingRock(moving_rock);                                       //add poly into new group
-
-        moving_rock->SetRockGroup(rockgroup);
-        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rockgroup);
-        rock_groups.push_back(rockgroup);
-    }
-    else {
-        if (rock_groups.back()->GetIndex() != poly.polyindex) {             // if poly has different index
-            RockGroup* rockgroup = new RockGroup(poly.polyindex);           // make new group
-            rockgroup->AddMovingRock(moving_rock);                                       //add poly into new group
-
-            moving_rock->SetRockGroup(rockgroup);
-            //Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rockgroup);
-            rock_groups.push_back(rockgroup);
-        }
-        else {                                                              // if poly has same index
-            rock_groups.back()->AddMovingRock(moving_rock);
-            moving_rock->SetRockGroup(rock_groups.back());
-        }
-    }
-}
-
 
 bool Map::IsOverlapping(const Math::rect& camera_boundary, const Math::rect& rock) {
     return !(camera_boundary.Right() + margin < rock.Left() ||
@@ -613,7 +475,6 @@ void Map::Translate(const vec2& offset) {
     }
 }
 
-
 void Map::UnloadAll() {
     for (Rock* rock : rocks) {
         if (!rock->IsActivated()) {
@@ -625,4 +486,47 @@ void Map::UnloadAll() {
             delete rockgroup;
         }
     }
+}
+
+std::vector<Polygon> Map::Triangulation(std::vector<vec2> positions) {
+    std::vector<Polygon> triangles;
+
+    // Make Super Triangle
+    vec2 p1 = { -10000, -10000 }, p2 = { 10000, -10000 }, p3 = { 0, 10000 };
+    Polygon big_triangle;
+    big_triangle.vertices = { p1, p2, p3 };
+    triangles.push_back(big_triangle);
+
+    for (const vec2& position : positions) {
+        std::vector<Polygon> badTriangles;
+        //std::set<std::pair<Point, Point>> edgeSet;
+
+        for (auto& t : triangles) {
+            if (t.isPointInsideCircumcircle(p)) {
+                badTriangles.push_back(t);
+                edgeSet.insert({ t.a, t.b });
+                edgeSet.insert({ t.b, t.c });
+                edgeSet.insert({ t.c, t.a });
+            }
+        }
+
+        // remove bad triangles
+        triangles.erase(std::remove_if(triangles.begin(), triangles.end(), [&](Polygon& t) {
+            return std::find(badTriangles.begin(), badTriangles.end(), t) != badTriangles.end();
+            }), triangles.end());
+
+        // fill the hole with new triangles
+        for (auto& edge : edgeSet) {
+            triangles.push_back({ edge.first, edge.second, p });
+        }
+    }
+
+    triangles.erase(std::remove_if(triangles.begin(), triangles.end(), [&](Triangle& t) {
+        return (t.a == p1 || t.a == p2 || t.a == p3 ||
+            t.b == p1 || t.b == p2 || t.b == p3 ||
+            t.c == p1 || t.c == p2 || t.c == p3);
+        }), triangles.end());
+
+    return triangles;
+
 }
