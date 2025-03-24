@@ -274,8 +274,15 @@ void Map::ParseSVG(const std::string& filename) {
 
                 //RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new rockgroup
 
-                std::vector<Polygon> Polys = EarClipping(positions);
+                //std::vector<Polygon> Polys = EarClipping(positions);
 
+                Rock* rock = new Rock(poly);
+                rocks.push_back(rock);
+                RockGroup* rockgroup = new RockGroup(poly.polyindex);
+                rockgroup->AddRock(rock);
+                rock->SetRockGroup(rockgroup);
+                rock_groups.push_back(rockgroup);
+                /*
                 int i = 0;
                 for (auto& pol : Polys) {
                     Rock* rock = new Rock(pol);
@@ -290,7 +297,7 @@ void Map::ParseSVG(const std::string& filename) {
 
                     rock_groups.push_back(rockgroup);
                     i += 1;
-                }
+                }*/
 
                 //rock_groups.push_back(rockgroup);
 
@@ -366,81 +373,99 @@ bool PointInTriangle(const vec2& p, const vec2& a, const vec2& b, const vec2& c)
     return (cross1 < 0 && cross2 < 0 && cross3 < 0) || (cross1 > 0 && cross2 > 0 && cross3 > 0);
 }
 
+bool isPolygonConvex(const std::vector<vec2>& points) {
+    size_t n = points.size();
+    if (n < 3) return false;
+    bool convex = true;
+    // 모든 연속된 세 점에 대해 convex 여부 확인
+    for (size_t i = 0; i < n; i++) {
+        size_t prev = (i == 0) ? n - 1 : i - 1;
+        size_t next = (i + 1) % n;
+        if (!IsConvex(points[prev], points[i], points[next])) {
+            convex = false;
+            break;
+        }
+    }
+    return convex;
+}
+
+float TriangleMinAngle(const vec2& a, const vec2& b, const vec2& c) {
+    auto computeAngle = [&](const vec2& v1, const vec2& v2) -> float {
+        float dot = v1.x * v2.x + v1.y * v2.y;
+        float mag1 = std::sqrt(v1.x * v1.x + v1.y * v1.y);
+        float mag2 = std::sqrt(v2.x * v2.x + v2.y * v2.y);
+        float cosTheta = dot / (mag1 * mag2);
+        cosTheta = std::max(-1.0f, std::min(1.0f, cosTheta));
+        return std::acos(cosTheta) * 180.0f / 3.14159265f;
+        };
+    float angleA = computeAngle(b - a, c - a);
+    float angleB = computeAngle(a - b, c - b);
+    float angleC = computeAngle(a - c, b - c);
+    return std::min({ angleA, angleB, angleC });
+}
+
+
 std::vector<Polygon> EarClipping(const std::vector<vec2>& points) {
+    std::vector<Polygon> triangles;
+    size_t n = points.size();
+    if (n < 3) return triangles;
 
-    // for convex polygon
-    /*std::vector<Polygon> triangles;
-
-    for (size_t i = 1; i < points.size() - 1; ++i) {
-        Polygon triangle;
-        triangle.vertices = { points[0], points[i], points[i + 1] };
-        triangles.push_back(triangle);
+    // convex면 팬 삼각분할
+    if (isPolygonConvex(points)) {
+        for (size_t i = 1; i < n - 1; ++i) {
+            Polygon tri;
+            tri.vertices = { points[0], points[i], points[i + 1] };
+            triangles.push_back(tri);
+        }
+        return triangles;
     }
 
-    return triangles;*/
-
-    // for the concave polygon
-    
+    // concave면 Ear Clipping 수행
     std::vector<vec2> remaining_points = points;
-    std::vector<Polygon> triangles;
-
-
     while (remaining_points.size() > 3) {
-        bool ear_found = false;     // reset ear_found
-
+        bool ear_found = false;
         for (size_t i = 0; i < remaining_points.size(); ++i) {
             size_t prev = (i == 0) ? remaining_points.size() - 1 : i - 1;
             size_t next = (i + 1) % remaining_points.size();
-
             vec2 a = remaining_points[prev];
             vec2 b = remaining_points[i];
             vec2 c = remaining_points[next];
-
-
-            if (!IsConvex(a, b, c)) continue;
-
-
-            bool has_internal_point = false;
+            if (!IsConvex(a, b, c))
+                continue;
+            bool has_internal = false;
             for (size_t j = 0; j < remaining_points.size(); ++j) {
-                if (j == prev || j == i || j == next) continue;
+                if (j == prev || j == i || j == next)
+                    continue;
                 if (PointInTriangle(remaining_points[j], a, b, c)) {
-                    has_internal_point = true;
+                    has_internal = true;
                     break;
                 }
             }
-
-            if (has_internal_point) continue;
-
-            //add triangle
-            Polygon triangle;
-            triangle.vertices = { a, b, c };
-            triangles.push_back(triangle);
-
-            //eleminate current point
+            if (has_internal)
+                continue;
+            // Ear 발견 → 삼각형 추가하고 b 제거
+            Polygon tri;
+            tri.vertices = { a, b, c };
+            triangles.push_back(tri);
             remaining_points.erase(remaining_points.begin() + i);
             ear_found = true;
-            //std::cout << "Ear Found!" << "\n";
             break;
         }
-
-        if (!ear_found) {   //If the polygon is convex polygon or could not find the ear...
-            std::cout<<"EarClipping failed: Invalid polygon or It is Convex Polygon"<<"\n";
+        if (!ear_found) {
+            std::cout << "EarClipping failed: Invalid polygon or ear not found." << std::endl;
             Polygon poly;
             poly.vertices = points;
-
             triangles.push_back(poly);
             return triangles;
         }
     }
-
-    // add last triangle
-    Polygon triangle;
-    triangle.vertices = { remaining_points[0], remaining_points[1], remaining_points[2] };
-    triangles.push_back(triangle);
-    std::cout << "Added Triangle" << "\n";
-
+    if (remaining_points.size() == 3) {
+        Polygon tri;
+        tri.vertices = { remaining_points[0], remaining_points[1], remaining_points[2] };
+        triangles.push_back(tri);
+        std::cout << "Added final triangle." << std::endl;
+    }
     return triangles;
-
 }
 
 
