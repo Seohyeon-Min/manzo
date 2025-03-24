@@ -53,9 +53,10 @@ void Render::AddDrawCall
 // Also handles rendering of lines and collision shapes
 void Render::RenderAll() {
     if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
-        postProcessFramebuffer[0].Bind();
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     }
+    postProcessFramebuffer[0].Bind();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     for (const auto& draw_call : draw_background_calls) {
         DrawBackground(draw_call);
@@ -89,10 +90,11 @@ void Render::RenderAll() {
     }
 
     if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
-        postProcessFramebuffer[1].Unbind();
-        ApplyPostProcessing();
-    }
 
+
+    }
+    postProcessFramebuffer[1].Unbind();
+    ApplyPostProcessing();
     // Clear draw call vectors for the next frame
     ClearDrawCalls();
 }
@@ -100,56 +102,91 @@ void Render::RenderAll() {
 void Render::ApplyPostProcessing()
 {
     bool horizontal = true, first_iteration = true;
-    int num_passes = 3; // Number of post process
 
-    for (int i = 0; i < num_passes; i++) {
-        postProcessFramebuffer[horizontal].Bind();
-        glClear(GL_COLOR_BUFFER_BIT);
 
-        GLShader* shader = Engine::GetShaderManager().GetShader("post_underwater_distortion");
+    if (Engine::GetGameStateManager().GetStateName() == "Mode2") {
+        int num_passes = 1; // Number of post process
+        for (int i = 0; i < num_passes; i++) {
+            postProcessFramebuffer[horizontal].Bind();
+            glClear(GL_COLOR_BUFFER_BIT);
 
-        switch (i) {
-        case 0: // Distortion
-            shader = Engine::GetShaderManager().GetShader("post_underwater_distortion");
-            break;
-        case 1: // Bloom
-            shader = Engine::GetShaderManager().GetShader("post_bloom"); 
-            break;
-        case 2: // God Ray
-            shader = Engine::GetShaderManager().GetShader("under_water_god_ray");
-            break;
+            GLShader* shader = Engine::GetShaderManager().GetShader("post_bloom");
+
+            switch (i) {
+            case 0: // Bloom
+                shader = Engine::GetShaderManager().GetShader("post_bloom");
+                break;
+            }
+            shader->Use();
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer[!horizontal].GetColorAttachment());
+
+            double currentTime = Engine::GetAudioManager().GetCurrentMusicTime("background1");
+
+            switch (i) {
+            case 0: // Bloom
+                shader->SendUniform("uSceneTexture", 0);
+                shader->SendUniform("uThreshold", 0.6f);
+                shader->SendUniform("uBlurDirection", 1.0f, 1.0f);
+                shader->SendUniform("uResolution", static_cast<float>(Engine::window_width));
+                shader->SendUniform("uBloomIntensity", 3.1f);
+                break;
+            }
         }
-        shader->Use();
+    }
+    else {
+        int num_passes = 3; // Number of post process
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer[!horizontal].GetColorAttachment());
+        for (int i = 0; i < num_passes; i++) {
+            postProcessFramebuffer[horizontal].Bind();
+            glClear(GL_COLOR_BUFFER_BIT);
 
-        double currentTime = Engine::GetAudioManager().GetCurrentMusicTime("background1");
+            GLShader* shader = Engine::GetShaderManager().GetShader("post_underwater_distortion");
 
-        switch (i) {
-        case 0: // Distortion
-            shader->SendUniform("uSceneTexture", 0);
-            shader->SendUniform("iResolution", Engine::window_width, Engine::window_height);
-            shader->SendUniform("iTime", float(currentTime));
-        case 1: // Bloom
-            shader->SendUniform("uSceneTexture", 0);
-            shader->SendUniform("uThreshold", 0.8f);
-            shader->SendUniform("uBlurDirection", 1.0f, 1.0f);
-            shader->SendUniform("uResolution", static_cast<float>(Engine::window_width));
-            shader->SendUniform("uBloomIntensity", 1.1f);
-            break;
-        case 2: // God Ray
-            shader->SendUniform("uSceneTexture", 0);
-            shader->SendUniform("iResolution", Engine::window_width, Engine::window_height);
-            shader->SendUniform("iTime", float(currentTime));
-            break;
+            switch (i) {
+            case 0: // Distortion
+                shader = Engine::GetShaderManager().GetShader("post_underwater_distortion");
+                break;
+            case 1: // Bloom
+                shader = Engine::GetShaderManager().GetShader("post_bloom"); 
+                break;
+            case 2: // God Ray
+                shader = Engine::GetShaderManager().GetShader("under_water_god_ray");
+                break;
+            }
+            shader->Use();
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer[!horizontal].GetColorAttachment());
+
+            double currentTime = Engine::GetAudioManager().GetCurrentMusicTime("background1");
+
+            switch (i) {
+            case 0: // Distortion
+                shader->SendUniform("uSceneTexture", 0);
+                shader->SendUniform("iResolution", Engine::window_width, Engine::window_height);
+                shader->SendUniform("iTime", float(currentTime));
+            case 1: // Bloom
+                shader->SendUniform("uSceneTexture", 0);
+                shader->SendUniform("uThreshold", 0.8f);
+                shader->SendUniform("uBlurDirection", 1.0f, 1.0f);
+                shader->SendUniform("uResolution", static_cast<float>(Engine::window_width));
+                shader->SendUniform("uBloomIntensity", 1.1f);
+                break;
+            case 2: // God Ray
+                shader->SendUniform("uSceneTexture", 0);
+                shader->SendUniform("iResolution", Engine::window_width, Engine::window_height);
+                shader->SendUniform("iTime", float(currentTime));
+                break;
+            }
+
+            RenderQuad();
+            shader->Use(false);
+
+            horizontal = !horizontal;
+            first_iteration = false;
         }
-
-        RenderQuad();
-        shader->Use(false);
-
-        horizontal = !horizontal;
-        first_iteration = false;
     }
 
     // Post pass-through

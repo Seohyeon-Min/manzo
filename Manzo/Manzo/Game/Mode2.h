@@ -56,6 +56,7 @@ private:
     float y_limit = 15.0f;
     float frequency = 0.9f;
     float time = 0.0f;
+    bool playing = false;
 
     bool isLoaded = false;
 };

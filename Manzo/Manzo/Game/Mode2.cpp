@@ -20,7 +20,7 @@ Created:    March 8, 2023
 #include "Mode2.h"
 #include "Mouse.h"
 #include "DialogBox.h"
-
+#include "WaterRippleEffect.h"
 
 #include <iostream>     // for debug
 #include "Module.h"
@@ -35,6 +35,12 @@ void Mode2::Load() {
     AddGSComponent(new ShowCollision());
 #else
 #endif
+    //shader
+    Engine::GetShaderManager().LoadShader("water_ripple", "assets/shaders/default.vert", "assets/shaders/water_ripple.frag");
+    
+    // audio
+    Engine::GetAudioManager().LoadMusic("assets/audios/bgm_original.wav", "background1", false);
+
     // compenent
     AddGSComponent(new GameObjectManager());
 
@@ -45,6 +51,9 @@ void Mode2::Load() {
     // player
     player_ptr = new Player({ 0, -115 });
     GetGSComponent<GameObjectManager>()->Add(player_ptr);
+
+    // water ripple
+    GetGSComponent<GameObjectManager>()->Add(new WaterRipple);
 
     // camera
     AddGSComponent(new Cam());
@@ -91,6 +100,13 @@ void Mode2::Load() {
 }
 
 void Mode2::Update(double dt) {
+    //audio play
+    if (!playing)
+    {
+        Engine::GetAudioManager().PlayMusics("background1");
+        playing = true;
+    }
+
     UpdateGSComponents(dt);
     GetGSComponent<GameObjectManager>()->UpdateAll(dt);
     GetGSComponent<Cam>()->Update(dt, {}, false);
@@ -132,6 +148,7 @@ void Mode2::Draw() {
 void Mode2::Unload() {
     std::string savePath = "assets/scenes/save_data.txt";
     std::ofstream saveFile(savePath);
+    playing = false;
 
     if (saveFile.is_open()) {
         saveFile.clear();

@@ -54,6 +54,7 @@
     <ClCompile Include="Engine\IconManager.cpp" />
     <ClCompile Include="Game\Module.cpp" />
     <ClCompile Include="Game\TutorialMap.cpp" />
+    <ClCompile Include="Game\WaterRippleEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h" />
@@ -115,5 +116,6 @@
     <ClInclude Include="Engine\IconManager.h" />
     <ClInclude Include="Game\Module.h" />
     <ClInclude Include="Game\TutorialMap.h" />
+    <ClInclude Include="Game\WaterRippleEffect.h" />
   </ItemGroup>
 </Project>
