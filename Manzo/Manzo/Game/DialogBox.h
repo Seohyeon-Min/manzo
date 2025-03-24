@@ -21,6 +21,8 @@ public:
     std::string TypeName() override { return "Dialog"; }
 
 private:
+    void SetDrawSetting(DrawCall &draw_call);
+
     JsonParser_dialog* dialog;
     std::string fullText;
     std::string displayedText;

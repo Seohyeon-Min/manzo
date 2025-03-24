@@ -202,7 +202,7 @@ void Monster::Dash::Update(GameObject* object, double dt)
 
     vec2 target_direction = (monster->ship_ptr->GetPosition() - monster->GetPosition()).Normalize();
 
-    alpha -= (float)dt; std::cout << alpha << std::endl;
+    //alpha -= (float)dt; std::cout << alpha << std::endl;
     if (alpha <= 0.02f) {
         alpha = 0.02f;
     }

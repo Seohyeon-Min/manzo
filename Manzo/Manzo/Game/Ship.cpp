@@ -591,7 +591,6 @@ void Pump::Update(double dt)
     float decrease_duration = (float)beat->GetFixedDuration() - 0.1f;
     float delta_radius = (max_pump_radius - min_pump_radius) / decrease_duration;
     float delta_alpha = 1 / decrease_duration;
-
     if (beat->GetBeat()) {
         radius = min_pump_radius;
         wait = true;

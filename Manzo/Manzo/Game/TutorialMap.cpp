@@ -5,6 +5,7 @@
 #include "BeatSystem.h"
 #include "Background.h"
 #include "Ship.h"
+#include "Mouse.h"
 
 Tutorial::Tutorial()
 {
@@ -27,7 +28,8 @@ void Tutorial::Load()
 	GetGSComponent<Cam>()->SetPosition({ 0, 0 });
 
 	// audio
-	Engine::GetAudioManager().LoadMusic("assets/audios/bgm_original.wav", "tutorial_bgm", false);
+	Engine::GetAudioManager().LoadMusic("assets/audios/100BPM.mp3", "tutorial_bgm", false);
+	beat_system->LoadMusicToSync("tutorial_bgm");
 
 	// ship
 	ship_ptr = new Ship({ 0, 0 });
@@ -38,6 +40,9 @@ void Tutorial::Load()
 	AddGSComponent(new ParticleManager<Particles::HitPraticle>());
 	AddGSComponent(new ParticleManager<Particles::HitPraticle2>());
 	AddGSComponent(new ParticleManager<Particles::CaptureEffect>());
+
+	// mouse
+	GetGSComponent<GameObjectManager>()->Add(new Mouse);
 
 }
 
@@ -75,5 +80,3 @@ void Tutorial::Unload()
 
 	playing = false;
 }
-
-
