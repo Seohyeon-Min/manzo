@@ -269,37 +269,13 @@ void Map::ParseSVG(const std::string& filename) {
                 std::cout << "poly index : " << poly.polyindex << std::endl;
                 std::cout << "-----------------------------" << std::endl;
 
-                // Rock Point
-                //=======ear clipping=========
-
-                //RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new rockgroup
-
-                //std::vector<Polygon> Polys = EarClipping(positions);
-
                 Rock* rock = new Rock(poly);
                 rocks.push_back(rock);
                 RockGroup* rockgroup = new RockGroup(poly.polyindex);
                 rockgroup->AddRock(rock);
                 rock->SetRockGroup(rockgroup);
                 rock_groups.push_back(rockgroup);
-                /*
-                int i = 0;
-                for (auto& pol : Polys) {
-                    Rock* rock = new Rock(pol);
-                    //rock->AddGOComponent(new MAP_SATCollision(pol, rock));
-                    rocks.push_back(rock);
-                    std::string index = poly.polyindex + std::to_string(i);
-                    RockGroup* rockgroup = new RockGroup(index);
-
-                    rockgroup->AddRock(rock);                                       //add poly into new group
-
-                    rock->SetRockGroup(rockgroup);
-
-                    rock_groups.push_back(rockgroup);
-                    i += 1;
-                }*/
-
-                //rock_groups.push_back(rockgroup);
+                
 
             }
 
