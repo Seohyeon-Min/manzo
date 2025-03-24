@@ -5,7 +5,7 @@
 #include "BossBullet.h"
 #include "BeatSystem.h"
 
-bool bulletSpawned = false;
+
 std::vector<GameObject::State*> stateMap;
 std::vector<std::string> BossJSONfileMap;
 
@@ -26,22 +26,44 @@ Boss::Boss(vec2 start_position, BossName name, BossType type)
 
 }
 
+bool IsFirstFrame() {
+	static bool isFirstFrame = true; 
+	if (isFirstFrame) {
+		isFirstFrame = false;
+		return true; 
+	}
+	return false; 
+}
+
+
+void Boss::Bullet(Boss* boss) {
+		BossBullet* bullet_ptr = new BossBullet(boss->GetPosition(), (float)(boss->beat->GetFixedDuration()) * 2);
+		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bullet_ptr);
+}
+
+
 void Boss::Movingtolocation_Boss(int targetEntryNum, Boss* boss) {
+
 	if (targetEntryNum - 1 < boss->parttern.size()) {
 		const auto& entryVec = boss->parttern[targetEntryNum - 1];
-		bulletSpawned = false;
+		boss->bulletSpawned = false;
 		for (const auto& entryData : entryVec) {
+
 			if (entryData.delay + 1 == boss->beat->GetDelayCount()) {
-				boss->current_position = entryData.position;
-				if (!bulletSpawned) {
-					BossBullet* bullet_ptr = new BossBullet(boss->GetPosition(), (float)(boss->beat->GetFixedDuration())*2);
-					Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bullet_ptr);
-					bulletSpawned = true;
+
+				if (!boss->bulletSpawned) {
+					boss->current_position = entryData.position;
+					boss->Bullet(boss);
+					std::cout << "why...?" << std::endl;
+					boss->bulletSpawned = true;
 				}
 			}
+
 		}
 	}
 }
+
+
 void Boss::Chasingplayer_Boss(int targetEntryNum, Boss* boss) {
 
 	if (targetEntryNum - 1 < boss->parttern.size()) {
@@ -66,13 +88,6 @@ void Boss::Chasingplayer_Boss(int targetEntryNum, Boss* boss) {
 				else {
 					boss->current_position = playerPosition;
 				}
-
-				
-					
-
-					
-				
-				
 			}
 		}
 	}

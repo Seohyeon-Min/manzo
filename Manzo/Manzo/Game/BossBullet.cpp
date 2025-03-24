@@ -17,6 +17,8 @@ BossBullet::BossBullet(vec2 Boss_position, float lifetime)
     : GameObject(Boss_position), lifetime(lifetime), timeElapsed(0.0f)
 {
     AddGOComponent(new Sprite("assets/images/bullet.spt", this));
+    float Scalerandom = (float)GetRandomValue( -2, 2);
+    SetScale(vec2(Scalerandom, Scalerandom));
 
     static bool seedInitialized = false;
     if (!seedInitialized) {
@@ -32,7 +34,7 @@ BossBullet::BossBullet(vec2 Boss_position, float lifetime)
     direction.y /= length;
 
     this->velocity = vec2(0.0f, 0.0f);
-    float angleOffset = (float)(GetRandomValue(0,0) * DEG2RAD); 
+    float angleOffset = (float)(GetRandomValue(-5,5) * DEG2RAD); 
     float cosA = cos(angleOffset);
     float sinA = sin(angleOffset);
 
@@ -42,7 +44,7 @@ BossBullet::BossBullet(vec2 Boss_position, float lifetime)
     };
 
     velocity = { -modifiedDirection.x * 300, -modifiedDirection.y * 300 };
-    speed = 50;
+    speed = 30;
     position = Boss_position;
     timeElapsed = 0.0f;
 }
@@ -51,7 +53,7 @@ void BossBullet::Update(double dt) {
     GameObject::Update(dt);
     Move(dt);
 
-    if (lifetime <= 0.0f) {
+    if (lifetime <= -1.0f) {
         this->Destroy();
     }
     else {
@@ -69,9 +71,10 @@ void BossBullet::Move(double dt) {
     distanceToPlayer = sqrt(toPlayer.x * toPlayer.x + toPlayer.y * toPlayer.y);
     this->timeElapsed += dt;
 
-   
     float bulletspeed = (float)speed + (float)(this->distanceToPlayer / this->lifetime) * (float)(this->timeElapsed / this->lifetime);
-
+    if (bulletspeed > 10000) {
+        bulletspeed = 10000;
+    }
     if (distanceToPlayer > 0.0f) {
         this->velocity += (normalize(this->toPlayer) * bulletspeed * (float)dt);
     }
