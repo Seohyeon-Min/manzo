@@ -53,14 +53,12 @@ void Boss::Movingtolocation_Boss(int targetEntryNum, Boss* boss) {
 				if (!boss->bulletSpawned) {
 					boss->current_position = entryData.position;
 					boss->Bullet(boss);
-					std::cout << "why...?" << std::endl;
 					boss->bulletSpawned = true;
 				}
 				if (entryData.attacktype == 3) {
-					std::cout << " entry data is 3!!!!" << std::endl;
+
 				}
 			}
-
 		}
 	}
 }
@@ -205,22 +203,22 @@ void Boss::InitializeStates() {
 
 void Boss::Update(double dt) {
 	Boss* boss = static_cast<Boss*>(this);
-
+	std::cout << total_entry.size() << std::endl;
 	if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
 		if (GameObject::current_state->GetName() != Boss::state_cutscene.GetName()) {
 
-			int barCount = beat->GetBarCount();
-			//std::cout << barCount << std::endl;
-			if (barCount < 14) {
-				if (barCount < total_entry.size() && total_entry[barCount] - 1 < stateMap.size()) {
-					change_state(stateMap[total_entry[barCount] - 1]);
+			boss->barCount = beat->GetBarCount();
+			std::cout << barCount << std::endl;
+			if (boss->barCount <= total_entry.size()) {
+				if (boss->barCount < total_entry.size() && total_entry[boss->barCount] - 1 < stateMap.size()) {
+					change_state(stateMap[total_entry[boss->barCount] - 1]);
 				}
-				else {
-
-					std::cerr << "Invalid barCount or index out of range: " << barCount << std::endl;
-					Destroy();
-					AfterDied();
-				}
+				
+			}
+			else if (boss->barCount > total_entry.size()) {
+				std::cerr << "Invalid barCount or index out of range: " << boss->barCount << std::endl;
+				Destroy();
+				AfterDied();
 			}
 		}
 

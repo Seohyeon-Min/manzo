@@ -123,5 +123,6 @@ private:
 	bool isPlaying = false;
 	std::array<int, 2> start_pos;
 	bool bulletSpawned = false;
+	int barCount;
 };
 
