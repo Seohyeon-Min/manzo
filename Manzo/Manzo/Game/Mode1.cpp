@@ -168,6 +168,11 @@ void Mode1::Update(double dt) {
         Isboss = true;
     }
 
+	if (Isboss,boss_ptr != nullptr) {
+
+		camera->SetPosition(boss_ptr->GetPosition());
+	}
+
 	//camera postion update
 	camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
 

@@ -50,12 +50,14 @@ void Boss::Movingtolocation_Boss(int targetEntryNum, Boss* boss) {
 		for (const auto& entryData : entryVec) {
 
 			if (entryData.delay + 1 == boss->beat->GetDelayCount()) {
-
 				if (!boss->bulletSpawned) {
 					boss->current_position = entryData.position;
 					boss->Bullet(boss);
 					std::cout << "why...?" << std::endl;
 					boss->bulletSpawned = true;
+				}
+				if (entryData.attacktype == 3) {
+					std::cout << " entry data is 3!!!!" << std::endl;
 				}
 			}
 
