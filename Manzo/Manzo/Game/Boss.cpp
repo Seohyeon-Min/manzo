@@ -214,18 +214,24 @@ void Boss::AfterDied()
 
 void Boss::AttackCircle(vec2 pos, double radius, double elapsed_time, double attack_interval, double dt)
 {
-	static double last_attack_time = 0.0;
+	static double last_attack_time = 0.0;  
 	static bool is_attacking = false; 
-	static double attack_duration = 0.0;
+	static double attack_duration = 0.0;  // attack duration
+	static double wait_time = 0.0;  // wait after finishing attack
 	shield_range = pos;
 
-	last_attack_time += dt; 
+	last_attack_time += dt;  // update
 
-	//start attack
-	if (last_attack_time >= attack_interval && !is_attacking)
+	if (is_attacking || (!is_attacking && wait_time == 0.0))
+	{
+		DrawShieldRange(shield_range, radius);
+	}
+
+	// start attack
+	if (last_attack_time >= attack_interval && !is_attacking && wait_time == 0.0)
 	{
 		is_attacking = true;
-		attack_duration = attack_interval; 
+		attack_duration = attack_interval;  // attack duration (time)
 		std::cout << "Attack Started!" << std::endl;
 	}
 
@@ -233,22 +239,36 @@ void Boss::AttackCircle(vec2 pos, double radius, double elapsed_time, double att
 	{
 		attack_duration -= dt;
 
-		DrawShieldRange(shield_range, radius);
-
 		vec2 player_pos = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>()->GetPosition();
 		double distance = sqrt(pow(player_pos.x - pos.x, 2) + pow(player_pos.y - pos.y, 2)) * 2.0;
 
 		if (distance > radius)
 		{
-			Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>()->DeclineFuel(0.4);    //How much fuel would decreased
+			Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>()->DeclineFuel(0.4);
 			std::cout << "Fuel: " << Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>()->GetFuel() << std::endl;
 		}
 
+		// finish attack -> wait
 		if (attack_duration <= 0.0)
 		{
-			is_attacking = false; 
-			last_attack_time = 0.0; 
-			std::cout << "Attack Finished!" << std::endl;
+			is_attacking = false;  
+			wait_time = elapsed_time;  // set waiting time
+			std::cout << "Attack Finished" << std::endl;
+		}
+	}
+
+	// wait~
+	if (!is_attacking && wait_time > 0.0)
+	{
+		wait_time -= dt;  // decrease waiting time before restart
+		std::cout << "Waiting for next attack: " << wait_time << std::endl;
+
+		// restart
+		if (wait_time <= 0.0)
+		{
+			last_attack_time = 0.0;  // ready to attack again
+			std::cout << "Ready for next attack." << std::endl;
+			wait_time = 0.0;
 		}
 	}
 }
