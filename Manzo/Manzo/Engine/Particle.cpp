@@ -31,6 +31,20 @@ void Particle::Update(double dt)
 	life -= dt;
 	if (Alive())
 		GameObject::Update(dt);
+
+	switch (move_type)
+	{
+	case MoveType::LINEAR:
+		break;
+	case MoveType::CURVE:
+		break;
+	case MoveType::RANDOM:
+		break;
+	case MoveType::TOTHEPLAYER:
+		break;
+	default:
+		break;
+	}
 }
 
 

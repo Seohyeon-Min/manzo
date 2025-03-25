@@ -213,7 +213,6 @@ void Boss::Update(double dt) {
 				if (boss->barCount < total_entry.size() && total_entry[boss->barCount] - 1 < stateMap.size()) {
 					change_state(stateMap[total_entry[boss->barCount] - 1]);
 				}
-				
 			}
 			else if (boss->barCount > total_entry.size()) {
 				std::cerr << "Invalid barCount or index out of range: " << boss->barCount << std::endl;
