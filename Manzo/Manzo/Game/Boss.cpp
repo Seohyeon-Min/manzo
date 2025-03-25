@@ -238,6 +238,46 @@ void Boss::AfterDied()
 	Engine::GetAudioManager().SetMute("background1", false);
 }
 
+
+void Boss::AttackCircle(vec2 pos, double radius, double elapsed_time)
+{
+	DrawShieldRange(pos, radius);
+
+	std::thread([this, pos, radius, elapsed_time]() {
+		std::this_thread::sleep_for(std::chrono::duration<double>(elapsed_time));
+
+		vec2 player_pos = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()
+			->GetGOComponent<Ship>()->GetPosition();
+		double distance = sqrt(pow(player_pos.x - pos.x, 2) +
+			pow(player_pos.y - pos.y, 2)) * 2.0;
+
+		if (distance > radius)
+		{
+			Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()
+				->GetGOComponent<Ship>()->DeclineFuel(0.4);
+			std::cout << "Fuel: " << Engine::GetGameStateManager()
+				.GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>()->GetFuel() << std::endl;
+		}
+
+		std::cout << "Attack Triggered at Position (" << pos.x << ", " << pos.y << ")" << std::endl;
+		}).detach();
+}
+
+void Boss::DrawShieldRange(vec2 pos, double radius)
+{
+	CircleDrawCall draw_call = {
+		(float)radius,
+		{ pos.x, pos.y },
+	};
+
+	draw_call.settings.do_blending = true;
+	draw_call.sorting_layer = DrawLayer::DrawUI;
+	Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call));
+}
+
+
+
+
 vec2 Lerp(const vec2& start, const vec2& end, float t) {
 	return start + t * (end - start);
 }

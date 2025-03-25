@@ -5,7 +5,7 @@
     "BPM" : 100,
     "Mp3" : "assets/audios/boss/e.wav",
     "Position" : [4350,-5420],
-    "Total entry" : [2,2,2,2],
+    "Total entry" : [2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
     "Parttern" : [
         {
             "entrynum" : 1,
