@@ -21,7 +21,8 @@ void Module::Draw(DrawLayer drawlayer)
 FirstModule::FirstModule(Ship* ship) : ship(ship)
 {
 	AddGOComponent(new Sprite("assets/images/module1.spt", this));
-	SetFirstModule(true);
+
+	Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Module>()->SetFirstModule(true);
 }
 
 void FirstModule::Update(double dt)
@@ -43,7 +44,7 @@ void FirstModule::Draw(DrawLayer drawlayer)
 
 SecondModule::SecondModule(Ship* ship) : ship(ship)
 {
-	SetSecondModule(true);
+	Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Module>()->SetSecondModule(true);
 }
 
 void SecondModule::Update(double dt)
@@ -51,9 +52,6 @@ void SecondModule::Update(double dt)
 	if (Module::IsSecondSetted())
 	{
 		Module::Update(dt);
-
-
-		Engine::GetFontManager().PrintText(FontType::Bold, std::to_string(ship->GetPosition().x), ship->GetPosition(), 0.2f, {1.f,1.f,1.f}, 0.5f);
 	}
 }
 
