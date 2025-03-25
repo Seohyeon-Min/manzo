@@ -37,6 +37,8 @@ public:
 	void AfterDied();
 	const std::array<int, 2> GetFirstPosition() { return position; }
 
+	void AttackCircle(vec2 pos, double radius, double elapsed_time, double attack_interval, double dt);
+	void DrawShieldRange(vec2 pos, double radius);
 
 private:
 
@@ -59,6 +61,7 @@ private:
 	BossType bossType;
 	//std::unique_ptr<BossBehavior> behavior; // Polymorphic behavior
 
+	vec2 shield_range;
 
 	class State_CutScene : public State {
 	public:

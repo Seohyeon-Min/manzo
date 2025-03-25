@@ -40,6 +40,7 @@ public:
     bool IsTouchingReef();
     bool IsFuelZero();
     bool IsShipUnder();
+    void DeclineFuel(double d) { fuel -= d; }
 
     const vec2 GetDashPos() { return dash_target; }
 

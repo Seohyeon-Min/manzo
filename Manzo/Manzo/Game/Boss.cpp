@@ -212,6 +212,60 @@ void Boss::AfterDied()
 	Engine::GetAudioManager().SetMute("background1", false);
 }
 
+void Boss::AttackCircle(vec2 pos, double radius, double elapsed_time, double attack_interval, double dt)
+{
+	static double last_attack_time = 0.0;
+	static bool is_attacking = false; 
+	static double attack_duration = 0.0;
+	shield_range = pos;
+
+	last_attack_time += dt; 
+
+	//start attack
+	if (last_attack_time >= attack_interval && !is_attacking)
+	{
+		is_attacking = true;
+		attack_duration = attack_interval; 
+		std::cout << "Attack Started!" << std::endl;
+	}
+
+	if (is_attacking)
+	{
+		attack_duration -= dt;
+
+		DrawShieldRange(shield_range, radius);
+
+		vec2 player_pos = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>()->GetPosition();
+		double distance = sqrt(pow(player_pos.x - pos.x, 2) + pow(player_pos.y - pos.y, 2)) * 2.0;
+
+		if (distance > radius)
+		{
+			Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>()->DeclineFuel(0.4);    //How much fuel would decreased
+			std::cout << "Fuel: " << Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>()->GetFuel() << std::endl;
+		}
+
+		if (attack_duration <= 0.0)
+		{
+			is_attacking = false; 
+			last_attack_time = 0.0; 
+			std::cout << "Attack Finished!" << std::endl;
+		}
+	}
+}
+
+void Boss::DrawShieldRange(vec2 pos, double radius)
+{
+	CircleDrawCall draw_call = {
+		(float)radius,
+		{shield_range.x,shield_range.y},
+	};
+
+	draw_call.settings.do_blending = true;
+	draw_call.sorting_layer = DrawLayer::DrawUI;
+	Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call));
+}
+
+
 vec2 Lerp(const vec2& start, const vec2& end, float t) {
 	return start + t * (end - start);
 }

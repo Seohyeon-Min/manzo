@@ -248,6 +248,11 @@ void Mode1::Update(double dt) {
 		replay = false;
 	}
 
+
+	if (Isboss)    //When attack start
+	{
+		boss_ptr->AttackCircle({ boss_ptr->GetPosition().x - 50 , boss_ptr->GetPosition().y - 150}, 200, 2.0, 2.0, dt);
+	}
 }
 
 void Mode1::FixedUpdate(double dt)
@@ -266,8 +271,8 @@ void Mode1::Draw() {
 
 	// Draw Font
 	//Engine::GetFontManager().PrintText(FontType::Bold, "E", { 0.f,0.f }, 0.2f, { 1.f,1.f,1.f }, 0.5f);
-	if(module->IsSecondSetted())
-		Engine::GetFontManager().PrintText(FontType::Bold, "v", ship_ptr->GetPosition(), 0.001f, {1.f,1.f,1.f}, 1.f);
+	/*if(module->IsSecondSetted())
+		Engine::GetFontManager().PrintText(FontType::Bold, "v", ship_ptr->GetPosition(), 0.001f, {1.f,1.f,1.f}, 1.f);*/
 }
 
 void Mode1::Unload() {
