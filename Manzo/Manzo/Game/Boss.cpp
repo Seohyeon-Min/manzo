@@ -24,14 +24,39 @@ Boss::Boss(vec2 start_position, BossName name, BossType type)
 
 }
 
-void Boss::Movingtolocation_Boss(int targetEntryNum, Boss* object) {
-	if (targetEntryNum - 1 < object->parttern.size()) {
-		const auto& entryVec = object->parttern[targetEntryNum - 1];
+bool IsFirstFrame() {
+	static bool isFirstFrame = true; 
+	if (isFirstFrame) {
+		isFirstFrame = false;
+		return true; 
+	}
+	return false; 
+}
+
+
+void Boss::Bullet(Boss* boss) {
+		BossBullet* bullet_ptr = new BossBullet(boss->GetPosition(), (float)(boss->beat->GetFixedDuration()) * 2);
+		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bullet_ptr);
+}
+
+
+void Boss::Movingtolocation_Boss(int targetEntryNum, Boss* boss) {
+
+	if (targetEntryNum - 1 < boss->parttern.size()) {
+		const auto& entryVec = boss->parttern[targetEntryNum - 1];
 		for (const auto& entryData : entryVec) {
-			if (entryData.delay + 1 == object->beat->GetDelayCount()) {
-				object->current_position = entryData.position;
+			if (entryData.delay + 1 == boss->beat->GetDelayCount()) {
+				if (boss->beat->GetBeat()) {
+					boss->current_position = entryData.position;
+					boss->Bullet(boss);
+				}
+				
+			}
+			if (entryData.attacktype == 3) {
+				boss->AttackCircle(entryData.position, 500, (double)(boss->beat->GetFixedDuration() * 4));
 			}
 		}
+		
 	}
 }
 void Boss::Chasingplayer_Boss(int targetEntryNum, Boss* boss) {
@@ -176,22 +201,21 @@ void Boss::InitializeStates() {
 
 void Boss::Update(double dt) {
 	Boss* boss = static_cast<Boss*>(this);
-
+	//std::cout << total_entry.size() << std::endl;
 	if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
 		if (GameObject::current_state->GetName() != Boss::state_cutscene.GetName()) {
 
-			int barCount = beat->GetBarCount();
-			std::cout << barCount << std::endl;
-			if (barCount < 14) {
-				if (barCount < total_entry.size() && total_entry[barCount] - 1 < stateMap.size()) {
-					change_state(stateMap[total_entry[barCount] - 1]);
+			boss->barCount = beat->GetBarCount();
+			//std::cout << barCount << std::endl;
+			if (boss->barCount <= total_entry.size()) {
+				if (boss->barCount < total_entry.size() && total_entry[boss->barCount] - 1 < stateMap.size()) {
+					change_state(stateMap[total_entry[boss->barCount] - 1]);
 				}
-				else {
-
-					std::cerr << "Invalid barCount or index out of range: " << barCount << std::endl;
-					Destroy();
-					AfterDied();
-				}
+			}
+			else if (boss->barCount > total_entry.size()) {
+				//std::cerr << "Invalid barCount or index out of range: " << boss->barCount << std::endl;
+				Destroy();
+				AfterDied();
 			}
 		}
 
@@ -211,6 +235,47 @@ void Boss::AfterDied()
 	Engine::GetAudioManager().RestartPlayMusic("background1");
 	Engine::GetAudioManager().SetMute("background1", false);
 }
+
+
+void Boss::AttackCircle(vec2 pos, double radius, double elapsed_time)
+{
+	DrawShieldRange(pos, radius);
+
+	std::thread([this, pos, radius, elapsed_time]() {
+		std::this_thread::sleep_for(std::chrono::duration<double>(elapsed_time));
+
+		vec2 player_pos = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()
+			->GetGOComponent<Ship>()->GetPosition();
+		double distance = sqrt(pow(player_pos.x - pos.x, 2) +
+			pow(player_pos.y - pos.y, 2)) * 2.0;
+
+		if (distance > radius)
+		{
+			Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()
+				->GetGOComponent<Ship>()->DeclineFuel(0.4);
+			std::cout << "Attack" << std::endl;
+
+
+		}
+
+		//std::cout << "Attack Triggered at Position (" << pos.x << ", " << pos.y << ")" << std::endl;
+		}).detach();
+}
+
+void Boss::DrawShieldRange(vec2 pos, double radius)
+{
+	CircleDrawCall draw_call = {
+		(float)radius,
+		{ pos.x, pos.y },
+	};
+
+	draw_call.settings.do_blending = true;
+	draw_call.sorting_layer = DrawLayer::DrawUI;
+	Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call));
+}
+
+
+
 
 vec2 Lerp(const vec2& start, const vec2& end, float t) {
 	return start + t * (end - start);
