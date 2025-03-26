@@ -2,7 +2,7 @@
 #include "../Engine/AudioManager.h"
 #include "Boss.h"
 #include "Ship.h"
-
+#include "BossBullet.h"
 
 std::vector<GameObject::State*> stateMap;
 std::vector<std::string> BossJSONfileMap;
