@@ -62,7 +62,6 @@
     <ClCompile Include="Game\Shop.cpp" />
     <ClCompile Include="Game\Skill.cpp" />
     <ClCompile Include="Game\Splash.cpp" />
-    <ClCompile Include="Game\Title.cpp" />
     <ClCompile Include="Game\TutorialMap.cpp" />
     <ClCompile Include="Game\WaterRippleEffect.cpp" />
     <ClCompile Include="main.cpp" />
@@ -131,7 +130,6 @@
     <ClInclude Include="Game\Skill.h" />
     <ClInclude Include="Game\Splash.h" />
     <ClInclude Include="Game\States.h" />
-    <ClInclude Include="Game\Title.h" />
     <ClInclude Include="Game\TutorialMap.h" />
     <ClInclude Include="Game\WaterRippleEffect.h" />
   </ItemGroup>

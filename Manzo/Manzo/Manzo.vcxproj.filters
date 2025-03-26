@@ -55,7 +55,6 @@
     <ClCompile Include="Game\Module.cpp" />
     <ClCompile Include="Game\TutorialMap.cpp" />
     <ClCompile Include="Game\WaterRippleEffect.cpp" />
-    <ClCompile Include="Game\Title.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h" />
@@ -118,6 +117,5 @@
     <ClInclude Include="Game\Module.h" />
     <ClInclude Include="Game\TutorialMap.h" />
     <ClInclude Include="Game\WaterRippleEffect.h" />
-    <ClInclude Include="Game\Title.h" />
   </ItemGroup>
 </Project>
