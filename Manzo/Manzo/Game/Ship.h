@@ -40,6 +40,7 @@ public:
     bool IsTouchingReef();
     bool IsFuelZero();
     bool IsShipUnder();
+    void DeclineFuel(double d) { fuel -= d; }
 
 private:
     static constexpr double speed = 6500.f;

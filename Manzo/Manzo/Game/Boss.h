@@ -2,7 +2,8 @@
 #include "../Engine/GameObject.h"
 #include "GameObjectTypes.h"
 #include "BeatSystem.h"
-
+#include <list>
+#include <chrono>
 #include <vector>
 
 class Boss : public GameObject
@@ -22,6 +23,8 @@ public:
 		MovingToLocation 
 	};
 
+
+
 	Boss(vec2 start_position, BossName name, BossType type);
 	GameObjectTypes Type() override { return GameObjectTypes::Boss; }
 	std::string TypeName() override { return "Boss"; }
@@ -37,7 +40,9 @@ public:
 	void AfterDied();
 	const std::array<int, 2> GetFirstPosition() { return position; }
 	void Bullet(Boss* boss);
-
+	void AttackCircle(vec2 pos, double radius, double elapsed_time);
+	void DrawShieldRange(vec2 pos, double radius);
+	void UpdateAttackCircles(double dt);
 
 private:
 
@@ -99,7 +104,6 @@ private:
 		std::string GetName() override { return "Entry4"; }
 	};
 
-
 	State_CutScene state_cutscene;
 	Entry1 entry1;
 	Entry2 entry2;
@@ -124,5 +128,9 @@ private:
 	std::array<int, 2> start_pos;
 	bool bulletSpawned = false;
 	int barCount;
+
+
+
+
 };
 

@@ -46,20 +46,19 @@ void Boss::Movingtolocation_Boss(int targetEntryNum, Boss* boss) {
 
 	if (targetEntryNum - 1 < boss->parttern.size()) {
 		const auto& entryVec = boss->parttern[targetEntryNum - 1];
-		boss->bulletSpawned = false;
 		for (const auto& entryData : entryVec) {
-
 			if (entryData.delay + 1 == boss->beat->GetDelayCount()) {
-				if (!boss->bulletSpawned) {
+				if (boss->beat->GetBeat()) {
 					boss->current_position = entryData.position;
 					boss->Bullet(boss);
-					boss->bulletSpawned = true;
 				}
-				if (entryData.attacktype == 3) {
-
-				}
+				
+			}
+			if (entryData.attacktype == 3) {
+				boss->AttackCircle(entryData.position, 500, (double)(boss->beat->GetFixedDuration() * 4));
 			}
 		}
+		
 	}
 }
 
@@ -203,19 +202,19 @@ void Boss::InitializeStates() {
 
 void Boss::Update(double dt) {
 	Boss* boss = static_cast<Boss*>(this);
-	std::cout << total_entry.size() << std::endl;
+	//std::cout << total_entry.size() << std::endl;
 	if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
 		if (GameObject::current_state->GetName() != Boss::state_cutscene.GetName()) {
 
 			boss->barCount = beat->GetBarCount();
-			std::cout << barCount << std::endl;
+			//std::cout << barCount << std::endl;
 			if (boss->barCount <= total_entry.size()) {
 				if (boss->barCount < total_entry.size() && total_entry[boss->barCount] - 1 < stateMap.size()) {
 					change_state(stateMap[total_entry[boss->barCount] - 1]);
 				}
 			}
 			else if (boss->barCount > total_entry.size()) {
-				std::cerr << "Invalid barCount or index out of range: " << boss->barCount << std::endl;
+				//std::cerr << "Invalid barCount or index out of range: " << boss->barCount << std::endl;
 				Destroy();
 				AfterDied();
 			}
@@ -255,11 +254,12 @@ void Boss::AttackCircle(vec2 pos, double radius, double elapsed_time)
 		{
 			Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()
 				->GetGOComponent<Ship>()->DeclineFuel(0.4);
-			std::cout << "Fuel: " << Engine::GetGameStateManager()
-				.GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>()->GetFuel() << std::endl;
+			std::cout << "Attack" << std::endl;
+
+
 		}
 
-		std::cout << "Attack Triggered at Position (" << pos.x << ", " << pos.y << ")" << std::endl;
+		//std::cout << "Attack Triggered at Position (" << pos.x << ", " << pos.y << ")" << std::endl;
 		}).detach();
 }
 
