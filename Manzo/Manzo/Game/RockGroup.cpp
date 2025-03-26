@@ -152,11 +152,11 @@ void RockGroup::SetPoints() {
 
 bool RockGroup::CanCollideWith(GameObjectTypes other_object)
 {
-    switch (other_object) {
+    /*switch (other_object) {
     case GameObjectTypes::Ship:
         return true;
         break;
-    }
+    }*/
 
     return false;
 }
@@ -171,9 +171,10 @@ void RockGroup::ResolveCollision(GameObject* other_object)
         if (this->can_collide) {
             for (MovingRock* rock : this->GetMovingRocks()) {
                 rock->Hit(true);    // rock changes state to State_Pop
+
+                this->can_collide = false;
             }
         }
-        this->can_collide = false;
         
 
     }

@@ -36,6 +36,7 @@ public:
 	void InitializeStates();
 	void AfterDied();
 	const std::array<int, 2> GetFirstPosition() { return position; }
+	void Bullet(Boss* boss);
 
 
 private:
@@ -121,5 +122,7 @@ private:
 	int channelId = 1;
 	bool isPlaying = false;
 	std::array<int, 2> start_pos;
+	bool bulletSpawned = false;
+	int barCount;
 };
 

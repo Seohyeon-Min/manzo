@@ -20,11 +20,26 @@ Created:    September 12, 2024
 #include "..\Game\RockPoint.h"
 
 #include <vector>
+class Map;
+
+class MapManager : public Component {
+public:
+	void AddMapFile(const std::string& filename);
+	void LoadFirstMap();
+	void LoadNextMap();
+	void UpdateMaps(const Math::rect& camera_boundary);
+	
+private:
+	std::vector<Map*> maps;
+	std::vector<std::string> mapFiles;
+	int currentMapIndex = 0;
+	float EndY = -100.0f;
+};
 
 class Map : public Component {
 public:
 	~Map() {
-		objects.clear();
+		rocks.clear();
 		rock_groups.clear();
 	}
 	void ParseSVG(const std::string& filename);
@@ -32,14 +47,20 @@ public:
 	std::vector<Rock>& GetRocks() { return objects; }
 	void MakeRockGroups(Rock* rock, Polygon poly);
 	void MakeMovingRockGroups(MovingRock* moving_rock, Polygon poly);
-	void AddDrawCall();
+	void LoadMapInBoundary(const Math::rect& camera_boundary);
+	bool IsOverlapping(const Math::rect& a, const Math::rect& b);
+
+	void Translate(const vec2& offset);
+	void UnloadAll();
 
 
 private:
 	char currentCommand = '\0';
-	std::vector<Rock> objects;
+	float margin = 100.0f;
+	std::vector<Rock*> rocks;
 	std::vector<RockGroup*> rock_groups;
 	vec2 circle_position{ 0,0 };
+	float EndY = 100.0f;
 
 
 };

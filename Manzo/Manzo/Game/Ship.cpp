@@ -330,6 +330,7 @@ std::vector<vec2> GenerateSplinePoints(std::span<const vec2> points, int resolut
             vec2 point = CatmullRomSpline(extended_points[i], extended_points[i + 1], extended_points[i + 2], extended_points[i + 3], t);
             spline_points.push_back(point);
         }
+
     }
 
     return spline_points;

@@ -34,6 +34,9 @@ public:
     const vec2& GetPosition() const;
     CameraView& GetCameraView() { return caminfo.camera_view; }
     Camera& GetCamera() { return caminfo.camera; }
+    Math::rect GetCameraBoundary() const;
+
+    void LoadMap();     // Load Map In Camera's Boundary
 
     mat3 world_to_cam;
     mat3 cam_to_ndc;
