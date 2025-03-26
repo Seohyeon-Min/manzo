@@ -82,7 +82,7 @@ void Mode1::Load() {
     AddGSComponent(camera);
 
     //// ship
-    ship_ptr = new Ship({ 0, 0 });
+    ship_ptr = new Ship({ 4350,-5420 });
     GetGSComponent<GameObjectManager>()->Add(ship_ptr);
 
 	//// background
@@ -101,8 +101,12 @@ void Mode1::Load() {
 	//background->Add("assets/images/background/bubble.png", 1.5f, DrawLayer::DrawUI);
 
     // Map
-	AddGSComponent(new Map());
-    GetGSComponent<Map>()->ParseSVG("assets/maps/map6.svg");
+	AddGSComponent(new MapManager());
+    //GetGSComponent<MapManager>()->AddMapFile("assets/maps/TemporaryMap.svg");
+    
+	//Ear Clipping Test
+	GetGSComponent<MapManager>()->AddMapFile("assets/maps/TemporaryMap.svg");
+	GetGSComponent<MapManager>()->LoadFirstMap();
 
 	//Boss
 	Boss::LoadBossfile();
@@ -112,10 +116,10 @@ void Mode1::Load() {
     //    GetGSComponent<Boss>()->ReadBossJSON(static_cast<Boss::BossType>(i));
     //    BossFirstPos.push_back(GetGSComponent<Boss>()->GetFirstPosition());
     //}
-	boss_ptr = new Boss({ 750,500 }, Boss::BossName::e, Boss::BossType::MovingToLocation);
+	boss_ptr = new Boss({ 4350,-5420 }, Boss::BossName::e, Boss::BossType::MovingToLocation);
 	boss_ptr->ReadBossJSON(Boss::BossName::e);
 	BossFirstPos.push_back(std::make_pair(boss_ptr->GetFirstPosition()[0], boss_ptr->GetFirstPosition()[1]));
-	bossPosition = { 750,500, 0.0f };
+	bossPosition = { 4350,-5420, 0.0f };
 
 	// UI
 	GetGSComponent<GameObjectManager>()->Add(new Mouse);
@@ -178,6 +182,11 @@ void Mode1::Load() {
 }
 
 void Mode1::Update(double dt) {
+	/*
+	std::cout << "Player's X position : "<< ship_ptr->GetPosition().x << "\n";
+	std::cout << "Player's Y position : "<< ship_ptr->GetPosition().y << "\n";
+	*/
+
 	//audio play
 	if (!playing)
 	{
@@ -209,6 +218,11 @@ void Mode1::Update(double dt) {
         GetGSComponent<GameObjectManager>()->Add(boss_ptr);
         Isboss = true;
     }
+
+	if (Isboss,boss_ptr != nullptr) {
+
+		camera->SetPosition(boss_ptr->GetPosition());
+	}
 
 	//camera postion update
 	camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
