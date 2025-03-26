@@ -41,16 +41,10 @@ public:
 	//group
 	void SetRockGroup(RockGroup* rockgroup) { this->rockgroup = rockgroup; }
 	RockGroup* GetRockGroup() { return rockgroup; }
-
-	// Map Loading
-	void Active(bool active) { loaded = active; }
-	bool IsActivated() { return loaded; }
 private:
 	RockGroup* rockgroup;
 	Polygon poly;
-	bool loaded = false;
 };
-
 
 class MovingRock : public Rock {
 public:
@@ -60,6 +54,7 @@ public:
 	std::string TypeName() override { return "Rock"; }
 	
 	//position & moving
+	vec2 Normalize(const vec2& vec);
 	void Hit(bool hit) { this->hit = hit; }
 	bool IsRange(const vec2& current_position);
 	void Pop(const vec2& direction, float speed);
@@ -68,8 +63,8 @@ public:
 
 private:
 	bool hit = false;
-	float pop_speed = 0.f;	//no delayyyyyyyyyy
-	float pop_back_speed = 0.f;
+	float pop_speed = 300;
+	float pop_back_speed = 300;
 	float range = 50.f;
 	RockGroup* rockgroup;
 	Polygon poly;

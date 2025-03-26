@@ -30,9 +30,6 @@ public:
     vec2 FindNearestRockPoint(GameObject* object);
     Rock* FindNearestRock(GameObject* object);
     
-    vec2 FindNearestRock(GameObject* object);
-    void Remove(GameObject* object);
-
     template<typename T>
     T* GetGOComponent() {
         for (GameObject* object : objects) {

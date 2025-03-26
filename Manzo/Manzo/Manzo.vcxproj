@@ -41,7 +41,6 @@
     <ClCompile Include="Game\BeatSystem.cpp" />
     <ClCompile Include="Game\Boss.cpp" />
     <ClCompile Include="Game\BounceBehavior.h" />
-    <ClCompile Include="Game\BossBullet.cpp" />
     <ClCompile Include="Game\DialogBox.cpp" />
     <ClCompile Include="Game\Effect.cpp" />
     <ClCompile Include="Game\Dragging.cpp" />
@@ -109,7 +108,6 @@
     <ClInclude Include="Game\Background.h" />
     <ClInclude Include="Game\BeatSystem.h" />
     <ClInclude Include="Game\Boss.h" />
-    <ClInclude Include="Game\BossBullet.h" />
     <ClInclude Include="Game\Effect.h" />
     <ClInclude Include="Game\DialogBox.h" />
     <ClInclude Include="Game\Dragging.h" />

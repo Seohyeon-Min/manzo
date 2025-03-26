@@ -22,14 +22,6 @@ Created:    March 8, 2023
 
 #pragma once
 
-
-enum class MoveType {
-    LINEAR,
-    CURVE,
-    RANDOM,
-    TOTHEPLAYER
-};
-
 class Particle : public GameObject {
 public:
     Particle(const std::filesystem::path& sprite_file);
@@ -37,7 +29,6 @@ public:
     void Update(double dt) override;
     void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
     void SetAlpha(const GLShader* shader);
-    void SetMove(MoveType movetype, float intensity);
     bool Alive() {
         return  life > 0;
     }
@@ -46,8 +37,6 @@ public:
 private:
     double life;
     double max_life;
-    MoveType move_type = MoveType::LINEAR;
-    float intensity = 1.0f;
 protected:
     GLShader* shader = nullptr;
     DrawLayer drawlayer = DrawLayer::Draw;
