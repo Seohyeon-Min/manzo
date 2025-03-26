@@ -221,7 +221,7 @@ void Mode1::Update(double dt) {
 
 	if (Isboss,boss_ptr != nullptr) {
 
-		camera->SetPosition(boss_ptr->GetPosition());
+		//camera->SetPosition(boss_ptr->GetPosition());
 	}
 
 	//camera postion update
