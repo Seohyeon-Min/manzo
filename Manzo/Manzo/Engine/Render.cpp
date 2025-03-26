@@ -127,12 +127,18 @@ void Render::ApplyPostProcessing()
             switch (i) {
             case 0: // Bloom
                 shader->SendUniform("uSceneTexture", 0);
-                shader->SendUniform("uThreshold", 0.6f);
+                shader->SendUniform("uThreshold", 0.71f);
                 shader->SendUniform("uBlurDirection", 1.0f, 1.0f);
                 shader->SendUniform("uResolution", static_cast<float>(Engine::window_width));
-                shader->SendUniform("uBloomIntensity", 3.1f);
+                shader->SendUniform("uBloomIntensity", 1.1f);
                 break;
             }
+
+            RenderQuad();
+            shader->Use(false);
+
+            horizontal = !horizontal;
+            first_iteration = false;
         }
     }
     else {

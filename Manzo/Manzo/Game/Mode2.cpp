@@ -162,6 +162,7 @@ void Mode2::Unload() {
     }
 
     GetGSComponent<GameObjectManager>()->Unload();
+    Engine::GetAudioManager().StopAllChannels();
     GetGSComponent<Background>()->Unload();
     ClearGSComponents();
     ship_ptr = nullptr;
