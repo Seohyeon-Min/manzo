@@ -566,7 +566,7 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
                         rock->Active(true);
                         rock->AddGOComponent(new MAP_SATCollision(poly2, rock));
                         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rock);
-                        std::cout << "Rock Added to GameState!!!!!!!!!!!!!!!!!!"<<"\n";
+                        //std::cout << "Rock Added to GameState!!!!!!!!!!!!!!!!!!"<<"\n";
                     }
                 }
 
@@ -575,7 +575,7 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
 
                     rockgroup->Active(true);
                     Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rockgroup);
-                    std::cout << "RockGroup Added to GameState!!!!!!!!!!!!!!!!!!" << "\n";
+                    //std::cout << "RockGroup Added to GameState!!!!!!!!!!!!!!!!!!" << "\n";
                 }
                 
             }
