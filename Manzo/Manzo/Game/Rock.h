@@ -33,7 +33,8 @@ public:
 	void Draw();
 
 	//position & moving
-	void SetCenter();
+	void SetCenter();	//Set position of Rock
+	void ModifyPolyPosition();	// Modify poly vertice position
 
 	//polygon
 	const Polygon& GetPolygon() { return poly; }

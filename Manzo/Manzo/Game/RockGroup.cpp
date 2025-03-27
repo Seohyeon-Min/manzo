@@ -10,8 +10,10 @@ Created:    November 25, 2024
 
 #include "RockGroup.h"
 
-RockGroup::RockGroup(const std::string& index) :GameObject({ 0,0 }), index(index)
-{}
+RockGroup::RockGroup(const std::string& index, vec2 position) :GameObject({ 0,0 }), index(index)
+{
+    SetPosition(position);
+}
 
 RockGroup::~RockGroup() {
     rocks.clear();
@@ -72,10 +74,10 @@ vec2 RockGroup::FindCenterRect() {  // Calculate texture's position.
 
         for (auto& rock : rocks) {
             Polygon poly = rock->GetPolygon();
-            minPoint.x = std::min(minPoint.x, poly.FindBoundary().Left());
-            minPoint.y = std::min(minPoint.y, poly.FindBoundary().Bottom());
-            maxPoint.x = std::max(maxPoint.x, poly.FindBoundary().Right());
-            maxPoint.y = std::max(maxPoint.y, poly.FindBoundary().Top());
+            minPoint.x = std::min(minPoint.x, poly.GetBoundary().Left());
+            minPoint.y = std::min(minPoint.y, poly.GetBoundary().Bottom());
+            maxPoint.x = std::max(maxPoint.x, poly.GetBoundary().Right());
+            maxPoint.y = std::max(maxPoint.y, poly.GetBoundary().Top());
         }
     }
     else if (!moving_rocks.empty()) {
@@ -85,10 +87,10 @@ vec2 RockGroup::FindCenterRect() {  // Calculate texture's position.
 
         for (MovingRock* rock : moving_rocks) {
             Polygon poly = rock->GetPolygon();
-            minPoint.x = std::min(minPoint.x, poly.FindBoundary().Left());
-            minPoint.y = std::min(minPoint.y, poly.FindBoundary().Bottom());
-            maxPoint.x = std::max(maxPoint.x, poly.FindBoundary().Right());
-            maxPoint.y = std::max(maxPoint.y, poly.FindBoundary().Top());
+            minPoint.x = std::min(minPoint.x, poly.GetBoundary().Left());
+            minPoint.y = std::min(minPoint.y, poly.GetBoundary().Bottom());
+            maxPoint.x = std::max(maxPoint.x, poly.GetBoundary().Right());
+            maxPoint.y = std::max(maxPoint.y, poly.GetBoundary().Top());
         }
     }
 

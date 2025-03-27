@@ -12,9 +12,22 @@ Created:    November 25, 2024
 
 Rock::Rock(Polygon poly) :GameObject({ 0,0 }), poly(poly)
 {
-    SetCenter();
-    GetMatrix();
+    //SetCenter();
+    //ModifyPolyPosition();
+    
+    //AddGOComponent(new Sprite("assets/images/ship.spt", this));
     //AddGOComponent(new Sprite("assets/images/rock/" + poly.polyindex + ".spt", this));
+}
+
+void Rock::ModifyPolyPosition() {
+    std::vector<vec2> new_vertices;
+
+    for (const vec2& vertice : poly.vertices) {
+        vec2 new_vertice = vertice - this->GetPosition();
+        new_vertices.push_back(new_vertice);
+    }
+    poly.vertices = new_vertices;
+    poly.FindBoundary();
 }
 
 void Rock::Update(double dt)
@@ -37,7 +50,7 @@ void Rock::SetCenter() {
     }
     center.x /= vertices.size();
     center.y /= vertices.size();
-
+    this->SetPosition(center);
 }
 
 // Moving Rock
