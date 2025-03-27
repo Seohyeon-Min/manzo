@@ -14,6 +14,7 @@ Rock::Rock(Polygon poly) :GameObject({ 0,0 }), poly(poly)
 {
     SetCenter();
     GetMatrix();
+    AddGOComponent(new Sprite("assets/images/rock/" + poly.polyindex + ".spt", this));
 }
 
 MovingRock::MovingRock(Polygon poly) :Rock(poly), hit(false)
