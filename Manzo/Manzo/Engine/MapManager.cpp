@@ -70,7 +70,8 @@ void MapManager::UpdateMaps(const Math::rect& camera_boundary) {
 }
 
 
-// Map
+//===============================================================Map
+std::vector<Polygon> EarClipping(const std::vector<vec2>& points);
 
 void Map::ParseSVG(const std::string& filename) {
     std::ifstream file(filename);
@@ -269,10 +270,11 @@ void Map::ParseSVG(const std::string& filename) {
                 // Making Polygons into Rock
                 Rock* rock = new Rock(poly);
                 rocks.push_back(rock);
-                RockGroup* rockgroup = new RockGroup(poly.polyindex, rock->GetPosition());
+                RockGroup* rockgroup = new RockGroup(poly.polyindex);
                 rockgroup->AddRock(rock);
                 rock->SetRockGroup(rockgroup);
                 rock_groups.push_back(rockgroup);
+                
 
             }
 
@@ -301,19 +303,19 @@ void Map::ParseSVG(const std::string& filename) {
 
     //debugging & matching index, points
     for (auto& r_group : rock_groups) {
-        
-        std::cout << "Rock Position: " << r_group->GetRocks()[0]->GetPosition().x << "," << r_group->GetRocks()[0]->GetPosition().y << "\n";
-        std::cout << "Group Position: " << r_group->GetPosition().x << "," << r_group->GetPosition().y << "\n";
-        /*
-        std::cout << "Group Rocks Size : " << r_group->GetRocks().size() << "\n";
-        std::cout << "Group Position: " << r_group->GetPosition().x << "," << r_group->GetPosition().y << "\n";
+
         std::cout << "Group Index : " << r_group->GetIndex() << "\n";
         std::cout << "Group Rocks Size : " << r_group->GetRocks().size() << "\n";
+        /*std::cout << "Group Position: " << r_group->GetPosition().x << "," << r_group->GetPosition().y << "\n";
+        std::cout << "Group Index : " << r_group->GetIndex() << "\n";
+        std::cout << "Group Rocks Size : " << r_group->GetRocks().size() << "\n";
+        std::cout << "Group Moving Rocks Size : " << r_group->GetMovingRocks().size() << "\n";
         std::cout << "How Many Points? : " << r_group->GetPoints().size() << "\n";
         */
 
-        //r_group->MatchIndex(); doesn't need anymore?
+        //r_group->MatchIndex();
         r_group->SetPoints();
+        //std::cout <<"How Many Points? : " << r_group->GetPoints().size() <<"\n";
     }
     file.close();
 }
@@ -383,6 +385,32 @@ std::vector<vec2> Map::parsePathData(const std::string& pathData) {
 }
 
 
+void Map::MakeMovingRockGroups(MovingRock* moving_rock, Polygon poly) {
+
+    // Making RockGroups
+    if (rock_groups.empty()) {
+        RockGroup* rockgroup = new RockGroup(poly.polyindex);   // make new group
+        rockgroup->AddMovingRock(moving_rock);                                       //add poly into new group
+
+        moving_rock->SetRockGroup(rockgroup);
+        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rockgroup);
+        rock_groups.push_back(rockgroup);
+    }
+    else {
+        if (rock_groups.back()->GetIndex() != poly.polyindex) {             // if poly has different index
+            RockGroup* rockgroup = new RockGroup(poly.polyindex);           // make new group
+            rockgroup->AddMovingRock(moving_rock);                                       //add poly into new group
+
+            moving_rock->SetRockGroup(rockgroup);
+            //Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rockgroup);
+            rock_groups.push_back(rockgroup);
+        }
+        else {                                                              // if poly has same index
+            rock_groups.back()->AddMovingRock(moving_rock);
+            moving_rock->SetRockGroup(rock_groups.back());
+        }
+    }
+}
 
 
 bool Map::IsOverlapping(const Math::rect& camera_boundary, const Math::rect& rock) {
@@ -399,17 +427,17 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
         if(!rocks.empty()){
             Polygon poly2 = rocks[0]->GetPolygon();
 
-            bool overlapping = IsOverlapping(camera_boundary, poly2.GetBoundary());
+            bool overlapping = IsOverlapping(camera_boundary, poly2.FindBoundary());
 
             if (overlapping) {
                 for (Rock* rock : rocks) {
-
                     //Add Rock in GameState
                     if (!rock->IsActivated()) {
+
                         rock->Active(true);
-                        rock->AddGOComponent(new MAP_SATCollision(poly2, rock));    //Add Collision
+                        rock->AddGOComponent(new MAP_SATCollision(poly2, rock));
                         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rock);
-                        //std::cout << "Rock Added to GameState!!!!!!!!!!!!!!!!!!"<<"\n";
+                        std::cout << "Rock Added to GameState!!!!!!!!!!!!!!!!!!"<<"\n";
                     }
                 }
 
@@ -418,7 +446,7 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
 
                     rockgroup->Active(true);
                     Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rockgroup);
-                    //std::cout << "RockGroup Added to GameState!!!!!!!!!!!!!!!!!!" << "\n";
+                    std::cout << "RockGroup Added to GameState!!!!!!!!!!!!!!!!!!" << "\n";
                 }
                 
             }
@@ -426,6 +454,7 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
                 for (Rock* rock : rocks) {
                     //Remove Rock in GameState
                     if (rock->IsActivated()) {
+
                         rock->Active(false);
                         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Remove(rock);
                         //std::cout << "Unloaded Rock!!!!!!!!!!!!!!!!!" << "\n";
@@ -434,6 +463,7 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
 
                 // Remove RockGroup in GameState
                 if (rockgroup->IsActivated()) {
+
                     rockgroup->Active(false);
                     Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Remove(rockgroup);
                 }

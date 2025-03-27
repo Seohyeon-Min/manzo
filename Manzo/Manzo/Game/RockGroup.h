@@ -27,7 +27,7 @@ class RockPoint;
 class RockGroup : public GameObject
 {
 public:
-	RockGroup(const std::string& index, vec2 position);
+	RockGroup(const std::string& index);
 	~RockGroup();
 	GameObjectTypes Type() override { return GameObjectTypes::RockBoundary; }
 	std::string TypeName() override { return "Rock Boundary"; }

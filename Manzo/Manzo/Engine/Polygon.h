@@ -9,9 +9,6 @@ struct [[nodiscard]] Polygon
 	int vertexCount = 3;
 	int polycount = 0;
 	std::string polyindex = "";
-	Math::rect poly_boundary;
-
-	Math::rect GetBoundary() { return poly_boundary; }
 
 	vec2 FindCenter() {			// calculate center of polygon
 		vec2 center = { 0, 0 };
@@ -24,9 +21,10 @@ struct [[nodiscard]] Polygon
 		return center;
 	}
 
-	void FindBoundary() {
-		if (vertices.empty()) return;
-
+	Math::rect FindBoundary() {
+		if (vertices.empty()) {
+			return Math::rect{};
+		}
 		vec2 minPoint = vertices[0];
 		vec2 maxPoint = vertices[0];
 		for (const auto& vertex : vertices) {
@@ -35,7 +33,7 @@ struct [[nodiscard]] Polygon
 			maxPoint.x = std::max(maxPoint.x, vertex.x);
 			maxPoint.y = std::max(maxPoint.y, vertex.y);
 		}
-		poly_boundary =  Math::rect{ minPoint, maxPoint };
+		return Math::rect{ minPoint, maxPoint };
 	}
 };
 

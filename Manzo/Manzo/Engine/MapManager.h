@@ -44,6 +44,7 @@ public:
 	}
 	void ParseSVG(const std::string& filename);
 	std::vector<vec2> parsePathData(const std::string& pathData);	// path parsing
+	void MakeMovingRockGroups(MovingRock* moving_rock, Polygon poly);
 	void LoadMapInBoundary(const Math::rect& camera_boundary);
 	bool IsOverlapping(const Math::rect& a, const Math::rect& b);
 
