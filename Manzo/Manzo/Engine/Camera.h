@@ -58,7 +58,6 @@ public:
 private:
     float lerpFactor = 0.03f;
     vec2 target_position;
-    std::string mode_name = Engine::GetGameStateManager().GetStateName();
 
     struct CamInfo {
         Camera     camera{};
