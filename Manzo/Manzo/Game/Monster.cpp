@@ -18,14 +18,7 @@ void Monster::Update(double dt)
 {
 	GameObject::Update(dt);
 
-    if (!IsPlayerInRange(ship_ptr->GetPosition())) {
-        std::cout << "Player out of range\n";
-        change_state(&state_goback);
-    }
-    else if ((GetPosition() - ship_ptr->GetPosition()).Length() > dist_from_ship) {
-        std::cout << "Player too far\n";
-        change_state(&state_goback);
-    }
+
 
     float decrease_duration = (float)beat->GetFixedDuration() - 0.1f;
     float delta_radius = (max_scale - 1.0f) / decrease_duration;
@@ -133,7 +126,6 @@ void Monster::Stanby::Enter(GameObject* object)
 {
     Monster* monster = static_cast<Monster*>(object);
     monster->SetVelocity({});
-    std::cout << "Stanby\n";
 }
 
 void Monster::Stanby::Update(GameObject* object, double dt)
@@ -146,8 +138,8 @@ void Monster::Stanby::CheckExit(GameObject* object)
     Monster* monster = static_cast<Monster*>(object);
     if (monster->IsPlayerInSight(monster->ship_ptr->GetPosition())) {
         monster->change_state(&monster->state_alert);
-        std::cout << "Stanby to Alter\n";
     }
+
 }
 
 void Monster::Alert::Enter(GameObject* object)
@@ -155,7 +147,6 @@ void Monster::Alert::Enter(GameObject* object)
     Monster* monster = static_cast<Monster*>(object);
     monster->position = monster->GetPosition();
     monster->offset = monster->initial_offset;
-    std::cout << "Enter\n";
 }
 
 void Monster::Alert::Update(GameObject* object, double dt)
@@ -174,14 +165,17 @@ void Monster::Alert::Update(GameObject* object, double dt)
 void Monster::Alert::CheckExit(GameObject* object)
 {
     Monster* monster = static_cast<Monster*>(object);
-    if (!monster->IsPlayerInSight(monster->ship_ptr->GetPosition())) {
-        monster->change_state(&monster->state_stanby);
-        std::cout << "Eixt\n";
-    }
     if (monster->offset <= 0.5 && monster->offset >= -0.5 && monster->beat->GetBeat()) {
         monster->SetPosition(monster->position);
         monster->change_state(&monster->state_go);
-        std::cout << "Go!!!!!!!!!!\n";
+    }
+    if (!monster->IsPlayerInRange(monster->ship_ptr->GetPosition())) {
+        std::cout << "Player out of range\n";
+        monster->change_state(&monster->state_goback);
+    }
+    else if ((monster->GetPosition() - monster->ship_ptr->GetPosition()).Length() > monster->dist_from_ship) {
+        std::cout << "Player too far\n";
+        monster->change_state(&monster->state_goback);
     }
 }
 
@@ -191,7 +185,6 @@ void Monster::Dash::Enter(GameObject* object)
     monster->direction = { monster->ship_ptr->GetPosition().x - (monster->GetPosition().x), monster->ship_ptr->GetPosition().y - (monster->GetPosition().y) };
     monster->direction = monster->direction.Normalize();
     monster->SetVelocity(monster->direction * monster->speed);
-    std::cout << "Dash_STart\n";
     monster->dash_timer->Start();
     alpha = init_alpha;
 }
@@ -220,7 +213,6 @@ void Monster::Dash::CheckExit(GameObject* object)
         if (monster->IsPlayerInRange(monster->ship_ptr->GetPosition())) {
             monster->dash_timer->Reset();
             monster->change_state(&monster->state_stanby);
-            std::cout << "Finish\n";
         }
     }
 }
@@ -249,7 +241,6 @@ void Monster::Goback::CheckExit(GameObject* object)
         monster->SetVelocity({}); // 속도 0으로 설정
         monster->SetPosition(monster->init_pos); // 정확한 위치로 스냅 (선택 사항)
         monster->change_state(&monster->state_stanby);
-        std::cout << "Move finish\n";
     }
 }
 

@@ -158,10 +158,11 @@ void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_
         Engine::GetLogger().LogEvent("Nearest Rock : NULL");
         return;
     }
+    vec2 velocity;
 
     if (ship->IsCollidingWithNextFrame(ship->nearestRock, ship->GetVelocity(), (float)fixed_dt, ship->toi)) {
         Engine::GetLogger().LogEvent("Collision Detected, Its toi is : " + std::to_string(ship->toi));
-        //vec2 smallCorrection = -ship->GetVelocity().Normalize();
+
         if (ship->toi <= 0) { // just in case
             ship->SetPosition(ship->GetPosition() - ship->GetVelocity() * (float)fixed_dt);
             Engine::GetLogger().LogEvent("Toi is 0, returned. : " + std::to_string(ship->toi));
@@ -169,12 +170,13 @@ void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_
         }
         ship->should_resolve_collision = true;
         ship->hit_with = true;
+        velocity = ship->GetVelocity();
     }
     if (ship->should_resolve_collision) {
-        vec2 velocity = ship->GetVelocity();
-        ship->collisionPos = ship->GetPosition() + velocity * (float)fixed_dt * ship->toi;
         ship->SetVelocity({});
-        ship->SetPosition(ship->collisionPos); // Bug: it doens't really stop at right pos
+        ship->collisionPos = ship->GetPosition() + velocity * (float)fixed_dt * (ship->toi);
+        vec2 smallCorrection = -velocity.Normalize();
+        ship->SetPosition(ship->collisionPos + smallCorrection); // Bug: it doens't really stop at right pos
         Engine::GetLogger().LogEvent("@@@@ In resolve_collision @@@@");
         //this should be started in a next frame
         //ship->nearestRock = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRock(ship); // it should be FindNearestRockNextFrame
@@ -282,17 +284,40 @@ void Ship::Draw(DrawLayer drawlayer) {
 }
 
 vec2 CatmullRomSpline(const vec2& p0, const vec2& p1, const vec2& p2, const vec2& p3, float t) {
-    float t2 = t * t;
-    float t3 = t2 * t;
+    float tension = 0.5;
+    // centripetal parameterization alpha (0.5)
+    float alpha = 0.5f;
 
-    return 0.5f * ((2.0f * p1) +
-        (-p0 + p2) * t +
-        (2.0f * p0 - 5.0f * p1 + 4.0f * p2 - p3) * t2 +
-        (-p0 + 3.0f * p1 - 3.0f * p2 + p3) * t3);
+    // Compute parameter values based on distances raised to alpha
+    float t0 = 0.f;
+    float t1 = t0 + pow((p1 - p0).Length(), alpha);
+    float t2 = t1 + pow((p2 - p1).Length(), alpha);
+    float t3 = t2 + pow((p3 - p2).Length(), alpha);
+
+    // Map t from [0,1] to the interval [t1, t2]
+    float t_actual = t1 + t * (t2 - t1);
+
+    // Compute tangent vectors with tension adjustment
+    // (1 - tension): tension=0 -> standard, tension=1 -> zero tangent
+    vec2 T1 = (1 - tension) * (p2 - p0) / (t2 - t0);
+    vec2 T2 = (1 - tension) * (p3 - p1) / (t3 - t1);
+
+    // Normalize the parameter to [0,1] for the Hermite basis functions
+    float u = (t_actual - t1) / (t2 - t1);
+    float u2 = u * u;
+    float u3 = u2 * u;
+
+    // Hermite basis functions
+    float h00 = 2 * u3 - 3 * u2 + 1;
+    float h10 = u3 - 2 * u2 + u;
+    float h01 = -2 * u3 + 3 * u2;
+    float h11 = u3 - u2;
+
+    return h00 * p1 + h10 * (t2 - t1) * T1 + h01 * p2 + h11 * (t2 - t1) * T2;
 }
 
 std::vector<vec2> SortPointsCounterClockwise(std::span<const vec2> points, const vec2& center) {
-    std::vector<vec2> sorted_points(points.begin(), points.end()); // ���ʿ��� ���� ����
+    std::vector<vec2> sorted_points(points.begin(), points.end());
     std::sort(sorted_points.begin(), sorted_points.end(),
         [&center](const vec2& a, const vec2& b) {
             float angle_a = atan2(a.y - center.y, a.x - center.x);
@@ -449,13 +474,12 @@ void Ship::ResolveCollision(GameObject* other_object) {
 }
 
 void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
-
-
+    fuel -= RockHitDecFuel;
+    if (fuel < 0.0f) {
+        fuel = 0.0f;
+    }
     if (other_object->Type() == GameObjectTypes::Rock) {
-        fuel -= RockHitDecFuel;
-        if (fuel < 0.0f) {
-            fuel = 0.0f;
-        }
+
         auto cam = Engine::GetGameStateManager().GetGSComponent<Cam>();
         cam->GetCamera().StartShake(camera_shake, 5);
 
@@ -468,10 +492,6 @@ void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
     }
 
     else if (other_object->Type() == GameObjectTypes::Monster) {
-        fuel -= MonsHitDecFuel;
-        if (fuel < 0.0f) {
-            fuel = 0.0f;
-        }
         Monster* monster = static_cast<Monster*>(other_object);
         std::array<vec2, 4> points = monster->GetCollisionBoxPoints();
         normal = ComputeCollisionNormal(points, GetPosition(), monster->GetPosition());
@@ -482,6 +502,9 @@ void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
     Engine::GetLogger().LogEvent("Velocity: " + std::to_string(velocity.x) + ", " + std::to_string(velocity.y));
     Engine::Instance()->SetSlowDownFactor(slow_down_factor);
     direction = bounceBehavior->CalculateBounceDirection(velocity,normal);
+
+    //vec2 correction = -velocity;
+    //SetPosition(GetPosition() + correction);
 
     float speed = velocity.Length();
 
@@ -498,7 +521,7 @@ void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
     }
 
     force = direction * speed * 0.8f;
-    force *= 5.0f;
+    force *= 8.0f;
 
     Engine::GetLogger().LogEvent("velocity.Length(), speed : " + std::to_string(velocity.Length()) + " : " + std::to_string(speed));
 }
