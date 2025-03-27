@@ -258,8 +258,6 @@ void Map::ParseSVG(const std::string& filename) {
                     poly.polyindex = polyIndex;
                 }
 
-                //rocks.push_back(poly);
-
                 pathCountInGroup++;
                 currentTag.clear();
                 std::cout << "-----------------------------" << std::endl;
@@ -269,6 +267,7 @@ void Map::ParseSVG(const std::string& filename) {
                 std::cout << "poly index : " << poly.polyindex << std::endl;
                 std::cout << "-----------------------------" << std::endl;
 
+                // Making Polygons into Rock
                 Rock* rock = new Rock(poly);
                 rocks.push_back(rock);
                 RockGroup* rockgroup = new RockGroup(poly.polyindex);
