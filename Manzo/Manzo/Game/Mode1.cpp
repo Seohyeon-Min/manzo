@@ -200,7 +200,8 @@ void Mode1::Update(double dt) {
 
 
     // Handle Input
-    if (ship_ptr->IsShipUnder() && Engine::GetInput().KeyJustPressed(Input::Keys::Q)) {
+    if (Engine::GetInput().KeyJustPressed(Input::Keys::Q)) {
+    //if (ship_ptr->IsShipUnder() && Engine::GetInput().KeyJustPressed(Input::Keys::Q)) {
         Engine::GetGameStateManager().ClearNextGameState();
         Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
     }
