@@ -17,16 +17,6 @@ Rock::Rock(Polygon poly) :GameObject({ 0,0 }), poly(poly)
     //AddGOComponent(new Sprite("assets/images/rock/" + poly.polyindex + ".spt", this));
 }
 
-MovingRock::MovingRock(Polygon poly) :Rock(poly), hit(false)
-{
-    SetCenter();
-
-    if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
-        current_state = &state_idle;
-        current_state->Enter(this);
-    }
-}
-
 void Rock::Update(double dt)
 {
     GameObject::Update(dt);
@@ -50,6 +40,18 @@ void Rock::SetCenter() {
 
 }
 
+// Moving Rock
+
+/*
+* MovingRock::MovingRock(Polygon poly) :Rock(poly), hit(false)
+{
+    SetCenter();
+
+    if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
+        current_state = &state_idle;
+        current_state->Enter(this);
+    }
+}
 void MovingRock::Pop(const vec2& direction, float speed) {
     vec2 normVec = direction.Normalize();
     vec2 velo = { normVec.x * speed, normVec.y * speed };
@@ -73,6 +75,7 @@ bool MovingRock::IsRange(const vec2& current_position) {
 
 
 //==========================State==================================
+
 
 void MovingRock::State_Idle::Enter(GameObject* object) {
     MovingRock* rock = static_cast<MovingRock*>(object);
@@ -129,3 +132,4 @@ void MovingRock::State_PopBack::CheckExit(GameObject* object) {
         rock->change_state(&rock->state_idle);
     }
 }
+*/
