@@ -9,8 +9,6 @@ Cam::Cam()
 
 void Cam::Update(double dt, const vec2& player_position, bool playerMove)
 {
-    caminfo.camera_view.SetFramebufferSize((int)Engine::window_width, (int)Engine::window_height);
-    
     target_position = player_position;
     caminfo.camera.Position.x += (target_position.x - caminfo.camera.Position.x) * lerpFactor;
     caminfo.camera.Position.y += (target_position.y - caminfo.camera.Position.y) * lerpFactor;
