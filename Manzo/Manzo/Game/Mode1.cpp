@@ -105,7 +105,7 @@ void Mode1::Load() {
     //GetGSComponent<MapManager>()->AddMapFile("assets/maps/TemporaryMap.svg");
     
 	//Ear Clipping Test
-	GetGSComponent<MapManager>()->AddMapFile("assets/maps/TemporaryMap.svg");
+	GetGSComponent<MapManager>()->AddMapFile("assets/maps/Test7.svg");
 	GetGSComponent<MapManager>()->LoadFirstMap();
 
 	//Boss
@@ -200,7 +200,8 @@ void Mode1::Update(double dt) {
 
 
     // Handle Input
-    if (ship_ptr->IsShipUnder() && Engine::GetInput().KeyJustPressed(Input::Keys::Q)) {
+    if (Engine::GetInput().KeyJustPressed(Input::Keys::Q)) {
+    //if (ship_ptr->IsShipUnder() && Engine::GetInput().KeyJustPressed(Input::Keys::Q)) {
         Engine::GetGameStateManager().ClearNextGameState();
         Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
     }
