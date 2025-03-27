@@ -53,7 +53,7 @@ public:
 
 	// Points
 	std::vector<vec2> GetPoints() { return points; }
-	void SetPoints();
+	void SetPoints();	// Fill vector of polygon's points
 
 private:
 	bool loaded = false; // Is Rockgroup loaded in map?
