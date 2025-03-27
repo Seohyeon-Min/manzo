@@ -52,11 +52,10 @@ void Render::AddDrawCall
 // Render all stored draw calls, starting with early phase, normal phase, and then late phase
 // Also handles rendering of lines and collision shapes
 void Render::RenderAll() {
-    if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
-
+    if (Engine::GetGameStateManager().GetStateName() != "Title") {
+        postProcessFramebuffer[0].Bind();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
-    postProcessFramebuffer[0].Bind();
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     for (const auto& draw_call : draw_background_calls) {
         DrawBackground(draw_call);
@@ -89,12 +88,12 @@ void Render::RenderAll() {
         }
     }
 
-    if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
-
+    if (Engine::GetGameStateManager().GetStateName() != "Title") {
+        postProcessFramebuffer[1].Unbind();
+        ApplyPostProcessing();
 
     }
-    postProcessFramebuffer[1].Unbind();
-    ApplyPostProcessing();
+
     // Clear draw call vectors for the next frame
     ClearDrawCalls();
 }
@@ -141,7 +140,7 @@ void Render::ApplyPostProcessing()
             first_iteration = false;
         }
     }
-    else {
+    else if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
         int num_passes = 3; // Number of post process
 
         for (int i = 0; i < num_passes; i++) {
