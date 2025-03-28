@@ -46,7 +46,7 @@ public:
 	std::vector<vec2> parsePathData(const std::string& pathData);	// path parsing
 	void MakeMovingRockGroups(MovingRock* moving_rock, Polygon poly);
 	void LoadMapInBoundary(const Math::rect& camera_boundary);
-	bool IsOverlapping(const Math::rect& a, const Math::rect& b);
+	bool IsOverlapping(const Math::rect& a, vec2 rock_position);
 
 	void Translate(const vec2& offset);
 	void UnloadAll();

@@ -34,6 +34,7 @@ public:
 
 	//position & moving
 	void SetCenter();
+	void ModifyPolyPosition();
 
 	//polygon
 	const Polygon& GetPolygon() { return poly; }
