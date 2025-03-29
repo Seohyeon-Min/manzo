@@ -126,18 +126,10 @@ public:
 	}
 
 	~Font() {
-		glDeleteVertexArrays(1, &vao);
-
-		glDeleteBuffers(1, &vbo);
-		glDeleteBuffers(1, &ebo);
-
-		glDeleteTextures(1, &glyphTexture);
-		glDeleteTextures(1, &curveTexture);
-
-		glDeleteBuffers(1, &glyphBuffer);
-		glDeleteBuffers(1, &curveBuffer);
-
-		FT_Done_Face(face);
+		if (face) {
+			FT_Done_Face(face);
+			face = nullptr;  // 이중 해제 방지
+		}
 	}
 
 public:

@@ -20,7 +20,12 @@ FontManager::FontManager() {
 }
 
 FontManager::~FontManager() {
-	FT_Done_FreeType(library); // Free FreeType resources
+	font_list.clear();  // Font 객체를 먼저 해제
+
+	if (library) {
+		FT_Done_FreeType(library);
+		library = nullptr;
+	}
 }
 
 void FontManager::AddFontType(const char* file_path)

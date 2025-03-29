@@ -35,6 +35,9 @@ void Mode2::Load() {
     AddGSComponent(new ShowCollision());
 #else
 #endif
+
+    Engine::GetShaderManager().LoadShader("icon", "assets/shaders/edge_detection.vert", "assets/shaders/edge_detection.frag");
+
     // compenent
     AddGSComponent(new GameObjectManager());
 
@@ -112,6 +115,7 @@ void Mode2::Update(double dt) {
        isLoaded = true;
     }
 
+   
     // Open Inven
     if (Engine::GetInput().KeyJustPressed(Input::Keys::X))
     {

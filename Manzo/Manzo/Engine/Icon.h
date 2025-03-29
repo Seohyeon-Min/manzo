@@ -29,6 +29,7 @@ public:
 	void SetSelected(bool select) { selected = select; }
 
 private:
+	GLTexture* texture;
 	std::string alias;
 	vec2 position;
 	float scale;
