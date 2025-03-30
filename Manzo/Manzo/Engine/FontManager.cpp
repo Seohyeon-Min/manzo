@@ -56,6 +56,7 @@ void FontManager::PrintText(FontType font, std::string txt, vec2 position, float
 	shader->SendUniform("color", color.x, color.y, color.z);
 	shader->SendUniform("alphaV", alpha);
 
+	font_list[font]->setWorldSize(scale);
 	font_list[font]->drawSetup(shader);
 
 	if (in_world)
@@ -63,7 +64,9 @@ void FontManager::PrintText(FontType font, std::string txt, vec2 position, float
 		mat3 model_to_world = mat3::build_translation(position);
 		mat3 WORLD_TO_NDC = Engine::GetGameStateManager().GetGSComponent<Cam>()->world_to_ndc;
 		const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
-		vec3 ndcPos = model_to_ndc * vec3(position.x/6, position.y/6, 1.0);
+		vec3 ndcPos = model_to_ndc * vec3(position.x, position.y, 1.0);
+
+		shader->SendUniform("uUV", 0.0f, 0.0f, -1.0f, 1.0f);
 
 		font_list[font]->draw(ndcPos, txt);
 	}

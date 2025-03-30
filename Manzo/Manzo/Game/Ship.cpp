@@ -38,7 +38,6 @@ void Ship::State_Idle::Enter(GameObject* object) {
 	if (ship->GetVelocity() != vec2{})
 		ship->SetVelocity(ship->direction * skidding_speed);
 }
-
 void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
 	//get mouse pos and move to there
 	Ship* ship = static_cast<Ship*>(object);
@@ -52,27 +51,29 @@ void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
 	vec2 pos = mouse_pos - window;
 
 	vec2 destination = pos;
-	vec2 direction = destination - ship_position;
-	float distance = direction.Length();
-
+	vec2 new_direction = destination - ship_position;
+	float distance = new_direction.Length();
 	if (distance > 0.01f) {
-		direction = direction.Normalize();
+		new_direction = new_direction.Normalize();
 	}
 	else {
-		direction = { 1.0f, 0.0f }; 
+		new_direction = { 1.0f, 0.0f };
 	}
 
-	float max_distance = 200.0f;
+	static vec2 prev_direction = new_direction;  
 
-	static vec2 prev_direction = direction;
-	direction = prev_direction * 0.9f + direction * 0.1f;
+	vec2 direction = prev_direction * 0.95f + new_direction * 0.05f;
 	direction = direction.Normalize();
 
+	float max_distance = 200.0f;
 	ship->dash_target = ship_position + direction * max_distance;
 
-	float force_multiplier = 1.0f;
-	vec2 force = direction * skidding_speed * force_multiplier;
+	vec2 force = direction * skidding_speed;
+	ship->SetVelocity(force);
 
+	prev_direction = direction;
+
+	float force_multiplier = 1.0f;
 	float randomAngle = util::random(180.0f, 200.0f);
 	float angleRadians = util::to_radians(randomAngle);
 	vec2 bubble_direction = { cos(angleRadians), sin(angleRadians) };
@@ -81,10 +82,6 @@ void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
 		ship_position.x + bubble_direction.x * (-30.f * (ship->GetFlipX() ? -1.f : 1.f)),
 		ship_position.y + bubble_direction.y * -30.f
 	};
-
-	ship->SetVelocity(force);
-
-	prev_direction = direction;
 
 	if (ship->fuel_bubble_timer->Remaining() == 0.0 && force_multiplier > 0.4) {
 		Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::FuelBubble>>()->Emit(1, target_position, { 0,0 }, -force * 0.4f, 1.5);

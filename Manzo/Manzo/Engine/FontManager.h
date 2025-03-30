@@ -8,6 +8,7 @@ enum FontType
 {
 	Bold,
 	Thin,
+	VeryThin,
 	Count
 };
 

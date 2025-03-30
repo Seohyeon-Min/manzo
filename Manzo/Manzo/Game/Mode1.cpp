@@ -78,8 +78,9 @@ void Mode1::Load() {
 	AddGSComponent(camera);
 
 	//// ship
-	ship_ptr = new Ship({ 0, 0 });
+	ship_ptr = new Ship({ 0,0 });
 	GetGSComponent<GameObjectManager>()->Add(ship_ptr);
+	camera->SetPosition(ship_ptr->GetPosition());
 
 	//// background
 	background = new Background();
@@ -124,6 +125,11 @@ void Mode1::Load() {
 	if (module->IsFirstSetted())
 	{
 		GetGSComponent<GameObjectManager>()->Add(new FirstModule(ship_ptr));
+	}
+
+	if (module->IsSecondSetted())
+	{
+		GetGSComponent<GameObjectManager>()->Add(new SecondModule(ship_ptr));
 	}
 }
 
@@ -217,11 +223,12 @@ void Mode1::Draw() {
 	//GetGSComponent<Map>()->AddDrawCall();
 	GetGSComponent<GameObjectManager>()->DrawAll();
 
-
 	// Draw Font
-	Engine::GetFontManager().PrintText(FontType::Bold, "E", {(float)BossFirstPos[0].first, (float)BossFirstPos[0].second}, 0.1f, {1.f,1.f,1.f}, 0.5f);
-	if(module->IsSecondSetted())
-		Engine::GetFontManager().PrintText(FontType::Bold, "v", ship_ptr->GetPosition(), 0.001f, {1.f,1.f,1.f}, 1.f);
+	Engine::GetFontManager().PrintText(FontType::Bold, "E", {750,500}, 0.1f, {1.f,1.f,1.f}, 0.5f);
+	if (module->IsSecondSetted())
+	{
+		Engine::GetFontManager().PrintText(FontType::VeryThin, std::to_string(static_cast<int>(ship_ptr->GetFuel())), ship_ptr->GetPosition(), 0.05f, { 1.f,1.f,1.f }, 1.f);
+	}
 }
 
 void Mode1::Unload() {
