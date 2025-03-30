@@ -56,7 +56,7 @@ private:
     bool soundPlaying = false;
     bool replay = false;
     bool playing = false;
-    const float maxDistance = 500.0f;
+    const float maxDistance = 900.0f;
     std::vector<std::pair<int, int>> BossFirstPos;
     vec3 bossPosition;
     vec3 previousPosition = { 0,0,0 };
