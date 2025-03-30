@@ -28,7 +28,7 @@ private:
     float dist_from_ship = 750.f;
 	const float sight_radius = 500;
 	const float sight_angle = 90;
-    vec2 init_pos = { 300,300 };
+    vec2 init_pos = {300,300 };
     vec2 direction;
     vec2 position;
     float speed = 700.f;

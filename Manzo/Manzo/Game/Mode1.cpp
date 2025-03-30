@@ -126,7 +126,7 @@ void Mode1::Load() {
 	GetGSComponent<GameObjectManager>()->Add(new FuelUI(ship_ptr));
 
 	// monster
-	//GetGSComponent<GameObjectManager>()->Add(new Monster(ship_ptr, {300,300}));
+	GetGSComponent<GameObjectManager>()->Add(new Monster(ship_ptr, {2200,-2000}));
 
 
 	// Skill
@@ -217,10 +217,9 @@ void Mode1::Update(double dt) {
         Isboss = true;
 		
     }
-	camera->SetPosition(boss_ptr->GetPosition());
 
 	if (Isboss) {
-
+		camera->SetPosition(boss_ptr->GetPosition());
 	}
 
 	//camera postion update

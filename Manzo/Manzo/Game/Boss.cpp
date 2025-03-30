@@ -254,7 +254,7 @@ void Boss::AttackCircle(vec2 pos, double radius, double elapsed_time)
 		if (distance > radius)
 		{
 			Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()
-				->GetGOComponent<Ship>()->DeclineFuel(0.4f);
+				->GetGOComponent<Ship>()->DeclineFuel(1.f);
 			std::cout << "Attack" << std::endl;
 
 

@@ -14,7 +14,7 @@ Monster::Monster(Ship* ship, vec2 pos):
     beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
     dash_timer = new RealTimeTimer(dash_time);
     AddGOComponent(dash_timer);
-    movement_range = { 900, {100,100} };
+    movement_range = { 900, {2200,-2000}  };
 }
 
 void Monster::Update(double dt)
