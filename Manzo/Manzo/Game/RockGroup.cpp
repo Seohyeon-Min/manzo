@@ -28,7 +28,7 @@ void RockGroup::Update(double dt)
 
 void RockGroup::Draw()
 {
-    GameObject::Draw();
+    GameObject::Draw(DrawLayer::DrawLast);
 }
 
 Math::rect RockGroup::FindBoundary() {

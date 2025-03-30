@@ -19,7 +19,7 @@
 
 Box::Box(vec2 position) : GameObject(position) 
 {
-    AddGOComponent(new Sprite("assets/images/box.spt", this));
+    AddGOComponent(new Sprite("assets/images/can.spt", this));
 }
 
 bool Box::CanCollideWith(GameObjectTypes other_object) {

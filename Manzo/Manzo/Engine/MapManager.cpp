@@ -193,7 +193,7 @@ void Map::ParseSVG(const std::string& filename) {
                 if (std::regex_search(currentTag, match, cyRegex)) {
                     y = std::stof(match[1].str());
                     
-                    //std::cout << "Circle position || cx: " << circle_position.x << ", cy: " << circle_position.y << std::endl;
+                    std::cout << "Circle position || cx: " << circle_position.x << ", cy: " << circle_position.y << std::endl;
                 }
                 else {
                     //std::cerr << "Error: cy not found for circle with cx: " << circle_position.x << std::endl;
@@ -205,6 +205,8 @@ void Map::ParseSVG(const std::string& filename) {
                 }
                 vec2 vec = { x, -y };
                 circle_position = vec;
+
+                
             }
 
             //poly position
@@ -317,11 +319,10 @@ void Map::ParseSVG(const std::string& filename) {
 
             //std::cout << "vertex count : " << poly.vertexCount << std::endl;
             //std::cout << "poly count : " << poly.polycount << std::endl;
-            
-            if (circle_position.x != 0.f && circle_position.y != 0.f && circleIndex != "") {
+            if (circle_position.x != 0.f && circle_position.y != 0.f) {
                 Box* box = new Box(circle_position);
                 Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(box);
-                //std::cout << "New Circle! " << "\n";
+                std::cout << "New Circle! " << "\n";
 
                 //for (auto& group : rock_groups) {
                 //    if (group->GetIndex() == circleIndex) {//if index is equal
@@ -330,6 +331,7 @@ void Map::ParseSVG(const std::string& filename) {
                 //    }
                 //}
             }
+            
             
             // Reset transforms for the next group
 
