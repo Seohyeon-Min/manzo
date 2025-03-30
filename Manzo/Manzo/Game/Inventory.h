@@ -20,8 +20,8 @@ public:
 	bool Open();
 
 	int GetMoney() { return money; }
-	int GetX1Pos() { return m1x; }
-	int GetX2Pos() { return m2x; }
+	float GetX1Pos() { return m1x; }
+	float GetX2Pos() { return m2x; }
 
 	std::map<int, int> fishCollection;
 
@@ -35,7 +35,7 @@ private:
 	int todays_fish_index = 0;
 	int todays_price = 0;
 	int how_much_sold = 0;
-	int m1x, m2x;
+	float m1x, m2x;
 
 	std::string todays_fish_icon;
 

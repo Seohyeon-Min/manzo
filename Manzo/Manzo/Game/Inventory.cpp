@@ -136,7 +136,7 @@ void Inven::State_Module::Update(GameObject* object, double dt)
 	if (Engine::GetIconManager().IsCollidingWith("module", "module1"))
 	{
 		inven->module_ptr->SetFirstModule(true);
-		inven->m1x = (int)Engine::GetIconManager().GetIconPosition("module", "module1").x;
+		inven->m1x = Engine::GetIconManager().GetIconPosition("module", "module1").x;
 	}
 	else
 	{
@@ -147,7 +147,7 @@ void Inven::State_Module::Update(GameObject* object, double dt)
 	if (Engine::GetIconManager().IsCollidingWith("module", "module2"))
 	{
 		inven->module_ptr->SetSecondModule(true);
-		inven->m2x = (int)Engine::GetIconManager().GetIconPosition("module", "module2").x;
+		inven->m2x = Engine::GetIconManager().GetIconPosition("module", "module2").x;
 	}
 	else
 	{

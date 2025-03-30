@@ -50,13 +50,13 @@ public:
         currentLogLevel = level;
     }
     void LoadSaveFile(std::map<int,int> fiShCollection);
-    void WriteSaveFile(std::map<int, int> fishCaptureCount, int money, bool module1, int m1x, bool module2, int m2x);
+    void WriteSaveFile(std::map<int, int> fishCaptureCount, int money, bool module1, float m1x, bool module2, float m2x);
 
     int GetMoney() { return money; }
     bool GetModule1() { return module1; }
     bool GetModule2() { return module2; }
-    int GetModule1XPos() { return module1Pos; }
-    int GetModule2XPos() { return module2Pos; }
+    float GetModule1XPos() { return module1Pos; }
+    float GetModule2XPos() { return module2Pos; }
 
 private:
     const std::string word[4]{ "Verbose","Debug","Event","Error" };
@@ -69,5 +69,5 @@ private:
 
     int money;
     bool module1, module2;
-    int module1Pos, module2Pos;
+    float module1Pos, module2Pos;
 };
