@@ -1,90 +1,41 @@
+* Team : 상린 (Sangrin)
 
-* Name of game : 만조
+* Game : 만조 (Manzo)
 
-* Version : 마일2
+* Version : Spring 2025 Play Test
 
-
-* 조작법
-  + MOUSE_BUTTON_LEFT : 박자에맞춰서 누르면 움직임. 싱크 좀 이상하니까 여러번 누르셈
-  + Q : Load next game state : 집감, 해수면에서만 갈 수 있으니까 위로 올라가서 누르셈
-  + W : 재시작
-  + E : 보스 생성
-  + R : 보스전 시작 (꾹누르셈)
--------------------------------------집에서만 쓸 수 있는 키----------------------------------------
-  + A : 스킬1번 등록 준비
-  + S : 스킬2번 등록 준비
-  + D : 스킬3번 등록 준비
-  + Z : 현재 스킬 출력함
-  + 1번키 : 스킬 '어망(NET)' 을 등록함 
-  + 2번키 : 스킬 'Light' 을 등록함, 미개발
-  + 3번키 : 스킬 '' 을 등록함, 미개발
-  + M : Game Clear
-  + N : Game Over
-
-* Gameplay Instruction
- 박자에맞춰 누르셈
-
-* Expected final goal/result/boss
- 아직 미완임. 플테용 임시 목표는 물고기 20마리 잡는거임. 돌이랑 많이 부딪히면 죽음
-
-
-* Developers, team, authors
+* Team Members
   + Seohyun Min : Producer
   + Won Kim : Art Leader
   + Seokhwa Hong : QA Leader
   + Gyuwon Na : Technical Leader
   + Jiyeop Kang : Level Designer
 
-* Where to find an updated version of the code, such as a website or GitHub repo : https://github.com/Rudy-Castan-DigiPen-Teaching/gam-200-final-project-sangrin.git
+* 게임 시작 방법
+- Manzo 폴더 압축해제
+- Manzo-Release-Manzo.exe 실행
 
-* Small description of game
-DEEP DIVE:​ TO THE SEA FOLLOWING UNIDENTIFIED MESSAGE. ​
-WITH THE RHYTHM GUIDED BY THE SEA​
+* 게임 플레이 안내
+ 맵을 탐험하면서 곳곳에 있는 물고기와 보물상자를 수집하세요.
+ 바닷속에 살고있는 몬스터를 피하고, 더 아래로 내려가 보스를 발견하세요.
+ 보스의 공격을 피해 최대한 오래 버티세요. 보스나 몬스터를 공격할순 없습니다.
 
-* License : All content © 2024 DigiPen(USA) Corporation, all rights reserved.
+* 조작법
+  + 마우스 좌클릭 : 박자에 맞춰서 누르면 움직임. 연타 가능
+  + Q : Load next game state : 집감, 해수면에서만 갈 수 있으니까 위로 올라가서 누르셈
+  + W : 재시작
+  + E : 보스 생성 : 특정 위치에서만 동작함.
+  + R : 보스전 시작 : (꾹 누르기)
+-------------------------------------집에서만 쓸 수 있는 키----------------------------------------
+  + O : 물고기 전부 팔기
+  + F1 : decide to sell today's fish (-1 -10 +1 +10)
 
-<Before Starting>
-* Links and short installation instructions for necessary programs/IDE’s/libraries
- Before building our .sln file, if you’ve never installed Visual Studio on your computer, please check here (https://visualstudio.microsoft.com/ko/downloads/). Click the download button for community. However, since we have all the necessary .dll files, .lib files, and assets in the assets or external folder, you won’t need to download any additional programs to play the game.
 
-<Installation Instructions>
-- Extract `Manzo` folder and double click.
-- Double click `Manzo` folder.
-- Double click `Manzo.sln` file.
+* 몬스터
+ 일정 거리 가까이 가면 플레이어를 향해 돌진. 잘 피해서 탐험을 이어가세요.
 
-(Release Mode)
-- Check configuration to be set `Release` and `x64`.
 
-(Debug Mode)
-- Check configuration to be set `Debug` and `x64`.
-
-<Run/Build Code>
-(Debug Mode)
-- Click `Build - Build Solution` or type keyboard `Ctrl + Shift + B`.
-- After Build succeeded, check `Manzo/Manzo/x64/Debug` folder.
-- Paste `assets' folders into this path if it doesn't included.
-- Double click `Manzo.exe` file.
-
-(Release Mode)
-- Click `Build - Build Solution` or type keyboard `Ctrl + Shift + B`.
-- After Build succeeded, check `Manzo/Manzo/x64/Release` folder.
-- Paste `assets' folder into this path if it doesn't included.
-- Double click `Manzo.exe` file.
-
-You can run on directly at solution file type keyboard 'Ctrl + F5' either mode.
-
-Play:
-* Any expected windows/visuals/audio
- Please check if the background images for Mode 1 and Mode 2, the basic music (metronome audio sample), the ship, the fish (in Mode 1 only), and the ImGui window are all displaying.
-
-* Instruction of Imgui Window
-  + FPS : fps of our game
-  + Delta Time : Delta time depends on engine's chrono time 
-  + Device, Camera, World Coordinate for mouse points
-  + Is On Beat : If this section set on true, then if you click the mouse left button when this section is set true, you can move
-
-<FAQ/Common Mistakes>
- There is an issue when attempting to stop the program. If you run the .exe file, you should exit using the console window. If you're running it from a solution file, use either the console window or the stop button to close the program.
-
-<Feedback>
-Discord - handal1842 (Seohyun Min)
+* 보스전
+ 맵을 탐험하다보면 신호 소리가 들리는 곳을 발견할 것입니다.
+ E를 눌러 보스를 소환한 뒤, R을 꾹 눌러 보스전을 시작하세요.
+ 보스가 발사하는 탄막을 피해서 최대한 오랫동안 생존하세요.
