@@ -8,7 +8,7 @@
 class Icon : public GameObject
 {
 public:
-	Icon(const std::string& alias, const std::filesystem::path& filename, vec2 position, float scale, bool drag, bool change_pos);
+	Icon(const std::string& alias, const std::filesystem::path& filename, vec2 position, float scale, bool drag, bool change_pos, bool interactiveWithMouse);
 	~Icon();
 	GameObjectTypes Type() override { return GameObjectTypes::Icon; }
 	std::string TypeName() override { return "Icon"; }
@@ -29,6 +29,7 @@ public:
 	void SetSelected(bool select) { selected = select; }
 
 private:
+	GLTexture* texture;
 	std::string alias;
 	vec2 position;
 	float scale;
@@ -36,4 +37,5 @@ private:
 	bool can_drag = false;
 	bool resolve_collision = false;
 	bool can_change_pos = false;
+	bool interaction = false;
 };

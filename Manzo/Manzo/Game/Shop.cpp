@@ -61,6 +61,7 @@ void Shop::Update(double dt)
 	//	}
 
 	//}
+	Engine::GetIconManager().AddIcon("go_shop", {100,0}, 1.0f, false, false, true);
 }
 
 void Shop::Buy(Skillsys::Skill_list skill,int input)

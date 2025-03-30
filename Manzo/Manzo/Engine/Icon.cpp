@@ -3,7 +3,7 @@
 #include "../Game/Dragging.h"
 #include "../Game/Mouse.h"
 
-Icon::Icon(const std::string& alias, const std::filesystem::path& filename, vec2 position, float scale, bool drag, bool change_pos) : GameObject(position), alias(alias), position(position), scale(scale), can_drag(drag), can_change_pos(change_pos)
+Icon::Icon(const std::string& alias, const std::filesystem::path& filename, vec2 position, float scale, bool drag, bool change_pos, bool interactiveWithMouse) : GameObject(position), alias(alias), position(position), scale(scale), can_drag(drag), can_change_pos(change_pos), interaction(interactiveWithMouse)
 {
 	AddGOComponent(new Sprite(filename, this));
 	SetScale({ scale,scale });
@@ -24,7 +24,24 @@ void Icon::Update(double dt)
 
 void Icon::Draw(DrawLayer drawlayer)
 {
-	GameObject::Draw();
+	DrawCall draw_call = {
+		GetGOComponent<Sprite>()->GetTexture(),                       // Texture to draw
+		&GetMatrix(),                          // Transformation matrix
+		Engine::GetShaderManager().GetShader("icon"), // Shader to use
+	};
+
+	draw_call.settings.do_blending = true;
+	draw_call.SetUniforms = [this](const GLShader* shader) {
+		shader->SendUniform("uTex2d", 0);
+		shader->SendUniform("textureSize",
+			(float)GetGOComponent<Sprite>()->GetFrameSize().x,
+			(float)GetGOComponent<Sprite>()->GetFrameSize().y);
+		shader->SendUniform("canCollide", interaction);
+		shader->SendUniform("isColliding", this->IsCollidingWith({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY }));
+	};
+	draw_call.sorting_layer = DrawLayer::Draw;
+
+	Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call));
 }
 
 bool Icon::CanCollideWith(GameObjectTypes other_object)

@@ -265,7 +265,7 @@ void Mode1::Draw() {
 
 
 	// Draw Font
-	//Engine::GetFontManager().PrintText(FontType::Bold, "E", { 0.f,0.f }, 0.2f, { 1.f,1.f,1.f }, 0.5f);
+	Engine::GetFontManager().PrintText(FontType::Bold, "E", {(float)BossFirstPos[0].first, (float)BossFirstPos[0].second}, 0.1f, {1.f,1.f,1.f}, 0.5f);
 	if(module->IsSecondSetted())
 		Engine::GetFontManager().PrintText(FontType::Bold, "v", ship_ptr->GetPosition(), 0.001f, {1.f,1.f,1.f}, 1.f);
 }

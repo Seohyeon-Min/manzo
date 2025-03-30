@@ -151,15 +151,15 @@ void Inven::State_Module::Enter(GameObject* object)
 	{
 		Engine::GetIconManager().AddIcon("module1", { -130,100 }, 0.7f, true, true);
 	}
-	else Engine::GetIconManager().AddIcon("module1", { -130,-100 }, 0.7f, true, true);
+	else Engine::GetIconManager().AddIcon("module1", { -130,-100 }, 0.7f, true, true, true);
 
 	if (inven->module_ptr->IsSecondSetted())
 	{
 		Engine::GetIconManager().AddIcon("module2", { 0,100 }, 0.7f, true, true);
 	}
-	else Engine::GetIconManager().AddIcon("module2", { 0,-100 }, 0.7f, true, true);
+	else Engine::GetIconManager().AddIcon("module2", { 0,-100 }, 0.7f, true, true, true);
 
-	Engine::GetIconManager().AddIcon("module3", { 130,-100 }, 0.7f, true, true);
+	Engine::GetIconManager().AddIcon("module3", { 130,-100 }, 0.7f, true, true, true);
 }
 
 void Inven::State_Module::Update(GameObject* object, double dt)
@@ -205,11 +205,11 @@ void Inven::State_FC::Enter(GameObject* object)
 		Engine::GetIconManager().AddIcon(file_name, { 100,float(position += 80) }, 1.0f, false);
 	}
 
-	Engine::GetIconManager().AddIcon("plus1", { 80,180 }, 0.2f, false);
-	Engine::GetIconManager().AddIcon("plus10", { 50,180 }, 0.2f, false);
+	Engine::GetIconManager().AddIcon("plus1", { 80,180 }, 0.2f, false, false, true);
+	Engine::GetIconManager().AddIcon("plus10", { 50,180 }, 0.2f, false, false, true);
 
-	Engine::GetIconManager().AddIcon("minus1", { -80,180 }, 0.2f, false);
-	Engine::GetIconManager().AddIcon("minus10", { -50,180 }, 0.2f, false);
+	Engine::GetIconManager().AddIcon("minus1", { -80,180 }, 0.2f, false, false, true);
+	Engine::GetIconManager().AddIcon("minus10", { -50,180 }, 0.2f, false, false, true);
 }
 
 void Inven::State_FC::Update(GameObject* object, double dt)

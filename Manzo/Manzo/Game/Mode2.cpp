@@ -55,6 +55,12 @@ void Mode2::Load() {
     AddGSComponent(background);
     background->Add("assets/images/background/house.png", 0.25f);
 
+    // Icon
+    Engine::GetIconManager().LoadIconList();
+
+    shop_ptr = new Shop();
+    GetGSComponent<GameObjectManager>()->Add(shop_ptr);
+
     // Dialog
     dialog_ptr = new Dialog({0,0});
     GetGSComponent<GameObjectManager>()->Add(dialog_ptr);
@@ -67,8 +73,8 @@ void Mode2::Load() {
     inven_ptr = new Inven({0,0});
     GetGSComponent<GameObjectManager>()->Add(inven_ptr);
  
-    // Icon
-    Engine::GetIconManager().LoadIconList();
+
+    Engine::GetShaderManager().LoadShader("icon", "assets/shaders/default.vert", "assets/shaders/edge_detection.frag");
 
     // skill
     if (!Engine::Instance().GetTmpPtr())

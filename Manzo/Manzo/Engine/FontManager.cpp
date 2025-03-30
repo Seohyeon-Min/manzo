@@ -20,7 +20,11 @@ FontManager::FontManager() {
 }
 
 FontManager::~FontManager() {
-	FT_Done_FreeType(library); // Free FreeType resources
+	for (auto& pair : font_list) {
+		delete pair.second;  // Font* 포인터 메모리 해제
+	}
+
+	FT_Done_FreeType(library);  // FreeType 자원 해제
 }
 
 void FontManager::AddFontType(const char* file_path)
@@ -31,16 +35,16 @@ void FontManager::AddFontType(const char* file_path)
 	font_list[(FontType)num_font++] = std::move(font);
 }
 
-std::unique_ptr<Font> FontManager::loadFont(const std::string& filename, float worldSize, bool hinting)
+Font* FontManager::loadFont(const std::string& filename, float worldSize, bool hinting)
 {
 	std::string error;
 	FT_Face face = Font::loadFace(library, filename, error);
 	if (error != "") {
 		std::cerr << "[font] failed to load " << filename << ": " << error << std::endl;
-		return std::unique_ptr<Font>{};
+		return nullptr;
 	}
 
-	return std::make_unique<Font>(face, worldSize, hinting);
+	return new Font(face, worldSize, hinting);
 }
 
 void FontManager::PrintText(FontType font, std::string txt, vec2 position, float scale, vec3 color, float alpha, bool in_world)
