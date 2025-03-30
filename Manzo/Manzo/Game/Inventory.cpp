@@ -285,11 +285,6 @@ void Inven::State_FC::Update(GameObject* object, double dt)
 		inven->money += (inven->todays_price * inven->how_much_sold);
 		inven->fishCollection[inven->todays_fish_index] -= inven->how_much_sold;
 	}
-
-	if (inven->fishCollection[inven->todays_fish_index] == 0)
-	{
-		Engine::GetIconManager().RemoveIcon("fish" + std::to_string(inven->todays_fish_index + 1));
-	}
 }
 
 void Inven::State_FC::CheckExit(GameObject* object)
