@@ -25,7 +25,7 @@ class RockGroup;
 class Rock : public GameObject
 {
 public:
-	Rock(Polygon poly);
+	Rock(Polygon original_poly, Polygon modified_poly, vec2 position, double rotation, vec2 scale);
 	~Rock() {};
 	GameObjectTypes Type() override { return GameObjectTypes::Rock; }
 	std::string TypeName() override { return "Rock"; }
@@ -36,7 +36,8 @@ public:
 	void SetCenter();
 
 	//polygon
-	const Polygon& GetPolygon() { return poly; }
+	const Polygon& GetOriginalPoly() { return original_poly; }
+	const Polygon& GetModifiedPoly() { return modified_poly; }
 
 	//group
 	void SetRockGroup(RockGroup* rockgroup) { this->rockgroup = rockgroup; }
@@ -48,7 +49,8 @@ public:
 private:
 	std::string index;
 	RockGroup* rockgroup;
-	Polygon poly;
+	Polygon original_poly;
+	Polygon modified_poly;
 	bool loaded = false;
 };
 

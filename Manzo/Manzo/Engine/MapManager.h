@@ -44,7 +44,6 @@ public:
 	}
 	void ParseSVG(const std::string& filename);
 	std::vector<vec2> parsePathData(const std::string& pathData);	// path parsing
-	void MakeMovingRockGroups(MovingRock* moving_rock, Polygon poly);
 	void LoadMapInBoundary(const Math::rect& camera_boundary);
 	bool IsOverlapping(const Math::rect& a, const Math::rect& b);
 
@@ -54,7 +53,10 @@ public:
 
 private:
 	char currentCommand = '\0';
-	float margin = 100.0f;
+	float margin = 0.f;
+
+	std::vector<Polygon> original_polygons;
+	std::vector<Polygon> modified_polygons;
 	std::vector<Rock*> rocks;
 	std::vector<RockGroup*> rock_groups;
 	vec2 circle_position{ 0,0 };

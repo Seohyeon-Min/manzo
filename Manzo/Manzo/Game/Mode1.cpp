@@ -105,7 +105,7 @@ void Mode1::Load() {
     //GetGSComponent<MapManager>()->AddMapFile("assets/maps/TemporaryMap.svg");
     
 	//Ear Clipping Test
-	GetGSComponent<MapManager>()->AddMapFile("assets/maps/Test7.svg");
+	GetGSComponent<MapManager>()->AddMapFile("assets/maps/new_map.svg");
 	GetGSComponent<MapManager>()->LoadFirstMap();
 
 	//Boss
@@ -126,7 +126,7 @@ void Mode1::Load() {
 	GetGSComponent<GameObjectManager>()->Add(new FuelUI(ship_ptr));
 
 	// monster
-	GetGSComponent<GameObjectManager>()->Add(new Monster(ship_ptr, {300,300}));
+	//GetGSComponent<GameObjectManager>()->Add(new Monster(ship_ptr, {300,300}));
 
 
 	// Skill
@@ -220,10 +220,10 @@ void Mode1::Update(double dt) {
         Isboss = true;
     }
 
-	if (Isboss,boss_ptr != nullptr) {
+	//if (Isboss,boss_ptr != nullptr) {
 
-		//camera->SetPosition(boss_ptr->GetPosition());
-	}
+	//	//camera->SetPosition(boss_ptr->GetPosition());
+	//}
 
 	//camera postion update
 	camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());

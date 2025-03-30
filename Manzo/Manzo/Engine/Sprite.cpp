@@ -130,7 +130,7 @@ ivec2 Sprite::GetHotSpot(int index)
 {
 	if (index < 0 || index >= hotspots.size()) {
 		//Engine::GetLogger().LogError("Error: wrong hotspot index.");
-		return ivec2({0,0});
+		return ivec2({ frame_size.x / 2, frame_size .y / 2});
 	}
 	return ivec2(hotspots[index]);
 }

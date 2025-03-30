@@ -3,6 +3,9 @@
 #include "MapManager.h"
 #include <iostream>
 
+
+#define GREEN color3(0,255,0)
+
 Cam::Cam()
 {
 	caminfo.camera_view.SetFramebufferSize((int)Engine::window_width, (int)Engine::window_height);
