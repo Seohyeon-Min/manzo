@@ -20,6 +20,7 @@ void Title::Load()
 	Engine::GetShaderManager().LoadShader("title_ripple", "assets/shaders/post_default.vert", "assets/shaders/title_water_ripple.frag");
 	Engine::GetShaderManager().LoadShader("title_gradation", "assets/shaders/post_default.vert", "assets/shaders/title_color_gradation.frag");
 	Engine::GetShaderManager().LoadShader("image_distortion", "assets/shaders/default.vert", "assets/shaders/image_distortion.frag");
+	Engine::GetShaderManager().LoadShader("post_water_wave", "assets/shaders/post_default.vert", "assets/shaders/post_water_wave.frag");
 
 
 	AddGSComponent(new GameObjectManager());
@@ -55,7 +56,9 @@ void Title::Update(double dt)
 	UpdateGSComponents(dt);
 	GetGSComponent<GameObjectManager>()->UpdateAll(dt);
 	GetGSComponent<Cam>()->Update(dt, {}, false);
-	if (Engine::GetInput().KeyJustPressed(Input::Keys::Q)) {
+
+	// Move to next scean
+	if (Engine::GetInput().MouseButtonJustReleased((SDL_BUTTON_LEFT))) {
 		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
 	}
 }
