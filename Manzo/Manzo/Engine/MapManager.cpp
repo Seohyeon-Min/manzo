@@ -453,8 +453,6 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
                         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rock);
                     }
                 }
-                
-                    
 
                 // Add RockGroup in GameState
                 if (!rockgroup->IsActivated()) {
