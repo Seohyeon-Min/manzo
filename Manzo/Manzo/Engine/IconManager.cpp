@@ -93,12 +93,12 @@ bool IconManager::IsCollidingWith(std::string obj1, std::string obj2)
 		{
 			if (icon1->IsCollidingWith(icon2))
 			{
-				return true; 
+				return true;
 			}
 		}
 	}
 
-	return false; 
+	return false;
 }
 
 void IconManager::RemoveIcon(std::string alias)
@@ -112,11 +112,59 @@ void IconManager::RemoveIcon(std::string alias)
 	}
 }
 
-Icon* IconManager::GetCollidingIcon(Icon& icon) 
+void IconManager::SetIconPosition(std::string alias, vec2 newPosition)
 {
-	for (Icon* other : icons) 
+	Icon* targetIcon = nullptr;
+	for (Icon* icon : icons)
 	{
-		if (other != &icon && icon.IsCollidingWith(other)) 
+		if (icon->GetAlias() == alias)
+		{
+			icon = targetIcon;
+		}
+	}
+
+	if (targetIcon)
+	{
+		targetIcon->SetPosition(newPosition);
+	}
+}
+
+vec2 IconManager::GetIconPosition(std::string obj1, std::string obj2)
+{
+	std::vector<Icon*> icons1;
+	std::vector<Icon*> icons2;
+
+	for (auto icon : icons)
+	{
+		if (icon->GetAlias() == obj1)
+		{
+			icons1.push_back(icon);
+		}
+		else if (icon->GetAlias() == obj2)
+		{
+			icons2.push_back(icon);
+		}
+	}
+
+	for (auto icon1 : icons1)
+	{
+		for (auto icon2 : icons2)
+		{
+			if (icon1->IsCollidingWith(icon2))
+			{
+				return icon1->GetPosition();
+			}
+		}
+	}
+
+	return { 0,0 };
+}
+
+Icon* IconManager::GetCollidingIcon(Icon& icon)
+{
+	for (Icon* other : icons)
+	{
+		if (other != &icon && icon.IsCollidingWith(other))
 		{
 			return other;
 		}

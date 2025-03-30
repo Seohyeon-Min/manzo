@@ -60,23 +60,25 @@ void Logger::LoadSaveFile(std::map<int,int> fiShCollection)
             ss_money >> money;
         }
         else if (line.find("Module1:") != std::string::npos) {
-            int module1Value;
+            int module1Value, module1x;
             std::istringstream ss_module(line.substr(9));
-            ss_module >> module1Value;
+            ss_module >> module1Value >> module1x;
 
             if (module1Value == 1)
             {
                 module1 = true;
+                module1Pos = module1x;
             }
         }
         else if (line.find("Module2:") != std::string::npos) {
-            int module2Value;
+            int module2Value, module2x;
             std::istringstream ss_module(line.substr(9));
-            ss_module >> module2Value;
+            ss_module >> module2Value >> module2x;
 
             if (module2Value == 1)
             {
                 module2 = true;
+                module2Pos = module2x;
             }
         }
     }
@@ -84,7 +86,7 @@ void Logger::LoadSaveFile(std::map<int,int> fiShCollection)
     file.close();
 }
 
-void Logger::WriteSaveFile(std::map<int, int> fishCaptureCount, int money, bool module1, bool module2)
+void Logger::WriteSaveFile(std::map<int, int> fishCaptureCount, int money, bool module1, int m1x, bool module2, int m2x)
 {
     std::ofstream saveFile("assets/scenes/save_data.txt", std::ios::trunc);
 
@@ -95,8 +97,8 @@ void Logger::WriteSaveFile(std::map<int, int> fishCaptureCount, int money, bool 
         }
 
         saveFile << "Money: " << std::to_string(money) << "\n";
-        saveFile << "Module1: " << std::to_string(module1) << "\n";
-        saveFile << "Module2: " << std::to_string(module2) << "\n";
+        saveFile << "Module1: " << std::to_string(module1) << " " << std::to_string((module1 == true) ? m1x : -130) << "\n";
+        saveFile << "Module2: " << std::to_string(module2) << " " << std::to_string((module2 == true) ? m2x : 0) << "\n";
         saveFile.close();
     }
 }

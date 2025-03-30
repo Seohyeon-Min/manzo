@@ -126,7 +126,7 @@ void Mode2::Draw() {
 }
 
 void Mode2::Unload() {
-    Engine::GetLogger().WriteSaveFile(inven_ptr->fishCollection, inven_ptr->GetMoney(), module_ptr->IsFirstSetted(), module_ptr->IsSecondSetted());
+    Engine::GetLogger().WriteSaveFile(inven_ptr->fishCollection, inven_ptr->GetMoney(), module_ptr->IsFirstSetted(), inven_ptr->GetX1Pos(), module_ptr->IsSecondSetted(), inven_ptr->GetX2Pos());
 
     GetGSComponent<GameObjectManager>()->Unload();
     GetGSComponent<Background>()->Unload();

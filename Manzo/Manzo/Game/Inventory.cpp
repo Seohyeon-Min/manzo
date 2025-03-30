@@ -15,6 +15,8 @@ Inven::Inven(vec2 position) : GameObject(position), page(0), dre_todayFish(rd())
 	module_ptr->SetFirstModule(Engine::GetLogger().GetModule1());
 	module_ptr->SetSecondModule(Engine::GetLogger().GetModule2());
 	money = Engine::GetLogger().GetMoney();
+	m1x = Engine::GetLogger().GetModule1XPos();
+	m2x = Engine::GetLogger().GetModule2XPos();
 }
 
 void Inven::Update(double dt)
@@ -80,52 +82,6 @@ bool Inven::Open()
 	return false;
 }
 
-//void Inven::ReadSaveFile(const std::string& filename)
-//{
-//	std::ifstream file(filename);
-//	if (!file.is_open()) {
-//		std::cerr << "Failed to open file: " << filename << std::endl;
-//		return;
-//	}
-//
-//	fishCollection.clear();
-//	int fishType, count;
-//	std::string line;
-//
-//	while (std::getline(file, line)) {
-//		std::istringstream ss(line);
-//		if (ss >> fishType >> count) {
-//			fishCollection[fishType - 1] = count;
-//		}
-//		else if (line.find("Money:") != std::string::npos) {
-//			std::istringstream ss_money(line.substr(7));
-//			ss_money >> money;
-//		}
-//		else if (line.find("Module1:") != std::string::npos) {
-//			int module1Value;
-//			std::istringstream ss_module(line.substr(9));
-//			ss_module >> module1Value;
-//
-//			if (module1Value == 1 && module_ptr)
-//			{
-//				module_ptr->SetFirstModule(true);
-//			}
-//		}
-//		else if (line.find("Module2:") != std::string::npos) {
-//			int module2Value;
-//			std::istringstream ss_module(line.substr(9));
-//			ss_module >> module2Value;
-//
-//			if (module2Value == 1 && module_ptr)
-//			{
-//				module_ptr->SetSecondModule(true);
-//			}
-//		}
-//	}
-//
-//	file.close();
-//}
-
 void Inven::State_None::Enter(GameObject* object)
 {
 	Inven* inven = static_cast<Inven*>(object);
@@ -153,23 +109,23 @@ void Inven::State_Module::Enter(GameObject* object)
 	inven->GetGOComponent<Sprite>()->PlayAnimation(static_cast<int>(Animations::Module));
 	inven->page = 1;
 
-	Engine::GetIconManager().AddIcon("module", { -130,100 }, 0.7f, false);
-	Engine::GetIconManager().AddIcon("module", { 0,100 }, 0.7f, false);
-	Engine::GetIconManager().AddIcon("module", { 130,100 }, 0.7f, false);
+	Engine::GetIconManager().AddIcon("module", inven->savePos[0], 0.7f, false);
+	Engine::GetIconManager().AddIcon("module", inven->savePos[1], 0.7f, false);
+	//Engine::GetIconManager().AddIcon("module", inven->savePos[2], 0.7f, false);
 
-	if (inven->module_ptr->IsFirstSetted())
-	{
-		Engine::GetIconManager().AddIcon("module1", { -130,100 }, 0.7f, true, true);
-	}
-	else Engine::GetIconManager().AddIcon("module1", { -130,-100 }, 0.7f, true, true, true);
+	Engine::GetIconManager().AddIcon(
+		"module1",
+		(inven->module_ptr->IsFirstSetted()) ? vec2((float)inven->m1x, 100) : vec2(-130, -100),
+		0.7f, true, true, true
+	);
 
-	if (inven->module_ptr->IsSecondSetted())
-	{
-		Engine::GetIconManager().AddIcon("module2", { 0,100 }, 0.7f, true, true);
-	}
-	else Engine::GetIconManager().AddIcon("module2", { 0,-100 }, 0.7f, true, true, true);
+	Engine::GetIconManager().AddIcon(
+		"module2",
+		(inven->module_ptr->IsSecondSetted()) ? vec2((float)inven->m2x, 100) : vec2(0, -100),
+		0.7f, true, true, true
+	);
 
-	Engine::GetIconManager().AddIcon("module3", { 130,-100 }, 0.7f, true, true, true);
+	//Engine::GetIconManager().AddIcon("module3", { 130,-100 }, 0.7f, true, true, true);
 }
 
 void Inven::State_Module::Update(GameObject* object, double dt)
@@ -180,11 +136,23 @@ void Inven::State_Module::Update(GameObject* object, double dt)
 	if (Engine::GetIconManager().IsCollidingWith("module", "module1"))
 	{
 		inven->module_ptr->SetFirstModule(true);
+		inven->m1x = (int)Engine::GetIconManager().GetIconPosition("module", "module1").x;
+	}
+	else
+	{
+		inven->module_ptr->SetFirstModule(false);
+		inven->m1x = -130;
 	}
 
 	if (Engine::GetIconManager().IsCollidingWith("module", "module2"))
 	{
 		inven->module_ptr->SetSecondModule(true);
+		inven->m2x = (int)Engine::GetIconManager().GetIconPosition("module", "module2").x;
+	}
+	else
+	{
+		inven->module_ptr->SetSecondModule(false);
+		inven->m2x = 0;
 	}
 }
 
