@@ -256,12 +256,16 @@ void Render::ApplyPostProcessing(bool is_title)
             case 0: // Bloom
                 shader = Engine::GetShaderManager().GetShader("post_bloom");
                 break;
+            case 1: // Wave
+                shader = Engine::GetShaderManager().GetShader("post_water_wave");
+                break;
             }
             shader->Use();
 
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer[!horizontal].GetColorAttachment());
 
+            double currentTime = Engine::GetAudioManager().GetCurrentMusicTime("title_bgm");
 
             switch (i) {
             case 0: // Bloom
@@ -270,6 +274,12 @@ void Render::ApplyPostProcessing(bool is_title)
                 shader->SendUniform("uBlurDirection", 1.0f, 1.0f);
                 shader->SendUniform("uResolution", static_cast<float>(Engine::window_width));
                 shader->SendUniform("uBloomIntensity", 0.1f);
+                break;
+            case 1: // wave
+                shader->SendUniform("iResolution", Engine::window_width, Engine::window_height);
+                shader->SendUniform("iTime", float(currentTime));
+                shader->SendUniform("uSceneTexture", 0);
+                shader->SendUniform("iMouse", Engine::GetInput().GetMousePos().mouseWorldSpaceX, Engine::GetInput().GetMousePos().mouseWorldSpaceY);
                 break;
             }
 
