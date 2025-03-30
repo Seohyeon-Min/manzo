@@ -35,13 +35,15 @@ void Title::Load()
 	GetGSComponent<Cam>()->SetPosition({ 0, 0 });
 
 	// audio
-	Engine::GetAudioManager().LoadMusic("assets/audios/100BPM.mp3", "title_bgm", false);
+	Engine::GetAudioManager().LoadMusic("assets/audios/title_bgm.wav", "title_bgm", false);
 
 	// mouse
 	GetGSComponent<GameObjectManager>()->Add(new Mouse);
 
 	// Text
 	GetGSComponent<GameObjectManager>()->Add(new TitleText({}));
+
+	alpha = start_alpha;
 }
 
 void Title::Update(double dt)
@@ -68,7 +70,13 @@ void Title::Draw()
 	//GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
 	GetGSComponent<GameObjectManager>()->DrawAll();
 
-	Engine::GetFontManager().PrintText(FontType::Thin, "CLICK TO START", { -72.f,-140.f }, 0.07f, { 1.f,1.f,1.f }, 0.7f);
+
+	alpha += add_val;
+	if (alpha >= 0.9f)
+		add_val *= -1.f;
+	if (alpha <= start_alpha)
+		add_val *= -1.f;
+	Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, "CLICK TO START", { -72.f,-130.f }, 0.098f, { 1.f,1.f,1.f }, alpha);
 }
 
 void Title::FixedUpdate(double dt)

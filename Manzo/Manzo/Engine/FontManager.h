@@ -8,6 +8,8 @@ enum FontType
 {
 	Bold,
 	Thin,
+	AlumniSans_Medium,
+	AlumniSans_Light,
 	Count
 };
 

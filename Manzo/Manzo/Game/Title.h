@@ -29,8 +29,10 @@ public:
 
 private:
     Background* background;
-
+    const float start_alpha = 0.6f;
+    float alpha;
     bool playing = false;
+    float add_val = 0.0026f;
 };
 
 class TitleText : public GameObject {

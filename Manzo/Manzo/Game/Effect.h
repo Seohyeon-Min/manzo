@@ -53,7 +53,6 @@ private:
     const float deceleration = 0.95f;
 };
 
-
 class HitEffect : public Effect {
 public:
     HitEffect(vec2 pos);
@@ -66,4 +65,15 @@ public:
     MonsterHitEffect(vec2 pos);
     void Update(double dt) override;
     void Draw(DrawLayer drawlayer = DrawLayer::DrawLast) override;
+};
+
+class BlackOutEffect : public Effect {
+public:
+    BlackOutEffect();
+    void Update(double dt) override;
+    void Draw(DrawLayer drawlayer = DrawLayer::DrawLast) override;
+private:
+    void SetAlpha(const GLShader* shader) override;
+    RealTimeTimer* timer;
+    double time = 1.0;
 };

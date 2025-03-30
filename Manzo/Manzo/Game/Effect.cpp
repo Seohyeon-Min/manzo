@@ -215,3 +215,38 @@ void MonsterHitEffect::Draw(DrawLayer drawlayer)
     GameObject::Draw(draw_call);
 }
 
+BlackOutEffect::BlackOutEffect() : Effect({}, 0.5)
+{
+    AddGOComponent(new Sprite("assets/images/full_quad.spt", this));
+    timer = new RealTimeTimer(time);
+    AddGOComponent(timer);
+    timer->Set(time);
+}
+
+void BlackOutEffect::Update(double dt)
+{
+    //GameObject::Update(dt);
+}
+
+void BlackOutEffect::Draw(DrawLayer drawlayer)
+{
+    Sprite* sprite = GetGOComponent<Sprite>();
+    DrawCall draw_call = {
+        sprite,
+        &GetMatrix(),
+        Engine::GetShaderManager().GetShader("change_alpha") // Shader to use
+    };
+
+    draw_call.settings.do_blending = true;
+    draw_call.SetUniforms = [this](const GLShader* shader) { SetAlpha(shader); };
+    draw_call.sorting_layer = DrawLayer::DrawLast;
+    draw_call.settings.is_camera_fixed = true;
+    GameObject::Draw(draw_call);
+}
+
+void BlackOutEffect::SetAlpha(const GLShader* shader)
+{
+    float alpha = float(timer->Remaining());
+    if (alpha >= 0.3f) alpha = 0.3f;
+    shader->SendUniform("uAlpha", alpha);
+}

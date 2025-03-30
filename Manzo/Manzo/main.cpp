@@ -21,6 +21,8 @@ int main() {
 
         engine->GetFontManager().AddFontType("assets/fonts/Font1.ttf");
         engine->GetFontManager().AddFontType("assets/fonts/Font2.ttf");
+        engine->GetFontManager().AddFontType("assets/fonts/AlumniSans-Medium.ttf");
+        engine->GetFontManager().AddFontType("assets/fonts/AlumniSans-Light.ttf");
 
         Title title;
         engine->GetGameStateManager().AddGameState(title);

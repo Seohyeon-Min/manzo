@@ -3,7 +3,7 @@
 
 Dialog::Dialog(vec2 start_position)
     : GameObject(start_position), currentIndex(0), elapsedTime(0.0), typingSpeed(0.05), IsTyping(false) {
-    AddGOComponent(new Sprite("assets/images/ship.spt", this));
+    AddGOComponent(new Sprite("assets/images/none.spt", this));
 
     dialog = new JsonParser_dialog("en");
     DialogBox = Engine::GetTextureManager().Load("assets/images/temp_dial.png");

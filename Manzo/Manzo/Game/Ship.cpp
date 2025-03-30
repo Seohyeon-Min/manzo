@@ -208,11 +208,14 @@ void Ship::State_Die::Enter(GameObject* object)
 {
     Ship* ship = static_cast<Ship*>(object);
     ship->SetVelocity({});
-    Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
+    Engine::Instance()->SetSlowDownFactor(ship->slow_down_factor);
+    Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new BlackOutEffect());
 }
 
 void Ship::State_Die::Update(GameObject* object, double dt)
 {
+    Ship* ship = static_cast<Ship*>(object);
+    Engine::Instance()->SetSlowDownFactor(ship->slow_down_factor*0.1f);
 }
 
 void Ship::State_Die::CheckExit(GameObject* object)

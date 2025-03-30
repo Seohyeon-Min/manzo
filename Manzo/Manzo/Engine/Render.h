@@ -24,8 +24,8 @@ enum class DrawLayer {
     DrawLast = 3,
     DrawPlayer,
     DrawPlayerTop,
+    DrawDialog,
     DrawUI,
-    DrawDialog
 };
 
 enum class DrawType {
