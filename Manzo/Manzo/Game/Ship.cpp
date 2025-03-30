@@ -16,7 +16,7 @@ Ship::Ship(vec2 start_position) :
     GameObject(start_position), move(false)
 {
     AddGOComponent(new Sprite("assets/images/ship.spt", this));
-    beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
+    beat = &Engine::GetBeatSystem();
     skill = Engine::GetGameStateManager().GetGSComponent<Skillsys>();
     hit_text = Engine::GetTextureManager().Load("assets/images/ship_hit.png");
 
@@ -661,7 +661,7 @@ bool Ship::IsShipUnder()
 Pump::Pump() :
     GameObject({})
 {
-    beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
+    beat = &Engine::GetBeatSystem();
 }
 
 void Pump::Update(double dt)

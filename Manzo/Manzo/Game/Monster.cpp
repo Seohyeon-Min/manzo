@@ -1,5 +1,4 @@
 #include "Ship.h"
-#include "BeatSystem.h"
 #include "Monster.h"
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -11,7 +10,7 @@ Monster::Monster(Ship* ship, vec2 pos):
     current_state = &state_stanby;
     current_state->Enter(this);
 	AddGOComponent(new Sprite("assets/images/monster.spt", this));
-    beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
+    beat = &Engine::GetBeatSystem();
     dash_timer = new RealTimeTimer(dash_time);
     AddGOComponent(dash_timer);
     movement_range = { 900, {100,100} };

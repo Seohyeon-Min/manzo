@@ -3,7 +3,6 @@
 #include "Boss.h"
 #include "Ship.h"
 #include "BossBullet.h"
-#include "BeatSystem.h"
 
 
 std::vector<GameObject::State*> stateMap;
@@ -125,7 +124,7 @@ void Boss::Check_BossBehavior(int targetEntryNum, GameObject* object) {
 
 void Boss::State_CutScene::Enter(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
-	boss->beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
+	boss->beat = &Engine::GetBeatSystem();
 
 }
 void Boss::State_CutScene::Update(GameObject* object, double dt) {
@@ -228,7 +227,7 @@ void Boss::Update(double dt) {
 void Boss::AfterDied()
 {
 	Engine::GetAudioManager().StopChannel("e boss");
-	Engine::GetGameStateManager().GetGSComponent<Beat>()->CleartoOriginal();
+	Engine::GetBeatSystem().CleartoOriginal();
 
 	auto pump = Engine::GetGameStateManager().GetGSComponent<Pump>();
 	if (pump) {

@@ -65,8 +65,7 @@ void Mode1::Load() {
 
     // component
     AddGSComponent(new GameObjectManager());
-    beat_system = new Beat();
-    AddGSComponent(beat_system);
+    beat_system = &Engine::GetBeatSystem();
 	beat_system->LoadMusicToSync("Level1_bgm");
 
     // Particle
@@ -126,7 +125,7 @@ void Mode1::Load() {
 	GetGSComponent<GameObjectManager>()->Add(new FuelUI(ship_ptr));
 
 	// monster
-	//GetGSComponent<GameObjectManager>()->Add(new Monster(ship_ptr, {300,300}));
+	GetGSComponent<GameObjectManager>()->Add(new Monster(ship_ptr, {300,300}));
 
 
 	// Skill

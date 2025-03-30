@@ -2,7 +2,6 @@
 #include "../Engine/AudioManager.h"
 #include "../Engine/Particle.h"
 #include "Particles.h"
-#include "BeatSystem.h"
 #include "Background.h"
 #include "Ship.h"
 #include "Mouse.h"
@@ -16,8 +15,7 @@ void Tutorial::Load()
 {
 	AddGSComponent(new GameObjectManager());
 
-	beat_system = new Beat();
-	AddGSComponent(beat_system);
+	beat_system = &Engine::GetBeatSystem();
 
 	// background
 	background = new Background();
@@ -59,12 +57,6 @@ void Tutorial::Update(double dt)
 		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
 	}
 
-	//audio play
-	if (!playing)
-	{
-		Engine::GetAudioManager().PlayMusics("tutorial_bgm");
-		playing = true;
-	}
 }
 
 void Tutorial::Draw()
@@ -82,6 +74,7 @@ void Tutorial::FixedUpdate(double dt)
 
 void Tutorial::Unload()
 {
+	beat_system->CalculateCali();
 	delete ship_ptr;
 	ship_ptr = nullptr;
 

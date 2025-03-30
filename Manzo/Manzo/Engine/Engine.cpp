@@ -128,11 +128,11 @@ void Engine::ImGuiDraw()
             ImGui::SliderFloat("wanderForce", &BackgroundFish::d, 0.0f, 5.0f, "%.4f");
         }
         ImGui::Separator();
-        if (!GetGameStateManager().IsNull()
-            && GetGameStateManager().GetGSComponent<Beat>() != nullptr) {
-            ImGui::LabelText("Is on beat?", "%s", GetGameStateManager().GetGSComponent<Beat>()->GetIsOnBeat() ? "true" : "false");
-            //ImGui::LabelText("Collision", "%s", GetGameStateManager().GetGSComponent<ShowCollision>()->Enabled() ? "true" : "false");
-        }
+        //if (!GetGameStateManager().IsNull()
+        //    && GetGameStateManager().GetGSComponent<Beat>() != nullptr) {
+        //    ImGui::LabelText("Is on beat?", "%s", GetGameStateManager().GetGSComponent<Beat>()->GetIsOnBeat() ? "true" : "false");
+        //    //ImGui::LabelText("Collision", "%s", GetGameStateManager().GetGSComponent<ShowCollision>()->Enabled() ? "true" : "false");
+        //}
     }
     ImGui::End();
 }

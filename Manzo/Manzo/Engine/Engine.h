@@ -22,6 +22,7 @@ Created:    March 8, 2023
 #include "FontManager.h"
 #include "WindowState.h"
 #include "IconManager.h"
+#include "../Game/BeatSystem.h"
 
 #include <chrono>
 #include <time.h>
@@ -59,6 +60,9 @@ public:
         return Instance()->render;
     }
 
+    static Beat& GetBeatSystem() {
+        return Instance()->beat;
+    }
 
     static AudioManager& GetAudioManager() {
         return Instance()->audiomanager;
@@ -113,4 +117,5 @@ private:
     Render render;
     FontManager fontmanager;
     IconManager iconmanager;
+    Beat beat;
 };

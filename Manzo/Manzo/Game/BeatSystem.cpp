@@ -1,4 +1,6 @@
 #include "BeatSystem.h"
+#include "../Engine/Engine.h"
+
 #include <iostream>
 
 constexpr double sync = 0.29;
@@ -47,6 +49,8 @@ void Beat::Update(double dt)
     if (duration <= time_taken) { // right beat
         beat = true; // Beat detected
 
+        right_time_for_calibration = time_taken; // calibration
+
         beat_count++;
         duration += fixed_duration; // Update duration for the next beat
     }
@@ -63,6 +67,11 @@ void Beat::Update(double dt)
     else {
         if (is_on_beat)
             is_on_beat = false;
+    }
+
+
+    if (Engine::GetGameStateManager().GetStateName() == "Tutorial") {
+        CollectCaliData();
     }
 
     //std::cout << "Time Taken: " << time_taken
@@ -106,3 +115,41 @@ void Beat::CleartoOriginal() {
     playing = false;
     //music_name.clear();
 }
+
+void Beat::CollectCaliData()
+{
+    if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT)) {
+        double interval = time_taken - right_time_for_calibration;
+        if (interval >= fixed_duration / 2) {
+            interval = time_taken - (right_time_for_calibration + fixed_duration);
+        }
+        calibrations.push_back(interval);
+        std::cout << interval << std::endl;
+        calibrations_cnt++;
+    }
+}
+
+void Beat::CalculateCali()
+{
+    if (calibrations.empty()) {
+        std::cout << "Calibration data is empty." << std::endl;
+        return;
+    }
+
+    std::vector<double> sorted = calibrations;
+    std::sort(sorted.begin(), sorted.end());
+
+    double median;
+    size_t size = sorted.size();
+
+    if (size % 2 == 0) {
+        median = (sorted[size / 2 - 1] + sorted[size / 2]) / 2.0;
+    }
+    else {
+        median = sorted[size / 2];
+    }
+
+    std::cout << "Median calibration value: " << median << std::endl;
+}
+
+
