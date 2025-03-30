@@ -137,9 +137,10 @@ void Boss::State_CutScene::CheckExit(GameObject* object) {
 	if (Engine::GetInput().KeyDown(Input::Keys::R) && boss->beat->GetBeat()) {
 		Engine::GetAudioManager().SetMute("Level1_bgm", true);
 		Engine::GetAudioManager().StopChannel("e morse");
-		Engine::GetAudioManager().PlayMusics("e boss");
-
+		//Engine::GetAudioManager().PlayMusics("e boss");
 		boss->beat->SetBPM(boss->bpm);
+
+		boss->beat->LoadMusicToSync("e boss");
 		//std::cout << "boss bpm:" << boss->bpm << std::endl;
 		boss->change_state(&boss->entry1);
 	}
