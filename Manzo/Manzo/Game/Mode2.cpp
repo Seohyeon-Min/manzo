@@ -109,7 +109,6 @@ void Mode2::Update(double dt) {
     // Open Inven
     if (inven_ptr->Open())
     {
-        Engine::GetIconManager().RemoveIcon("go_shop");
         if (!inven_ptr->GetIsOpened()) inven_ptr->SetIsOpened(true);
         else inven_ptr->SetIsOpened(false);
     }

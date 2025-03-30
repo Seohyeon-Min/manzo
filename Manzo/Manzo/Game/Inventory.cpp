@@ -66,6 +66,7 @@ void Inven::Draw(DrawLayer drawlayer)
 {
 	if (is_opened)
 	{
+		Engine::GetIconManager().RemoveIcon("go_shop");
 		GameObject::Draw();
 	}
 }
@@ -198,11 +199,11 @@ void Inven::State_FC::Enter(GameObject* object)
 		Engine::GetIconManager().AddIcon(file_name, { 100,float(position += 80) }, 1.0f, false);
 	}
 
-	Engine::GetIconManager().AddIcon("plus1", { 80,180 }, 0.2f, false, false, true);
-	Engine::GetIconManager().AddIcon("plus10", { 50,180 }, 0.2f, false, false, true);
+	Engine::GetIconManager().AddIcon("plus1", { 80,180 }, 1.f, false, false, true);
+	Engine::GetIconManager().AddIcon("plus10", { 50,180 }, 1.f, false, false, true);
 
-	Engine::GetIconManager().AddIcon("minus1", { -80,180 }, 0.2f, false, false, true);
-	Engine::GetIconManager().AddIcon("minus10", { -50,180 }, 0.2f, false, false, true);
+	Engine::GetIconManager().AddIcon("minus1", { -80,180 }, 1.f, false, false, true);
+	Engine::GetIconManager().AddIcon("minus10", { -50,180 }, 1.f, false, false, true);
 }
 
 void Inven::State_FC::Update(GameObject* object, double dt)
@@ -283,6 +284,11 @@ void Inven::State_FC::Update(GameObject* object, double dt)
 	{
 		inven->money += (inven->todays_price * inven->how_much_sold);
 		inven->fishCollection[inven->todays_fish_index] -= inven->how_much_sold;
+	}
+
+	if (inven->fishCollection[inven->todays_fish_index] == 0)
+	{
+		Engine::GetIconManager().RemoveIcon("fish" + std::to_string(inven->todays_fish_index + 1));
 	}
 }
 

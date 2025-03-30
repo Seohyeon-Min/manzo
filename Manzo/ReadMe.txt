@@ -51,18 +51,10 @@ Play:
   + MOUSE_BUTTON_LEFT : main keys for moving the ship just to click (double click is fine)
   + KEY_TAB : Hide or Show the collision lines when you run at debug mode
   + KEY_Q : Load next game state (change mode from sea into player's house) 
-  + KEY_W : Reload the game state
-  + E : creat the boss
-  + R : start the boss fight, hold a key for a short time
-  + KEY_A : Print out ‘pick slot 1’ 
-  + KEY_S : Print out ‘pick slot 2’
-  + KEY_D : Print out ‘pick slot 3’
-  + KEY_Z : Print out skill
-  + KEY_NUM1 : Print out ‘picked Net’
-  + KEY_NUM2 : Print out ‘picked Light’
-  + KEY_NUM3 : Print out ‘picked Empty’
-  + KEY_M : Game Clear
-  + KEY_N : Game Over
+  + KEY_E : creat the boss
+  + KEY_R : start the boss fight, hold a key for a short time  
+  + KEY_O : sell whole today's fish
+
 
 * Gameplay Instruction
  Avoid reefs and eat fish by moving the ship with 'MOUSE_LEFT_BUTTON' in sync with the incoming beat. (For Milestone 1, collision detection is only shown and does not affect gameplay.)
