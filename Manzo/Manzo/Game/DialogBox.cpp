@@ -76,8 +76,10 @@ void Dialog::Draw() {
         GameObject::Draw(draw_call_Me);
         GameObject::Draw(draw_call_effect);
         GameObject::Draw(draw_call_box);
-        Engine::GetFontManager().PrintText(FontType::Thin, displayedText.c_str(), { -0.5f, -0.62f },  0.00012f, { 1.0f, 1.0f, 1.0f }, 1.f);
-        Engine::GetFontManager().PrintText(FontType::Bold, character.c_str(), { -0.5f, -0.52f }, 0.0001f, { 1.0f, 1.0f, 1.0f }, 1.f);
+
+
+        Engine::GetFontManager().PrintText(FontType::Thin, displayedText.c_str(), { -175.f,-120.f },  0.05f, { 1.0f, 1.0f, 1.0f }, 1.f);
+        Engine::GetFontManager().PrintText(FontType::Bold, character.c_str(), { -175.f, -100.f }, 0.08f, { 1.0f, 1.0f, 1.0f }, 1.f);
     }
 }
 
