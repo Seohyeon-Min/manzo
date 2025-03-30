@@ -25,8 +25,6 @@ class Fish;
 
 class Ship;
 
-class Skillsys;
-
 class Mode2 : public GameState {
 public:
     Mode2();
@@ -46,7 +44,6 @@ private:
     Timer* timer;
     Ship* ship_ptr;
     Background* background;
-    Skillsys* skill_ptr;
     Shop* shop_ptr;
     Dialog* dialog_ptr;
     Player* player_ptr;

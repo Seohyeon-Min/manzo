@@ -76,20 +76,6 @@ void Mode2::Load() {
 
     Engine::GetShaderManager().LoadShader("icon", "assets/shaders/default.vert", "assets/shaders/edge_detection.frag");
 
-    // skill
-    if (!Engine::Instance().GetTmpPtr())
-    {
-        Engine::Instance().SetTmpPtr(new Skillsys);
-        skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
-        skill_ptr->SetShipPtr(ship_ptr);
-    }
-    else
-    {
-        skill_ptr = static_cast<Skillsys*>(Engine::Instance().GetTmpPtr());
-        skill_ptr->SetShipPtr(ship_ptr);
-    }
-
-
     // Mouse
     GetGSComponent<GameObjectManager>()->Add(new Mouse);
 
@@ -100,7 +86,6 @@ void Mode2::Update(double dt) {
     UpdateGSComponents(dt);
     GetGSComponent<GameObjectManager>()->UpdateAll(dt);
     GetGSComponent<Cam>()->Update(dt, {}, false);
-    skill_ptr->Update();
     
     //float moving~
     time += float(dt);
@@ -136,25 +121,10 @@ void Mode2::Draw() {
 }
 
 void Mode2::Unload() {
-    std::string savePath = "assets/scenes/save_data.txt";
-    std::ofstream saveFile(savePath);
-
-    if (saveFile.is_open()) {
-        saveFile.clear();
-        for (const auto& entry : inven_ptr->fishCollection) {
-            saveFile << entry.first + 1 << " " << entry.second << "\n";
-        }
-        saveFile << "Money: " << inven_ptr->GetMoney() << "\n";
-        saveFile << "Module1: " << module_ptr->IsFirstSetted() << "\n";
-        saveFile << "Module2: " << module_ptr->IsSecondSetted() << "\n";
-        saveFile.close();
-    }
-
     GetGSComponent<GameObjectManager>()->Unload();
     GetGSComponent<Background>()->Unload();
     ClearGSComponents();
     ship_ptr = nullptr;
-    skill_ptr = nullptr;
     background = nullptr;
     dialog_ptr->Unload();
 }

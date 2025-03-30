@@ -25,8 +25,6 @@ class Reef;
 class Ship;
 class Boss;
 
-class Skillsys;
-
 class Mode1 : public GameState {
 public:
     Mode1();
@@ -48,8 +46,6 @@ private:
     Boss* boss_ptr;
     Cam* camera;
     Beat* beat_system;
-    Skillsys* skill_ptr;
-    Skillsys::Skill_Net* Net_ptr;
     Module* module;
 
     bool Isboss = false;

@@ -91,26 +91,6 @@ void Inven::ReadSaveFile(const std::string& filename)
 			std::istringstream ss_money(line.substr(7));
 			ss_money >> money;
 		}
-		else if (line.find("Module1:") != std::string::npos) {
-			int module1Value;
-			std::istringstream ss_module(line.substr(9));
-			ss_module >> module1Value;
-
-			if (module1Value == 1)
-			{
-				module_ptr->SetFirstModule(true);
-			}
-		}
-		else if (line.find("Module2:") != std::string::npos) {
-			int module2Value;
-			std::istringstream ss_module(line.substr(9));
-			ss_module >> module2Value;
-
-			if (module2Value == 1)
-			{
-				module_ptr->SetSecondModule(true);
-			}
-		}
 	}
 
 	file.close();
