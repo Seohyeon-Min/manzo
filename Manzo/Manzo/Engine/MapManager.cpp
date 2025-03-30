@@ -71,7 +71,6 @@ void MapManager::UpdateMaps(const Math::rect& camera_boundary) {
 
 
 //===============================================================Map
-std::vector<Polygon> EarClipping(const std::vector<vec2>& points);
 
 void Map::ParseSVG(const std::string& filename) {
     std::ifstream file(filename);
@@ -319,18 +318,18 @@ void Map::ParseSVG(const std::string& filename) {
             //std::cout << "vertex count : " << poly.vertexCount << std::endl;
             //std::cout << "poly count : " << poly.polycount << std::endl;
             
-            //if (circle_position.x != 0.f && circle_position.y != 0.f && circleIndex != "") {
-            //    RockPoint* rockpoint = new RockPoint(circle_position, circleIndex);
-            //    Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rockpoint);
-            //    //std::cout << "New Circle! " << "\n";
+            if (circle_position.x != 0.f && circle_position.y != 0.f && circleIndex != "") {
+                Box* box = new Box(circle_position);
+                Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(box);
+                //std::cout << "New Circle! " << "\n";
 
-            //    for (auto& group : rock_groups) {
-            //        if (group->GetIndex() == circleIndex) {//if index is equal
-            //            group->AddRockPoint(rockpoint);     //add point to the group
-            //            //std::cout << "Circle Added to" << group->GetIndex() << "\n";
-            //        }
-            //    }
-            //}
+                //for (auto& group : rock_groups) {
+                //    if (group->GetIndex() == circleIndex) {//if index is equal
+                //        group->AddRockPoint(rockpoint);     //add point to the group
+                //        //std::cout << "Circle Added to" << group->GetIndex() << "\n";
+                //    }
+                //}
+            }
             
             // Reset transforms for the next group
 

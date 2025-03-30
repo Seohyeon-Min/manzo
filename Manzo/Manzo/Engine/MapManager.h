@@ -18,6 +18,8 @@ Created:    September 12, 2024
 #include "..\Game\Rock.h"
 #include "..\Game\RockGroup.h"
 #include "..\Game\RockPoint.h"
+#include "..\Game\Box.h"
+
 
 #include <vector>
 class Map;

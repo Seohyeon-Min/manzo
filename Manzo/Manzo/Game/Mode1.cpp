@@ -109,7 +109,7 @@ void Mode1::Load() {
     //GetGSComponent<MapManager>()->AddMapFile("assets/maps/TemporaryMap.svg");
     
 	//Ear Clipping Test
-	GetGSComponent<MapManager>()->AddMapFile("assets/maps/new_map2.svg");
+	GetGSComponent<MapManager>()->AddMapFile("assets/maps/new_map3.svg");
 	GetGSComponent<MapManager>()->LoadFirstMap();
 
 	//Boss
