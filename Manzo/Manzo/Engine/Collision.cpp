@@ -410,6 +410,8 @@ bool MAP_SATCollision::IsCollidingWith(GameObject* other_object)
 void MAP_SATCollision::Draw() {
     // need to be changed I think... Everything is drawn at once.
     Polygon boundary = WorldBoundary_poly();
+    Math::rect poly_boundary = boundary.FindBoundary();
+
     for (int j = 1; j < boundary.vertexCount; ++j) {
         Engine::GetRender().AddDrawCall(vec2{ boundary.vertices[j - 1].x, boundary.vertices[j - 1].y },
             vec2{ boundary.vertices[j].x, boundary.vertices[j].y },
@@ -418,6 +420,4 @@ void MAP_SATCollision::Draw() {
     Engine::GetRender().AddDrawCall(vec2{ boundary.vertices.back().x, boundary.vertices.back().y },
         vec2{ boundary.vertices.front().x, boundary.vertices.front().y },
         RED);
-
-
 }

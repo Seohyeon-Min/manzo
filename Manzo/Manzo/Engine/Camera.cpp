@@ -3,6 +3,9 @@
 #include "MapManager.h"
 #include <iostream>
 
+
+#define GREEN color3(0,255,0)
+
 Cam::Cam()
 {
 	caminfo.camera_view.SetFramebufferSize((int)Engine::window_width, (int)Engine::window_height);
@@ -10,7 +13,7 @@ Cam::Cam()
 
 void Cam::Update(double dt, const vec2& player_position, bool playerMove)
 {
-    caminfo.camera_view.SetFramebufferSize((int)Engine::window_width, (int)Engine::window_height );
+    caminfo.camera_view.SetFramebufferSize((int)Engine::window_width*1, (int)Engine::window_height*1 );
     float lerpFactor = 0.03f; // (0.0 ~ 1.0)
     vec2 target_position = player_position;
     caminfo.camera.Position.x += (target_position.x - caminfo.camera.Position.x) * lerpFactor;
@@ -23,8 +26,8 @@ void Cam::Update(double dt, const vec2& player_position, bool playerMove)
 
 	// world_to_ndc <- cam_to_ndc * world_to_cam
 	world_to_ndc = cam_to_ndc * world_to_cam;
-
-    if (mode_name == "Mode1") {
+    
+    if (Engine::GetGameStateManager().GetStateName() == "Mode1") {  //if mode1, activate MapManager
         LoadMap();
     }
 }

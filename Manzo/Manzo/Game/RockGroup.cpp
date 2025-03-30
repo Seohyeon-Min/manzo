@@ -10,8 +10,10 @@ Created:    November 25, 2024
 
 #include "RockGroup.h"
 
-RockGroup::RockGroup(const std::string& index) :GameObject({ 0,0 }), index(index)
-{}
+RockGroup::RockGroup(const std::string& index, double rotation, vec2 scale) :GameObject({ 0,0 }, rotation, scale), index(index)
+{
+    AddGOComponent(new Sprite("assets/images/rock/g" + index +".spt", this));
+}
 
 RockGroup::~RockGroup() {
     rocks.clear();
@@ -27,6 +29,35 @@ void RockGroup::Update(double dt)
 void RockGroup::Draw()
 {
     GameObject::Draw();
+}
+
+Math::rect RockGroup::FindBoundary() {
+    vec2 minPoint;
+    vec2 maxPoint;
+
+
+    if (!rocks.empty()) {
+        for (auto& rock : rocks) {
+            Polygon poly = rock->GetOriginalPoly();
+            if (poly.vertices.empty()) {
+                return Math::rect{};
+            }
+            minPoint = poly.vertices[0];
+            maxPoint = poly.vertices[0];
+            for (const auto& vertex : poly.vertices) {
+                minPoint.x = std::min(minPoint.x, vertex.x);
+                minPoint.y = std::min(minPoint.y, vertex.y);
+                maxPoint.x = std::max(maxPoint.x, vertex.x);
+                maxPoint.y = std::max(maxPoint.y, vertex.y);
+            }
+
+            
+        }
+        return Math::rect{ minPoint, maxPoint };
+    }
+    else {
+        return Math::rect{};
+    }
 }
 
 bool RockGroup::MatchIndex()
@@ -67,11 +98,11 @@ vec2 RockGroup::FindCenterRect() {  // Calculate texture's position.
     vec2 maxPoint;
     if (!rocks.empty()) {
 
-        minPoint = rocks[0]->GetPolygon().vertices[0];
-        maxPoint = rocks[0]->GetPolygon().vertices[0];
+        minPoint = rocks[0]->GetOriginalPoly().vertices[0];
+        maxPoint = rocks[0]->GetOriginalPoly().vertices[0];
 
         for (auto& rock : rocks) {
-            Polygon poly = rock->GetPolygon();
+            Polygon poly = rock->GetOriginalPoly();
             minPoint.x = std::min(minPoint.x, poly.FindBoundary().Left());
             minPoint.y = std::min(minPoint.y, poly.FindBoundary().Bottom());
             maxPoint.x = std::max(maxPoint.x, poly.FindBoundary().Right());
@@ -80,11 +111,11 @@ vec2 RockGroup::FindCenterRect() {  // Calculate texture's position.
     }
     else if (!moving_rocks.empty()) {
 
-        minPoint = moving_rocks[0]->GetPolygon().vertices[0];
-        maxPoint = moving_rocks[0]->GetPolygon().vertices[0];
+        minPoint = moving_rocks[0]->GetOriginalPoly().vertices[0];
+        maxPoint = moving_rocks[0]->GetOriginalPoly().vertices[0];
 
         for (MovingRock* rock : moving_rocks) {
-            Polygon poly = rock->GetPolygon();
+            Polygon poly = rock->GetOriginalPoly();
             minPoint.x = std::min(minPoint.x, poly.FindBoundary().Left());
             minPoint.y = std::min(minPoint.y, poly.FindBoundary().Bottom());
             maxPoint.x = std::max(maxPoint.x, poly.FindBoundary().Right());
@@ -105,7 +136,7 @@ vec2 RockGroup::FindCenterPoly() {  // Calculate Polygon's position
 
     if (!rocks.empty()) {
         for (auto& rock : rocks) {
-            Polygon poly = rock->GetPolygon();
+            Polygon poly = rock->GetOriginalPoly();
             poly_center = poly.FindCenter();
 
             center.x += poly_center.x;
@@ -117,7 +148,7 @@ vec2 RockGroup::FindCenterPoly() {  // Calculate Polygon's position
     }
     else if (!moving_rocks.empty()) {
         for (MovingRock* rock : moving_rocks) {
-            Polygon poly = rock->GetPolygon();
+            Polygon poly = rock->GetOriginalPoly();
             poly_center = poly.FindCenter();
 
             center.x += poly_center.x;
@@ -134,7 +165,7 @@ vec2 RockGroup::FindCenterPoly() {  // Calculate Polygon's position
 void RockGroup::SetPoints() {
     if (!rocks.empty()) {
         for (auto& rock : rocks) {
-            Polygon poly = rock->GetPolygon();
+            Polygon poly = rock->GetOriginalPoly();
             for (int i = 0; i < poly.vertexCount; i++) {
                 points.push_back(poly.vertices[i]);
             }
@@ -142,7 +173,7 @@ void RockGroup::SetPoints() {
     }
     else if (!moving_rocks.empty()) {
         for (MovingRock* rock : moving_rocks) {
-            Polygon poly = rock->GetPolygon();
+            Polygon poly = rock->GetOriginalPoly();
             for (int i = 0; i < poly.vertexCount; i++) {
                 points.push_back(poly.vertices[i]);
             }

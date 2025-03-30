@@ -27,7 +27,7 @@ class RockPoint;
 class RockGroup : public GameObject
 {
 public:
-	RockGroup(const std::string& index);
+	RockGroup(const std::string& index, double rotation, vec2 scale);
 	~RockGroup();
 	GameObjectTypes Type() override { return GameObjectTypes::RockBoundary; }
 	std::string TypeName() override { return "Rock Boundary"; }
@@ -46,6 +46,7 @@ public:
 	bool MatchIndex();
 	vec2 FindCenterRect();
 	vec2 FindCenterPoly();
+	Math::rect FindBoundary();
 	std::string GetIndex() { return index; }
 
 	void Active(bool active) { loaded = active; }

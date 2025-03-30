@@ -40,7 +40,7 @@ void RockPoint::ResolveCollision(GameObject* other_object)
 {
     if (other_object->Type() == GameObjectTypes::MovingRock) {
         MovingRock* moving_rock = static_cast<MovingRock*>(other_object);
-        if (this->GetIndex() == moving_rock->GetPolygon().polyindex) {
+        if (this->GetIndex() == moving_rock->GetOriginalPoly().polyindex) {
             auto* collision_edge = this->GetGOComponent<MAP_SATCollision>();
             if (collision_edge == nullptr) {
                 // maybe an error?
