@@ -78,11 +78,18 @@ void Mode1::Load() {
     AddGSComponent(new ParticleManager<Particles::CaptureEffect>());
 
     //// camera
+	vec2 start_position = {200, -500};
+	vec2 limit_min = {150, -400};
+	vec2 limit_max = {4500, -6000};
+	Math::rect cam_limit = Math::rect(limit_min,limit_max);
+
     camera = new Cam();
+	camera->SetPosition(start_position);
+	camera->SetLimit(cam_limit);
     AddGSComponent(camera);
 
     //// ship
-    ship_ptr = new Ship({ 4350,-5420 });
+    ship_ptr = new Ship(start_position);
     GetGSComponent<GameObjectManager>()->Add(ship_ptr);
 
 	//// background
@@ -95,9 +102,6 @@ void Mode1::Load() {
 
 	//background
 	background->Add("assets/images/background/temp_background4.png", 0.0f);
-    background->Add("assets/images/background/bg1.png", 0.3f);
-    background->Add("assets/images/background/bg2.png", 0.4f);
-    background->Add("assets/images/background/bg3.png", 0.5f);
 	//background->Add("assets/images/background/bubble.png", 1.5f, DrawLayer::DrawUI);
 
     // Map
@@ -105,7 +109,7 @@ void Mode1::Load() {
     //GetGSComponent<MapManager>()->AddMapFile("assets/maps/TemporaryMap.svg");
     
 	//Ear Clipping Test
-	GetGSComponent<MapManager>()->AddMapFile("assets/maps/new_map.svg");
+	GetGSComponent<MapManager>()->AddMapFile("assets/maps/new_map2.svg");
 	GetGSComponent<MapManager>()->LoadFirstMap();
 
 	//Boss

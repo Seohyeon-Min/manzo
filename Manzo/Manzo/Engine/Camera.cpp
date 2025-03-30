@@ -13,7 +13,7 @@ Cam::Cam()
 
 void Cam::Update(double dt, const vec2& player_position, bool playerMove)
 {
-    caminfo.camera_view.SetFramebufferSize((int)Engine::window_width*3, (int)Engine::window_height*3 );
+    caminfo.camera_view.SetFramebufferSize((int)Engine::window_width, (int)Engine::window_height );
     float lerpFactor = 0.03f; // (0.0 ~ 1.0)
     vec2 target_position = player_position;
     caminfo.camera.Position.x += (target_position.x - caminfo.camera.Position.x) * lerpFactor;
@@ -29,6 +29,19 @@ void Cam::Update(double dt, const vec2& player_position, bool playerMove)
     
     if (Engine::GetGameStateManager().GetStateName() == "Mode1") {  //if mode1, activate MapManager
         LoadMap();
+    }
+
+   if (caminfo.camera.Position.x < limit.Left()) {
+        caminfo.camera.Position.x = limit.Left();
+    }
+    if (caminfo.camera.Position.x > limit.Right()) {
+        caminfo.camera.Position.x = limit.Right();
+    }
+    if (caminfo.camera.Position.y < limit.Bottom()) {
+        caminfo.camera.Position.y = limit.Bottom();
+    }
+    if (caminfo.camera.Position.y > limit.Top()) {
+        caminfo.camera.Position.y = limit.Top();
     }
 }
 
@@ -60,4 +73,9 @@ Math::rect Cam::GetCameraBoundary() const
 void Cam::LoadMap() { 
     Math::rect camera_boundary = GetCameraBoundary();
     Engine::GetGameStateManager().GetGSComponent<MapManager>()->UpdateMaps(camera_boundary);
+}
+
+void Cam::SetLimit(Math::rect new_limit)
+{
+    limit = new_limit;
 }

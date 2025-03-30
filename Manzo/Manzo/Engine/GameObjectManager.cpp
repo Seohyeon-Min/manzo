@@ -142,7 +142,7 @@ void GameObjectManager::Remove(GameObject* object) {
 
 	if (it != objects.end()) {
 		objects.erase(it);
-		std::cout << "GameObject Removed from Vector.\n";
+		//std::cout << "GameObject Removed from Vector.\n";
 	}
 	else {
 		std::cout << "GameObject Not Found.\n";

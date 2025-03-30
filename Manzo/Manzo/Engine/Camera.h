@@ -35,6 +35,7 @@ public:
     CameraView& GetCameraView() { return caminfo.camera_view; }
     Camera& GetCamera() { return caminfo.camera; }
     Math::rect GetCameraBoundary() const;
+    void SetLimit(Math::rect new_limit);
 
     void LoadMap();     // Load Map In Camera's Boundary
 
@@ -58,6 +59,7 @@ public:
 private:
     float lerpFactor = 0.03f;
     vec2 target_position;
+    Math::rect limit;
 
     struct CamInfo {
         Camera     camera{};
