@@ -187,7 +187,7 @@ void Mode1::Update(double dt) {
 	std::cout << "Player's Y position : "<< ship_ptr->GetPosition().y << "\n";
 	*/
 
-	beat_system->LoadMusicToSync("Level1_bgm");
+	//beat_system->LoadMusicToSync("Level1_bgm");
 	//audio play
 
 

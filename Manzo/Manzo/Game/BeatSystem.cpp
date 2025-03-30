@@ -16,6 +16,7 @@ Beat::Beat()
 void Beat::LoadMusicToSync(std::string _music_name)
 {
     music_name =_music_name;
+    playing = false;
 }
 //0.29
 
