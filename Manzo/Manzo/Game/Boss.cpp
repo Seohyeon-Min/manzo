@@ -212,6 +212,7 @@ void Boss::Update(double dt) {
 			if (boss->barCount <= total_entry.size()) {
 				if (boss->barCount < total_entry.size() && total_entry[boss->barCount] - 1 < stateMap.size()) {
 					change_state(stateMap[total_entry[boss->barCount] - 1]);
+					
 				}
 			}
 			else if (boss->barCount > total_entry.size()) {
@@ -253,11 +254,13 @@ void Boss::AttackCircle(vec2 pos, double radius, double elapsed_time)
 
 		if (distance > radius)
 		{
-			Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()
-				->GetGOComponent<Ship>()->DeclineFuel(1.f);
-			std::cout << "Attack" << std::endl;
 
-
+			if (!isattack) {
+				Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()
+					->GetGOComponent<Ship>()->DeclineFuel(1.f);
+				std::cout << "Attack" << std::endl;
+				isattack = true;
+			}
 		}
 
 		//std::cout << "Attack Triggered at Position (" << pos.x << ", " << pos.y << ")" << std::endl;

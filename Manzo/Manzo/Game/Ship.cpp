@@ -479,6 +479,9 @@ bool Ship::CanCollideWith(GameObjectTypes other_object)
         if(invincibility_timer->IsFinished())
         return true;
         break;
+    case GameObjectTypes::BossBullet:
+        return true;
+        break;
     }
 
     return false;
@@ -512,7 +515,12 @@ void Ship::ResolveCollision(GameObject* other_object) {
         }
         invincibility_timer->Set(invincibility_time);
         break;
+
+    case GameObjectTypes::BossBullet:
+        ReduceFuel(100.f);
+        break;
     }
+
 
 }
 
