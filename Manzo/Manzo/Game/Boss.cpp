@@ -55,7 +55,7 @@ void Boss::Movingtolocation_Boss(int targetEntryNum, Boss* boss) {
 				
 			}
 			if (entryData.attacktype == 3) {
-				boss->AttackCircle(entryData.position, 500, (double)(boss->beat->GetFixedDuration() * 4));
+				boss->AttackCircle(entryData.position, 350, (double)(boss->beat->GetFixedDuration() * 4));
 			}
 		}
 		

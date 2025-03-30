@@ -116,10 +116,10 @@ void Mode1::Load() {
     //    GetGSComponent<Boss>()->ReadBossJSON(static_cast<Boss::BossType>(i));
     //    BossFirstPos.push_back(GetGSComponent<Boss>()->GetFirstPosition());
     //}
-	boss_ptr = new Boss({ 4350,-5420 }, Boss::BossName::e, Boss::BossType::MovingToLocation);
+	boss_ptr = new Boss({ 4100, -5300 }, Boss::BossName::e, Boss::BossType::MovingToLocation);
 	boss_ptr->ReadBossJSON(Boss::BossName::e);
 	BossFirstPos.push_back(std::make_pair(boss_ptr->GetFirstPosition()[0], boss_ptr->GetFirstPosition()[1]));
-	bossPosition = { 4350,-5420, 0.0f };
+	bossPosition = {4100, -5300, 0.0f };
 
 	// UI
 	GetGSComponent<GameObjectManager>()->Add(new Mouse);
@@ -218,15 +218,17 @@ void Mode1::Update(double dt) {
     if (Engine::GetInput().KeyJustPressed(Input::Keys::E) && !Isboss) {
         GetGSComponent<GameObjectManager>()->Add(boss_ptr);
         Isboss = true;
+		
     }
+	camera->SetPosition(boss_ptr->GetPosition());
 
-	//if (Isboss,boss_ptr != nullptr) {
+	if (Isboss) {
 
-	//	//camera->SetPosition(boss_ptr->GetPosition());
-	//}
+	}
 
 	//camera postion update
 	camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
+	
 
 	// Update Fish Generator
 	fishGenerator->GenerateFish(dt);
@@ -251,7 +253,7 @@ void Mode1::Update(double dt) {
 	Engine::GetAudioManager().Set3dListenerAndOrientation(smoothShipPosition,vec3{ 0.0f, -1.0f, 0.0f },vec3{ 0.0f, 0.0f, 1.0f }	);
 
 	// Apply 3D position for the boss and calculate volume based on the distance
-    if (isWithinRange) {
+    if (isWithinRange && !Isboss) {
         if (!soundPlaying) {
             Engine::GetAudioManager().PlayMusics("e morse");
             soundPlaying = true;
