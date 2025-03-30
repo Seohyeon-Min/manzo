@@ -49,9 +49,10 @@ public:
     void SetTraceLogLevel(LoggerLogLevel level) {
         currentLogLevel = level;
     }
-    void LoadSaveFile(std::map<int,int> fiShCollection);
+    void LoadSaveFile();
     void WriteSaveFile(std::map<int, int> fishCaptureCount, int money, bool module1, float m1x, bool module2, float m2x);
 
+    std::map<int, int> GetFishCollection() { return fiShCollection; }
     int GetMoney() { return money; }
     bool GetModule1() { return module1; }
     bool GetModule2() { return module2; }
@@ -70,4 +71,5 @@ private:
     int money;
     bool module1, module2;
     float module1Pos, module2Pos;
+    std::map<int, int> fiShCollection;
 };

@@ -59,7 +59,6 @@ void Mode2::Load() {
     // Icon
     Engine::GetIconManager().LoadIconList();
 
-    Engine::GetLogger().LoadSaveFile(fishCaptureCount);
 
     shop_ptr = new Shop();
     GetGSComponent<GameObjectManager>()->Add(shop_ptr);
@@ -67,6 +66,8 @@ void Mode2::Load() {
     // Dialog
     dialog_ptr = new Dialog({0,0});
     GetGSComponent<GameObjectManager>()->Add(dialog_ptr);
+
+    Engine::GetLogger().LoadSaveFile();
 
     // Module
    module_ptr = new Module({ 0, 0 });
@@ -76,7 +77,6 @@ void Mode2::Load() {
     inven_ptr = new Inven({0,0});
     GetGSComponent<GameObjectManager>()->Add(inven_ptr);
  
-
     Engine::GetShaderManager().LoadShader("icon", "assets/shaders/default.vert", "assets/shaders/edge_detection.frag");
 
     // Mouse

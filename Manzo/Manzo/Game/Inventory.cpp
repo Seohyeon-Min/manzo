@@ -11,6 +11,8 @@ Inven::Inven(vec2 position) : GameObject(position), page(0), dre_todayFish(rd())
 	AddGOComponent(new Sprite("assets/images/window.spt", this));
 	change_state(&state_none);
 
+	fishCollection = Engine::GetLogger().GetFishCollection();
+
 	module_ptr = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Module>();
 	module_ptr->SetFirstModule(Engine::GetLogger().GetModule1());
 	module_ptr->SetSecondModule(Engine::GetLogger().GetModule2());
@@ -203,6 +205,7 @@ void Inven::State_FC::Update(GameObject* object, double dt)
 
 		//decrease each type of fish
 		inven->fishCollection[inven->todays_fish_index] = 0;
+		Engine::GetIconManager().RemoveIcon("fish" + (inven->todays_fish_index + 1));
 	}
 
 
@@ -265,7 +268,13 @@ void Inven::State_FC::Update(GameObject* object, double dt)
 	{
 		inven->money += (inven->todays_price * inven->how_much_sold);
 		inven->fishCollection[inven->todays_fish_index] -= inven->how_much_sold;
+
+		if (inven->fishCollection[inven->todays_fish_index] == 0)
+		{
+			Engine::GetIconManager().RemoveIcon("fish" + (inven->todays_fish_index + 1));
+		}
 	}
+
 }
 
 void Inven::State_FC::CheckExit(GameObject* object)

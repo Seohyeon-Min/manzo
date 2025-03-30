@@ -38,7 +38,7 @@ void Logger::log(Logger::Severity severity, std::string message) {
     }
 }
 
-void Logger::LoadSaveFile(std::map<int,int> fiShCollection)
+void Logger::LoadSaveFile()
 {
     std::ifstream file("assets/scenes/save_data.txt");
 

@@ -122,7 +122,10 @@ void Mode1::Load() {
 	module = new Module({ 0, 0 });
 	GetGSComponent<GameObjectManager>()->Add(module);
 
-	Engine::GetLogger().LoadSaveFile(fishCaptureCount);
+	Engine::GetLogger().LoadSaveFile();
+
+	fishCaptureCount = Engine::GetLogger().GetFishCollection();
+
 	fish->SetMoney(Engine::GetLogger().GetMoney());
 
 	if (Engine::GetLogger().GetModule1())
