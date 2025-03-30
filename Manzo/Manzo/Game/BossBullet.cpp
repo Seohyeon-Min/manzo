@@ -18,7 +18,7 @@ BossBullet::BossBullet(vec2 Boss_position, float lifetime)
 {
     AddGOComponent(new Sprite("assets/images/bullet.spt", this));
     float Scalerandom = (float)GetRandomValue( -2, 2);
-    SetScale(vec2(Scalerandom, Scalerandom));
+    SetScale(vec2(2, 2));
 
     static bool seedInitialized = false;
     if (!seedInitialized) {
