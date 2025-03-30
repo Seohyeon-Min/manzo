@@ -53,7 +53,8 @@ Play:
   + KEY_Q : Load next game state (change mode from sea into player's house) 
   + KEY_E : creat the boss
   + KEY_R : start the boss fight, hold a key for a short time  
-  + KEY_O : sell whole today's fish
+  + KEY_O : sell whole today's fish  
+  + KEY_F1 : decide to sell today's fish (-1 -10 +1 +10)
 
 
 * Gameplay Instruction

@@ -24,7 +24,7 @@ public:
 	std::map<int, int> fishCollection;
 
 private:
-	void ReadSaveFile(const std::string& filename);
+	//void ReadSaveFile(const std::string& filename);
 
 	bool is_opened = false;
 	bool is_picked = false;

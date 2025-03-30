@@ -13,6 +13,7 @@ Created:    March 8, 2023
 #include <string>
 #include <fstream>
 #include <chrono>
+#include <map>
 enum LoggerLogLevel {  
     LOGNONE,
     LOGERROR,
@@ -47,6 +48,13 @@ public:
     void SetTraceLogLevel(LoggerLogLevel level) {
         currentLogLevel = level;
     }
+    void LoadSaveFile(std::map<int,int> fiShCollection);
+    void WriteSaveFile(std::map<int, int> fishCaptureCount, int money, bool module1, bool module2);
+
+    int GetMoney() { return money; }
+    bool GetModule1() { return module1; }
+    bool GetModule2() { return module2; }
+
 private:
     const std::string word[4]{ "Verbose","Debug","Event","Error" };
     Severity min_level;
@@ -55,4 +63,7 @@ private:
     double seconds_since_start();
     void log(Severity severity, std::string message);
     LoggerLogLevel currentLogLevel = LOGINFO;
+
+    int money;
+    bool module1, module2;
 };

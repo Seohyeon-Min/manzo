@@ -59,6 +59,8 @@ void Mode2::Load() {
     // Icon
     Engine::GetIconManager().LoadIconList();
 
+    Engine::GetLogger().LoadSaveFile(fishCaptureCount);
+
     shop_ptr = new Shop();
     GetGSComponent<GameObjectManager>()->Add(shop_ptr);
 
@@ -121,10 +123,11 @@ void Mode2::Draw() {
     GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
     GetGSComponent<GameObjectManager>()->DrawAll();
     dialog_ptr->Draw();
-    //Engine::GetFontManager().PrintText(FontType::VeryThin, std::to_string(inven_ptr->GetMoney()), { 0,0 }, 0.2f, { 1.f,1.f,1.f }, 1.f);
 }
 
 void Mode2::Unload() {
+    Engine::GetLogger().WriteSaveFile(inven_ptr->fishCollection, inven_ptr->GetMoney(), module_ptr->IsFirstSetted(), module_ptr->IsSecondSetted());
+
     GetGSComponent<GameObjectManager>()->Unload();
     GetGSComponent<Background>()->Unload();
     ClearGSComponents();

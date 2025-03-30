@@ -122,13 +122,18 @@ void Mode1::Load() {
 	module = new Module({ 0, 0 });
 	GetGSComponent<GameObjectManager>()->Add(module);
 
-	if (module->IsFirstSetted())
+	Engine::GetLogger().LoadSaveFile(fishCaptureCount);
+	fish->SetMoney(Engine::GetLogger().GetMoney());
+
+	if (Engine::GetLogger().GetModule1())
 	{
+		module->SetFirstModule(true);
 		GetGSComponent<GameObjectManager>()->Add(new FirstModule(ship_ptr));
 	}
 
-	if (module->IsSecondSetted())
+	if (Engine::GetLogger().GetModule2())
 	{
+		module->SetSecondModule(true);
 		GetGSComponent<GameObjectManager>()->Add(new SecondModule(ship_ptr));
 	}
 }
@@ -232,6 +237,9 @@ void Mode1::Draw() {
 }
 
 void Mode1::Unload() {
+
+	Engine::GetLogger().WriteSaveFile(fishCaptureCount, GetGSComponent<Fish>()->GetMoney(), module->IsFirstSetted(), module->IsSecondSetted());
+
 	ship_ptr = nullptr;
 	delete fishGenerator;
 	fishGenerator = nullptr;

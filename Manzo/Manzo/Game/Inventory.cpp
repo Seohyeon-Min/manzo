@@ -11,14 +11,10 @@ Inven::Inven(vec2 position) : GameObject(position), page(0), dre_todayFish(rd())
 	AddGOComponent(new Sprite("assets/images/window.spt", this));
 	change_state(&state_none);
 
-	ReadSaveFile("assets/scenes/save_data.txt");
-
 	module_ptr = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Module>();
-
-	if (module_ptr == nullptr)
-	{
-		std::cout << "Module is not game obj" << std::endl;
-	}
+	module_ptr->SetFirstModule(Engine::GetLogger().GetModule1());
+	module_ptr->SetSecondModule(Engine::GetLogger().GetModule2());
+	money = Engine::GetLogger().GetMoney();
 }
 
 void Inven::Update(double dt)
@@ -84,31 +80,51 @@ bool Inven::Open()
 	return false;
 }
 
-void Inven::ReadSaveFile(const std::string& filename)
-{
-	std::ifstream file(filename);
-	if (!file.is_open()) {
-		std::cerr << "Failed to open file: " << filename << std::endl;
-		return;
-	}
-
-	fishCollection.clear();
-	int fishType, count;
-	std::string line;
-
-	while (std::getline(file, line)) {
-		std::istringstream ss(line);
-		if (ss >> fishType >> count) {
-			fishCollection[fishType - 1] = count;
-		}
-		else if (line.find("Money:") != std::string::npos) {
-			std::istringstream ss_money(line.substr(7));
-			ss_money >> money;
-		}
-	}
-
-	file.close();
-}
+//void Inven::ReadSaveFile(const std::string& filename)
+//{
+//	std::ifstream file(filename);
+//	if (!file.is_open()) {
+//		std::cerr << "Failed to open file: " << filename << std::endl;
+//		return;
+//	}
+//
+//	fishCollection.clear();
+//	int fishType, count;
+//	std::string line;
+//
+//	while (std::getline(file, line)) {
+//		std::istringstream ss(line);
+//		if (ss >> fishType >> count) {
+//			fishCollection[fishType - 1] = count;
+//		}
+//		else if (line.find("Money:") != std::string::npos) {
+//			std::istringstream ss_money(line.substr(7));
+//			ss_money >> money;
+//		}
+//		else if (line.find("Module1:") != std::string::npos) {
+//			int module1Value;
+//			std::istringstream ss_module(line.substr(9));
+//			ss_module >> module1Value;
+//
+//			if (module1Value == 1 && module_ptr)
+//			{
+//				module_ptr->SetFirstModule(true);
+//			}
+//		}
+//		else if (line.find("Module2:") != std::string::npos) {
+//			int module2Value;
+//			std::istringstream ss_module(line.substr(9));
+//			ss_module >> module2Value;
+//
+//			if (module2Value == 1 && module_ptr)
+//			{
+//				module_ptr->SetSecondModule(true);
+//			}
+//		}
+//	}
+//
+//	file.close();
+//}
 
 void Inven::State_None::Enter(GameObject* object)
 {
@@ -276,10 +292,7 @@ void Inven::State_FC::Update(GameObject* object, double dt)
 		}
 	}
 
-	std::cout << inven->how_much_sold << std::endl;
-
-
-	// Selling condition. 여러번 sold되는거 막을필요 있음
+	// decide to sell
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::F1))
 	{
 		inven->money += (inven->todays_price * inven->how_much_sold);
