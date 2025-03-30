@@ -40,6 +40,7 @@ private:
     bool wait = false;
     float scale = 1.0f;
     const float max_scale = 2.0f;
+    float angle;
 
     class Stanby : public State {
     public:

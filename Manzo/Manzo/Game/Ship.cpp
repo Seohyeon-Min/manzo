@@ -216,6 +216,7 @@ void Ship::State_Die::Update(GameObject* object, double dt)
 {
     Ship* ship = static_cast<Ship*>(object);
     Engine::Instance()->SetSlowDownFactor(ship->slow_down_factor*0.1f);
+    ship->SetVelocity({});
 }
 
 void Ship::State_Die::CheckExit(GameObject* object)
@@ -228,37 +229,45 @@ std::vector<vec2> spline_points;
 
 void Ship::Update(double dt)
 {
-    GameObject::Update(dt);
 
-    can_dash = true;
-    if (Engine::GetGameStateManager().GetStateName() == "Mode1" || Engine::GetGameStateManager().GetStateName() == "Tutorial") {
+    if (!IsFuelZero()) {
+        can_dash = true;
+        GameObject::Update(dt);
+        if (Engine::GetGameStateManager().GetStateName() == "Mode1" || Engine::GetGameStateManager().GetStateName() == "Tutorial") {
 
-        if (collide_timer->Remaining() < 0.48) {
-            // there's gonna be an error if the bgm changes
+            if (collide_timer->Remaining() < 0.48) {
+                // there's gonna be an error if the bgm changes
 
-            Engine::GetGameStateManager().GetGSComponent<Cam>()->GetCameraView().SetZoom(1.0f);
-            SetVelocity(force);
-            float base_dt = 1.0f / 240.f;
-            float adjusted_deceleration = (float)pow(deceleration / 2, dt / base_dt);
-            force *= adjusted_deceleration;
-        }
+                Engine::GetGameStateManager().GetGSComponent<Cam>()->GetCameraView().SetZoom(1.0f);
+                SetVelocity(force);
+                float base_dt = 1.0f / 240.f;
+                float adjusted_deceleration = (float)pow(deceleration / 2, dt / base_dt);
+                force *= adjusted_deceleration;
+            }
 
-        if (collide_timer->IsFinished()) {
-            Engine::Instance()->ResetSlowDownFactor();
+            if (collide_timer->IsFinished()) {
+                Engine::Instance()->ResetSlowDownFactor();
 
-            collide_timer->Reset();
-            slow_down = 0.0f;
-            hit_with = false;
-        }
+                collide_timer->Reset();
+                slow_down = 0.0f;
+                hit_with = false;
+            }
 
-        if (invincibility_timer->Remaining() < 1.48 && invincibility_timer->TickTock() && !invincibility_timer->IsFinished()) {
-            SetShader(Engine::GetShaderManager().GetShader("change_color"));
-        }
-        else {
-            SetShader(Engine::GetShaderManager().GetDefaultShader());
-        }
+            if (invincibility_timer->Remaining() < 1.48 && invincibility_timer->TickTock() && !invincibility_timer->IsFinished()) {
+                SetShader(Engine::GetShaderManager().GetShader("change_color"));
+            }
+            else {
+                SetShader(Engine::GetShaderManager().GetDefaultShader());
+            }
 
-        Engine::GetGameStateManager().GetGSComponent<Cam>()->GetCamera().UpdateShake((float)dt);
+            Engine::GetGameStateManager().GetGSComponent<Cam>()->GetCamera().UpdateShake((float)dt);
+
+            if (isCollidingWithReef && !IsTouchingReef())
+            {
+                isCollidingWithReef = false;
+            }
+    }
+ 
         // World Boundary
         RectCollision* collider = GetGOComponent<RectCollision>();
 
@@ -278,16 +287,12 @@ void Ship::Update(double dt)
             UpdatePosition({ 0, Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition().y + 360 - collider->WorldBoundary_rect().Top() });
             SetVelocity({ GetVelocity().x, 0 });
         }
-
-        if (isCollidingWithReef && !IsTouchingReef())
-        {
-            isCollidingWithReef = false;
-        }
     }
     //std::cout << Engine::GetInput().GetMousePos().mouseWorldSpaceX - Engine::window_width/ 2 << " " << Engine::GetInput().GetMousePosition().x << std::endl;
 }
 
 void Ship::FixedUpdate(double fixed_dt) {
+    if (!IsFuelZero())
     GameObject::FixedUpdate(fixed_dt);
 }
 
@@ -500,12 +505,12 @@ void Ship::ResolveCollision(GameObject* other_object) {
         if (!collide_timer->IsRunning()) {
             collide_timer->Start();
         }
+        HitWithBounce(other_object, -other_object->GetVelocity()*10.f);
         if (current_state != &state_move) {
             state_move.skip_enter = true;
             change_state(&state_move);
         }
         invincibility_timer->Set(invincibility_time);
-        HitWithBounce(other_object, -other_object->GetVelocity()*10.f);
         break;
     }
 
@@ -526,6 +531,7 @@ void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new HitEffect(GetPosition()));
 
         ReduceFuel(RockHitDecFuel);
+
     }
 
     else if (other_object->Type() == GameObjectTypes::Monster) {
@@ -536,6 +542,10 @@ void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new MonsterHitEffect(GetPosition()));
 
         ReduceFuel(MonsHitDecFuel);
+    }
+    if (IsFuelZero()) { 
+        force = {};
+        return;
     }
 
     Engine::GetLogger().LogEvent("Velocity: " + std::to_string(velocity.x) + ", " + std::to_string(velocity.y));

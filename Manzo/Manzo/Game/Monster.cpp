@@ -1,13 +1,16 @@
 #include "Ship.h"
 #include "BeatSystem.h"
 #include "Monster.h"
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 Monster::Monster(Ship* ship, vec2 pos): 
 	GameObject(pos), ship_ptr(ship), init_pos(pos)
 {
     current_state = &state_stanby;
     current_state->Enter(this);
-	AddGOComponent(new Sprite("assets/images/ship.spt", this));
+	AddGOComponent(new Sprite("assets/images/monster.spt", this));
     beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
     dash_timer = new RealTimeTimer(dash_time);
     AddGOComponent(dash_timer);
@@ -39,7 +42,15 @@ void Monster::Update(double dt)
 
     scale = std::max(scale, 1.0f);
 
-    SetScale({ scale,scale });
+    SetRotation(angle);
+    if (angle >= -1.5f && angle < 1.5f) {
+        // 왼쪽: 좌우 반전
+        SetScale({ scale, scale });
+    }
+    else {
+        // 오른쪽: 기존 scale 값 그대로 사용
+        SetScale({ scale, -scale });
+    }
 }
 
 void Monster::Draw(DrawLayer drawlayer)
@@ -154,8 +165,7 @@ void Monster::Alert::Update(GameObject* object, double dt)
     Monster* monster = static_cast<Monster*>(object);
 
     vec2 target_direction = (monster->ship_ptr->GetPosition() - monster->GetPosition()).Normalize();
-    float angle = std::atan2(target_direction.y, target_direction.x);
-    monster->SetRotation(angle);
+    monster->angle = std::atan2(target_direction.y, target_direction.x);
 
     monster->offset *= -0.957f;
     //monster->SetPosition({ monster->GetPosition().x, monster->position.y + monster->offset });
@@ -201,6 +211,8 @@ void Monster::Dash::Update(GameObject* object, double dt)
     }
     monster->direction = monster->direction * (1.0f - alpha) + target_direction * alpha;
     monster->direction = monster->direction.Normalize();
+
+    monster->angle = std::atan2(target_direction.y, target_direction.x);
 
     monster->SetVelocity(monster->direction * monster->speed);
 }

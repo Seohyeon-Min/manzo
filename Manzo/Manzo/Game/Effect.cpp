@@ -221,6 +221,7 @@ BlackOutEffect::BlackOutEffect() : Effect({}, 0.5)
     timer = new RealTimeTimer(time);
     AddGOComponent(timer);
     timer->Set(time);
+    timer->Start();
 }
 
 void BlackOutEffect::Update(double dt)
@@ -246,7 +247,8 @@ void BlackOutEffect::Draw(DrawLayer drawlayer)
 
 void BlackOutEffect::SetAlpha(const GLShader* shader)
 {
-    float alpha = float(timer->Remaining());
-    if (alpha >= 0.3f) alpha = 0.3f;
+    float alpha = float(1.0 - timer->Remaining());
+    std::cout << timer->Remaining() << std::endl;
+    //if (alpha >= 0.3f) alpha = 0.3f;
     shader->SendUniform("uAlpha", alpha);
 }

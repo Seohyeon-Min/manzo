@@ -59,7 +59,7 @@ void Mode1::Load() {
 	Engine::GetShaderManager().LoadShader("post_underwater_distortion", "assets/shaders/post_default.vert", "assets/shaders/post_underwater_distortion.frag");
 
 	// audio
-	Engine::GetAudioManager().LoadMusic("assets/audios/bgm_original.wav", "background1", false);
+	Engine::GetAudioManager().LoadMusic("assets/audios/Level1_bgm.mp3", "Level1_bgm", false);
 	Engine::GetAudioManager().LoadMusic("assets/audios/morse/e.wav", "e morse", true);
 	Engine::GetAudioManager().Set3DMode(FMOD_3D_LINEARROLLOFF);
 
@@ -67,7 +67,7 @@ void Mode1::Load() {
     AddGSComponent(new GameObjectManager());
     beat_system = new Beat();
     AddGSComponent(beat_system);
-	beat_system->LoadMusicToSync("background1");
+	beat_system->LoadMusicToSync("Level1_bgm");
 
     // Particle
     AddGSComponent(new ParticleManager<Particles::Plankton>());
@@ -187,12 +187,9 @@ void Mode1::Update(double dt) {
 	std::cout << "Player's Y position : "<< ship_ptr->GetPosition().y << "\n";
 	*/
 
+	beat_system->LoadMusicToSync("Level1_bgm");
 	//audio play
-	if (!playing)
-	{
-		Engine::GetAudioManager().PlayMusics("background1");
-		playing = true;
-	}
+
 
 	UpdateGSComponents(dt);
 	GetGSComponent<GameObjectManager>()->UpdateAll(dt);

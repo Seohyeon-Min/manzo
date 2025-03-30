@@ -135,7 +135,7 @@ void Boss::State_CutScene::CheckExit(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
 
 	if (Engine::GetInput().KeyDown(Input::Keys::R) && boss->beat->GetBeat()) {
-		Engine::GetAudioManager().SetMute("background1", true);
+		Engine::GetAudioManager().SetMute("Level1_bgm", true);
 		Engine::GetAudioManager().StopChannel("e morse");
 		Engine::GetAudioManager().PlayMusics("e boss");
 
@@ -233,8 +233,8 @@ void Boss::AfterDied()
 	if (pump) {
 		pump->Reset();
 	}
-	Engine::GetAudioManager().RestartPlayMusic("background1");
-	Engine::GetAudioManager().SetMute("background1", false);
+	Engine::GetAudioManager().RestartPlayMusic("Level1_bgm");
+	Engine::GetAudioManager().SetMute("Level1_bgm", false);
 }
 
 

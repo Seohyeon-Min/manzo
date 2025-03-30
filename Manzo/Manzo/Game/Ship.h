@@ -69,8 +69,8 @@ private:
     float Maxfuel = 1000.f;
     float baseDecfuel = 2.f;
     float MoveDecfuel = 0.5f;
-    float RockHitDecFuel = 50.f;
-    float MonsHitDecFuel = 580.f;
+    float RockHitDecFuel = 550.f;
+    float MonsHitDecFuel = 80.f;
     float fuelcounter = 0.f;
     Rock* before_nearest_rock = nullptr;
     Rock* nearestRock = nullptr;

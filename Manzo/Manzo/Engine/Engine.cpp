@@ -107,7 +107,7 @@ void Engine::ImGuiDraw()
         bool mute = GetAudioManager().GetMute();
 
         if (ImGui::Checkbox("Mute BGM", &mute)) { 
-            GetAudioManager().SetMute("background1", mute);
+            GetAudioManager().SetMute("Level1_bgm", mute);
         }
 
         ImGui::Separator();

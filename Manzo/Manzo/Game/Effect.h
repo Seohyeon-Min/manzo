@@ -75,5 +75,5 @@ public:
 private:
     void SetAlpha(const GLShader* shader) override;
     RealTimeTimer* timer;
-    double time = 1.0;
+    double time = 1.3;
 };

@@ -130,7 +130,7 @@ void Render::ApplyPostProcessing(bool is_title)
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer[!horizontal].GetColorAttachment());
 
-            double currentTime = Engine::GetAudioManager().GetCurrentMusicTime("background1");
+            double currentTime = Engine::GetAudioManager().GetCurrentMusicTime("Level1_bgm");
 
             switch (i) {
             case 0: // Bloom
@@ -174,7 +174,7 @@ void Render::ApplyPostProcessing(bool is_title)
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer[!horizontal].GetColorAttachment());
 
-            double currentTime = Engine::GetAudioManager().GetCurrentMusicTime("background1");
+            double currentTime = Engine::GetAudioManager().GetCurrentMusicTime("Level1_bgm");
 
             switch (i) {
             case 0: // Distortion
