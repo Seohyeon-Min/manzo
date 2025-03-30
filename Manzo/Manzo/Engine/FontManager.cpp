@@ -66,8 +66,6 @@ void FontManager::PrintText(FontType font, std::string txt, vec2 position, float
 		const mat3 model_to_ndc = WORLD_TO_NDC * model_to_world;
 		vec3 ndcPos = model_to_ndc * vec3(position.x, position.y, 1.0);
 
-		shader->SendUniform("uUV", 0.0f, 0.0f, -1.0f, 1.0f);
-
 		font_list[font]->draw(ndcPos, txt);
 	}
 	else

@@ -11,6 +11,7 @@ Created:    March 8, 2023
 #include "../Engine/Engine.h"
 #include "../Engine/ShowCollision.h"
 #include "../Engine/AudioManager.h"
+
 #include <cmath>
 
 #include "States.h"
@@ -103,9 +104,12 @@ void Mode2::Update(double dt) {
        isLoaded = true;
     }
 
+    Engine::GetIconManager().AddIcon("go_shop", { 100,0 }, 1.0f, false, false, true);
+
     // Open Inven
-    if (Engine::GetInput().KeyJustPressed(Input::Keys::X))
+    if (inven_ptr->Open())
     {
+        Engine::GetIconManager().RemoveIcon("go_shop");
         if (!inven_ptr->GetIsOpened()) inven_ptr->SetIsOpened(true);
         else inven_ptr->SetIsOpened(false);
     }
@@ -118,6 +122,7 @@ void Mode2::Draw() {
     GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
     GetGSComponent<GameObjectManager>()->DrawAll();
     dialog_ptr->Draw();
+    //Engine::GetFontManager().PrintText(FontType::VeryThin, std::to_string(inven_ptr->GetMoney()), { 0,0 }, 0.2f, { 1.f,1.f,1.f }, 1.f);
 }
 
 void Mode2::Unload() {

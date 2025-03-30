@@ -24,7 +24,7 @@ public:
 
 private:
     bool first_module_setted = false;
-    bool second_module_setted = true;
+    bool second_module_setted = false;
     bool third_module_setted = false;
 };
 

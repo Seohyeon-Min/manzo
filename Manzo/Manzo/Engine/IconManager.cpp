@@ -101,6 +101,17 @@ bool IconManager::IsCollidingWith(std::string obj1, std::string obj2)
 	return false; 
 }
 
+void IconManager::RemoveIcon(std::string alias)
+{
+	for (auto icon : icons)
+	{
+		if (icon->GetAlias() == alias)
+		{
+			icon->SetDraw(false);
+		}
+	}
+}
+
 Icon* IconManager::GetCollidingIcon(Icon& icon) 
 {
 	for (Icon* other : icons) 

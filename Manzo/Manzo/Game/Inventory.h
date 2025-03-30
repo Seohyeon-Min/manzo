@@ -17,6 +17,7 @@ public:
 
 	bool GetIsOpened() { return is_opened; }
 	void SetIsOpened(bool open) { is_opened = open; }
+	bool Open();
 
 	int GetMoney() { return money; }
 

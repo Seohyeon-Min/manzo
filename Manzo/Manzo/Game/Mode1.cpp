@@ -224,7 +224,7 @@ void Mode1::Draw() {
 	GetGSComponent<GameObjectManager>()->DrawAll();
 
 	// Draw Font
-	Engine::GetFontManager().PrintText(FontType::Bold, "E", {750,500}, 0.1f, {1.f,1.f,1.f}, 0.5f);
+	Engine::GetFontManager().PrintText(FontType::Bold, "E", {750,500}, 0.5f, {1.f,1.f,1.f}, 0.5f);
 	if (module->IsSecondSetted())
 	{
 		Engine::GetFontManager().PrintText(FontType::VeryThin, std::to_string(static_cast<int>(ship_ptr->GetFuel())), ship_ptr->GetPosition(), 0.05f, { 1.f,1.f,1.f }, 1.f);

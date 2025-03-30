@@ -70,6 +70,19 @@ void Inven::Draw(DrawLayer drawlayer)
 	}
 }
 
+bool Inven::Open()
+{
+	Icon* selectedIcon = Engine::GetIconManager().GetCollidingIconWithMouse({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY });
+	bool clicked = Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT);
+
+	if (selectedIcon != nullptr)
+	{
+		if(selectedIcon->GetAlias() == "go_shop" && clicked)
+			return true;
+	}
+	return false;
+}
+
 void Inven::ReadSaveFile(const std::string& filename)
 {
 	std::ifstream file(filename);

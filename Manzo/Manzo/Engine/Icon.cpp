@@ -24,24 +24,27 @@ void Icon::Update(double dt)
 
 void Icon::Draw(DrawLayer drawlayer)
 {
-	DrawCall draw_call = {
+	if (draw)
+	{
+		DrawCall draw_call = {
 		GetGOComponent<Sprite>()->GetTexture(),                       // Texture to draw
 		&GetMatrix(),                          // Transformation matrix
 		Engine::GetShaderManager().GetShader("icon"), // Shader to use
-	};
+		};
 
-	draw_call.settings.do_blending = true;
-	draw_call.SetUniforms = [this](const GLShader* shader) {
-		shader->SendUniform("uTex2d", 0);
-		shader->SendUniform("textureSize",
-			(float)GetGOComponent<Sprite>()->GetFrameSize().x,
-			(float)GetGOComponent<Sprite>()->GetFrameSize().y);
-		shader->SendUniform("canCollide", interaction);
-		shader->SendUniform("isColliding", this->IsCollidingWith({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY }));
-	};
-	draw_call.sorting_layer = DrawLayer::Draw;
+		draw_call.settings.do_blending = true;
+		draw_call.SetUniforms = [this](const GLShader* shader) {
+			shader->SendUniform("uTex2d", 0);
+			shader->SendUniform("textureSize",
+				(float)GetGOComponent<Sprite>()->GetFrameSize().x,
+				(float)GetGOComponent<Sprite>()->GetFrameSize().y);
+			shader->SendUniform("canCollide", interaction);
+			shader->SendUniform("isColliding", this->IsCollidingWith({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY }));
+			};
+		draw_call.sorting_layer = DrawLayer::Draw;
 
-	Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call));
+		Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call));
+	}
 }
 
 bool Icon::CanCollideWith(GameObjectTypes other_object)

@@ -23,6 +23,7 @@ public:
 	const float GetScale() const { return scale; }
 	const std::string& GetAlias() const { return alias; }
 
+	void SetDraw(bool can_draw) { draw = can_draw; }
 	bool IsSelected() { return selected; }
 	bool IsColliding() { return resolve_collision; }
 	bool CanChangePosition() { return can_change_pos; }
@@ -38,4 +39,5 @@ private:
 	bool resolve_collision = false;
 	bool can_change_pos = false;
 	bool interaction = false;
+	bool draw = true;
 };

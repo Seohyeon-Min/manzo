@@ -17,7 +17,7 @@ public:
 	void AddIcon(std::string alias, vec2 position, float scale, bool drag = true, bool change_pos = false, bool interaction = false);
 	void RemoveAllIcon();
 	bool IsCollidingWith(std::string obj1, std::string obj2);
-	//void RemoveIcon(std::string alias);
+	void RemoveIcon(std::string alias);
 
 	Icon* GetCollidingIcon(Icon& icon);
 	Icon* GetCollidingIconWithMouse(vec2 mousePosition);
