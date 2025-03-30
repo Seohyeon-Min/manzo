@@ -66,7 +66,7 @@ void Mode2::Load() {
     // Dialog
     dialog_ptr = new Dialog({0,0});
     GetGSComponent<GameObjectManager>()->Add(dialog_ptr);
-
+    
     Engine::GetLogger().LoadSaveFile();
 
     // Module

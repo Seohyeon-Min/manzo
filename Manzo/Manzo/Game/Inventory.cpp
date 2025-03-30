@@ -205,7 +205,7 @@ void Inven::State_FC::Update(GameObject* object, double dt)
 
 		//decrease each type of fish
 		inven->fishCollection[inven->todays_fish_index] = 0;
-		Engine::GetIconManager().RemoveIcon("fish" + (inven->todays_fish_index + 1));
+		Engine::GetIconManager().RemoveIcon("fish" + std::to_string(inven->todays_fish_index + 1));
 	}
 
 
@@ -271,7 +271,7 @@ void Inven::State_FC::Update(GameObject* object, double dt)
 
 		if (inven->fishCollection[inven->todays_fish_index] == 0)
 		{
-			Engine::GetIconManager().RemoveIcon("fish" + (inven->todays_fish_index + 1));
+			Engine::GetIconManager().RemoveIcon("fish"+ std::to_string(inven->todays_fish_index + 1));
 		}
 	}
 

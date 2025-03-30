@@ -27,6 +27,7 @@ public:
 	bool IsSelected() { return selected; }
 	bool IsColliding() { return resolve_collision; }
 	bool CanChangePosition() { return can_change_pos; }
+	bool CanDrag() {	return can_drag;	}
 	void SetSelected(bool select) { selected = select; }
 
 private:

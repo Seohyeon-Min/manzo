@@ -166,11 +166,15 @@ Icon* IconManager::GetCollidingIcon(Icon& icon)
 	{
 		if (other != &icon && icon.IsCollidingWith(other))
 		{
-			return other;
+			if ((icon.CanDrag() && !other->CanDrag()) || (!icon.CanDrag() && other->CanDrag()))
+			{
+				return other;
+			}
 		}
 	}
 	return nullptr;
 }
+
 
 Icon* IconManager::GetCollidingIconWithMouse(vec2 mousePosition)
 {
