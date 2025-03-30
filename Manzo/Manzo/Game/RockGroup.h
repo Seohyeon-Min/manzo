@@ -46,6 +46,7 @@ public:
 	bool MatchIndex();
 	vec2 FindCenterRect();
 	vec2 FindCenterPoly();
+	Math::rect FindBoundary();
 	std::string GetIndex() { return index; }
 
 	void Active(bool active) { loaded = active; }

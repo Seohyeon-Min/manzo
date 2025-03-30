@@ -31,6 +31,35 @@ void RockGroup::Draw()
     GameObject::Draw();
 }
 
+Math::rect RockGroup::FindBoundary() {
+    vec2 minPoint;
+    vec2 maxPoint;
+
+
+    if (!rocks.empty()) {
+        for (auto& rock : rocks) {
+            Polygon poly = rock->GetOriginalPoly();
+            if (poly.vertices.empty()) {
+                return Math::rect{};
+            }
+            minPoint = poly.vertices[0];
+            maxPoint = poly.vertices[0];
+            for (const auto& vertex : poly.vertices) {
+                minPoint.x = std::min(minPoint.x, vertex.x);
+                minPoint.y = std::min(minPoint.y, vertex.y);
+                maxPoint.x = std::max(maxPoint.x, vertex.x);
+                maxPoint.y = std::max(maxPoint.y, vertex.y);
+            }
+
+            
+        }
+        return Math::rect{ minPoint, maxPoint };
+    }
+    else {
+        return Math::rect{};
+    }
+}
+
 bool RockGroup::MatchIndex()
 {
     std::ifstream file("assets/images/rock/rock.csv");
