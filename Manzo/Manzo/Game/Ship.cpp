@@ -46,49 +46,54 @@ void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
 
 	vec2 ship_position = ship->GetPosition();
 	vec2 window = { Engine::window_width / 2, Engine::window_height / 2 };
-	vec2 mouse_pos = { (float)Engine::GetInput().GetMousePos().mouseWorldSpaceX,
-					   (float)Engine::GetInput().GetMousePos().mouseWorldSpaceY };
+	vec2 mouse_pos = { (float)Engine::GetInput().GetMousePos().mouseWorldSpaceX, (float)Engine::GetInput().GetMousePos().mouseWorldSpaceY };
 	vec2 pos = mouse_pos - window;
 
+	ship->dash_target = pos;
 	vec2 destination = pos;
-	vec2 new_direction = destination - ship_position;
-	float distance = new_direction.Length();
-	if (distance > 0.01f) {
-		new_direction = new_direction.Normalize();
-	}
-	else {
-		new_direction = { 1.0f, 0.0f };
-	}
-
-	static vec2 prev_direction = new_direction;  
-
-	vec2 direction = prev_direction * 0.95f + new_direction * 0.05f;
+	vec2 direction = destination - ship_position;
+	float distance = direction.Length();
 	direction = direction.Normalize();
 
+
+	float force_multiplier = 0.0f;
+	float min_distance = 50.0f;
 	float max_distance = 200.0f;
-	ship->dash_target = ship_position + direction * max_distance;
 
-	vec2 force = direction * skidding_speed;
-	ship->SetVelocity(force);
+	if (distance <= min_distance) {
+		force_multiplier = 0.0f;
+	}
+	else if (distance >= max_distance) {
+		force_multiplier = 1.0f;
+	}
+	else {
+		force_multiplier = (distance - min_distance) / (max_distance - min_distance);
+	}
 
-	prev_direction = direction;
 
-	float force_multiplier = 1.0f;
+	vec2 force = direction * skidding_speed * force_multiplier;
+
 	float randomAngle = util::random(180.0f, 200.0f);
 	float angleRadians = util::to_radians(randomAngle);
 	vec2 bubble_direction = { cos(angleRadians), sin(angleRadians) };
-
 	vec2 target_position = {
-		ship_position.x + bubble_direction.x * (-30.f * (ship->GetFlipX() ? -1.f : 1.f)),
-		ship_position.y + bubble_direction.y * -30.f
+	ship_position.x + bubble_direction.x * (-30.f * (ship->GetFlipX() ? -1.f : 1.f)),
+	ship_position.y + bubble_direction.y * -30.f
 	};
+
+	if (distance > max_distance) {
+		ship->dash_target = ship_position + direction * max_distance;
+	}
+	else {
+		ship->dash_target = pos;
+	}
+	ship->SetVelocity(force);
 
 	if (ship->fuel_bubble_timer->Remaining() == 0.0 && force_multiplier > 0.4) {
 		Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::FuelBubble>>()->Emit(1, target_position, { 0,0 }, -force * 0.4f, 1.5);
 		ship->fuel_bubble_timer->Reset();
 	}
 }
-
 void Ship::State_Idle::CheckExit(GameObject* object) {
 	Ship* ship = static_cast<Ship*>(object);
 
