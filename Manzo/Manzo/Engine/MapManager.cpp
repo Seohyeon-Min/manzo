@@ -413,13 +413,11 @@ void Map::MakeMovingRockGroups(MovingRock* moving_rock, Polygon poly) {
 }
 
 
-bool Map::IsOverlapping(const Math::rect& camera_boundary, vec2 rock_position) {
-    return (
-        camera_boundary.Left() - margin <= rock_position.x &&
-        rock_position.x <= camera_boundary.Right() + margin &&
-        camera_boundary.Bottom() - margin <= rock_position.y &&
-        rock_position.y <= camera_boundary.Top() + margin
-        );
+bool Map::IsOverlapping(const Math::rect& camera_boundary, const Math::rect& rock) {
+    return !(camera_boundary.Right() + margin < rock.Left() ||
+        camera_boundary.Left() - margin > rock.Right() ||
+        camera_boundary.Top() + margin < rock.Bottom() ||
+        camera_boundary.Bottom() - margin > rock.Top());
 }
 
 void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
@@ -429,7 +427,7 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
         if(!rocks.empty()){
             Polygon poly2 = rocks[0]->GetPolygon();
 
-            bool overlapping = IsOverlapping(camera_boundary, rocks[0]->GetPosition());
+            bool overlapping = IsOverlapping(camera_boundary, poly2.FindBoundary());
 
             if (overlapping) {
                 for (Rock* rock : rocks) {
