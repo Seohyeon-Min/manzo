@@ -43,6 +43,17 @@ public:
     ~CaptureEffect();
 };
 
+class GetFishEffect : public Effect {
+public:
+    GetFishEffect(vec2 pos);
+    void Update(double dt) override;
+    void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
+private:
+    float speed = 400.f;
+    const float deceleration = 0.95f;
+};
+
+
 class HitEffect : public Effect {
 public:
     HitEffect(vec2 pos);

@@ -3,6 +3,8 @@
 
 Dialog::Dialog(vec2 start_position)
     : GameObject(start_position), currentIndex(0), elapsedTime(0.0), typingSpeed(0.05), IsTyping(false) {
+    AddGOComponent(new Sprite("assets/images/ship.spt", this));
+
     dialog = new JsonParser_dialog("en");
     DialogBox = Engine::GetTextureManager().Load("assets/images/temp_dial.png");
     Box_effect = Engine::GetTextureManager().Load("assets/images/box_effect.png");
@@ -61,9 +63,9 @@ void Dialog::Update(double dt) {
 }
 
 void Dialog::Draw() {
-    DrawCall draw_call_box = { DialogBox, &back_matrix};
-    DrawCall draw_call_effect = { Box_effect, &effect_matrix};
-    DrawCall draw_call_Me = { Me, &me_matrix};
+    DrawCall draw_call_box = { DialogBox, &back_matrix, Engine::GetShaderManager().GetDefaultShader()};
+    DrawCall draw_call_effect = { Box_effect, &effect_matrix, Engine::GetShaderManager().GetDefaultShader() };
+    DrawCall draw_call_Me = { Me, &me_matrix, Engine::GetShaderManager().GetDefaultShader() };
 
     SetDrawSetting(draw_call_box);
     SetDrawSetting(draw_call_effect);

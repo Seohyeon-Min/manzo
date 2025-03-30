@@ -12,7 +12,7 @@ void main()
 {
     // 기본 왜곡 강도 및 주파수/속도 설정
     float waveStrength = 0.001;
-    float frequency = 28.0;
+    float frequency = 48.0;
     float speed = 1.0;
 
     vec2 uv = vTextureCoordinates;

@@ -32,3 +32,15 @@ private:
 
     bool playing = false;
 };
+
+class TitleText : public GameObject {
+public:
+    TitleText(vec2 start_position);
+    GameObjectTypes Type() override { return GameObjectTypes::Player; }
+    std::string TypeName() override { return "Cat"; }
+    void Update(double dt) override;
+    void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
+private:
+    void SetUniform(const GLShader* shader);
+
+};

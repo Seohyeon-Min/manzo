@@ -22,7 +22,8 @@ int main() {
         engine->GetFontManager().AddFontType("assets/fonts/Font1.ttf");
         engine->GetFontManager().AddFontType("assets/fonts/Font2.ttf");
 
-
+        Title title;
+        engine->GetGameStateManager().AddGameState(title);
 
         Mode1 mode1;
         engine->GetGameStateManager().AddGameState(mode1);

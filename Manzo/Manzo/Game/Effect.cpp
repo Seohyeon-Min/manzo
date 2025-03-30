@@ -117,6 +117,35 @@ CaptureEffect::~CaptureEffect()
         ->EmitRound(2, GetPosition(), 100.f, 30.f);
 }
 
+GetFishEffect::GetFishEffect(vec2 pos)
+    : Effect(pos, 0.5) {
+    //SetScale({ 0.6f, 0.6f });
+    AddGOComponent(new Sprite("assets/images/Get_fish_effect.spt", this));
+}
+
+void GetFishEffect::Update(double dt)
+{
+    Effect::Update(dt);
+    SetVelocity({ GetVelocity().x, speed });
+    float base_dt = 1.0f / 240.f;
+    speed *= (float)std::pow(deceleration, dt / base_dt);
+}
+
+void GetFishEffect::Draw(DrawLayer drawlayer)
+{
+    Sprite* sprite = GetGOComponent<Sprite>();
+    DrawCall draw_call = {
+        sprite,
+        &GetMatrix(),
+        Engine::GetShaderManager().GetShader("change_alpha") // Shader to use
+    };
+
+    draw_call.settings.do_blending = true;
+    draw_call.SetUniforms = [this](const GLShader* shader) { SetAlpha(shader); };
+    draw_call.sorting_layer = DrawLayer::DrawPlayerTop;
+    GameObject::Draw(draw_call);
+}
+
 HitEffect::HitEffect(vec2 pos)
     : Effect(pos, 0.5) {
     SetScale({ 0.6f, 0.6f });
@@ -185,3 +214,4 @@ void MonsterHitEffect::Draw(DrawLayer drawlayer)
     draw_call.sorting_layer = DrawLayer::DrawLast;
     GameObject::Draw(draw_call);
 }
+

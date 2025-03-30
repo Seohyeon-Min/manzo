@@ -8,6 +8,7 @@
 #include "Effect.h"
 #include "WindowState.h"
 #include "Monster.h"
+#include "States.h"
 
 #include <iostream>
 
@@ -17,6 +18,7 @@ Ship::Ship(vec2 start_position) :
     AddGOComponent(new Sprite("assets/images/ship.spt", this));
     beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
     skill = Engine::GetGameStateManager().GetGSComponent<Skillsys>();
+    hit_text = Engine::GetTextureManager().Load("assets/images/ship_hit.png");
 
     fuel = Maxfuel;
     FuelFlag = false;
@@ -201,6 +203,23 @@ void Ship::State_Move::CheckExit(GameObject* object) {
     }
 }
 
+
+void Ship::State_Die::Enter(GameObject* object)
+{
+    Ship* ship = static_cast<Ship*>(object);
+    ship->SetVelocity({});
+    Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
+}
+
+void Ship::State_Die::Update(GameObject* object, double dt)
+{
+}
+
+void Ship::State_Die::CheckExit(GameObject* object)
+{
+}
+
+
 std::vector<vec2> spline_points;
 
 
@@ -271,15 +290,30 @@ void Ship::FixedUpdate(double fixed_dt) {
 
 
 void Ship::Draw(DrawLayer drawlayer) {
-    DrawCall draw_call = {
-    GetGOComponent<Sprite>()->GetTexture(),                       // Texture to draw
-    &GetMatrix(),                          // Transformation matrix
-    GetShader()
-    };
 
-    draw_call.settings.do_blending = true;
-    draw_call.sorting_layer = DrawLayer::DrawPlayer;
-    GameObject::Draw(draw_call);
+    if (hit_with) {
+        DrawCall draw_call = {
+        hit_text,                       // Texture to draw
+        &GetMatrix(),                          // Transformation matrix
+        GetShader()
+        };
+
+        draw_call.settings.do_blending = true;
+        draw_call.sorting_layer = DrawLayer::DrawPlayer;
+        GameObject::Draw(draw_call);
+    }
+    else {
+        DrawCall draw_call = {
+        GetGOComponent<Sprite>()->GetTexture(),                       // Texture to draw
+        &GetMatrix(),                          // Transformation matrix
+        GetShader()
+        };
+
+        draw_call.settings.do_blending = true;
+        draw_call.sorting_layer = DrawLayer::DrawPlayer;
+        GameObject::Draw(draw_call);
+    }
+
 
 }
 
@@ -446,6 +480,7 @@ void Ship::ResolveCollision(GameObject* other_object) {
 
     switch (other_object->Type()) {
     case GameObjectTypes::Fish:
+        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new GetFishEffect(GetPosition()));
         change_state(&state_idle);
         break;
     case GameObjectTypes::Rock:
@@ -474,10 +509,7 @@ void Ship::ResolveCollision(GameObject* other_object) {
 }
 
 void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
-    fuel -= RockHitDecFuel;
-    if (fuel < 0.0f) {
-        fuel = 0.0f;
-    }
+
     if (other_object->Type() == GameObjectTypes::Rock) {
 
         auto cam = Engine::GetGameStateManager().GetGSComponent<Cam>();
@@ -489,6 +521,8 @@ void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
         normal = ComputeCollisionNormal(points, GetPosition(), center);
         Engine::GetLogger().LogEvent("normal: " + std::to_string(normal.x) + ", " + std::to_string(normal.y));
         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new HitEffect(GetPosition()));
+
+        ReduceFuel(RockHitDecFuel);
     }
 
     else if (other_object->Type() == GameObjectTypes::Monster) {
@@ -497,6 +531,8 @@ void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
         normal = ComputeCollisionNormal(points, GetPosition(), monster->GetPosition());
         Engine::GetLogger().LogEvent("normal: " + std::to_string(normal.x) + ", " + std::to_string(normal.y));
         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new MonsterHitEffect(GetPosition()));
+
+        ReduceFuel(MonsHitDecFuel);
     }
 
     Engine::GetLogger().LogEvent("Velocity: " + std::to_string(velocity.x) + ", " + std::to_string(velocity.y));
@@ -526,6 +562,16 @@ void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
     Engine::GetLogger().LogEvent("velocity.Length(), speed : " + std::to_string(velocity.Length()) + " : " + std::to_string(speed));
 }
 
+void Ship::ReduceFuel(float value)
+{
+    fuel -= value;
+    if (fuel < 0.0f) {
+        fuel = 0.0f;
+        change_state(&state_die);
+    }
+}
+
+
 //for fuel
 void Ship::FuelUpdate(double dt)
 {
@@ -539,7 +585,7 @@ void Ship::FuelUpdate(double dt)
 
     if (FuelFlag == false)
     {
-        fuelcounter += dt;
+        fuelcounter += (float)dt;
 
         if (fuelcounter >= 1) // Decreased fuel per second
         {
@@ -566,7 +612,7 @@ void Ship::FuelUpdate(double dt)
     }
 }
 
-void Ship::SetMaxFuel(double input)
+void Ship::SetMaxFuel(float input)
 {
     Maxfuel = input;
 }
@@ -585,7 +631,6 @@ bool Ship::IsTouchingReef()
 bool Ship::IsFuelZero()
 {
     return FuelFlag;
-    fuel -= RockHitDecFuel;
     //std::cout << "Collision with Reef!" << std::endl;
 
 }
