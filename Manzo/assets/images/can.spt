@@ -1,5 +1,5 @@
 assets/images/can.png
-Hotspot 25 -25
+Hotspot 25 25
 FrameSize 50 50
 RectCollision -25 -25 25 25
 Anim assets/images/None.anm

@@ -23,15 +23,15 @@
    inkscape:pagecheckerboard="0"
    inkscape:deskcolor="#d1d1d1"
    inkscape:document-units="px"
-   inkscape:zoom="3.2391414"
-   inkscape:cx="3057.7547"
-   inkscape:cy="5677.276"
+   inkscape:zoom="0.20244634"
+   inkscape:cx="1148.4525"
+   inkscape:cy="2571.0517"
    inkscape:window-width="1920"
    inkscape:window-height="1129"
    inkscape:window-x="-8"
    inkscape:window-y="-8"
    inkscape:window-maximized="1"
-   inkscape:current-layer="g1" /><defs
+   inkscape:current-layer="g72" /><defs
    id="defs1" /><g
    inkscape:label="Layer 1"
    inkscape:groupmode="layer"
@@ -544,74 +544,79 @@
      
 
 
+
+
+
+
+
+
+
 <g
-   id="g73">
-<circle
-     style="fill:#ece15e;stroke:#d52868;stroke-width:0.45942;stroke-opacity:0.498039"
-     id="path73"
-     cx="821.71503"
-     cy="1616.548"
-     rx="4.770288"
-     ry="4.7702899" />
-</g>
+   id="g72">
 <g
    id="g74">
 <circle
-     style="fill:#ece15e;stroke:#d52868;stroke-width:1.06049;stroke-opacity:0.498039"
-     id="path74"
-     cx="415.67578"
-     cy="892.8811"
-     rx="4.4697518"
-     ry="4.4697533" />
+     style="fill:#ece15e;stroke:#d52868;stroke-width:1.62023;stroke-opacity:0.498039"
+     id="path72"
+     cx="416.02875"
+     cy="869.22089"
+     r="24.189886" />
 </g>
 <g
    id="g75">
 <circle
-     style="fill:#ece15e;stroke:#d52868;stroke-width:0.95085;stroke-opacity:0.498039"
-     id="path75"
-     cx="2686.876"
-     cy="1413.3098"
-     rx="4.5245771"
-     ry="4.5245748" />
+     style="fill:#ece15e;stroke:#d52868;stroke-width:1.62023;stroke-opacity:0.498039"
+     id="path72-2"
+     cx="816.64362"
+     cy="1593.6627"
+     r="24.189886" />
 </g>
 <g
    id="g76">
 <circle
-     style="fill:#ece15e;stroke:#d52868;stroke-width:1.21705;stroke-opacity:0.498039"
-     id="path76"
-     cx="1301.7076"
-     cy="2141.1274"
-     rx="4.3914733"
-     ry="4.3914742" />
+     style="fill:#ece15e;stroke:#d52868;stroke-width:1.62023;stroke-opacity:0.498039"
+     id="path72-2-4"
+     cx="3823.3535"
+     cy="3046.1904"
+     r="24.189886" />
 </g>
 <g
-   id="g77"><ellipse
-     style="fill:#ece15e;stroke:#d52868;stroke-width:0.695219;stroke-opacity:0.498039"
-     id="path77"
-     cx="3844.3064"
-     cy="3068.0291"
-     rx="4.6523919"
-     ry="4.6523905" />
-</g>
-<g
-   id="g80">
+   id="g77">
 <circle
-     style="fill:#ece15e;stroke:#d52868;stroke-width:1.07449;stroke-opacity:0.498039"
-     id="path78"
-     cx="4829.8027"
-     cy="5998.9399"
-     rx="4.4627509"
-     ry="4.4627528" />
+     style="fill:#ece15e;stroke:#d52868;stroke-width:1.62023;stroke-opacity:0.498039"
+     id="path72-2-4-9"
+     cx="2818.9478"
+     cy="1441.4124"
+     r="24.189886" />
+</g>
+<g
+   id="g78">
+<circle
+     style="fill:#ece15e;stroke:#d52868;stroke-width:1.62023;stroke-opacity:0.498039"
+     id="path72-2-4-9-3"
+     cx="1326.1703"
+     cy="2115.4351"
+     r="24.189886" />
 </g>
 <g
    id="g79">
 <circle
-     style="fill:#ece15e;stroke:#d52868;stroke-width:1.55411;stroke-opacity:0.498039"
-     id="path79"
-     cx="3035.1917"
-     cy="5706.27"
-     rx="4.2229447"
-     ry="4.2229443" />
+     style="fill:#ece15e;stroke:#d52868;stroke-width:1.62023;stroke-opacity:0.498039"
+     id="path72-2-4-9-3-1"
+     cx="4835.4248"
+     cy="5979.9482"
+     r="24.189886" />
 </g>
+<g
+   id="g80">
+<circle
+     style="fill:#ece15e;stroke:#d52868;stroke-width:1.62023;stroke-opacity:0.498039"
+     id="path72-2-4-9-3-1-2"
+     cx="2954.749"
+     cy="5681.4561"
+     r="24.189886" />
+</g>
+</g>
+
 </g>
          </svg>
