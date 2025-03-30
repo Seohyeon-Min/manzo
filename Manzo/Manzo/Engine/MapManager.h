@@ -53,7 +53,7 @@ public:
 
 private:
 	char currentCommand = '\0';
-	float margin = 1000.f;
+	float margin = 2000.f;
 
 	std::vector<Polygon> original_polygons;
 	std::vector<Polygon> modified_polygons;

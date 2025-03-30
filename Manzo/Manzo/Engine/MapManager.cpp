@@ -441,11 +441,8 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
 
             bool overlapping = IsOverlapping(camera_boundary, rockgroup->FindBoundary());
 
-            if (overlapping) {
-
-
+            if (true) {
                 //Add Rock in GameState
-                
                 for (auto& rock : rockgroup->GetRocks()) {
 
                     Polygon original_poly = rock->GetOriginalPoly();

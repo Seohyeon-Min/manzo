@@ -78,11 +78,15 @@ void Mode1::Load() {
     AddGSComponent(new ParticleManager<Particles::CaptureEffect>());
 
     //// camera
+	vec2 start_position = { 600, -500 };
+	Math::rect cam_limit = Math::rect({600, -500}, {4300, -6000});
     camera = new Cam();
+	camera->SetPosition(start_position);
+	camera->SetLimit(cam_limit);
     AddGSComponent(camera);
 
     //// ship
-    ship_ptr = new Ship({ 4350,-5420 });
+    ship_ptr = new Ship(start_position);
     GetGSComponent<GameObjectManager>()->Add(ship_ptr);
 
 	//// background
