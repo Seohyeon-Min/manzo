@@ -36,13 +36,15 @@ void Box::ResolveCollision(GameObject* other_object) {
     switch (other_object->Type()) {
     case GameObjectTypes::Ship:
         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new CaptureEffect(GetPosition()));
-        
+        Engine::GetGameStateManager().GetGSComponent<Fish>()->SetMoney(Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney()+1);
         this->Destroy();
+        //std::cout<<"Money: "<<Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney()<<"\n";
+        
         break;
 
     case GameObjectTypes::Net:
         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new CaptureEffect(GetPosition()));
-        
+        Engine::GetGameStateManager().GetGSComponent<Fish>()->SetMoney(Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() + 1);
         this->Destroy();
         break;
 
