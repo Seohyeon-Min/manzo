@@ -23,6 +23,9 @@ int main() {
         engine->GetFontManager().AddFontType("assets/fonts/Font2.ttf");
         engine->GetFontManager().AddFontType("assets/fonts/AlumniSans-Medium.ttf");
         engine->GetFontManager().AddFontType("assets/fonts/AlumniSans-Light.ttf");
+        engine.GetFontManager().AddFontType("assets/fonts/Font4.ttf");
+
+        std::ofstream saveFile("assets/scenes/save_data.txt", std::ios::trunc);
 
         Title title;
         engine->GetGameStateManager().AddGameState(title);
@@ -35,6 +38,7 @@ int main() {
 
         Tutorial tutorial;
         engine->GetGameStateManager().AddGameState(tutorial);
+
 
 
         SDL_GL_SetSwapInterval(1);

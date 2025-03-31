@@ -13,16 +13,16 @@
 #include <iostream>
 
 Ship::Ship(vec2 start_position) :
-    GameObject(start_position), move(false)
+	GameObject(start_position), move(false)
 {
     AddGOComponent(new Sprite("assets/images/ship.spt", this));
     beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
     skill = Engine::GetGameStateManager().GetGSComponent<Skillsys>();
     hit_text = Engine::GetTextureManager().Load("assets/images/ship_hit.png");
 
-    fuel = Maxfuel;
-    FuelFlag = false;
-    SetVelocity({ 0,0 });
+	fuel = Maxfuel;
+	FuelFlag = false;
+	SetVelocity({ 0,0 });
 
     if (Engine::GetGameStateManager().GetStateName() == "Mode1" || Engine::GetGameStateManager().GetStateName() == "Tutorial") {
         bounceBehavior = new DefaultBounceBehavior();
@@ -40,52 +40,52 @@ Ship::Ship(vec2 start_position) :
 }
 
 void Ship::State_Idle::Enter(GameObject* object) {
-    Ship* ship = static_cast<Ship*>(object);
-    if (ship->GetVelocity() != vec2{})
-        ship->SetVelocity(ship->direction * skidding_speed);
+	Ship* ship = static_cast<Ship*>(object);
+	if (ship->GetVelocity() != vec2{})
+		ship->SetVelocity(ship->direction * skidding_speed);
 }
 void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
-    //get mouse pos and move to there
-    Ship* ship = static_cast<Ship*>(object);
+	//get mouse pos and move to there
+	Ship* ship = static_cast<Ship*>(object);
 
-    Engine::GetInput().GetMousePos().mouseWorldSpaceX - Engine::window_width / 2 > ship->GetPosition().x ? ship->SetFlipX(true) : ship->SetFlipX(false);
+	Engine::GetInput().GetMousePos().mouseWorldSpaceX - Engine::window_width / 2 > ship->GetPosition().x ? ship->SetFlipX(true) : ship->SetFlipX(false);
 
-    vec2 ship_position = ship->GetPosition();
-    vec2 window = { Engine::window_width / 2, Engine::window_height / 2 };
-    vec2 mouse_pos = { (float)Engine::GetInput().GetMousePos().mouseWorldSpaceX, (float)Engine::GetInput().GetMousePos().mouseWorldSpaceY };
-    vec2 pos = mouse_pos - window;
+	vec2 ship_position = ship->GetPosition();
+	vec2 window = { Engine::window_width / 2, Engine::window_height / 2 };
+	vec2 mouse_pos = { (float)Engine::GetInput().GetMousePos().mouseWorldSpaceX, (float)Engine::GetInput().GetMousePos().mouseWorldSpaceY };
+	vec2 pos = mouse_pos - window;
 
-    ship->dash_target = pos;
-    vec2 destination = pos;
-    vec2 direction = destination - ship_position;
-    float distance = direction.Length();
-    direction = direction.Normalize();
-
-
-    float force_multiplier = 0.0f;
-    float min_distance = 50.0f;
-    float max_distance = 200.0f;
-
-    if (distance <= min_distance) {
-        force_multiplier = 0.0f;
-    }
-    else if (distance >= max_distance) {
-        force_multiplier = 1.0f;
-    }
-    else {
-        force_multiplier = (distance - min_distance) / (max_distance - min_distance);
-    }
+	ship->dash_target = pos;
+	vec2 destination = pos;
+	vec2 direction = destination - ship_position;
+	float distance = direction.Length();
+	direction = direction.Normalize();
 
 
-    vec2 force = direction * skidding_speed * force_multiplier;
+	float force_multiplier = 0.0f;
+	float min_distance = 50.0f;
+	float max_distance = 200.0f;
 
-    float randomAngle = util::random(180.0f, 200.0f);
-    float angleRadians = util::to_radians(randomAngle);
-    vec2 bubble_direction = { cos(angleRadians), sin(angleRadians) };
-    vec2 target_position = {
-    ship_position.x + bubble_direction.x * (-30.f * (ship->GetFlipX() ? -1.f : 1.f)),
-    ship_position.y + bubble_direction.y * -30.f
-    };
+	if (distance <= min_distance) {
+		force_multiplier = 0.0f;
+	}
+	else if (distance >= max_distance) {
+		force_multiplier = 1.0f;
+	}
+	else {
+		force_multiplier = (distance - min_distance) / (max_distance - min_distance);
+	}
+
+
+	vec2 force = direction * skidding_speed * force_multiplier;
+
+	float randomAngle = util::random(180.0f, 200.0f);
+	float angleRadians = util::to_radians(randomAngle);
+	vec2 bubble_direction = { cos(angleRadians), sin(angleRadians) };
+	vec2 target_position = {
+	ship_position.x + bubble_direction.x * (-30.f * (ship->GetFlipX() ? -1.f : 1.f)),
+	ship_position.y + bubble_direction.y * -30.f
+	};
 
     if (distance > max_distance) {
         ship->dash_target = ship_position + direction * max_distance;
@@ -95,10 +95,10 @@ void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
     }
     ship->SetVelocity(force);
 
-    if (ship->fuel_bubble_timer->Remaining() == 0.0 && force_multiplier > 0.4) {
-        Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::FuelBubble>>()->Emit(1, target_position, { 0,0 }, -force * 0.4f, 1.5);
-        ship->fuel_bubble_timer->Reset();
-    }
+	if (ship->fuel_bubble_timer->Remaining() == 0.0 && force_multiplier > 0.4) {
+		Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::FuelBubble>>()->Emit(1, target_position, { 0,0 }, -force * 0.4f, 1.5);
+		ship->fuel_bubble_timer->Reset();
+	}
 }
 void Ship::State_Idle::CheckExit(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
@@ -109,8 +109,8 @@ void Ship::State_Idle::CheckExit(GameObject* object) {
         ship->direction = ship->direction.Normalize();
         ship->force = ship->direction * speed;
 
-        ship->change_state(&ship->state_move);
-    }
+		ship->change_state(&ship->state_move);
+	}
 }
 
 void Ship::State_Move::Enter(GameObject* object) {
@@ -366,7 +366,7 @@ std::vector<vec2> SortPointsCounterClockwise(std::span<const vec2> points, const
             return angle_a > angle_b;
         });
 
-    return sorted_points;
+	return sorted_points;
 }
 
 std::vector<vec2> ExtendBoundaryPoints(std::span<const vec2> points) {
@@ -374,22 +374,22 @@ std::vector<vec2> ExtendBoundaryPoints(std::span<const vec2> points) {
 
     if (points.size() > 2) {
 
-        extended_points.insert(extended_points.begin(), points.back());
-        extended_points.push_back(points.front());
-        extended_points.push_back(points[1]);
-    }
+		extended_points.insert(extended_points.begin(), points.back());
+		extended_points.push_back(points.front());
+		extended_points.push_back(points[1]);
+	}
 
-    return extended_points;
+	return extended_points;
 }
 
 std::vector<vec2> GenerateSplinePoints(std::span<const vec2> points, int resolution) {
     std::vector<vec2> spline_points;
 
-    if (points.size() < 2) {
-        return spline_points;
-    }
+	if (points.size() < 2) {
+		return spline_points;
+	}
 
-    std::vector<vec2> extended_points = ExtendBoundaryPoints(points);
+	std::vector<vec2> extended_points = ExtendBoundaryPoints(points);
 
     for (size_t i = 0; i < extended_points.size() - 3; ++i) {
         for (int j = 0; j < resolution; ++j) {
@@ -400,7 +400,7 @@ std::vector<vec2> GenerateSplinePoints(std::span<const vec2> points, int resolut
 
     }
 
-    return spline_points;
+	return spline_points;
 }
 
 vec2 FindClosestPointOnSpline(std::span<const vec2> spline_points, const vec2& position) {
@@ -408,33 +408,33 @@ vec2 FindClosestPointOnSpline(std::span<const vec2> spline_points, const vec2& p
     vec2 closest_point;
     size_t closest_index = 0;
 
-    for (size_t i = 0; i < spline_points.size(); ++i) {
-        float distance = (spline_points[i] - position).Length();
-        if (distance < min_distance) {
-            min_distance = distance;
-            closest_point = spline_points[i];
-            closest_index = i;
-        }
-    }
+	for (size_t i = 0; i < spline_points.size(); ++i) {
+		float distance = (spline_points[i] - position).Length();
+		if (distance < min_distance) {
+			min_distance = distance;
+			closest_point = spline_points[i];
+			closest_index = i;
+		}
+	}
 
-    return closest_point;
+	return closest_point;
 }
 
 vec2 ComputeNormalAtPoint(const vec2& p0, const vec2& p1) {
-    vec2 tangent = p1 - p0;
-    vec2 normal = { -tangent.y, tangent.x };
-    float length = normal.Length();
-    if (length > 0.0f) {
-        normal = { normal.x / length, normal.y / length };
+	vec2 tangent = p1 - p0;
+	vec2 normal = { -tangent.y, tangent.x };
+	float length = normal.Length();
+	if (length > 0.0f) {
+		normal = { normal.x / length, normal.y / length };
 
-        if (normal.x < 0.0f) {
-            normal.x = -normal.x;
-            normal.y = -normal.y;
-        }
+		if (normal.x < 0.0f) {
+			normal.x = -normal.x;
+			normal.y = -normal.y;
+		}
 
-        return normal;
-    }
-    return { 0.0f, 0.0f };
+		return normal;
+	}
+	return { 0.0f, 0.0f };
 }
 
 void DrawSpline(const std::vector<vec2>& spline_points, color3 color, float width, float alpha, const GLShader* shader) {
@@ -488,7 +488,7 @@ bool Ship::CanCollideWith(GameObjectTypes other_object)
         break;
     }
 
-    return false;
+	return false;
 }
 
 void Ship::ResolveCollision(GameObject* other_object) {
@@ -605,56 +605,56 @@ void Ship::ReduceFuel(float value)
 void Ship::FuelUpdate(double dt)
 {
 
-    bool Reduce = false;
+	bool Reduce = false;
 
-    if (fuel <= 0)
-    {
-        FuelFlag = true;
-    }
+	if (fuel <= 0)
+	{
+		FuelFlag = true;
+	}
 
     if (FuelFlag == false)
     {
         fuelcounter += (float)dt;
 
-        if (fuelcounter >= 1) // Decreased fuel per second
-        {
-            fuel -= baseDecfuel;
-            fuelcounter = 0;
-        }
+		if (fuelcounter >= 1) // Decreased fuel per second
+		{
+			fuel -= baseDecfuel;
+			fuelcounter = 0;
+		}
 
-        if (move == true)
-        {
-            Reduce = true;
-            if (Reduce == true)
-            {
-                fuel -= MoveDecfuel;
-                Reduce = false;
-            }
-        }
+		if (move == true)
+		{
+			Reduce = true;
+			if (Reduce == true)
+			{
+				fuel -= MoveDecfuel;
+				Reduce = false;
+			}
+		}
 
-        //std::cout << "Fuel: " << fuel << std::endl;
-    }
+		//std::cout << "Fuel: " << fuel << std::endl;
+	}
 
-    if (FuelFlag == true)
-    {
-        IsFuelZero();
-    }
+	if (FuelFlag == true)
+	{
+		IsFuelZero();
+	}
 }
 
 void Ship::SetMaxFuel(float input)
 {
-    Maxfuel = input;
+	Maxfuel = input;
 }
 
 
 
 bool Ship::IsTouchingReef()
 {
-    if (isCollidingWithReef == true)
-    {
-        return true;
-    }
-    return false;
+	if (isCollidingWithReef == true)
+	{
+		return true;
+	}
+	return false;
 }
 
 bool Ship::IsFuelZero()
@@ -666,26 +666,26 @@ bool Ship::IsFuelZero()
 
 bool Ship::IsShipUnder()
 {
-    if (this->GetPosition().y > 180)
-    {
-        return true;
-    }
-    return false;
+	if (this->GetPosition().y > 180)
+	{
+		return true;
+	}
+	return false;
 }
 
 
 Pump::Pump() :
-    GameObject({})
+	GameObject({})
 {
-    beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
+	beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
 }
 
 void Pump::Update(double dt)
 {
-    GameObject::Update(dt);
-    Ship* ship = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>();
-    SetPosition(ship->GetPosition());
-    GetMatrix();
+	GameObject::Update(dt);
+	Ship* ship = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>();
+	SetPosition(ship->GetPosition());
+	GetMatrix();
 
     if (!ship->IsFuelZero()) {
         float decrease_duration = (float)beat->GetFixedDuration() - 0.1f;
@@ -712,32 +712,32 @@ void Pump::Update(double dt)
 
 void Pump::Draw(DrawLayer drawlayer)
 {
-    CircleDrawCall draw_call = {
-    min_pump_radius,                       // Texture to draw
-    GetPosition(),                          // Transformation matrix
-    };
+	CircleDrawCall draw_call = {
+	min_pump_radius,                       // Texture to draw
+	GetPosition(),                          // Transformation matrix
+	};
 
-    draw_call.settings.do_blending = true;
-    draw_call.sorting_layer = DrawLayer::DrawUI;
+	draw_call.settings.do_blending = true;
+	draw_call.sorting_layer = DrawLayer::DrawUI;
 
-    CircleDrawCall draw_call2 = {
-    radius,                       // Texture to draw
-    GetPosition(),                          // Transformation matrix
-    };
+	CircleDrawCall draw_call2 = {
+	radius,                       // Texture to draw
+	GetPosition(),                          // Transformation matrix
+	};
 
-    draw_call2.shader = Engine::GetShaderManager().GetShader("change_alpha_no_texture"); // Shader to use
-    draw_call2.settings.do_blending = true;
-    draw_call2.SetUniforms = [this](const GLShader* shader) {this->SetUniforms(shader);};
-    draw_call2.sorting_layer = DrawLayer::DrawUI;
+	draw_call2.shader = Engine::GetShaderManager().GetShader("change_alpha_no_texture"); // Shader to use
+	draw_call2.settings.do_blending = true;
+	draw_call2.SetUniforms = [this](const GLShader* shader) {this->SetUniforms(shader); };
+	draw_call2.sorting_layer = DrawLayer::DrawUI;
 
-    Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call));
-    Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call2));
+	Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call));
+	Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call2));
 }
 
 void Pump::Reset() {
-    radius = max_pump_radius;
-    alpha = 0.0f;
-    wait = false;
+	radius = max_pump_radius;
+	alpha = 0.0f;
+	wait = false;
 }
 
 

@@ -38,6 +38,73 @@ void Logger::log(Logger::Severity severity, std::string message) {
     }
 }
 
+void Logger::LoadSaveFile()
+{
+    std::ifstream file("assets/scenes/save_data.txt");
+
+    if (!file.is_open()) {
+        std::cerr << "Failed to open file" << std::endl;
+        return;
+    }
+
+    int fishType, count;
+    std::string line;
+
+    while (std::getline(file, line)) {
+        std::istringstream ss(line);
+        if (ss >> fishType >> count) {
+            fiShCollection[fishType - 1] = count;
+        }
+        else if (line.find("Money:") != std::string::npos) {
+            std::istringstream ss_money(line.substr(7));
+            ss_money >> money;
+        }
+        else if (line.find("Module1:") != std::string::npos) {
+            int module1Value;
+            float module1x;
+            std::istringstream ss_module(line.substr(9));
+            ss_module >> module1Value >> module1x;
+
+            if (module1Value == 1)
+            {
+                module1 = true;
+                module1Pos = module1x;
+            }
+        }
+        else if (line.find("Module2:") != std::string::npos) {
+            int module2Value;
+            float module2x;
+            std::istringstream ss_module(line.substr(9));
+            ss_module >> module2Value >> module2x;
+
+            if (module2Value == 1)
+            {
+                module2 = true;
+                module2Pos = module2x;
+            }
+        }
+    }
+
+    file.close();
+}
+
+void Logger::WriteSaveFile(std::map<int, int> fishCaptureCount, int money, bool module1, float m1x, bool module2, float m2x)
+{
+    std::ofstream saveFile("assets/scenes/save_data.txt", std::ios::trunc);
+
+    if (saveFile.is_open()) {
+
+        for (const auto& entry : fishCaptureCount) {
+            saveFile << entry.first + 1 << " " << entry.second << "\n";
+        }
+
+        saveFile << "Money: " << std::to_string(money) << "\n";
+        saveFile << "Module1: " << std::to_string(module1) << " " << std::to_string((module1 == true) ? m1x : -130) << "\n";
+        saveFile << "Module2: " << std::to_string(module2) << " " << std::to_string((module2 == true) ? m2x : 0) << "\n";
+        saveFile.close();
+    }
+}
+
 double Logger::seconds_since_start() {
     std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
     double since_start = std::chrono::duration<double>(now - start_time).count();

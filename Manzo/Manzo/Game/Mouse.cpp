@@ -65,7 +65,7 @@ void Mouse::DrawMouseCursor()
 
     draw_call.settings.is_camera_fixed = true;
     draw_call.settings.do_blending = true;
-    draw_call.sorting_layer = DrawLayer::DrawUI;
+    draw_call.sorting_layer = DrawLayer::DrawLast;
 
     GameObject::Draw(draw_call);
 }
@@ -84,7 +84,7 @@ void Mouse::DrawLaserCurve() {
 
             LineDrawCallPro draw_call{ previous_point, current_point, { 255,255,255 }, line_width, 255.0f, nullptr, false };
             draw_call.settings.is_camera_fixed = true;
-            draw_call.sorting_layer = DrawLayer::DrawUI;
+            draw_call.sorting_layer = DrawLayer::DrawLast;
 
             Engine::GetRender().AddDrawCall(std::make_unique<LineDrawCallPro>(draw_call));
 

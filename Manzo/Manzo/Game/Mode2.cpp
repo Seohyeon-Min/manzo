@@ -11,6 +11,7 @@ Created:    March 8, 2023
 #include "../Engine/Engine.h"
 #include "../Engine/ShowCollision.h"
 #include "../Engine/AudioManager.h"
+
 #include <cmath>
 
 #include "States.h"
@@ -64,9 +65,18 @@ void Mode2::Load() {
     AddGSComponent(background);
     background->Add("assets/images/background/house.png", 0.25f);
 
+    // Icon
+    Engine::GetIconManager().LoadIconList();
+
+
+    shop_ptr = new Shop();
+    GetGSComponent<GameObjectManager>()->Add(shop_ptr);
+
     // Dialog
     dialog_ptr = new Dialog({0,0});
     GetGSComponent<GameObjectManager>()->Add(dialog_ptr);
+    
+    Engine::GetLogger().LoadSaveFile();
 
     // Module
    module_ptr = new Module({ 0, 0 });
@@ -76,22 +86,7 @@ void Mode2::Load() {
     inven_ptr = new Inven({0,0});
     GetGSComponent<GameObjectManager>()->Add(inven_ptr);
  
-    // Icon
-    Engine::GetIconManager().LoadIconList();
-
-    // skill
-    if (!Engine::Instance()->GetTmpPtr())
-    {
-        Engine::Instance()->SetTmpPtr(new Skillsys);
-        skill_ptr = static_cast<Skillsys*>(Engine::Instance()->GetTmpPtr());
-        skill_ptr->SetShipPtr(ship_ptr);
-    }
-    else
-    {
-        skill_ptr = static_cast<Skillsys*>(Engine::Instance()->GetTmpPtr());
-        skill_ptr->SetShipPtr(ship_ptr);
-    }
-
+    Engine::GetShaderManager().LoadShader("icon", "assets/shaders/default.vert", "assets/shaders/edge_detection.frag");
 
     // Mouse
     GetGSComponent<GameObjectManager>()->Add(new Mouse);
@@ -110,7 +105,6 @@ void Mode2::Update(double dt) {
     UpdateGSComponents(dt);
     GetGSComponent<GameObjectManager>()->UpdateAll(dt);
     GetGSComponent<Cam>()->Update(dt, {}, false);
-    skill_ptr->Update();
     
     //float moving~
     time += float(dt);
@@ -133,8 +127,10 @@ void Mode2::Update(double dt) {
 #endif
 
 
+    Engine::GetIconManager().AddIcon("go_shop", { 100,0 }, 1.0f, false, false, true);
+
     // Open Inven
-    if (Engine::GetInput().KeyJustPressed(Input::Keys::X))
+    if (inven_ptr->Open())
     {
         if (!inven_ptr->GetIsOpened()) inven_ptr->SetIsOpened(true);
         else inven_ptr->SetIsOpened(false);
@@ -154,27 +150,13 @@ void Mode2::Draw() {
 }
 
 void Mode2::Unload() {
-    std::string savePath = "assets/scenes/save_data.txt";
-    std::ofstream saveFile(savePath);
-    playing = false;
-
-    if (saveFile.is_open()) {
-        saveFile.clear();
-        for (const auto& entry : inven_ptr->fishCollection) {
-            saveFile << entry.first + 1 << " " << entry.second << "\n";
-        }
-        saveFile << "Money: " << inven_ptr->GetMoney() << "\n";
-        saveFile << "Module1: " << module_ptr->IsFirstSetted() << "\n";
-        saveFile << "Module2: " << module_ptr->IsSecondSetted() << "\n";
-        saveFile.close();
-    }
+    Engine::GetLogger().WriteSaveFile(inven_ptr->fishCollection, inven_ptr->GetMoney(), module_ptr->IsFirstSetted(), inven_ptr->GetX1Pos(), module_ptr->IsSecondSetted(), inven_ptr->GetX2Pos());
 
     GetGSComponent<GameObjectManager>()->Unload();
     Engine::GetAudioManager().StopAllChannels();
     GetGSComponent<Background>()->Unload();
     ClearGSComponents();
     ship_ptr = nullptr;
-    skill_ptr = nullptr;
     background = nullptr;
     dialog_ptr->Unload();
 }

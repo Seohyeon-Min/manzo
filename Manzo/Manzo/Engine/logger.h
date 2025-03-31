@@ -13,6 +13,8 @@ Created:    March 8, 2023
 #include <string>
 #include <fstream>
 #include <chrono>
+#include <map>
+#include <vec2.h>
 enum LoggerLogLevel {  
     LOGNONE,
     LOGERROR,
@@ -47,6 +49,16 @@ public:
     void SetTraceLogLevel(LoggerLogLevel level) {
         currentLogLevel = level;
     }
+    void LoadSaveFile();
+    void WriteSaveFile(std::map<int, int> fishCaptureCount, int money, bool module1, float m1x, bool module2, float m2x);
+
+    std::map<int, int> GetFishCollection() { return fiShCollection; }
+    int GetMoney() { return money; }
+    bool GetModule1() { return module1; }
+    bool GetModule2() { return module2; }
+    float GetModule1XPos() { return module1Pos; }
+    float GetModule2XPos() { return module2Pos; }
+
 private:
     const std::string word[4]{ "Verbose","Debug","Event","Error" };
     Severity min_level;
@@ -55,4 +67,9 @@ private:
     double seconds_since_start();
     void log(Severity severity, std::string message);
     LoggerLogLevel currentLogLevel = LOGINFO;
+
+    int money;
+    bool module1, module2;
+    float module1Pos, module2Pos;
+    std::map<int, int> fiShCollection;
 };

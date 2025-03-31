@@ -67,7 +67,6 @@ void Skillsys::Update()
 
     if (Engine::GetGameStateManager().GetStateName() == "Mode2")
     {
-
         if (is_slot_selected == false)
         {
             if (Engine::GetInput().KeyJustPressed(Input::Keys::A))
