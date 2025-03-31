@@ -41,7 +41,7 @@ void IconManager::LoadIconList()
 }
 
 
-void IconManager::AddIcon(std::string alias, vec2 position, float scale, bool drag, bool change_pos)
+void IconManager::AddIcon(std::string alias, vec2 position, float scale, bool drag, bool change_pos, bool interaction)
 {
 	auto it = icon_list.find(alias);
 	if (it != icon_list.end()) {
@@ -52,7 +52,7 @@ void IconManager::AddIcon(std::string alias, vec2 position, float scale, bool dr
 				return;
 			}
 		}
-		Icon* newIcon = new Icon(it->first, it->second, position, scale, drag, change_pos);
+		Icon* newIcon = new Icon(it->first, it->second, position, scale, drag, change_pos, interaction);
 		icons.push_back(newIcon);
 	}
 	else
@@ -93,25 +93,88 @@ bool IconManager::IsCollidingWith(std::string obj1, std::string obj2)
 		{
 			if (icon1->IsCollidingWith(icon2))
 			{
-				return true; 
+				return true;
 			}
 		}
 	}
 
-	return false; 
+	return false;
 }
 
-Icon* IconManager::GetCollidingIcon(Icon& icon) 
+void IconManager::RemoveIcon(std::string alias)
 {
-	for (Icon* other : icons) 
+	for (auto icon : icons)
 	{
-		if (other != &icon && icon.IsCollidingWith(other)) 
+		if (icon->GetAlias() == alias)
 		{
-			return other;
+			icon->SetDraw(false);
+		}
+	}
+}
+
+void IconManager::SetIconPosition(std::string alias, vec2 newPosition)
+{
+	Icon* targetIcon = nullptr;
+	for (Icon* icon : icons)
+	{
+		if (icon->GetAlias() == alias)
+		{
+			icon = targetIcon;
+		}
+	}
+
+	if (targetIcon)
+	{
+		targetIcon->SetPosition(newPosition);
+	}
+}
+
+vec2 IconManager::GetIconPosition(std::string obj1, std::string obj2)
+{
+	std::vector<Icon*> icons1;
+	std::vector<Icon*> icons2;
+
+	for (auto icon : icons)
+	{
+		if (icon->GetAlias() == obj1)
+		{
+			icons1.push_back(icon);
+		}
+		else if (icon->GetAlias() == obj2)
+		{
+			icons2.push_back(icon);
+		}
+	}
+
+	for (auto icon1 : icons1)
+	{
+		for (auto icon2 : icons2)
+		{
+			if (icon1->IsCollidingWith(icon2))
+			{
+				return icon1->GetPosition();
+			}
+		}
+	}
+
+	return { 0,0 };
+}
+
+Icon* IconManager::GetCollidingIcon(Icon& icon)
+{
+	for (Icon* other : icons)
+	{
+		if (other != &icon && icon.IsCollidingWith(other))
+		{
+			if ((icon.CanDrag() && !other->CanDrag()) || (!icon.CanDrag() && other->CanDrag()))
+			{
+				return other;
+			}
 		}
 	}
 	return nullptr;
 }
+
 
 Icon* IconManager::GetCollidingIconWithMouse(vec2 mousePosition)
 {

@@ -17,14 +17,15 @@ public:
 
 	bool GetIsOpened() { return is_opened; }
 	void SetIsOpened(bool open) { is_opened = open; }
+	bool Open();
 
 	int GetMoney() { return money; }
+	float GetX1Pos() { return m1x; }
+	float GetX2Pos() { return m2x; }
 
 	std::map<int, int> fishCollection;
 
 private:
-	void ReadSaveFile(const std::string& filename);
-
 	bool is_opened = false;
 	bool is_picked = false;
 	bool has_sold = false;
@@ -34,6 +35,7 @@ private:
 	int todays_fish_index = 0;
 	int todays_price = 0;
 	int how_much_sold = 0;
+	float m1x, m2x;
 
 	std::string todays_fish_icon;
 
@@ -84,4 +86,11 @@ private:
 	State_SC state_sc;
 
 	Module* module_ptr;
+
+	std::vector<vec2> savePos = {
+		{ -130, 100 },
+		{ 0, 100 },
+		{ 130, 100 }
+	};
+
 };

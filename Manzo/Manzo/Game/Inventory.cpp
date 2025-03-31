@@ -11,14 +11,14 @@ Inven::Inven(vec2 position) : GameObject(position), page(0), dre_todayFish(rd())
 	AddGOComponent(new Sprite("assets/images/window.spt", this));
 	change_state(&state_none);
 
-	ReadSaveFile("assets/scenes/save_data.txt");
+	fishCollection = Engine::GetLogger().GetFishCollection();
 
 	module_ptr = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Module>();
-
-	if (module_ptr == nullptr)
-	{
-		std::cout << "Module is not game obj" << std::endl;
-	}
+	module_ptr->SetFirstModule(Engine::GetLogger().GetModule1());
+	module_ptr->SetSecondModule(Engine::GetLogger().GetModule2());
+	money = Engine::GetLogger().GetMoney();
+	m1x = Engine::GetLogger().GetModule1XPos();
+	m2x = Engine::GetLogger().GetModule2XPos();
 }
 
 void Inven::Update(double dt)
@@ -66,54 +66,22 @@ void Inven::Draw(DrawLayer drawlayer)
 {
 	if (is_opened)
 	{
+		Engine::GetIconManager().RemoveIcon("go_shop");
 		GameObject::Draw();
 	}
 }
 
-void Inven::ReadSaveFile(const std::string& filename)
+bool Inven::Open()
 {
-	std::ifstream file(filename);
-	if (!file.is_open()) {
-		std::cerr << "Failed to open file: " << filename << std::endl;
-		return;
+	Icon* selectedIcon = Engine::GetIconManager().GetCollidingIconWithMouse({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY });
+	bool clicked = Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT);
+
+	if (selectedIcon != nullptr)
+	{
+		if(selectedIcon->GetAlias() == "go_shop" && clicked)
+			return true;
 	}
-
-	fishCollection.clear();
-	int fishType, count;
-	std::string line;
-
-	while (std::getline(file, line)) {
-		std::istringstream ss(line);
-		if (ss >> fishType >> count) {
-			fishCollection[fishType - 1] = count;
-		}
-		else if (line.find("Money:") != std::string::npos) {
-			std::istringstream ss_money(line.substr(7));
-			ss_money >> money;
-		}
-		else if (line.find("Module1:") != std::string::npos) {
-			int module1Value;
-			std::istringstream ss_module(line.substr(9));
-			ss_module >> module1Value;
-
-			if (module1Value == 1)
-			{
-				module_ptr->SetFirstModule(true);
-			}
-		}
-		else if (line.find("Module2:") != std::string::npos) {
-			int module2Value;
-			std::istringstream ss_module(line.substr(9));
-			ss_module >> module2Value;
-
-			if (module2Value == 1)
-			{
-				module_ptr->SetSecondModule(true);
-			}
-		}
-	}
-
-	file.close();
+	return false;
 }
 
 void Inven::State_None::Enter(GameObject* object)
@@ -143,23 +111,23 @@ void Inven::State_Module::Enter(GameObject* object)
 	inven->GetGOComponent<Sprite>()->PlayAnimation(static_cast<int>(Animations::Module));
 	inven->page = 1;
 
-	Engine::GetIconManager().AddIcon("module", { -130,100 }, 0.7f, false);
-	Engine::GetIconManager().AddIcon("module", { 0,100 }, 0.7f, false);
-	Engine::GetIconManager().AddIcon("module", { 130,100 }, 0.7f, false);
+	Engine::GetIconManager().AddIcon("module", inven->savePos[0], 0.7f, false);
+	Engine::GetIconManager().AddIcon("module", inven->savePos[1], 0.7f, false);
+	//Engine::GetIconManager().AddIcon("module", inven->savePos[2], 0.7f, false);
 
-	if (inven->module_ptr->IsFirstSetted())
-	{
-		Engine::GetIconManager().AddIcon("module1", { -130,100 }, 0.7f, true, true);
-	}
-	else Engine::GetIconManager().AddIcon("module1", { -130,-100 }, 0.7f, true, true);
+	Engine::GetIconManager().AddIcon(
+		"module1",
+		(inven->module_ptr->IsFirstSetted()) ? vec2((float)inven->m1x, 100) : vec2(-130, -100),
+		0.7f, true, true, true
+	);
 
-	if (inven->module_ptr->IsSecondSetted())
-	{
-		Engine::GetIconManager().AddIcon("module2", { 0,100 }, 0.7f, true, true);
-	}
-	else Engine::GetIconManager().AddIcon("module2", { 0,-100 }, 0.7f, true, true);
+	Engine::GetIconManager().AddIcon(
+		"module2",
+		(inven->module_ptr->IsSecondSetted()) ? vec2((float)inven->m2x, 100) : vec2(0, -100),
+		0.7f, true, true, true
+	);
 
-	Engine::GetIconManager().AddIcon("module3", { 130,-100 }, 0.7f, true, true);
+	//Engine::GetIconManager().AddIcon("module3", { 130,-100 }, 0.7f, true, true, true);
 }
 
 void Inven::State_Module::Update(GameObject* object, double dt)
@@ -170,11 +138,23 @@ void Inven::State_Module::Update(GameObject* object, double dt)
 	if (Engine::GetIconManager().IsCollidingWith("module", "module1"))
 	{
 		inven->module_ptr->SetFirstModule(true);
+		inven->m1x = Engine::GetIconManager().GetIconPosition("module", "module1").x;
+	}
+	else
+	{
+		inven->module_ptr->SetFirstModule(false);
+		inven->m1x = -130;
 	}
 
 	if (Engine::GetIconManager().IsCollidingWith("module", "module2"))
 	{
 		inven->module_ptr->SetSecondModule(true);
+		inven->m2x = Engine::GetIconManager().GetIconPosition("module", "module2").x;
+	}
+	else
+	{
+		inven->module_ptr->SetSecondModule(false);
+		inven->m2x = 0;
 	}
 }
 
@@ -205,11 +185,11 @@ void Inven::State_FC::Enter(GameObject* object)
 		Engine::GetIconManager().AddIcon(file_name, { 100,float(position += 80) }, 1.0f, false);
 	}
 
-	Engine::GetIconManager().AddIcon("plus1", { 80,180 }, 0.2f, false);
-	Engine::GetIconManager().AddIcon("plus10", { 50,180 }, 0.2f, false);
+	Engine::GetIconManager().AddIcon("plus1", { 80,180 }, 1.f, false, false, true);
+	Engine::GetIconManager().AddIcon("plus10", { 50,180 }, 1.f, false, false, true);
 
-	Engine::GetIconManager().AddIcon("minus1", { -80,180 }, 0.2f, false);
-	Engine::GetIconManager().AddIcon("minus10", { -50,180 }, 0.2f, false);
+	Engine::GetIconManager().AddIcon("minus1", { -80,180 }, 1.f, false, false, true);
+	Engine::GetIconManager().AddIcon("minus10", { -50,180 }, 1.f, false, false, true);
 }
 
 void Inven::State_FC::Update(GameObject* object, double dt)
@@ -225,38 +205,8 @@ void Inven::State_FC::Update(GameObject* object, double dt)
 
 		//decrease each type of fish
 		inven->fishCollection[inven->todays_fish_index] = 0;
+		Engine::GetIconManager().RemoveIcon("fish" + std::to_string(inven->todays_fish_index + 1));
 	}
-
-
-	///// Sell by dragging
-
-	//Icon* draggedIcon = Engine::GetGameStateManager().GetGSComponent<Dragging>()->GetCurrentDraggingIcon();
-
-	//if (draggedIcon != nullptr)
-	//{
-	//	std::string dragged_fish_alias = draggedIcon->GetAlias();
-
-	//	if ((dragged_fish_alias == inven->todays_fish_icon) && draggedIcon->IsColliding() && !inven->has_sold)
-	//	{
-	//		inven->has_sold = true;
-	//		if (inven->fishCollection[inven->todays_fish_index] > 0)
-	//		{
-	//			inven->fishCollection[inven->todays_fish_index]--;
-	//			std::cout << "Sold 1 fish! Remaining: " << inven->fishCollection[inven->todays_fish_index] << "\n";
-	//		}
-	//		else
-	//		{
-	//			std::cout << "No more fish of this type left!\n";
-	//		}
-
-	//	}
-	//}
-	//else
-	//{
-	//	inven->has_sold = false;
-	//}
-
-	//////
 
 	Icon* selectedIcon = Engine::GetIconManager().GetCollidingIconWithMouse({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY });
 	bool clicked = Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT);
@@ -282,15 +232,18 @@ void Inven::State_FC::Update(GameObject* object, double dt)
 		}
 	}
 
-	std::cout << inven->how_much_sold << std::endl;
-
-
-	// Selling condition. 여러번 sold되는거 막을필요 있음
+	// decide to sell
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::F1))
 	{
 		inven->money += (inven->todays_price * inven->how_much_sold);
 		inven->fishCollection[inven->todays_fish_index] -= inven->how_much_sold;
+
+		if (inven->fishCollection[inven->todays_fish_index] == 0)
+		{
+			Engine::GetIconManager().RemoveIcon("fish"+ std::to_string(inven->todays_fish_index + 1));
+		}
 	}
+
 }
 
 void Inven::State_FC::CheckExit(GameObject* object)

@@ -17,50 +17,6 @@ Shop::~Shop()
 
 void Shop::Update(double dt)
 {
-	//if (Engine::GetInput().KeyJustPressed(Input::Keys::Y) && !shop_available)
-	//{
-	//	shop_available = true;
-	//	std::cout << "Shop active" << std::endl;
-	//}
-
-	//if (shop_available) // Is shop available?
-	//{
-	//	Shop_Back_draw(); // draw shop background
-	//	Inventory_Back_draw();
-	//	icon_manager_ptr->UpdateAll(dt);
-	//	icon_manager_ptr->DrawAll();
-
-	//	if (pick == First)
-	//	{
-	//		if (Engine::Instance()->GetInput().KeyJustPressed(Input::Keys::Enter) || Ready_to_buy) 
-	//		/*
-	//		*  I'll change this if statements later, I implemented the function to buy with Enter and the function to buy by dragging, and this is what happened!
-	//		*/
-	//		{
-	//			Buy(skill_ptr->Net, Net_Money);
-	//			Ready_to_buy = false;
-	//		}
-	//	}
-
-	//	if (pick == Second)
-	//	{
-	//		if (Engine::Instance()->GetInput().KeyJustPressed(Input::Keys::Enter) || Ready_to_buy)
-	//		{
-	//			Buy(skill_ptr->Light, Net_Money);
-	//			Ready_to_buy = false;
-	//		}
-	//	}
-
-	//	if (pick == Third)
-	//	{
-	//		if (Engine::Instance()->GetInput().KeyJustPressed(Input::Keys::Enter) || Ready_to_buy)
-	//		{
-	//			Buy(skill_ptr->TEMP1, Net_Money);
-	//			Ready_to_buy = false;
-	//		}
-	//	}
-
-	//}
 }
 
 void Shop::Buy(Skillsys::Skill_list skill,int input)
@@ -76,25 +32,13 @@ void Shop::Sell(Skillsys::Skill_list skill, int input)
 void Shop::Shop_Back_draw()
 {
 
-	//back_matrix = mat3::build_translation({ back_position_default }) * mat3::build_scale(1.0f); //* mat3::build_rotation(3.141592f/2.0f);
-
-	//draw_call = 
-	//{
-	//	shop_background,                       // Texture to draw
-	//	&back_matrix,                          // Transformation matrix
-	//	Engine::GetShaderManager().GetDefaultShader(), // Shader to use
-	//	nullptr,
-	//	settings
-	//};
-
-	//Engine::GetRender().AddDrawCall(draw_call, DrawLayer::DrawFirst);
 }
 
 void Shop::Shop_button_draw()
 {
 	botton_matrix = mat3::build_translation({ botton_pos.x , botton_pos.y - (float)(pick * (shop_background->GetHeight()/4)) }) * mat3::build_scale(1.0f);
 
-	if (Engine::Instance()->GetInput().KeyJustPressed(Input::Keys::Up))
+	if (Engine::Instance().GetInput().KeyJustPressed(Input::Keys::Up))
 	{
 			switch (pick)
 			{
@@ -110,7 +54,7 @@ void Shop::Shop_button_draw()
 			}
 	}
 
-	if (Engine::Instance()->GetInput().KeyJustPressed(Input::Keys::Down))
+	if (Engine::Instance().GetInput().KeyJustPressed(Input::Keys::Down))
 	{
 			switch (pick)
 			{
@@ -177,8 +121,8 @@ void Shop::Inventory_Icon_draw()
 	{ base_icon_direction.x + shop_background->GetHeight()*1.1f, base_icon_direction.y - (shop_background->GetHeight() / 4 * 3) }
 	};
 	
-	float current_mouse_pos_x = Engine::Instance()->GetInput().GetMousePos().mouseCamSpaceX;
-	float current_mouse_pos_y = Engine::Instance()->GetInput().GetMousePos().mouseCamSpaceY;
+	float current_mouse_pos_x = Engine::Instance().GetInput().GetMousePos().mouseCamSpaceX;
+	float current_mouse_pos_y = Engine::Instance().GetInput().GetMousePos().mouseCamSpaceY;
 
 	if (!is_dragging) {
 
@@ -189,7 +133,7 @@ void Shop::Inventory_Icon_draw()
 				(current_mouse_pos_y > icon_pos.y - (shop_icon->GetHeight() / 4) &&
 					current_mouse_pos_y < icon_pos.y + (shop_icon->GetHeight() / 4)))
 			{
-				if (Engine::Instance()->GetInput().MouseButtonJustPressed(1) && inv_info[i].icon_texture != nullptr) {
+				if (Engine::Instance().GetInput().MouseButtonJustPressed(1) && inv_info[i].icon_texture != nullptr) {
 					std::cout << "You clicked the " << i + 1 << "th icon!" << std::endl;
 					dragging_icon_index = i;
 					is_dragging = true;
@@ -203,7 +147,7 @@ void Shop::Inventory_Icon_draw()
 	}
 	else {
 
-		if (Engine::Instance()->GetInput().MouseButtonJustReleased(1)) {
+		if (Engine::Instance().GetInput().MouseButtonJustReleased(1)) {
 
 			std::cout << "Released" << std::endl;
 			is_dragging = false;
