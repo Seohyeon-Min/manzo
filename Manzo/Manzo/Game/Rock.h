@@ -46,6 +46,9 @@ public:
 	// Map Loading
 	void Active(bool active) { loaded = active; }
 	bool IsActivated() { return loaded; }
+
+	std::vector<vec2> GetPoints() { return original_poly.vertices; }
+
 private:
 	std::string index;
 	RockGroup* rockgroup;

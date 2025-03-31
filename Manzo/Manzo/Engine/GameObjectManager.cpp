@@ -116,7 +116,7 @@ Rock* GameObjectManager::FindNearestRock(GameObject* object) {
 	for (GameObject* gameObj : objects) {
 		if (gameObj->Type() == GameObjectTypes::Rock/* && gameObj->IsVisible(camera_bounds)*/) {
 			Rock* rock = static_cast<Rock*>(gameObj);
-			std::vector<vec2> rockPoints = rock->GetRockGroup()->GetPoints();
+			std::vector<vec2> rockPoints = rock->GetPoints();
 
 			for (size_t i = 0; i < rockPoints.size(); ++i) {
 				vec2 p1 = rockPoints[i];

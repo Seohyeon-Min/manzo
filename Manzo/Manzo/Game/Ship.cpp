@@ -540,8 +540,8 @@ void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
         cam->GetCamera().StartShake(camera_shake, 5);
 
         Rock* rock = static_cast<Rock*>(other_object);
-        std::vector<vec2> points = rock->GetRockGroup()->GetPoints();
-        vec2 center = rock->GetRockGroup()->FindCenterPoly();
+        std::vector<vec2> points = rock->GetPoints();
+        vec2 center = rock->GetPosition();
         normal = ComputeCollisionNormal(points, GetPosition(), center);
         Engine::GetLogger().LogEvent("normal: " + std::to_string(normal.x) + ", " + std::to_string(normal.y));
         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new HitEffect(GetPosition()));
