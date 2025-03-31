@@ -39,7 +39,7 @@ void Mode2::Load() {
     Engine::GetShaderManager().LoadShader("water_ripple", "assets/shaders/default.vert", "assets/shaders/water_ripple.frag");
     
     // audio
-    Engine::GetAudioManager().LoadMusic("assets/audios/bgm_original.wav", "background1", false);
+    Engine::GetAudioManager().LoadMusic("assets/audios/bgm_original.wav", "Home_bgm", false);
 
     // compenent
     AddGSComponent(new GameObjectManager());
@@ -103,7 +103,7 @@ void Mode2::Update(double dt) {
     //audio play
     if (!playing)
     {
-        Engine::GetAudioManager().PlayMusics("background1");
+        Engine::GetAudioManager().PlayMusics("Home_bgm");
         playing = true;
     }
 
@@ -116,6 +116,8 @@ void Mode2::Update(double dt) {
     time += float(dt);
     ship_ptr->SetVelocity({ 0, -(y_limit * frequency * std::cos(frequency * float(time))) });
 
+
+#ifdef _DEBUG
     if (Engine::GetInput().KeyJustPressed(Input::Keys::Q)) {
         Engine::GetGameStateManager().ClearNextGameState();
         Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode1));
@@ -124,9 +126,12 @@ void Mode2::Update(double dt) {
         Engine::GetGameStateManager().ReloadState();
     }
     if (Engine::GetInput().KeyJustPressed(Input::Keys::Space) && !isLoaded) {
-       dialog_ptr->LoadDialog(1, 0.05);
-       isLoaded = true;
+        dialog_ptr->LoadDialog(1, 0.05);
+        isLoaded = true;
     }
+#else
+#endif
+
 
     // Open Inven
     if (Engine::GetInput().KeyJustPressed(Input::Keys::X))

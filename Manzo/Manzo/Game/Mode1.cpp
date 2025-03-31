@@ -197,20 +197,25 @@ void Mode1::Update(double dt) {
 
 
     // Handle Input
-    if (Engine::GetInput().KeyJustPressed(Input::Keys::Q)) {
+    if (Engine::GetInput().KeyJustPressed(Input::Keys::TAB)) {
     //if (ship_ptr->IsShipUnder() && Engine::GetInput().KeyJustPressed(Input::Keys::Q)) {
         Engine::GetGameStateManager().ClearNextGameState();
         Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
     }
 
-    if (Engine::GetInput().KeyJustPressed(Input::Keys::W)) {
-        Engine::GetGameStateManager().ReloadState();
-    }
+#ifdef _DEBUG
+	if (Engine::GetInput().KeyJustPressed(Input::Keys::W)) {
+		Engine::GetGameStateManager().ReloadState();
+	}
 
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::V)) {
 		Engine::GetGameStateManager().ClearNextGameState();
 		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Tutorial));
 	}
+#else
+#endif
+
+
 
     if (Engine::GetInput().KeyJustPressed(Input::Keys::E) && !Isboss) {
         GetGSComponent<GameObjectManager>()->Add(boss_ptr);
@@ -291,7 +296,10 @@ void Mode1::Draw() {
 
 
     // Draw Font
-	Engine::GetFontManager().PrintText(FontType::Bold,"E", { 0.f,0.f }, 0.2f,{ 1.f,1.f,1.f }, 0.5f);
+	//Engine::GetFontManager().PrintText(FontType::Bold,"E", { 0.f,0.f }, 0.2f,{ 1.f,1.f,1.f }, 0.5f);
+	if (ship_ptr->GetFuel()<=0) {
+		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, "CLICK TO RESTART", { ship_ptr->GetPosition().x, ship_ptr->GetPosition().y - 60.f} , 88.098f, { 1.f,1.f,1.f }, 1.0f);
+	}
 }
 
 void Mode1::Unload() {

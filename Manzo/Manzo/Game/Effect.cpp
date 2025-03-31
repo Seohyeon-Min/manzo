@@ -1,5 +1,6 @@
 #include "Effect.h"
 #include "../Engine/Sprite.h"
+#include "States.h"
 
 Effect::Effect(vec2 position, double effect_time)
     : GameObject(position), effect_time(effect_time) {
@@ -227,6 +228,13 @@ BlackOutEffect::BlackOutEffect() : Effect({}, 0.5)
 void BlackOutEffect::Update(double dt)
 {
     //GameObject::Update(dt);
+        // Move to next scean
+
+    if (timer->IsFinished()) {
+        if (Engine::GetInput().MouseButtonJustReleased((SDL_BUTTON_LEFT))) {
+            Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
+        }
+    }
 }
 
 void BlackOutEffect::Draw(DrawLayer drawlayer)

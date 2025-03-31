@@ -322,7 +322,6 @@ void Ship::Draw(DrawLayer drawlayer) {
         GameObject::Draw(draw_call);
     }
 
-
 }
 
 vec2 CatmullRomSpline(const vec2& p0, const vec2& p1, const vec2& p2, const vec2& p3, float t) {
@@ -479,6 +478,11 @@ bool Ship::CanCollideWith(GameObjectTypes other_object)
         if(invincibility_timer->IsFinished())
         return true;
         break;
+    case GameObjectTypes::Mouse:
+        if (Engine::GetGameStateManager().GetStateName() == "Mode2") {
+            return true;
+        }
+        break;
     }
 
     return false;
@@ -512,6 +516,10 @@ void Ship::ResolveCollision(GameObject* other_object) {
         }
         invincibility_timer->Set(invincibility_time);
         break;
+    case GameObjectTypes::Mouse:
+        if (Engine::GetInput().MouseButtonJustReleased((SDL_BUTTON_LEFT))) {
+            Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode1));
+        }
     }
 
 }
@@ -671,25 +679,27 @@ void Pump::Update(double dt)
     SetPosition(ship->GetPosition());
     GetMatrix();
 
-    float decrease_duration = (float)beat->GetFixedDuration() - 0.1f;
-    float delta_radius = (max_pump_radius - min_pump_radius) / decrease_duration;
-    float delta_alpha = 1 / decrease_duration;
-    if (beat->GetBeat()) {
-        radius = min_pump_radius;
-        wait = true;
-    }
-    if (wait && !beat->GetIsOnBeat()) {
-        radius = max_pump_radius;
-        alpha = 0.f;
-        wait = false;
-    }
+    if (!ship->IsFuelZero()) {
+        float decrease_duration = (float)beat->GetFixedDuration() - 0.1f;
+        float delta_radius = (max_pump_radius - min_pump_radius) / decrease_duration;
+        float delta_alpha = 1 / decrease_duration;
+        if (beat->GetBeat()) {
+            radius = min_pump_radius;
+            wait = true;
+        }
+        if (wait && !beat->GetIsOnBeat()) {
+            radius = max_pump_radius;
+            alpha = 0.f;
+            wait = false;
+        }
 
-    if (!wait && radius > min_pump_radius) {
-        radius -= delta_radius * (float)dt;
-        alpha += delta_alpha * (float)dt;
-    }
+        if (!wait && radius > min_pump_radius) {
+            radius -= delta_radius * (float)dt;
+            alpha += delta_alpha * (float)dt;
+        }
 
-    radius = std::max(radius, min_pump_radius);
+        radius = std::max(radius, min_pump_radius);
+    }
 }
 
 void Pump::Draw(DrawLayer drawlayer)
