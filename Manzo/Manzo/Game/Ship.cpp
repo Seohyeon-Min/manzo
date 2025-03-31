@@ -525,7 +525,7 @@ void Ship::ResolveCollision(GameObject* other_object) {
         }
         break;
     case GameObjectTypes::BossBullet:
-        ReduceFuel(100.f);
+        ReduceFuel(BossBulletHitDecFuel);
         break;
     }
 

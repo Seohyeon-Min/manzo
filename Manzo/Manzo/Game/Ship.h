@@ -67,10 +67,15 @@ private:
     bool can_dash = true;
     float fuel;
     float Maxfuel = 1000.f;
-    float baseDecfuel = 2.f;
-    float MoveDecfuel = 0.5f;
+
+
+    float baseDecfuel = 0.8f;
+    float MoveDecfuel = 0.1f;
     float RockHitDecFuel = 50.f;
     float MonsHitDecFuel = 80.f;
+    float BossBulletHitDecFuel = 150.f;
+
+
     float fuelcounter = 0.f;
     Rock* before_nearest_rock = nullptr;
     Rock* nearestRock = nullptr;
