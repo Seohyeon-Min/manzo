@@ -298,12 +298,11 @@ void Ship::FixedUpdate(double fixed_dt) {
 
 
 void Ship::Draw(DrawLayer drawlayer) {
-
-    if (hit_with) {
+    if (Engine::GetGameStateManager().GetStateName() == "Mode2") {
         DrawCall draw_call = {
-        hit_text,                       // Texture to draw
-        &GetMatrix(),                          // Transformation matrix
-        GetShader()
+            GetGOComponent<Sprite>()->GetTexture(),                       // Texture to draw
+            &GetMatrix(),                          // Transformation matrix
+            Engine::GetShaderManager().GetShader("icon")
         };
 
         draw_call.settings.do_blending = true;
@@ -311,16 +310,31 @@ void Ship::Draw(DrawLayer drawlayer) {
         GameObject::Draw(draw_call);
     }
     else {
-        DrawCall draw_call = {
-        GetGOComponent<Sprite>()->GetTexture(),                       // Texture to draw
-        &GetMatrix(),                          // Transformation matrix
-        GetShader()
-        };
+        if (hit_with) {
+            DrawCall draw_call = {
+            hit_text,                       // Texture to draw
+            &GetMatrix(),                          // Transformation matrix
+            GetShader()
+            };
 
-        draw_call.settings.do_blending = true;
-        draw_call.sorting_layer = DrawLayer::DrawPlayer;
-        GameObject::Draw(draw_call);
+            draw_call.settings.do_blending = true;
+            draw_call.sorting_layer = DrawLayer::DrawPlayer;
+            GameObject::Draw(draw_call);
+        }
+        else {
+            DrawCall draw_call = {
+            GetGOComponent<Sprite>()->GetTexture(),                       // Texture to draw
+            &GetMatrix(),                          // Transformation matrix
+            GetShader()
+            };
+
+            draw_call.settings.do_blending = true;
+            draw_call.sorting_layer = DrawLayer::DrawPlayer;
+            GameObject::Draw(draw_call);
+        }
     }
+
+
 
 }
 

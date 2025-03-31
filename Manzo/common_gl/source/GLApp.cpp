@@ -138,9 +138,13 @@ void GLApp::Update() {
     }
 
     ptr_program->Update();
+#ifdef _DEBUG
     ImGuiHelper::Begin();
     ptr_program->ImGuiDraw();
     ImGuiHelper::End(ptr_window, gl_context);
+#else
+#endif
+
     SDL_GL_SwapWindow(ptr_window);
 
     system_clock::time_point now = system_clock::now();

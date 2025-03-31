@@ -4,6 +4,16 @@
 
 * Version : Spring 2025 Play Test
 
+* Instruction of Keys & Buttons
+ - Sea(Mode1)
+  + MOUSE_BUTTON_LEFT  : main keys for moving the ship just to click (double click is fine)
+  + Tab :  (change mode from sea into player's house) 
+  + E : creat the boss
+  + R : start the boss fight, hold a key for a short time .
+
+To go to the sea, click the ship (the yellow one) in the player's house 
+When the player dies, the screen fades to black. Clicking the screen respawns them at home.
+
 * Team Members
   + Seohyun Min : Producer
   + Won Kim : Art Leader
@@ -23,13 +33,9 @@ Avoid the monsters and dive deper to discover the boss.
 Survive as long as you can while avoiding the boss's attacks.
 You can't attack the boss or the monsters.
 
-* Instruction of Keys & Buttons
- - Sea(Mode1)
-  + MOUSE_BUTTON_LEFT  : main keys for moving the ship just to click (double click is fine)
-  + Q : Load next game state : Load next game state (change mode from sea into player's house) 
-  + W : Reload the game
-  + E : creat the boss
-  + R : start the boss fight, hold a key for a short time .
+* Boss
+A mysterious fish blows small bubbles toward you, guiding you to safe zones marked by circles.
+Dodge the attacks and enter the circles to break through the boss.
 
 -----------------------------------------------------------------------------
 - Home(Mode 2)

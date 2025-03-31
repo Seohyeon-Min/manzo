@@ -145,8 +145,7 @@ void Mode2::Draw() {
     GetGSComponent<GameObjectManager>()->DrawAll();
     dialog_ptr->Draw();
 
-    Engine::GetFontManager().PrintText(FontType::Bold, "MANZO", { 0.f,-100.f }, 0.1f, { 1.f,1.f,1.f }, 0.5f);
-
+    //Engine::GetFontManager().PrintText(FontType::Bold, "MANZO", { 0.f,-100.f }, 0.1f, { 1.f,1.f,1.f }, 0.5f);
 }
 
 void Mode2::Unload() {
