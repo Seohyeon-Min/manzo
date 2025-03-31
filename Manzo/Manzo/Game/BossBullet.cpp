@@ -105,6 +105,7 @@ bool BossBullet::CanCollideWith(GameObjectTypes other_object) {
 
 void BossBullet::ResolveCollision(GameObject* other_object) {
     if (other_object->Type() == GameObjectTypes::Ship) {
+
         this->Destroy();
     }
 }

@@ -330,6 +330,7 @@ void Mode1::Unload() {
 	soundPlaying = false;
 	replay = false;
 	fishGenerator = nullptr;
+	Isboss = false;
 	GetGSComponent<GameObjectManager>()->Unload();
 	GetGSComponent<Background>()->Unload();
 	Engine::GetRender().ClearDrawCalls();

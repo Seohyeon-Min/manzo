@@ -483,6 +483,9 @@ bool Ship::CanCollideWith(GameObjectTypes other_object)
             return true;
         }
         break;
+    case GameObjectTypes::BossBullet:
+        return true;
+        break;
     }
 
     return false;
@@ -520,7 +523,12 @@ void Ship::ResolveCollision(GameObject* other_object) {
         if (Engine::GetInput().MouseButtonJustReleased((SDL_BUTTON_LEFT))) {
             Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode1));
         }
+        break;
+    case GameObjectTypes::BossBullet:
+        ReduceFuel(100.f);
+        break;
     }
+
 
 }
 
