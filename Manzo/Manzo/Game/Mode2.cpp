@@ -127,13 +127,17 @@ void Mode2::Update(double dt) {
 #endif
 
 
-    Engine::GetIconManager().AddIcon("go_shop", { 100,0 }, 1.0f, false, false, true);
+    Engine::GetIconManager().AddIcon("go_shop", { 276,4.5 }, 2.0f, false, false, true);
 
     // Open Inven
     if (inven_ptr->Open())
     {
-        if (!inven_ptr->GetIsOpened()) inven_ptr->SetIsOpened(true);
-        else inven_ptr->SetIsOpened(false);
+        inven_ptr->SetIsOpened(true);
+    }
+
+    if(inven_ptr->GetIsOpened() && Engine::GetInput().KeyJustReleased(Input::Keys::Esc))
+    {
+        inven_ptr->SetIsOpened(false);
     }
 }
 
