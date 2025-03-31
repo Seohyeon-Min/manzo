@@ -145,7 +145,8 @@ void Mode2::Draw() {
     GetGSComponent<GameObjectManager>()->DrawAll();
     dialog_ptr->Draw();
 
-    Engine::GetFontManager().PrintText(FontType::Bold, "MANZO", { 0.f,-100.f }, 0.1f, { 1.f,1.f,1.f }, 0.5f);
+    Engine::GetFontManager().PrintText(FontType::Bold, "Click Ship to Start the Game", { -100.f,-150.f }, 0.05f, { 0.f,0.f,0.f }, 0.5f);
+    Engine::GetFontManager().PrintText(FontType::Bold, "Click Computer to Equip Module", { 30.f,30.f }, 0.05f, { 1.f,1.f,1.f }, 0.5f);
 
 }
 
