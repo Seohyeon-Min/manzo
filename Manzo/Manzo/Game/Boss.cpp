@@ -50,11 +50,17 @@ void Boss::Movingtolocation_Boss(int targetEntryNum, Boss* boss) {
 			if (entryData.delay + 1 == boss->beat->GetDelayCount()) {
 				if (boss->beat->GetBeat()) {
 					boss->current_position = entryData.position;
+
+					for(int i =0; i <4; ++i){
 					boss->Bullet(boss);
+					}
 				}
 				
 			}
 			if (entryData.attacktype == 3) {
+				if (boss->beat->GetBeat()) {
+					boss->isattack = false;
+				}
 				boss->AttackCircle(entryData.position, 350, (double)(boss->beat->GetFixedDuration() * 4));
 			}
 		}
@@ -257,7 +263,7 @@ void Boss::AttackCircle(vec2 pos, double radius, double elapsed_time)
 
 			if (!isattack) {
 				Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()
-					->GetGOComponent<Ship>()->DeclineFuel(1.f);
+					->GetGOComponent<Ship>()->DeclineFuel(100.f);
 				std::cout << "Attack" << std::endl;
 				isattack = true;
 			}

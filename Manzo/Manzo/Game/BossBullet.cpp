@@ -17,8 +17,8 @@ BossBullet::BossBullet(vec2 Boss_position, float lifetime)
     : GameObject(Boss_position), lifetime(lifetime), timeElapsed(0.0f)
 {
     AddGOComponent(new Sprite("assets/images/bullet.spt", this));
-    float Scalerandom = (float)GetRandomValue( -2, 2);
-    SetScale(vec2(2, 2));
+    float Scalerandom = (float)GetRandomValue(1, 2);
+    SetScale(vec2(Scalerandom));
 
     static bool seedInitialized = false;
     if (!seedInitialized) {
@@ -34,7 +34,7 @@ BossBullet::BossBullet(vec2 Boss_position, float lifetime)
     direction.y /= length;
 
     this->velocity = vec2(0.0f, 0.0f);
-    float angleOffset = (float)(GetRandomValue(-5,5) * DEG2RAD); 
+    float angleOffset = (float)(GetRandomValue(-10,10) * DEG2RAD); 
     float cosA = cos(angleOffset);
     float sinA = sin(angleOffset);
 
