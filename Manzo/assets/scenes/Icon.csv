@@ -6,8 +6,8 @@ module,assets/images/module_empty.spt
 module1,assets/images/module_icon1.spt
 module2,assets/images/module_icon1.spt
 module3,assets/images/module_icon1.spt
-plus1,assets/images/button.spt
-plus10,assets/images/button.spt
-minus1,assets/images/button.spt
-minus10,assets/images/button.spt
+plus1,assets/images/button_p1.spt
+plus10,assets/images/button_p10.spt
+minus1,assets/images/button_m1.spt
+minus10,assets/images/button_m10.spt
 go_shop,assets/images/Monitor.spt

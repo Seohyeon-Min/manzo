@@ -208,37 +208,6 @@ void Inven::State_FC::Update(GameObject* object, double dt)
 		Engine::GetIconManager().RemoveIcon("fish" + std::to_string(inven->todays_fish_index + 1));
 	}
 
-
-	///// Sell by dragging
-
-	//Icon* draggedIcon = Engine::GetGameStateManager().GetGSComponent<Dragging>()->GetCurrentDraggingIcon();
-
-	//if (draggedIcon != nullptr)
-	//{
-	//	std::string dragged_fish_alias = draggedIcon->GetAlias();
-
-	//	if ((dragged_fish_alias == inven->todays_fish_icon) && draggedIcon->IsColliding() && !inven->has_sold)
-	//	{
-	//		inven->has_sold = true;
-	//		if (inven->fishCollection[inven->todays_fish_index] > 0)
-	//		{
-	//			inven->fishCollection[inven->todays_fish_index]--;
-	//			std::cout << "Sold 1 fish! Remaining: " << inven->fishCollection[inven->todays_fish_index] << "\n";
-	//		}
-	//		else
-	//		{
-	//			std::cout << "No more fish of this type left!\n";
-	//		}
-
-	//	}
-	//}
-	//else
-	//{
-	//	inven->has_sold = false;
-	//}
-
-	//////
-
 	Icon* selectedIcon = Engine::GetIconManager().GetCollidingIconWithMouse({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY });
 	bool clicked = Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT);
 
