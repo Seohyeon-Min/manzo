@@ -44,6 +44,18 @@ namespace Particles {
         float scale;
     };
 
+    class BulletParticle : public Particle {
+    public:
+        BulletParticle() : Particle("assets/images/Plankton.spt")
+        {
+            scale = util::random(0.5f, 1.f); shader = Engine::GetShaderManager().GetShader("change_alpha");
+        };
+        std::string TypeName() override { return "FuelBubble Particle"; }
+        static constexpr int MaxCount = 7;
+        static constexpr double MaxLife = 0.38;
+        float scale;
+    };
+
     class BubblePop : public Particle {
     public:
         BubblePop() : Particle("assets/images/Plankton.spt") 

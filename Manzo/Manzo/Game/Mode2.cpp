@@ -158,4 +158,5 @@ void Mode2::Unload() {
     ship_ptr = nullptr;
     background = nullptr;
     dialog_ptr->Unload();
+    playing = false;
 }

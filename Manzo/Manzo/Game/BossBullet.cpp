@@ -1,5 +1,6 @@
 #include "BossBullet.h"
 #include "../Engine/Collision.h"
+#include "Particles.h"
 #include <cmath>
 #include <stdlib.h>
 #include "Ship.h"
@@ -59,6 +60,9 @@ void BossBullet::Update(double dt) {
     else {
         lifetime -= dt;
     }
+
+    Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::BulletParticle>>()->Emit(1, GetPosition(), { 0,0 }, /*-GetVelocity() * 0.4f*/{}, 1.5);
+
 }
 
 
@@ -92,7 +96,8 @@ void BossBullet::Move(double dt) {
 void BossBullet::Draw(DrawLayer drawlayer) {
     DrawCall draw_call = {
         GetGOComponent<Sprite>()->GetTexture(),
-        &GetMatrix()
+        &GetMatrix(),
+        Engine::GetShaderManager().GetDefaultShader()
     };
 
     draw_call.settings.do_blending = 1;

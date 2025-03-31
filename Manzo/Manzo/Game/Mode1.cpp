@@ -75,6 +75,7 @@ void Mode1::Load()
 	AddGSComponent(new ParticleManager<Particles::HitPraticle>());
 	AddGSComponent(new ParticleManager<Particles::HitPraticle2>());
 	AddGSComponent(new ParticleManager<Particles::CaptureEffect>());
+	AddGSComponent(new ParticleManager<Particles::BulletParticle>());
 
 	//// camera
 	vec2 start_position = {600, -500};
