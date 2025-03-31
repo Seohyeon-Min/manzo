@@ -59,7 +59,7 @@ void Mode1::Load() {
 	Engine::GetShaderManager().LoadShader("post_underwater_distortion", "assets/shaders/post_default.vert", "assets/shaders/post_underwater_distortion.frag");
 
 	// audio
-	Engine::GetAudioManager().LoadMusic("assets/audios/bgm_original.wav", "background1", false);
+	Engine::GetAudioManager().LoadMusic("assets/audios/Level1_bgm.mp3", "Level1_bgm", false);
 	Engine::GetAudioManager().LoadMusic("assets/audios/morse/e.wav", "e morse", true);
 	Engine::GetAudioManager().Set3DMode(FMOD_3D_LINEARROLLOFF);
 
@@ -67,7 +67,7 @@ void Mode1::Load() {
     AddGSComponent(new GameObjectManager());
     beat_system = new Beat();
     AddGSComponent(beat_system);
-	beat_system->LoadMusicToSync("background1");
+	beat_system->LoadMusicToSync("Level1_bgm");
 
     // Particle
     AddGSComponent(new ParticleManager<Particles::Plankton>());
@@ -120,17 +120,17 @@ void Mode1::Load() {
     //    GetGSComponent<Boss>()->ReadBossJSON(static_cast<Boss::BossType>(i));
     //    BossFirstPos.push_back(GetGSComponent<Boss>()->GetFirstPosition());
     //}
-	boss_ptr = new Boss({ 4350,-5420 }, Boss::BossName::e, Boss::BossType::MovingToLocation);
+	boss_ptr = new Boss({ 4100, -5300 }, Boss::BossName::e, Boss::BossType::MovingToLocation);
 	boss_ptr->ReadBossJSON(Boss::BossName::e);
 	BossFirstPos.push_back(std::make_pair(boss_ptr->GetFirstPosition()[0], boss_ptr->GetFirstPosition()[1]));
-	bossPosition = { 4350,-5420, 0.0f };
+	bossPosition = {4100, -5300, 0.0f };
 
 	// UI
 	GetGSComponent<GameObjectManager>()->Add(new Mouse);
 	GetGSComponent<GameObjectManager>()->Add(new FuelUI(ship_ptr));
 
 	// monster
-	//GetGSComponent<GameObjectManager>()->Add(new Monster(ship_ptr, {300,300}));
+	GetGSComponent<GameObjectManager>()->Add(new Monster(ship_ptr, {2200,-2000}));
 
 
 	// Skill
@@ -191,12 +191,9 @@ void Mode1::Update(double dt) {
 	std::cout << "Player's Y position : "<< ship_ptr->GetPosition().y << "\n";
 	*/
 
+	//beat_system->LoadMusicToSync("Level1_bgm");
 	//audio play
-	if (!playing)
-	{
-		Engine::GetAudioManager().PlayMusics("background1");
-		playing = true;
-	}
+
 
 	UpdateGSComponents(dt);
 	GetGSComponent<GameObjectManager>()->UpdateAll(dt);
@@ -204,33 +201,39 @@ void Mode1::Update(double dt) {
 
 
     // Handle Input
-    if (Engine::GetInput().KeyJustPressed(Input::Keys::Q)) {
+    if (Engine::GetInput().KeyJustPressed(Input::Keys::TAB)) {
     //if (ship_ptr->IsShipUnder() && Engine::GetInput().KeyJustPressed(Input::Keys::Q)) {
         Engine::GetGameStateManager().ClearNextGameState();
         Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
     }
 
-    if (Engine::GetInput().KeyJustPressed(Input::Keys::W)) {
-        Engine::GetGameStateManager().ReloadState();
-    }
+#ifdef _DEBUG
+	if (Engine::GetInput().KeyJustPressed(Input::Keys::W)) {
+		Engine::GetGameStateManager().ReloadState();
+	}
 
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::V)) {
 		Engine::GetGameStateManager().ClearNextGameState();
 		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Tutorial));
 	}
+#else
+#endif
+
+
 
     if (Engine::GetInput().KeyJustPressed(Input::Keys::E) && !Isboss) {
         GetGSComponent<GameObjectManager>()->Add(boss_ptr);
         Isboss = true;
+		
     }
 
-	//if (Isboss,boss_ptr != nullptr) {
-
-	//	//camera->SetPosition(boss_ptr->GetPosition());
-	//}
+	if (Isboss) {
+		camera->SetPosition(boss_ptr->GetPosition());
+	}
 
 	//camera postion update
 	camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
+	
 
 	// Update Fish Generator
 	fishGenerator->GenerateFish(dt);
@@ -255,7 +258,7 @@ void Mode1::Update(double dt) {
 	Engine::GetAudioManager().Set3dListenerAndOrientation(smoothShipPosition,vec3{ 0.0f, -1.0f, 0.0f },vec3{ 0.0f, 0.0f, 1.0f }	);
 
 	// Apply 3D position for the boss and calculate volume based on the distance
-    if (isWithinRange) {
+    if (isWithinRange && !Isboss) {
         if (!soundPlaying) {
             Engine::GetAudioManager().PlayMusics("e morse");
             soundPlaying = true;
@@ -297,7 +300,10 @@ void Mode1::Draw() {
 
 
     // Draw Font
-	Engine::GetFontManager().PrintText(FontType::Bold,"E", { 0.f,0.f }, 0.2f,{ 1.f,1.f,1.f }, 0.5f);
+	//Engine::GetFontManager().PrintText(FontType::Bold,"E", { 0.f,0.f }, 0.2f,{ 1.f,1.f,1.f }, 0.5f);
+	if (ship_ptr->GetFuel()<=0) {
+		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, "CLICK TO RESTART", { ship_ptr->GetPosition().x, ship_ptr->GetPosition().y - 60.f} , 88.098f, { 1.f,1.f,1.f }, 1.0f);
+	}
 }
 
 void Mode1::Unload() {

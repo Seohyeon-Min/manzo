@@ -55,7 +55,7 @@ void Boss::Movingtolocation_Boss(int targetEntryNum, Boss* boss) {
 				
 			}
 			if (entryData.attacktype == 3) {
-				boss->AttackCircle(entryData.position, 500, (double)(boss->beat->GetFixedDuration() * 4));
+				boss->AttackCircle(entryData.position, 350, (double)(boss->beat->GetFixedDuration() * 4));
 			}
 		}
 		
@@ -135,11 +135,12 @@ void Boss::State_CutScene::CheckExit(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
 
 	if (Engine::GetInput().KeyDown(Input::Keys::R) && boss->beat->GetBeat()) {
-		Engine::GetAudioManager().SetMute("background1", true);
+		Engine::GetAudioManager().SetMute("Level1_bgm", true);
 		Engine::GetAudioManager().StopChannel("e morse");
-		Engine::GetAudioManager().PlayMusics("e boss");
-
+		//Engine::GetAudioManager().PlayMusics("e boss");
 		boss->beat->SetBPM(boss->bpm);
+
+		boss->beat->LoadMusicToSync("e boss");
 		//std::cout << "boss bpm:" << boss->bpm << std::endl;
 		boss->change_state(&boss->entry1);
 	}
@@ -233,8 +234,8 @@ void Boss::AfterDied()
 	if (pump) {
 		pump->Reset();
 	}
-	Engine::GetAudioManager().RestartPlayMusic("background1");
-	Engine::GetAudioManager().SetMute("background1", false);
+	Engine::GetAudioManager().RestartPlayMusic("Level1_bgm");
+	Engine::GetAudioManager().SetMute("Level1_bgm", false);
 }
 
 
@@ -253,7 +254,7 @@ void Boss::AttackCircle(vec2 pos, double radius, double elapsed_time)
 		if (distance > radius)
 		{
 			Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()
-				->GetGOComponent<Ship>()->DeclineFuel(0.4);
+				->GetGOComponent<Ship>()->DeclineFuel(1.f);
 			std::cout << "Attack" << std::endl;
 
 

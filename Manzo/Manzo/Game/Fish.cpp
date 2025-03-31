@@ -81,6 +81,7 @@ bool Fish::CanCollideWith(GameObjectTypes other_object) {
 
 void Fish::ResolveCollision(GameObject* other_object) {
     switch (other_object->Type()) {
+    case GameObjectTypes::Net:
     case GameObjectTypes::Ship:
         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new CaptureEffect(GetPosition()));
         if (!collided)
@@ -92,19 +93,6 @@ void Fish::ResolveCollision(GameObject* other_object) {
         }
         this->Destroy();
         break;
-
-    case GameObjectTypes::Net:
-        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new CaptureEffect(GetPosition()));
-        if (!collided)
-        {
-            collided = true;
-            fishCnt--;
-            money += moneys[type - 1]; 
-            fishCaptureCount[type - 1]++;
-        }
-        this->Destroy();
-        break;
-
     case GameObjectTypes::RockBoundary:
         vec2 avoidanceVelocity = AvoidRock(GetPosition(),
             { Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRockPoint(this).x - 20,

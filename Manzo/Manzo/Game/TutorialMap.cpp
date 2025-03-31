@@ -6,6 +6,7 @@
 #include "Background.h"
 #include "Ship.h"
 #include "Mouse.h"
+#include "States.h"
 
 Tutorial::Tutorial()
 {
@@ -51,6 +52,12 @@ void Tutorial::Update(double dt)
 	UpdateGSComponents(dt);
 	GetGSComponent<GameObjectManager>()->UpdateAll(dt);
 	GetGSComponent<Cam>()->Update(dt, {}, false);
+
+	if (Engine::GetInput().KeyJustPressed(Input::Keys::Q)) {
+		//if (ship_ptr->IsShipUnder() && Engine::GetInput().KeyJustPressed(Input::Keys::Q)) {
+		Engine::GetGameStateManager().ClearNextGameState();
+		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
+	}
 
 	//audio play
 	if (!playing)

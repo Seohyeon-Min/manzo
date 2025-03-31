@@ -248,12 +248,12 @@ bool RectCollision::IsCollidingWithNextFrame(GameObject* other_object, vec2 velo
     nextFrameRect.point_1 += velocity * dt;
     nextFrameRect.point_2 += velocity * dt;
 
-    //bool startCollide = IsCollidingWith(other_collider, startRect);
+    bool startCollide = IsCollidingWith(other_collider, startRect);
 
-    //if (startCollide) {
-    //    toi = 0.0f;
-    //    return true;
-    //}
+    if (startCollide) {
+        toi = 0.0f;
+        return true;
+    }
 
     if (!IsCollidingWith(other_collider, nextFrameRect)) {
         return false;

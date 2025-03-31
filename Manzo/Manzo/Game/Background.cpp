@@ -56,6 +56,7 @@ void Background::Draw(const Cam& camera)
     }
 }
 
+
 ivec2 Background::GetSize()
 {
     return backgrounds[backgrounds.size() - 1].texture->GetSize();

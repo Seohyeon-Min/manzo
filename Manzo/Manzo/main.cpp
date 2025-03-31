@@ -6,6 +6,7 @@
 #include "Game/Mode1.h"
 #include "Game/Mode2.h"
 #include "Game/TutorialMap.h"
+#include "Game/Title.h"
 
 util::owner<IProgram*> create_program(int viewport_width, int viewport_height)
 {
@@ -20,6 +21,11 @@ int main() {
 
         engine->GetFontManager().AddFontType("assets/fonts/Font1.ttf");
         engine->GetFontManager().AddFontType("assets/fonts/Font2.ttf");
+        engine->GetFontManager().AddFontType("assets/fonts/AlumniSans-Medium.ttf");
+        engine->GetFontManager().AddFontType("assets/fonts/AlumniSans-Light.ttf");
+
+        Title title;
+        engine->GetGameStateManager().AddGameState(title);
 
         Mode1 mode1;
         engine->GetGameStateManager().AddGameState(mode1);
@@ -29,6 +35,7 @@ int main() {
 
         Tutorial tutorial;
         engine->GetGameStateManager().AddGameState(tutorial);
+
 
         SDL_GL_SetSwapInterval(1);
 

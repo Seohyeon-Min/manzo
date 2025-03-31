@@ -10,18 +10,27 @@ Beat::Beat()
     duration; 
     delay_duration = fixed_duration / 4 ;
     current_delay_duration = delay_duration ;
-    total_music_length = Engine::GetAudioManager().GetMusicLength("background1");
+    total_music_length = Engine::GetAudioManager().GetMusicLength("Level1_bgm");
 }
 
 void Beat::LoadMusicToSync(std::string _music_name)
 {
     music_name =_music_name;
+    playing = false;
 }
 //0.29
 
 void Beat::Update(double dt)
 {
     time_taken += dt;
+
+    if (!playing)
+    {
+        Engine::GetAudioManager().PlayMusics(music_name);
+        playing = true;
+        time_taken = 0;
+        //std::cout << "Now Music:: " << Engine::GetAudioManager().GetCurrentMusicTime(music_name) << std::endl;
+    }
 
     if (beat) {
         beat = false;
@@ -77,7 +86,7 @@ void Beat::SetBPM(int set_BPM)
     delay_count = 0;
     beat = false;
     is_on_beat = false;
-    music_started = false;
+    playing = false;
     //music_name.clear();
 }
 
@@ -94,6 +103,6 @@ void Beat::CleartoOriginal() {
 
     beat = false;
     is_on_beat = false;
-    music_started = false;
+    playing = false;
     //music_name.clear();
 }

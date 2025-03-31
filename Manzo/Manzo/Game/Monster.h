@@ -28,7 +28,7 @@ private:
     float dist_from_ship = 750.f;
 	const float sight_radius = 500;
 	const float sight_angle = 90;
-    vec2 init_pos = { 300,300 };
+    vec2 init_pos = {300,300 };
     vec2 direction;
     vec2 position;
     float speed = 700.f;
@@ -40,6 +40,7 @@ private:
     bool wait = false;
     float scale = 1.0f;
     const float max_scale = 2.0f;
+    float angle;
 
     class Stanby : public State {
     public:

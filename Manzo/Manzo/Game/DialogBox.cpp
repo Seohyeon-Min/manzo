@@ -3,6 +3,8 @@
 
 Dialog::Dialog(vec2 start_position)
     : GameObject(start_position), currentIndex(0), elapsedTime(0.0), typingSpeed(0.05), IsTyping(false) {
+    AddGOComponent(new Sprite("assets/images/none.spt", this));
+
     dialog = new JsonParser_dialog("en");
     DialogBox = Engine::GetTextureManager().Load("assets/images/temp_dial.png");
     Box_effect = Engine::GetTextureManager().Load("assets/images/box_effect.png");
@@ -61,9 +63,9 @@ void Dialog::Update(double dt) {
 }
 
 void Dialog::Draw() {
-    DrawCall draw_call_box = { DialogBox, &back_matrix};
-    DrawCall draw_call_effect = { Box_effect, &effect_matrix};
-    DrawCall draw_call_Me = { Me, &me_matrix};
+    DrawCall draw_call_box = { DialogBox, &back_matrix, Engine::GetShaderManager().GetDefaultShader()};
+    DrawCall draw_call_effect = { Box_effect, &effect_matrix, Engine::GetShaderManager().GetDefaultShader() };
+    DrawCall draw_call_Me = { Me, &me_matrix, Engine::GetShaderManager().GetDefaultShader() };
 
     SetDrawSetting(draw_call_box);
     SetDrawSetting(draw_call_effect);
@@ -74,8 +76,10 @@ void Dialog::Draw() {
         GameObject::Draw(draw_call_Me);
         GameObject::Draw(draw_call_effect);
         GameObject::Draw(draw_call_box);
-        Engine::GetFontManager().PrintText(FontType::Thin, displayedText.c_str(), { -0.5f, -0.62f },  0.00012f, { 1.0f, 1.0f, 1.0f }, 1.f);
-        Engine::GetFontManager().PrintText(FontType::Bold, character.c_str(), { -0.5f, -0.52f }, 0.0001f, { 1.0f, 1.0f, 1.0f }, 1.f);
+
+
+        Engine::GetFontManager().PrintText(FontType::Thin, displayedText.c_str(), { -175.f,-120.f },  0.05f, { 1.0f, 1.0f, 1.0f }, 1.f);
+        Engine::GetFontManager().PrintText(FontType::Bold, character.c_str(), { -175.f, -100.f }, 0.08f, { 1.0f, 1.0f, 1.0f }, 1.f);
     }
 }
 

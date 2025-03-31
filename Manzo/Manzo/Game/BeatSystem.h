@@ -31,7 +31,7 @@ private:
     static constexpr double judge_offset = 0.2;
     bool beat = false;
     bool is_on_beat = false;
-    bool music_started = false;
+    bool playing = false;
     AudioManager* audio;
     int channel_id = 0;
     std::string music_name;

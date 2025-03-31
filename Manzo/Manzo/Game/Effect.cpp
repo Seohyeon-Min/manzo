@@ -1,5 +1,6 @@
 #include "Effect.h"
 #include "../Engine/Sprite.h"
+#include "States.h"
 
 Effect::Effect(vec2 position, double effect_time)
     : GameObject(position), effect_time(effect_time) {
@@ -117,6 +118,35 @@ CaptureEffect::~CaptureEffect()
         ->EmitRound(2, GetPosition(), 100.f, 30.f);
 }
 
+GetFishEffect::GetFishEffect(vec2 pos)
+    : Effect(pos, 0.5) {
+    //SetScale({ 0.6f, 0.6f });
+    AddGOComponent(new Sprite("assets/images/Get_fish_effect.spt", this));
+}
+
+void GetFishEffect::Update(double dt)
+{
+    Effect::Update(dt);
+    SetVelocity({ GetVelocity().x, speed });
+    float base_dt = 1.0f / 240.f;
+    speed *= (float)std::pow(deceleration, dt / base_dt);
+}
+
+void GetFishEffect::Draw(DrawLayer drawlayer)
+{
+    Sprite* sprite = GetGOComponent<Sprite>();
+    DrawCall draw_call = {
+        sprite,
+        &GetMatrix(),
+        Engine::GetShaderManager().GetShader("change_alpha") // Shader to use
+    };
+
+    draw_call.settings.do_blending = true;
+    draw_call.SetUniforms = [this](const GLShader* shader) { SetAlpha(shader); };
+    draw_call.sorting_layer = DrawLayer::DrawPlayerTop;
+    GameObject::Draw(draw_call);
+}
+
 HitEffect::HitEffect(vec2 pos)
     : Effect(pos, 0.5) {
     SetScale({ 0.6f, 0.6f });
@@ -184,4 +214,49 @@ void MonsterHitEffect::Draw(DrawLayer drawlayer)
     draw_call.SetUniforms = [this](const GLShader* shader) { SetAlpha(shader); };
     draw_call.sorting_layer = DrawLayer::DrawLast;
     GameObject::Draw(draw_call);
+}
+
+BlackOutEffect::BlackOutEffect() : Effect({}, 0.5)
+{
+    AddGOComponent(new Sprite("assets/images/full_quad.spt", this));
+    timer = new RealTimeTimer(time);
+    AddGOComponent(timer);
+    timer->Set(time);
+    timer->Start();
+}
+
+void BlackOutEffect::Update(double dt)
+{
+    //GameObject::Update(dt);
+        // Move to next scean
+
+    if (timer->IsFinished()) {
+        if (Engine::GetInput().MouseButtonJustReleased((SDL_BUTTON_LEFT))) {
+            Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
+        }
+    }
+}
+
+void BlackOutEffect::Draw(DrawLayer drawlayer)
+{
+    Sprite* sprite = GetGOComponent<Sprite>();
+    DrawCall draw_call = {
+        sprite,
+        &GetMatrix(),
+        Engine::GetShaderManager().GetShader("change_alpha") // Shader to use
+    };
+
+    draw_call.settings.do_blending = true;
+    draw_call.SetUniforms = [this](const GLShader* shader) { SetAlpha(shader); };
+    draw_call.sorting_layer = DrawLayer::DrawLast;
+    draw_call.settings.is_camera_fixed = true;
+    GameObject::Draw(draw_call);
+}
+
+void BlackOutEffect::SetAlpha(const GLShader* shader)
+{
+    float alpha = float(1.0 - timer->Remaining());
+    std::cout << timer->Remaining() << std::endl;
+    //if (alpha >= 0.3f) alpha = 0.3f;
+    shader->SendUniform("uAlpha", alpha);
 }

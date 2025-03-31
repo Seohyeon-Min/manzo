@@ -23,19 +23,20 @@ public:
     void ResolveCollision(GameObject* other_object) override;
 
     // fuel
-    void SetMaxFuel(double input);
+    void SetMaxFuel(float input);
     float GetFuel() { return (float)fuel; }
     float GetMaxFuel() { return (float)Maxfuel; }
     void FuelUpdate(double dt);
     bool IsTouchingReef();
     bool IsFuelZero();
     bool IsShipUnder();
-    void DeclineFuel(double d) { fuel -= d; }
+    void DeclineFuel(float d) { fuel -= d; }
 
     const vec2 GetDashPos() { return dash_target; }
 
 private:
     void HitWithBounce(GameObject* other_object, vec2 initial_velocity);
+    void ReduceFuel(float value);
 
     static constexpr double speed = 6500.f;
     static constexpr float deceleration = 0.88f;
@@ -64,15 +65,16 @@ private:
     bool isCollidingWithReef;
     bool FuelFlag = false;
     bool can_dash = true;
-    double fuel;
-    double Maxfuel = 1000;
-    double baseDecfuel = 2;
-    double MoveDecfuel = 0.5;
-    double RockHitDecFuel = 50;
-    double MonsHitDecFuel = 80;
-    double fuelcounter = 0;
+    float fuel;
+    float Maxfuel = 1000.f;
+    float baseDecfuel = 2.f;
+    float MoveDecfuel = 0.5f;
+    float RockHitDecFuel = 50.f;
+    float MonsHitDecFuel = 80.f;
+    float fuelcounter = 0.f;
     Rock* before_nearest_rock = nullptr;
     Rock* nearestRock = nullptr;
+    GLTexture* hit_text;
     //
 
     vec2 dash_target;
@@ -97,8 +99,17 @@ private:
         bool skip_enter = false;
     };
 
+    class State_Die : public State {
+    public:
+        virtual void Enter(GameObject* object) override;
+        virtual void Update(GameObject* object, double dt) override;
+        virtual void CheckExit(GameObject* object) override;
+        std::string GetName() override { return "State_Die"; }
+    };
+
     State_Idle state_idle;
     State_Move state_move;
+    State_Die state_die;
 };
 
 class Pump : public GameObject {

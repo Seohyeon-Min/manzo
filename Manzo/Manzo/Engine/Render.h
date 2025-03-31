@@ -24,8 +24,8 @@ enum class DrawLayer {
     DrawLast = 3,
     DrawPlayer,
     DrawPlayerTop,
+    DrawDialog,
     DrawUI,
-    DrawDialog
 };
 
 enum class DrawType {
@@ -119,7 +119,7 @@ public:
     (vec2 start, vec2 end, color3 color, float width = 1.0f, float alpha = 255.0f, const GLShader* shader = nullptr);
     void RenderAll();
 
-    void ApplyPostProcessing();
+    void ApplyPostProcessing(bool is_title = false);
     void RenderQuad();
 
     void SetProjection(const mat3 proj);

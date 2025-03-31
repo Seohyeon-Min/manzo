@@ -52,14 +52,18 @@ void Render::AddDrawCall
 // Render all stored draw calls, starting with early phase, normal phase, and then late phase
 // Also handles rendering of lines and collision shapes
 void Render::RenderAll() {
-    if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
 
-    }
     postProcessFramebuffer[0].Bind();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     for (const auto& draw_call : draw_background_calls) {
         DrawBackground(draw_call);
+    }
+
+    if (Engine::GetGameStateManager().GetStateName() == "Title") {
+        postProcessFramebuffer[1].Unbind();
+        ApplyPostProcessing(0);
+        postProcessFramebuffer[0].Bind();
     }
 
     // Render all draw calls
@@ -89,17 +93,21 @@ void Render::RenderAll() {
         }
     }
 
-    if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
 
-
+    if (Engine::GetGameStateManager().GetStateName() != "Title") {
+        postProcessFramebuffer[1].Unbind();
+        ApplyPostProcessing();
     }
-    postProcessFramebuffer[1].Unbind();
-    ApplyPostProcessing();
+    else if (Engine::GetGameStateManager().GetStateName() == "Title") {
+        postProcessFramebuffer[1].Unbind();
+        ApplyPostProcessing(1);
+    }
+
     // Clear draw call vectors for the next frame
     ClearDrawCalls();
 }
 
-void Render::ApplyPostProcessing()
+void Render::ApplyPostProcessing(bool is_title)
 {
     bool horizontal = true, first_iteration = true;
 
@@ -122,7 +130,7 @@ void Render::ApplyPostProcessing()
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer[!horizontal].GetColorAttachment());
 
-            double currentTime = Engine::GetAudioManager().GetCurrentMusicTime("background1");
+            double currentTime = Engine::GetAudioManager().GetCurrentMusicTime("Home_bgm");
 
             switch (i) {
             case 0: // Bloom
@@ -141,7 +149,7 @@ void Render::ApplyPostProcessing()
             first_iteration = false;
         }
     }
-    else {
+    else if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
         int num_passes = 3; // Number of post process
 
         for (int i = 0; i < num_passes; i++) {
@@ -166,7 +174,7 @@ void Render::ApplyPostProcessing()
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer[!horizontal].GetColorAttachment());
 
-            double currentTime = Engine::GetAudioManager().GetCurrentMusicTime("background1");
+            double currentTime = Engine::GetAudioManager().GetCurrentMusicTime("Level1_bgm");
 
             switch (i) {
             case 0: // Distortion
@@ -184,6 +192,94 @@ void Render::ApplyPostProcessing()
                 shader->SendUniform("uSceneTexture", 0);
                 shader->SendUniform("iResolution", Engine::window_width, Engine::window_height);
                 shader->SendUniform("iTime", float(currentTime));
+                break;
+            }
+
+            RenderQuad();
+            shader->Use(false);
+
+            horizontal = !horizontal;
+            first_iteration = false;
+        }
+
+    }
+    else if (Engine::GetGameStateManager().GetStateName() == "Title" && !is_title) {
+        int num_passes = 2; // Number of post process
+        for (int i = 0; i < num_passes; i++) {
+            postProcessFramebuffer[horizontal].Bind();
+            glClear(GL_COLOR_BUFFER_BIT);
+
+            GLShader* shader = Engine::GetShaderManager().GetShader("post_bloom");
+
+            switch (i) {
+            case 0: // Gra
+                shader = Engine::GetShaderManager().GetShader("title_gradation");
+                break;
+            case 1: // Ripple
+                shader = Engine::GetShaderManager().GetShader("title_ripple");
+                break;
+            }
+            shader->Use();
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer[!horizontal].GetColorAttachment());
+
+            double currentTime = Engine::GetAudioManager().GetCurrentMusicTime("title_bgm");
+
+            switch (i) {
+            case 0: // Gra
+                shader->SendUniform("iResolution", Engine::window_width, Engine::window_height);
+                shader->SendUniform("iTime", float(currentTime));
+                break;
+            case 1: // Ripple
+                shader->SendUniform("iResolution", Engine::window_width, Engine::window_height);
+                shader->SendUniform("iTime", float(currentTime));
+                break;
+            }
+
+            RenderQuad();
+            shader->Use(false);
+
+            horizontal = !horizontal;
+            first_iteration = false;
+        }
+    }
+    else if (Engine::GetGameStateManager().GetStateName() == "Title" && is_title) {
+        int num_passes = 1; // Number of post process
+        for (int i = 0; i < num_passes; i++) {
+            postProcessFramebuffer[horizontal].Bind();
+            glClear(GL_COLOR_BUFFER_BIT);
+
+            GLShader* shader = Engine::GetShaderManager().GetShader("post_bloom");
+
+            switch (i) {
+            case 0: // Bloom
+                shader = Engine::GetShaderManager().GetShader("post_bloom");
+                break;
+            case 1: // Wave
+                shader = Engine::GetShaderManager().GetShader("post_water_wave");
+                break;
+            }
+            shader->Use();
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer[!horizontal].GetColorAttachment());
+
+            double currentTime = Engine::GetAudioManager().GetCurrentMusicTime("title_bgm");
+
+            switch (i) {
+            case 0: // Bloom
+                shader->SendUniform("uSceneTexture", 0);
+                shader->SendUniform("uThreshold", 0.81f);
+                shader->SendUniform("uBlurDirection", 1.0f, 1.0f);
+                shader->SendUniform("uResolution", static_cast<float>(Engine::window_width));
+                shader->SendUniform("uBloomIntensity", 0.1f);
+                break;
+            case 1: // wave
+                shader->SendUniform("iResolution", Engine::window_width, Engine::window_height);
+                shader->SendUniform("iTime", float(currentTime));
+                shader->SendUniform("uSceneTexture", 0);
+                shader->SendUniform("iMouse", Engine::GetInput().GetMousePos().mouseWorldSpaceX, Engine::GetInput().GetMousePos().mouseWorldSpaceY);
                 break;
             }
 
