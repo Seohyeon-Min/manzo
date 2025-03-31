@@ -3,7 +3,6 @@
 #include "Boss.h"
 #include "Ship.h"
 #include "BossBullet.h"
-#include "BeatSystem.h"
 
 
 std::vector<GameObject::State*> stateMap;
@@ -131,7 +130,7 @@ void Boss::Check_BossBehavior(int targetEntryNum, GameObject* object) {
 
 void Boss::State_CutScene::Enter(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
-	boss->beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
+	boss->beat = &Engine::GetBeat();
 
 }
 void Boss::State_CutScene::Update(GameObject* object, double dt) {

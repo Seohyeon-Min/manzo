@@ -1,5 +1,4 @@
 #include "Ship.h"
-#include "BeatSystem.h"
 #include "Particles.h"
 #include "../Engine/Camera.h"
 #include "../Engine/Input.h"
@@ -16,7 +15,7 @@ Ship::Ship(vec2 start_position) :
 	GameObject(start_position), move(false)
 {
     AddGOComponent(new Sprite("assets/images/ship.spt", this));
-    beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
+    beat = &Engine::GetBeat();
     skill = Engine::GetGameStateManager().GetGSComponent<Skillsys>();
     hit_text = Engine::GetTextureManager().Load("assets/images/ship_hit.png");
 
@@ -157,7 +156,7 @@ void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_
 #endif
 
     if (ship->nearestRock == NULL) {
-        Engine::GetLogger().LogEvent("Nearest Rock : NULL");
+        //Engine::GetLogger().LogEvent("Nearest Rock : NULL");
         return;
     }
     vec2 velocity;
@@ -691,7 +690,7 @@ bool Ship::IsShipUnder()
 Pump::Pump() :
 	GameObject({})
 {
-	beat = Engine::GetGameStateManager().GetGSComponent<Beat>();
+	beat = &Engine::GetBeat();
 }
 
 void Pump::Update(double dt)

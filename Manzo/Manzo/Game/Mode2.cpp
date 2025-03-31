@@ -16,7 +16,6 @@ Created:    March 8, 2023
 
 #include "States.h"
 #include "Background.h"
-#include "BeatSystem.h"
 #include "Ship.h"
 #include "Mode2.h"
 #include "Mouse.h"

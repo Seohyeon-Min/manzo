@@ -1,7 +1,6 @@
 #pragma once
 #include "../Engine/GameObject.h"
 #include "GameObjectTypes.h"
-#include "BeatSystem.h"
 #include <list>
 #include <chrono>
 #include <vector>

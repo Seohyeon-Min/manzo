@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="Engine\Animation.cpp" />
     <ClCompile Include="Engine\AudioManager.cpp" />
+    <ClCompile Include="Engine\BeatSystem.cpp" />
     <ClCompile Include="Engine\Camera.cpp" />
     <ClCompile Include="Engine\Collision.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
@@ -38,7 +39,6 @@
     <ClCompile Include="Engine\UI.cpp" />
     <ClCompile Include="Game\AI.cpp" />
     <ClCompile Include="Game\Background.cpp" />
-    <ClCompile Include="Game\BeatSystem.cpp" />
     <ClCompile Include="Game\Boss.cpp" />
     <ClCompile Include="Game\BounceBehavior.h" />
     <ClCompile Include="Game\BossBullet.cpp" />
@@ -77,6 +77,7 @@
   <ItemGroup>
     <ClInclude Include="Engine\Animation.h" />
     <ClInclude Include="Engine\AudioManager.h" />
+    <ClInclude Include="Engine\BeatSystem.h" />
     <ClInclude Include="Engine\Camera.h" />
     <ClInclude Include="Engine\Collision.h" />
     <ClInclude Include="Engine\Component.h" />
@@ -108,7 +109,6 @@
     <ClInclude Include="Engine\UI.h" />
     <ClInclude Include="Game\AI.h" />
     <ClInclude Include="Game\Background.h" />
-    <ClInclude Include="Game\BeatSystem.h" />
     <ClInclude Include="Game\Boss.h" />
     <ClInclude Include="Game\BossBullet.h" />
     <ClInclude Include="Game\Box.h" />

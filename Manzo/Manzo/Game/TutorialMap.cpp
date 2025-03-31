@@ -2,7 +2,6 @@
 #include "../Engine/AudioManager.h"
 #include "../Engine/Particle.h"
 #include "Particles.h"
-#include "BeatSystem.h"
 #include "Background.h"
 #include "Ship.h"
 #include "Mouse.h"
@@ -16,8 +15,7 @@ void Tutorial::Load()
 {
 	AddGSComponent(new GameObjectManager());
 
-	beat_system = new Beat();
-	AddGSComponent(beat_system);
+
 
 	// background
 	background = new Background();
@@ -29,6 +27,7 @@ void Tutorial::Load()
 	GetGSComponent<Cam>()->SetPosition({ 0, 0 });
 
 	// audio
+	beat_system = &Engine::GetBeat();
 	Engine::GetAudioManager().LoadMusic("assets/audios/100BPM.mp3", "tutorial_bgm", false);
 	beat_system->LoadMusicToSync("tutorial_bgm");
 
@@ -52,6 +51,7 @@ void Tutorial::Update(double dt)
 	UpdateGSComponents(dt);
 	GetGSComponent<GameObjectManager>()->UpdateAll(dt);
 	GetGSComponent<Cam>()->Update(dt, {}, false);
+	beat_system->Update(dt);
 
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::Q)) {
 		//if (ship_ptr->IsShipUnder() && Engine::GetInput().KeyJustPressed(Input::Keys::Q)) {
@@ -82,8 +82,8 @@ void Tutorial::FixedUpdate(double dt)
 
 void Tutorial::Unload()
 {
+	beat_system->CalculateCali();
 	delete ship_ptr;
 	ship_ptr = nullptr;
-
 	playing = false;
 }

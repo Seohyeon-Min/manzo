@@ -21,7 +21,6 @@ Created:    March 8, 2023
 #include "Mouse.h"
 #include "States.h"
 #include "Mode1.h"
-#include "BeatSystem.h"
 #include "Background.h"
 #include "Ship.h"
 #include "Fish.h"
@@ -64,8 +63,7 @@ void Mode1::Load()
 
 	// component
 	AddGSComponent(new GameObjectManager());
-	beat_system = new Beat();
-	AddGSComponent(beat_system);
+	beat_system = &Engine::GetBeat();
 	beat_system->LoadMusicToSync("Level1_bgm");
 
 	// Particle
@@ -183,6 +181,7 @@ void Mode1::Update(double dt)
 	UpdateGSComponents(dt);
 	GetGSComponent<GameObjectManager>()->UpdateAll(dt);
 	Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::Plankton>>()->Spray();
+	beat_system->Update(dt);
 
 	// Handle Input
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::TAB))
@@ -192,7 +191,7 @@ void Mode1::Update(double dt)
 		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
 	}
 
-#ifdef _DEBUG
+
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::W))
 	{
 		Engine::GetGameStateManager().ReloadState();
@@ -203,8 +202,7 @@ void Mode1::Update(double dt)
 		Engine::GetGameStateManager().ClearNextGameState();
 		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Tutorial));
 	}
-#else
-#endif
+
 
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::E) && !Isboss)
 	{

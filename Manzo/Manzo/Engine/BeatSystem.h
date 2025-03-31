@@ -1,12 +1,12 @@
 #pragma once
 
-#include "../Engine/Engine.h"
-#include "../Engine/Component.h"
-#include "../Engine/AudioManager.h"
+#include "Component.h"
+#include "AudioManager.h"
 
-class Beat : public Component {
+class Beat {
 public:
-    Beat();
+    Beat(AudioManager* audioMgr);
+    void LoadBeat(AudioManager* audioMgr);
     void LoadMusicToSync(std::string music_name);
     void Update(double dt);
     bool GetBeat() { return beat; }
@@ -15,6 +15,8 @@ public:
     int GetBarCount() { return bar_count; }
     int GetDelayCount() { return delay_count; }
     double GetFixedDuration() { return fixed_duration; }
+    void CollectCaliData();
+    void CalculateCali();
     void CleartoOriginal();
 
 private:
@@ -28,6 +30,7 @@ private:
     double current_delay_duration = 0;
     double time_taken = 0;
     double total_music_length = 0;
+    double right_time_for_calibration;
     static constexpr double judge_offset = 0.2;
     bool beat = false;
     bool is_on_beat = false;
@@ -35,4 +38,8 @@ private:
     AudioManager* audio;
     int channel_id = 0;
     std::string music_name;
+
+    std::vector<double> calibrations;
+    int calibrations_cnt = 0;
+    double user_calibration = 0;
 };

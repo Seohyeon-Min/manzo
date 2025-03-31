@@ -10,7 +10,6 @@ Created:    March 8, 2023
 
 #include "Engine.h"
 #include "ShowCollision.h"
-#include "../Game/BeatSystem.h"
 #include "../Game/AI.h"
 
 #include <SDL2/SDL.h>
@@ -24,18 +23,21 @@ std::random_device rd;
 
 Engine::Engine() :
 #ifdef _DEBUG
-    logger(last_tick, Logger::Severity::Debug, true)
+    logger(last_tick, Logger::Severity::Debug, true),
 #else
-    logger(Logger::Severity::Event, false)
+    logger(Logger::Severity::Event, false),
 #endif
+    beat(&audiomanager)
 {
-
-
     unsigned int seed = static_cast<unsigned int>(std::time(NULL));
     std::srand(seed);
     logger.LogEvent("Random seed :" + std::to_string(seed));
     logger.LogEvent("Engine Started");
     last_test = last_tick;
+}
+
+void Engine::Start(std::string window_title)
+{
 }
 
 void Engine::Stop() {
@@ -128,11 +130,11 @@ void Engine::ImGuiDraw()
             ImGui::SliderFloat("wanderForce", &BackgroundFish::d, 0.0f, 5.0f, "%.4f");
         }
         ImGui::Separator();
-        if (!GetGameStateManager().IsNull()
-            && GetGameStateManager().GetGSComponent<Beat>() != nullptr) {
-            ImGui::LabelText("Is on beat?", "%s", GetGameStateManager().GetGSComponent<Beat>()->GetIsOnBeat() ? "true" : "false");
-            //ImGui::LabelText("Collision", "%s", GetGameStateManager().GetGSComponent<ShowCollision>()->Enabled() ? "true" : "false");
-        }
+        //if (!GetGameStateManager().IsNull()
+        //    && GetGameStateManager().GetGSComponent<Beat>() != nullptr) {
+        //    ImGui::LabelText("Is on beat?", "%s", GetGameStateManager().GetGSComponent<Beat>()->GetIsOnBeat() ? "true" : "false");
+        //    //ImGui::LabelText("Collision", "%s", GetGameStateManager().GetGSComponent<ShowCollision>()->Enabled() ? "true" : "false");
+        //}
     }
     ImGui::End();
 }

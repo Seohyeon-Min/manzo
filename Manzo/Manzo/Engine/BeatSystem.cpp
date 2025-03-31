@@ -1,16 +1,22 @@
 #include "BeatSystem.h"
+#include "Engine.h"
 #include <iostream>
 
 constexpr double sync = 0.29;
 
-Beat::Beat()
+Beat::Beat(AudioManager* audioMgr)
+    : audio(audioMgr)
 {
-    audio = &Engine::GetAudioManager();
     fixed_duration = 60.0 / BPM;
     duration; 
     delay_duration = fixed_duration / 4 ;
     current_delay_duration = delay_duration ;
-    total_music_length = Engine::GetAudioManager().GetMusicLength("Level1_bgm");
+    total_music_length = audio->GetMusicLength("Level1_bgm");
+}
+
+void Beat::LoadBeat(AudioManager* audioMgr)
+{
+    audio = audioMgr;
 }
 
 void Beat::LoadMusicToSync(std::string _music_name)
@@ -26,7 +32,7 @@ void Beat::Update(double dt)
 
     if (!playing)
     {
-        Engine::GetAudioManager().PlayMusics(music_name);
+        audio->PlayMusics(music_name);
         playing = true;
         time_taken = 0;
         //std::cout << "Now Music:: " << Engine::GetAudioManager().GetCurrentMusicTime(music_name) << std::endl;
@@ -36,7 +42,7 @@ void Beat::Update(double dt)
         beat = false;
     }
 
-    if (current_delay_duration <= time_taken) { // delay count
+    if (current_delay_duration <= time_taken + user_calibration) { // delay count
         if (delay_count >= 16) {
             delay_count = 0;
         }
@@ -44,8 +50,10 @@ void Beat::Update(double dt)
         current_delay_duration += delay_duration;
     }
 
-    if (duration <= time_taken) { // right beat
+    if (duration <= time_taken + user_calibration) { // right beat
         beat = true; // Beat detected
+
+        right_time_for_calibration = time_taken;
 
         beat_count++;
         duration += fixed_duration; // Update duration for the next beat
@@ -56,7 +64,7 @@ void Beat::Update(double dt)
         beat_count = 0;
     }
 
-    if ((judge_offset >= time_taken || duration - judge_offset <= time_taken)) { // judge_offset
+    if ((judge_offset >= time_taken + user_calibration || duration - judge_offset <= time_taken + user_calibration)) { // judge_offset
         if (!is_on_beat)
             is_on_beat = true;
     }
@@ -65,6 +73,9 @@ void Beat::Update(double dt)
             is_on_beat = false;
     }
 
+    if (Engine::GetGameStateManager().GetStateName() == "Tutorial") {
+        CollectCaliData();
+    }
     //std::cout << "Time Taken: " << time_taken
     //    << ", Duration: " << duration
     //    << ", Current delay duration: " << current_delay_duration
@@ -72,6 +83,46 @@ void Beat::Update(double dt)
     //    << " beat: " << beat << std::endl;
 }
 
+void Beat::CollectCaliData()
+{
+    if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT)) {
+        double interval = time_taken - right_time_for_calibration;
+        if (interval >= fixed_duration / 2) {
+            interval = time_taken - (right_time_for_calibration + fixed_duration);
+        }
+        calibrations.push_back(interval);
+        std::cout << interval << std::endl;
+        calibrations_cnt++;
+    }
+}
+
+void Beat::CalculateCali()
+{
+    if (calibrations.empty()) {
+        std::cout << "Calibration data is empty." << std::endl;
+        return;
+    }
+
+    // 벡터 복사 후 정렬
+    std::vector<double> sorted = calibrations;
+    std::sort(sorted.begin(), sorted.end());
+
+    double median;
+    size_t size = sorted.size();
+
+    if (size % 2 == 0) {
+        // 짝수개일 경우: 중앙 두 값의 평균
+        median = (sorted[size / 2 - 1] + sorted[size / 2]) / 2.0;
+    }
+    else {
+        // 홀수개일 경우: 가운데 값
+        median = sorted[size / 2];
+    }
+
+    std::cout << "Median calibration value: " << median << std::endl;
+    user_calibration = median;
+    // 여기서 median 값을 게임 보정에 사용하면 됩니다.
+}
 
 
 void Beat::SetBPM(int set_BPM)

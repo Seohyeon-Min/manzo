@@ -22,6 +22,7 @@ Created:    March 8, 2023
 #include "FontManager.h"
 #include "WindowState.h"
 #include "IconManager.h"
+#include "BeatSystem.h"
 
 #include <chrono>
 #include <time.h>
@@ -72,6 +73,10 @@ public:
         return Instance()->iconmanager;
     }
 
+    static Beat& GetBeat() {
+        return Instance()->beat;
+    }
+
     void Start(std::string window_title);
     void Stop();
     void Update();
@@ -113,4 +118,5 @@ private:
     Render render;
     FontManager fontmanager;
     IconManager iconmanager;
+    Beat beat;
 };
