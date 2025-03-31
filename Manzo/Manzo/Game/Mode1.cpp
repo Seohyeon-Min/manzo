@@ -139,6 +139,8 @@ void Mode1::Load() {
 		module->SetSecondModule(true);
 		GetGSComponent<GameObjectManager>()->Add(new SecondModule(ship_ptr));
 	}
+
+	camera->SetPosition(ship_ptr->GetPosition());
 }
 
 void Mode1::Update(double dt) {
@@ -235,7 +237,8 @@ void Mode1::Draw() {
 	Engine::GetFontManager().PrintText(FontType::Bold, "E", {750,500}, 0.5f, {1.f,1.f,1.f}, 0.5f);
 	if (module->IsSecondSetted())
 	{
-		Engine::GetFontManager().PrintText(FontType::VeryThin, std::to_string(static_cast<int>(ship_ptr->GetFuel())), ship_ptr->GetPosition(), 0.05f, { 1.f,1.f,1.f }, 1.f);
+		//Engine::GetFontManager().PrintText(FontType::VeryThin, std::to_string(static_cast<int>(ship_ptr->GetFuel())), {-0.001f,0.75f}, 0.05f, {1.f,1.f,1.f}, 1.f, false);
+		Engine::GetFontManager().PrintText(FontType::VeryThin, std::to_string(static_cast<int>(ship_ptr->GetFuel())), {0.f,0.f }, 0.05f, { 1.f,1.f,1.f }, 1.f, false);
 	}
 }
 
