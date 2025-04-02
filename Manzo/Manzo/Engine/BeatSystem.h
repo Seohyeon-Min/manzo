@@ -6,8 +6,8 @@
 class Beat {
 public:
     Beat(AudioManager* audioMgr);
-    void LoadBeat(AudioManager* audioMgr);
     void LoadMusicToSync(std::string music_name);
+    void ResetCalibration();
     void Update(double dt);
     bool GetBeat() { return beat; }
     bool GetIsOnBeat() { return is_on_beat; }
@@ -32,7 +32,7 @@ private:
     double total_music_length = 0;
     double right_time_for_calibration;
     static constexpr double judge_offset = 0.2;
-    bool beat = false;
+    bool beat = true;
     bool is_on_beat = false;
     bool playing = false;
     AudioManager* audio;

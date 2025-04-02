@@ -14,17 +14,16 @@ Beat::Beat(AudioManager* audioMgr)
     total_music_length = audio->GetMusicLength("Level1_bgm");
 }
 
-void Beat::LoadBeat(AudioManager* audioMgr)
-{
-    audio = audioMgr;
-}
-
 void Beat::LoadMusicToSync(std::string _music_name)
 {
     music_name =_music_name;
     playing = false;
 }
 //0.29
+
+void Beat::ResetCalibration() {
+    user_calibration = 0;
+}
 
 void Beat::Update(double dt)
 {
@@ -42,7 +41,7 @@ void Beat::Update(double dt)
         beat = false;
     }
 
-    if (current_delay_duration <= time_taken + user_calibration) { // delay count
+    if (current_delay_duration + user_calibration <= time_taken ) { // delay count
         if (delay_count >= 16) {
             delay_count = 0;
         }
@@ -50,7 +49,7 @@ void Beat::Update(double dt)
         current_delay_duration += delay_duration;
     }
 
-    if (duration <= time_taken + user_calibration) { // right beat
+    if (duration + user_calibration <= time_taken) { // right beat
         beat = true; // Beat detected
 
         right_time_for_calibration = time_taken;
@@ -142,6 +141,7 @@ void Beat::SetBPM(int set_BPM)
 }
 
 void Beat::CleartoOriginal() {
+
     fixed_duration = 60.0 / BPM;
     duration = fixed_duration;
     delay_duration = fixed_duration / 4;

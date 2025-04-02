@@ -309,6 +309,8 @@ void Mode1::Unload()
 	replay = false;
 	fishGenerator = nullptr;
 	Isboss = false;
+	beat_system->CleartoOriginal();
+
 	GetGSComponent<GameObjectManager>()->Unload();
 	GetGSComponent<Background>()->Unload();
 	Engine::GetRender().ClearDrawCalls();

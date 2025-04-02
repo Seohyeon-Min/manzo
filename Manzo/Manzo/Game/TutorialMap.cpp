@@ -30,6 +30,7 @@ void Tutorial::Load()
 	beat_system = &Engine::GetBeat();
 	Engine::GetAudioManager().LoadMusic("assets/audios/100BPM.mp3", "tutorial_bgm", false);
 	beat_system->LoadMusicToSync("tutorial_bgm");
+	beat_system->ResetCalibration();
 
 	// ship
 	ship_ptr = new Ship({ 0, 0 });
@@ -59,12 +60,7 @@ void Tutorial::Update(double dt)
 		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
 	}
 
-	//audio play
-	if (!playing)
-	{
-		Engine::GetAudioManager().PlayMusics("tutorial_bgm");
-		playing = true;
-	}
+
 }
 
 void Tutorial::Draw()
@@ -82,8 +78,17 @@ void Tutorial::FixedUpdate(double dt)
 
 void Tutorial::Unload()
 {
-	beat_system->CalculateCali();
+
 	delete ship_ptr;
 	ship_ptr = nullptr;
 	playing = false;
+	//beat_system = nullptr;
+	beat_system->CalculateCali();
+	beat_system->CleartoOriginal();
+
+ 	GetGSComponent<GameObjectManager>()->Unload();
+	GetGSComponent<Background>()->Unload();
+	Engine::GetRender().ClearDrawCalls();
+	ClearGSComponents();
+	Engine::GetAudioManager().StopAllChannels();
 }
