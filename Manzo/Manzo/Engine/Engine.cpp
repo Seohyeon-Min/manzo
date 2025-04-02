@@ -66,6 +66,7 @@ void Engine::Update() {
 
     //FPS = 1.0 / dt;
     gamestatemanager.Update(dt);
+    audiomanager.Update();
     input.Update();
 
     frame_count++;
@@ -159,4 +160,10 @@ void Engine::UnloadTmpPtr()
 {
     delete tmp_ptr;
     tmp_ptr = nullptr;
+}
+
+void Engine::SetSlowDownFactor(double slow_down)
+{
+    slow_down_factor = slow_down;
+    audiomanager.SetSlowDownFactor(slow_down);
 }

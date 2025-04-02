@@ -86,8 +86,10 @@ public:
     void SetTmpPtr(void* tmp);
     void* GetTmpPtr();
     void UnloadTmpPtr();
-    void SetSlowDownFactor(double slow_down) { slow_down_factor = slow_down; }
-    void ResetSlowDownFactor() { slow_down_factor = 1; }
+    void SetSlowDownFactor(double slow_down);
+    void ResetSlowDownFactor() { slow_down_factor = 1; audiomanager.SetSlowDownFactor(1);
+    }
+    double GetSlowDownFactor() { return slow_down_factor; }
     double GetDt() { return dt; }
     static constexpr int window_height = 720;
     static constexpr int window_width = 1280;

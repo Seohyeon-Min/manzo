@@ -14,7 +14,7 @@ struct Implementation {
 	Implementation();
 	~Implementation();
 
-	void Update();
+	void Update(double slow);
 
 	FMOD::Studio::System* mpStudioSystem;
 	FMOD::System* mpSystem;
@@ -33,8 +33,9 @@ public:
 	AudioManager();
 	~AudioManager();
 
-	static void Update();
+	void Update();
 	static int ErrorCheck(FMOD_RESULT result);
+	void SetSlowDownFactor(double slow) { slow_down = slow; }
 
 	// music
 	void LoadMusic(const std::string& filePath, const std::string& alias, bool b3d = false, bool bLooping = true, bool bStream = false);
@@ -73,4 +74,5 @@ public:
 
 private:
 	bool isMute = false;
+	double slow_down = 1;
 };

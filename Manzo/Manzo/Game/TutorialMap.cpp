@@ -15,8 +15,6 @@ void Tutorial::Load()
 {
 	AddGSComponent(new GameObjectManager());
 
-
-
 	// background
 	background = new Background();
 	AddGSComponent(background);

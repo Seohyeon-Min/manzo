@@ -32,7 +32,7 @@ Implementation::~Implementation() {
 	AudioManager::ErrorCheck(mpStudioSystem->release());
 }
 
-void Implementation::Update() {
+void Implementation::Update(double slow) {
 	std::vector<ChannelMap::iterator> pStoppedChannels;
 	for (auto it = mChannels.begin(), itEnd = mChannels.end(); it != itEnd; ++it)
 	{
@@ -47,8 +47,25 @@ void Implementation::Update() {
 	{
 		mChannels.erase(it);
 	}
+
+	// slow_down_factor를 적용하여 재생 속도를 조절
+	for (auto& channelPair : mChannels) {
+		FMOD::Channel* pChannel = channelPair.second;
+		FMOD::Sound* sound = nullptr;
+		if (pChannel->getCurrentSound(&sound) == FMOD_OK && sound != nullptr) {
+			float defaultFrequency = 0.0f;
+			// sound의 기본 주파수를 가져옵니다.
+			if (sound->getDefaults(&defaultFrequency, nullptr) == FMOD_OK) {
+				// slow_down_factor를 곱하여 재생 속도를 조절합니다.
+				float newFrequency = defaultFrequency * static_cast<float>(slow);
+				AudioManager::ErrorCheck(pChannel->setFrequency(newFrequency));
+			}
+		}
+	}
 	AudioManager::ErrorCheck(mpStudioSystem->update());
 }
+
+
 
 Implementation* sgpImplementation = nullptr;
 
@@ -63,7 +80,7 @@ AudioManager::~AudioManager()
 }
 
 void AudioManager::Update() {
-	sgpImplementation->Update();
+	sgpImplementation->Update(slow_down);
 }
 
 void AudioManager::LoadMusic(const std::string& filePath, const std::string& alias, bool b3d, bool bLooping, bool bStream)
