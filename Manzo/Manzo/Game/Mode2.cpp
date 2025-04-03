@@ -155,6 +155,9 @@ void Mode2::Draw() {
     Engine::GetFontManager().PrintText(FontType::Bold, "Click Ship to Start the Game", { -100.f,-150.f }, 0.05f, { 0.f,0.f,0.f }, 0.5f);
     Engine::GetFontManager().PrintText(FontType::Bold, "Click Computer to Equip Module", { 30.f,30.f }, 0.05f, { 1.f,1.f,1.f }, 0.5f);
 
+    if(inven_ptr->GetIsOpened())
+        Engine::GetFontManager().PrintText(FontType::Bold, std::to_string(inven_ptr->GetMoney()), { 285.f,157.f }, 0.05f, { 0.f,0.f,0.f }, 1.0f);
+
 }
 
 void Mode2::Unload() {

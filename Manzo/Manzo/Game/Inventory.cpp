@@ -24,6 +24,7 @@ Inven::Inven(vec2 position) : GameObject(position), page(0), dre_todayFish(rd())
 void Inven::Update(double dt)
 {
 	GameObject::Update(dt);
+	Engine::GetIconManager().AddIcon("money", {540,320}, 1.0f, false);
 
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::Left) && is_opened)
 	{
@@ -113,17 +114,16 @@ void Inven::State_Module::Enter(GameObject* object)
 
 	Engine::GetIconManager().AddIcon("module", { inven->GetPosition().x + inven->savePos[0].x, inven->savePos[0].y }, 0.7f, false);
 	Engine::GetIconManager().AddIcon("module", { inven->GetPosition().x + inven->savePos[1].x, inven->savePos[1].y }, 0.7f, false);
-	//Engine::GetIconManager().AddIcon("module", inven->savePos[2], 0.7f, false);
 
 	Engine::GetIconManager().AddIcon(
 		"module1",
-		(inven->module_ptr->IsFirstSetted()) ? vec2((float)inven->GetPosition().x + inven->m1x, 100) : vec2(inven->GetPosition().x -130, -100),
+		(inven->module_ptr->IsFirstSetted()) ? vec2((float)inven->m1x, 100) : vec2(inven->GetPosition().x -130, -100),
 		0.7f, true, true, true
 	);
 
 	Engine::GetIconManager().AddIcon(
 		"module2",
-		(inven->module_ptr->IsSecondSetted()) ? vec2((float)inven->GetPosition().x - inven->m2x, 100) : vec2(inven->GetPosition().x, -100),
+		(inven->module_ptr->IsSecondSetted()) ? vec2((float)inven->m2x, 100) : vec2(inven->GetPosition().x, -100),
 		0.7f, true, true, true
 	);
 
