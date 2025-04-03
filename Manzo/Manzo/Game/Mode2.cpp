@@ -45,10 +45,6 @@ void Mode2::Load() {
     // compenent
     AddGSComponent(new GameObjectManager());
 
-    // ship
-    ship_ptr = new Ship({ 0, -250 });
-    GetGSComponent<GameObjectManager>()->Add(ship_ptr);
-
     // player
     player_ptr = new Player({ 0, -115 });
     GetGSComponent<GameObjectManager>()->Add(player_ptr);
@@ -68,7 +64,6 @@ void Mode2::Load() {
     // Icon
     Engine::GetIconManager().LoadIconList();
 
-
     shop_ptr = new Shop();
     GetGSComponent<GameObjectManager>()->Add(shop_ptr);
 
@@ -85,7 +80,6 @@ void Mode2::Load() {
     // Inven
     inven_ptr = new Inven({0,0});
     GetGSComponent<GameObjectManager>()->Add(inven_ptr);
- 
 
     // Mouse
     GetGSComponent<GameObjectManager>()->Add(new Mouse);
@@ -105,10 +99,9 @@ void Mode2::Update(double dt) {
     GetGSComponent<GameObjectManager>()->UpdateAll(dt);
     GetGSComponent<Cam>()->Update(dt, {}, false);
     
-    //float moving~
+    ////float moving~
     time += float(dt);
-    ship_ptr->SetVelocity({ 0, -(y_limit * frequency * std::cos(frequency * float(time))) });
-
+    //ship_ptr->SetVelocity({ 0, -(y_limit * frequency * std::cos(frequency * float(time))) });
 
 #ifdef _DEBUG
     if (Engine::GetInput().KeyJustPressed(Input::Keys::Q)) {
@@ -127,6 +120,7 @@ void Mode2::Update(double dt) {
 
 
     Engine::GetIconManager().AddIcon("go_shop", { 276,4.5 }, 2.0f, false, false, true);
+    Engine::GetIconManager().AddIcon("ship", { 0,-250 }, 1.0f, false, false, true);
 
     // Open Inven
     if (inven_ptr->Open())
@@ -160,7 +154,6 @@ void Mode2::Unload() {
     Engine::GetAudioManager().StopAllChannels();
     GetGSComponent<Background>()->Unload();
     ClearGSComponents();
-    ship_ptr = nullptr;
     background = nullptr;
     dialog_ptr->Unload();
     playing = false;
