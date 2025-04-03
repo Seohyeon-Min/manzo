@@ -21,8 +21,13 @@ struct Implementation {
 
 	std::string mChannelId;
 
+	//BGM
 	typedef std::map<std::string, FMOD::Sound*> SoundMap;
 	typedef std::map<std::string, FMOD::Channel*> ChannelMap;
+
+	//SFX
+	std::map<std::string, FMOD::Sound*> mEffects;
+	std::map<std::string, FMOD::Channel*> mEffectChannels;
 
 	SoundMap mSounds;
 	ChannelMap mChannels;
@@ -70,7 +75,10 @@ public:
 	float VolumeTodB(float volume);
 	FMOD_VECTOR VectorToFmod(const vec3& vPosition);
 
-	// sound
+	// SFX
+	void LoadSound(const std::string& filePath, const std::string& alias, bool b3d = false, bool bLooping = false, bool bStream = false);
+	std::string PlaySound(const std::string& alias, const vec3& vPos = vec3{ 0, 0, 0 }, float fVolumedB = 0.0f);
+	void StopSound(const std::string& alias);
 
 private:
 	bool isMute = false;

@@ -118,6 +118,7 @@ void Ship::State_Move::Enter(GameObject* object) {
     vec2 dir = ship->GetVelocity().Normalize();
     if (skip_enter) return;
     Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new DashEffect());
+    Engine::GetAudioManager().PlaySound("swing");
 }
 void Ship::State_Move::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
     Ship* ship = static_cast<Ship*>(object);

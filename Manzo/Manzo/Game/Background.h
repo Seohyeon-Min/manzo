@@ -13,13 +13,16 @@ Created:    March 8, 2023
 #include "../Engine/Camera.h"
 #include "../Engine/Engine.h"
 #include "../Engine/Component.h"
+#include "Ship.h"
 
 class Background : public Component {
 public:
+    Background();
     void Add(const std::filesystem::path& texture_path, float speed, DrawLayer = DrawLayer::DrawBackground);
     void Unload();
     void Draw(const Cam& camera);
-    void SetUniforms(const GLShader* shader);
+    void ShaderBackgroundDraw(GLShader* shader, const Cam& camera, Ship* ship);
+    void SetUniforms(const GLShader* shader, Ship* ship);
     ivec2 GetSize();
 private:
     struct ParallaxLayer {
@@ -29,4 +32,6 @@ private:
         DrawLayer drawlayer;
     };
     std::vector<ParallaxLayer> backgrounds;
+    GLTexture* full_quad;
+    mat3 basic_mat;
 };
