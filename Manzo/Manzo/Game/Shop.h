@@ -9,6 +9,7 @@
 #include "..\Engine\Engine.h"
 #include "Fish.h"
 #include "Skill.h"
+#include "..\Engine\Sprite.h"
 
 // class Skillsys;
 
@@ -39,22 +40,26 @@ public:
 		Third,
 	};
 
-	struct Inventory_info // each Inventory's info
+	struct shop_info
 	{
-		Skillsys::Skill_list skill; //set Empty
-		GLTexture* icon_texture = nullptr;
+		std::string name = "None";
+		std::string icon = "None";
+		int price = 0;
+		std::string script = "Defualt script";
 	};
 
-	Shop();
+	Shop(vec2 postion);
 	~Shop();
 	GameObjectTypes			Type() override { return GameObjectTypes::Shop; };
 	std::string				TypeName() override { return "Shop"; };
 	void					Update(double dt); // maybe not used dt..
+	void					Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
 	void					Buy(Skillsys::Skill_list skill, int input); //Skill = which player's buy? input = How much use money for that skill?
 	void					Sell(Skillsys::Skill_list skill, int input);
 	void					Shop_Back_draw();
 	void					Shop_button_draw();
 	void					Inventory_Back_draw();
+	void					Read_Shop_Csv(const std::string& filename);
 
 
 private:
@@ -84,7 +89,7 @@ private:
 	std::vector<DrawCall>		icon_draw_calls;
 	std::vector<DrawCall>		inv_icon_draw_calls; //for inventory icon
 	std::vector<vec2>			icon_direction;
-	std::vector<Inventory_info>	inv_info;
+	std::vector<shop_info>		shop_infos;
 
 };   
 

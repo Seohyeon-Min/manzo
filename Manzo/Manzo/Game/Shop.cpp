@@ -1,13 +1,29 @@
 #include "Shop.h"
 #include "Dragging.h"
+#include "..\Engine\GameObject.h"
 
 static bool is_on_inven = false;
 static bool is_on_shop = false;
 static bool Ready_to_buy = false;
 static bool Ready_to_sell = false;
 
-Shop::Shop() : GameObject(back_position_default)
+Shop::Shop(vec2 postion) : GameObject(postion)
 {
+	Read_Shop_Csv("assets/scenes/shop.csv");
+	AddGOComponent(new Sprite("assets/images/window.spt", this));
+
+	int count = 1;
+	for (auto& info : shop_infos)
+	{
+		std::cout << count << "th: " << std::endl;
+		std::cout << "name: " << info.name << std::endl;
+		std::cout << "icon name: " << info.icon << std::endl;
+		std::cout << "price : " << info.price << std::endl;
+		std::cout << "script : " << info.script << std::endl;
+		++count;
+		is_on_shop = true;
+	}
+	std::cout << this->GetAABB().Size().height << " , " << this->GetAABB().Size().width << std::endl;
 }
 
 Shop::~Shop()
@@ -17,6 +33,87 @@ Shop::~Shop()
 
 void Shop::Update(double dt)
 {
+	GameObject::Update(dt);
+
+	if (Engine::GetInput().KeyJustPressed(Input::Keys::Y) && !shop_available)
+	{
+		shop_available = true;
+		std::cout << "Shop active" << std::endl;
+		is_on_shop = true;
+	}
+
+	if (shop_available) // Is shop available?
+	{
+		/*
+		* 1. �ϴ� ���� ���� �ִ°� �о������ Ȯ���ϱ� // �ǳ�
+		* 2. ������ ���� ������� // �̰� �ؾ���
+		* 3. ������ �������� �ϴ� �� ���ڿ��� �������� // �׳� �� �Ǵ°Ű�����?
+		* 4. �巡�� �ؾ��ϴµ� �巡�� ��� �ȵ�(�̰͸� �Ǹ� �ɰŰ�����) -> �巡�� �õ��� �ϴµ� �������� �������� ���� �� ����? // �ϴ��� �ذ�
+		*/
+
+		Engine::GetIconManager().AddIcon("fish3", { 0, 0 }, 2.0f, false); // for the sell area, should be change to other icon
+
+		if (Engine::GetInput().KeyJustPressed(Input::Keys::E) && shop_available)
+		{
+			shop_available = false;
+			std::cout << "Shop inactive" << std::endl;
+			Engine::GetIconManager().RemoveAllIcon();
+			is_on_shop = false;
+		}
+
+		int count = 1;
+		for (auto& info : shop_infos)
+		{
+			Engine::GetIconManager().AddIcon(info.icon, { 500 , 300.0f - (120.0f * count) }, 1.0f);
+			count++;
+		}
+		count = 1;
+
+		Ready_to_sell = true;
+		if (Engine::GetGameStateManager().GetGSComponent<Dragging>()->GetCurrentDraggingIcon() != nullptr && Ready_to_sell)
+		{
+			Icon* draggedIcon = Engine::GetGameStateManager().GetGSComponent<Dragging>()->GetCurrentDraggingIcon();
+			std::cout << "you dragged... : " << draggedIcon->GetAlias() << std::endl;
+			std::string icon_name = draggedIcon->GetAlias();
+
+			if (Engine::GetIconManager().IsCollidingWith("fish3", icon_name))
+			{
+				std::cout << "For check(collided)" << std::endl;
+				for (auto it = shop_infos.begin(); it != shop_infos.end(); ++it)
+				{
+					if (it->icon == icon_name)
+					{
+						int money = Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney();
+						Engine::GetGameStateManager().GetGSComponent<Fish>()->SetMoney(money + it->price);
+						std::cout << "Sell Complete, left money is : "
+							<< Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() << std::endl;
+							Engine::GetIconManager().RemoveAllIcon();
+
+						shop_infos.erase(it);  // Delete info
+						Ready_to_sell = false;
+						break;  // After Delete break the loop
+					}
+				}
+
+				int count = 1;
+				for (auto& info : shop_infos)
+				{
+					std::cout << count << "th: " << std::endl;
+					std::cout << "name: " << info.name << std::endl;
+					std::cout << "icon name: " << info.icon << std::endl;
+					std::cout << "price : " << info.price << std::endl;
+					std::cout << "script : " << info.script << std::endl;
+					++count;
+					is_on_shop = true;
+				}
+			}
+		}
+	}
+}
+
+void Shop::Draw(DrawLayer drawlayer)
+{
+	GameObject::Draw();
 }
 
 void Shop::Buy(Skillsys::Skill_list skill,int input)
@@ -32,6 +129,22 @@ void Shop::Sell(Skillsys::Skill_list skill, int input)
 void Shop::Shop_Back_draw()
 {
 
+	back_matrix = mat3::build_translation({ back_position_default }) * mat3::build_scale(1.0f); //* mat3::build_rotation(3.141592f/2.0f);
+
+	DrawCall draw_call = 
+	{
+		shop_background,                       // Texture to draw
+		&back_matrix,                          // Transformation matrix
+		Engine::GetShaderManager().GetDefaultShader(), // Shader to use
+		//nullptr,
+		//settings
+	};
+
+	draw_call.settings.is_camera_fixed = true;
+	draw_call.settings.do_blending = true;
+	draw_call.sorting_layer = DrawLayer::DrawFirst;
+
+	Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call));
 }
 
 void Shop::Shop_button_draw()
@@ -100,6 +213,40 @@ void Shop::Inventory_Back_draw()
 	draw_call.sorting_layer = DrawLayer::DrawFirst;
 
 	Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call));
+}
+void Shop::Read_Shop_Csv(const std::string& filename)
+{
+	std::ifstream file(filename);
+	if (!file.is_open()) 
+	{
+		std::cerr << "Failed to open file: " << filename << std::endl;
+		return;
+	}
+
+	std::string line, cell;
+	std::getline(file, line);
+
+	while (std::getline(file, line)) 
+	{
+		std::stringstream linestream(line);
+		shop_info shop_i;
+
+		std::getline(linestream, cell, ',');
+		shop_i.name = cell;
+
+		std::getline(linestream, cell, ',');
+		shop_i.icon = cell;
+
+		std::getline(linestream, cell, ',');
+		shop_i.price = static_cast<int>(std::stol(cell));
+
+		std::getline(linestream, cell, ',');
+		shop_i.script = cell;
+		
+		shop_infos.push_back(shop_i);
+	}
+	file.close();
+	std::cout << "Shop loaded successfully." << std::endl;
 }
 /*
 void Shop::Inventory_Icon_draw()

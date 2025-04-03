@@ -81,6 +81,8 @@ void Mode2::Load() {
     inven_ptr = new Inven({0,0});
     GetGSComponent<GameObjectManager>()->Add(inven_ptr);
 
+    shop_ptr = new Shop({ -200, 0 });
+    GetGSComponent<GameObjectManager>()->Add(shop_ptr);
     // Mouse
     GetGSComponent<GameObjectManager>()->Add(new Mouse);
 

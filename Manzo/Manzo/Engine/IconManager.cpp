@@ -191,3 +191,58 @@ Icon* IconManager::GetCollidingIconWithMouse(vec2 mousePosition)
 	}
 	return nullptr;
 }
+
+bool IconManager::IsCollidingWith(std::string obj1, std::string obj2)
+{
+	std::vector<Icon*> icons1;
+	std::vector<Icon*> icons2;
+
+	for (auto icon : icons)
+	{
+		if (icon->GetAlias() == obj1)
+		{
+			icons1.push_back(icon);
+		}
+		else if (icon->GetAlias() == obj2)
+		{
+			icons2.push_back(icon);
+		}
+	}
+
+	for (auto icon1 : icons1)
+	{
+		for (auto icon2 : icons2)
+		{
+			if (icon1->IsCollidingWith(icon2))
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+Icon* IconManager::GetCollidingIcon(Icon& icon)
+{
+	for (Icon* other : icons)
+	{
+		if (other != &icon && icon.IsCollidingWith(other))
+		{
+			return other;
+		}
+	}
+	return nullptr;
+}
+
+Icon* IconManager::GetCollidingIconWithMouse(vec2 mousePosition)
+{
+	for (Icon* icon : icons)
+	{
+		if (icon->IsCollidingWith(mousePosition))
+		{
+			return icon;
+		}
+	}
+	return nullptr;
+}
