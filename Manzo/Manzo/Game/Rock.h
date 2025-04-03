@@ -22,6 +22,7 @@ Created:    November 25, 2024
 #include <vector>
 
 class RockGroup;
+
 class Rock : public GameObject
 {
 public:
@@ -51,6 +52,34 @@ public:
 
 private:
 	std::string index;
+	RockGroup* rockgroup = nullptr;
+	Polygon original_poly;
+	Polygon modified_poly;
+	bool loaded = false;
+};
+
+
+class ObstacleRock : public Rock
+{
+public:
+	ObstacleRock(Polygon original_poly, Polygon modified_poly, vec2 position, double rotation, vec2 scale);
+	
+	GameObjectTypes Type() override { return GameObjectTypes::ObstacleRock; }
+	std::string TypeName() override { return "ObstacleRock"; }
+	
+
+	//group
+	void SetRockGroup(RockGroup* rockgroup) { this->rockgroup = rockgroup; }
+	RockGroup* GetRockGroup() { return rockgroup; }
+
+	// Map Loading
+	void Active(bool active) { loaded = active; }
+	bool IsActivated() { return loaded; }
+
+	std::vector<vec2> GetPoints() { return original_poly.vertices; }
+
+private:
+	std::string index;
 	RockGroup* rockgroup;
 	Polygon original_poly;
 	Polygon modified_poly;
@@ -60,7 +89,7 @@ private:
 
 class MovingRock : public Rock {
 public:
-	MovingRock(Polygon poly);
+	MovingRock(Polygon original_poly, Polygon modified_poly, vec2 position, double rotation, vec2 scale);
 	~MovingRock() {};
 	GameObjectTypes Type() override { return GameObjectTypes::MovingRock; }
 	std::string TypeName() override { return "Rock"; }

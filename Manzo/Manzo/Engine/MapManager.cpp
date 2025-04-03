@@ -282,13 +282,26 @@ void Map::ParseSVG(const std::string& filename) {
                 modified_poly.vertices = new_vertices;
 
 
-                // Making Polygons into Rock
-                Rock* rock = new Rock(original_poly, modified_poly, poly_center, rotateAngle, scale);
 
                
 
-
+                // group index
                 std::string group_index = (poly.polyindex).substr(poly.polyindex.size() - 2, 2);
+
+                // type index
+                std::string type_index = (poly.polyindex).substr(0, 1);
+
+                Rock* rock = nullptr;
+
+                // Making Polygons into Rock
+                if (type_index == "o") {
+
+                    rock = new ObstacleRock(original_poly, modified_poly, poly_center, rotateAngle, scale);
+                }
+                else {
+                    rock = new Rock(original_poly, modified_poly, poly_center, rotateAngle, scale);
+                }
+
                 // Making RockGroups
                 if (rock_groups.empty()) {
 
@@ -311,10 +324,8 @@ void Map::ParseSVG(const std::string& filename) {
                         rock->SetRockGroup(rock_groups.back());
                     }
                 }
-                rocks.push_back(rock);
-                //add rock and rockgroups in MapManager
+                rocks.push_back(rock); //add rock and rockgroups in MapManager
                 
-
             }
 
             //std::cout << "vertex count : " << poly.vertexCount << std::endl;

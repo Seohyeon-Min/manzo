@@ -487,6 +487,9 @@ bool Ship::CanCollideWith(GameObjectTypes other_object)
     case GameObjectTypes::Rock:
         return true;
         break;
+    case GameObjectTypes::ObstacleRock:
+        return true;
+        break;
     case GameObjectTypes::Monster:
         if(invincibility_timer->IsFinished())
         return true;
@@ -512,6 +515,14 @@ void Ship::ResolveCollision(GameObject* other_object) {
         change_state(&state_idle);
         break;
     case GameObjectTypes::Rock:
+        if (GetVelocity().Length() <= skidding_speed + 10.f) { // if it was skidding, don't reflect
+            vec2 smallCorrection = -GetVelocity().Normalize(); // with this, ship should not able to move!
+            UpdatePosition(smallCorrection);
+            can_dash = false;
+            return;
+        }
+        break;
+    case GameObjectTypes::ObstacleRock:
         if (GetVelocity().Length() <= skidding_speed + 10.f) { // if it was skidding, don't reflect
             vec2 smallCorrection = -GetVelocity().Normalize(); // with this, ship should not able to move!
             UpdatePosition(smallCorrection);
@@ -562,7 +573,6 @@ void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
         ReduceFuel(RockHitDecFuel);
 
     }
-
     else if (other_object->Type() == GameObjectTypes::Monster) {
         Monster* monster = static_cast<Monster*>(other_object);
         std::array<vec2, 4> points = monster->GetCollisionBoxPoints();
