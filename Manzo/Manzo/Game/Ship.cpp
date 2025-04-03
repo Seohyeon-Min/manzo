@@ -43,6 +43,7 @@ void Ship::State_Idle::Enter(GameObject* object) {
 	if (ship->GetVelocity() != vec2{})
 		ship->SetVelocity(ship->direction * skidding_speed);
 }
+
 void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
 	//get mouse pos and move to there
 	Ship* ship = static_cast<Ship*>(object);
@@ -187,12 +188,14 @@ void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_
             }
             ship->HitWithBounce(ship->nearestRock, velocity); // calculate normal
         }
+        
         else {
             Engine::GetLogger().LogEvent("@@@@ Error: No nearest rock!! @@@@");
         }
         ship->should_resolve_collision = false;
     }
 }
+
 void Ship::State_Move::CheckExit(GameObject* object) {
     Ship* ship = static_cast<Ship*>(object);
     if (!ship->beat->GetIsOnBeat() && !ship->hit_with) {
@@ -552,7 +555,6 @@ void Ship::ResolveCollision(GameObject* other_object) {
         ReduceFuel(BossBulletHitDecFuel);
         break;
     }
-
 
 }
 
