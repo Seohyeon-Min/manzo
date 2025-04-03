@@ -51,7 +51,7 @@ void Shop::Update(double dt)
 		* 4. 드래그 해야하는데 드래그 계속 안됨(이것만 되면 될거같은데) -> 드래그 시도는 하는데 아이콘이 움직이질 않음 왜 와이? // 일단은 해결
 		*/
 
-		Engine::GetIconManager().AddIcon("fish3", { 0, 0 }, 2.0f); // for the sell area, should be change to other icon
+		Engine::GetIconManager().AddIcon("fish3", { 0, 0 }, 2.0f, false); // for the sell area, should be change to other icon
 
 		if (Engine::GetInput().KeyJustPressed(Input::Keys::E) && shop_available)
 		{
