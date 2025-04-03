@@ -54,5 +54,6 @@ public:
 private:
     std::unordered_map<std::string, std::string> translations;
     std::unordered_map<std::string, std::string> characters;
+    std::unordered_map<std::string, std::vector<std::pair<std::string, std::string>>> groupedDialog;
 
 };

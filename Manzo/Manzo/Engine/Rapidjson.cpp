@@ -102,28 +102,43 @@ JsonParser_dialog::JsonParser_dialog(const std::string& language) {
     FILE* fptr = nullptr;
     errno_t err = fopen_s(&fptr, filePath.c_str(), "rb");
     if (err != 0 || fptr == nullptr) {
-        std::cout << "could not open the json file" << std::endl;
+        std::cout << "Could not open JSON file.\n";
+        return;
     }
+
     char buffer[65536];
     rapidjson::FileReadStream is(fptr, buffer, sizeof(buffer));
     rapidjson::Document doc;
     doc.ParseStream(is);
 
     if (doc.HasParseError() || !doc.IsObject()) {
-        std::cout << "json dont work cheak file!" << std::endl;
+        std::cout << "JSON parse error.\n";
+        return;
     }
 
-    translations.clear();
-    characters.clear();
+    for (auto it = doc.MemberBegin(); it != doc.MemberEnd(); ++it) {
+        const std::string group_id = it->name.GetString();
+        const auto& dialogArray = it->value;
 
-    const auto& dialogs = doc["dialogs"];
-    for (auto it = dialogs.MemberBegin(); it != dialogs.MemberEnd(); ++it) {
-        const std::string id = it->name.GetString();
-        const std::string character = it->value["character"].GetString();
-        const std::string text = it->value["text"].GetString();
+        std::vector<std::pair<std::string, std::string>> groupLines;
 
-        characters[id] = character;
-        translations[id] = text;
+        for (auto& entry : dialogArray.GetArray()) {
+            const std::string character = entry["character"].GetString();
+
+            std::string text;
+            if (entry["text"].IsArray()) {
+                const auto& textArray = entry["text"];
+                int randIndex = rand() % textArray.Size();
+                text = textArray[randIndex].GetString();
+            }
+            else {
+                text = entry["text"].GetString();
+            }
+
+            groupLines.emplace_back(character, text);
+        }
+
+        groupedDialog[group_id] = groupLines;
     }
 }
 
