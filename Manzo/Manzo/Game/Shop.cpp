@@ -1,6 +1,7 @@
 #include "Shop.h"
 #include "Dragging.h"
 #include "..\Engine\GameObject.h"
+#include "Inventory.h"
 
 static bool is_on_inven = false;
 static bool is_on_shop = false;
@@ -106,7 +107,10 @@ void Shop::Update(double dt)
 
 void Shop::Draw(DrawLayer drawlayer)
 {
-	GameObject::Draw();
+	if(Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Inven>()->GetIsOpened())
+	{
+		GameObject::Draw();
+	}
 }
 
 void Shop::Buy(Skillsys::Skill_list skill,int input)

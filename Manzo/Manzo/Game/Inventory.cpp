@@ -48,7 +48,7 @@ void Inven::Update(double dt)
 			is_picked = true;
 		}
 		todays_fish_icon = "fish" + std::to_string(todays_fish_index + 1);
-		Engine::GetIconManager().AddIcon(todays_fish_icon, { 0,250 }, 1.0f, false);
+		Engine::GetIconManager().AddIcon(todays_fish_icon, { GetPosition().x,250}, 1.0f, false);
 	}
 	else
 	{
@@ -111,19 +111,19 @@ void Inven::State_Module::Enter(GameObject* object)
 	inven->GetGOComponent<Sprite>()->PlayAnimation(static_cast<int>(Animations::Module));
 	inven->page = 1;
 
-	Engine::GetIconManager().AddIcon("module", inven->savePos[0], 0.7f, false);
-	Engine::GetIconManager().AddIcon("module", inven->savePos[1], 0.7f, false);
+	Engine::GetIconManager().AddIcon("module", { inven->GetPosition().x + inven->savePos[0].x, inven->savePos[0].y }, 0.7f, false);
+	Engine::GetIconManager().AddIcon("module", { inven->GetPosition().x + inven->savePos[1].x, inven->savePos[1].y }, 0.7f, false);
 	//Engine::GetIconManager().AddIcon("module", inven->savePos[2], 0.7f, false);
 
 	Engine::GetIconManager().AddIcon(
 		"module1",
-		(inven->module_ptr->IsFirstSetted()) ? vec2((float)inven->m1x, 100) : vec2(-130, -100),
+		(inven->module_ptr->IsFirstSetted()) ? vec2((float)inven->GetPosition().x + inven->m1x, 100) : vec2(inven->GetPosition().x -130, -100),
 		0.7f, true, true, true
 	);
 
 	Engine::GetIconManager().AddIcon(
 		"module2",
-		(inven->module_ptr->IsSecondSetted()) ? vec2((float)inven->m2x, 100) : vec2(0, -100),
+		(inven->module_ptr->IsSecondSetted()) ? vec2((float)inven->GetPosition().x - inven->m2x, 100) : vec2(inven->GetPosition().x, -100),
 		0.7f, true, true, true
 	);
 
@@ -182,14 +182,14 @@ void Inven::State_FC::Enter(GameObject* object)
 	for (auto& fish : inven->fishCollection)
 	{
 		std::string file_name = "fish" + std::to_string(fish.first + 1);		
-		Engine::GetIconManager().AddIcon(file_name, { 100,float(position += 80) }, 1.0f, false);
+		Engine::GetIconManager().AddIcon(file_name, { inven->GetPosition().x + 100,float(position += 80) }, 1.0f, false);
 	}
 
-	Engine::GetIconManager().AddIcon("plus1", { 80,180 }, 1.f, false, false, true);
-	Engine::GetIconManager().AddIcon("plus10", { 50,180 }, 1.f, false, false, true);
+	Engine::GetIconManager().AddIcon("plus1", { inven->GetPosition().x + 80,180 }, 1.f, false, false, true);
+	Engine::GetIconManager().AddIcon("plus10", { inven->GetPosition().x + 50,180 }, 1.f, false, false, true);
 
-	Engine::GetIconManager().AddIcon("minus1", { -80,180 }, 1.f, false, false, true);
-	Engine::GetIconManager().AddIcon("minus10", { -50,180 }, 1.f, false, false, true);
+	Engine::GetIconManager().AddIcon("minus1", { inven->GetPosition().x - 80,180 }, 1.f, false, false, true);
+	Engine::GetIconManager().AddIcon("minus10", { inven->GetPosition().x - 50,180 }, 1.f, false, false, true);
 }
 
 void Inven::State_FC::Update(GameObject* object, double dt)
