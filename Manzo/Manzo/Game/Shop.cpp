@@ -44,13 +44,6 @@ void Shop::Update(double dt)
 
 	if (shop_available) // Is shop available?
 	{
-		/*
-		* 1. �ϴ� ���� ���� �ִ°� �о������ Ȯ���ϱ� // �ǳ�
-		* 2. ������ ���� ������� // �̰� �ؾ���
-		* 3. ������ �������� �ϴ� �� ���ڿ��� �������� // �׳� �� �Ǵ°Ű�����?
-		* 4. �巡�� �ؾ��ϴµ� �巡�� ��� �ȵ�(�̰͸� �Ǹ� �ɰŰ�����) -> �巡�� �õ��� �ϴµ� �������� �������� ���� �� ����? // �ϴ��� �ذ�
-		*/
-
 		Engine::GetIconManager().AddIcon("fish3", { 0, 0 }, 2.0f, false); // for the sell area, should be change to other icon
 
 		if (Engine::GetInput().KeyJustPressed(Input::Keys::E) && shop_available)

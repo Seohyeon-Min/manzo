@@ -11,6 +11,7 @@ Created:    March 8, 2023
 #include "../Engine/Engine.h"
 #include "../Engine/ShowCollision.h"
 #include "../Engine/AudioManager.h"
+#include "../Engine/Icon.h"
 
 #include <cmath>
 
@@ -64,9 +65,6 @@ void Mode2::Load() {
     // Icon
     Engine::GetIconManager().LoadIconList();
 
-    shop_ptr = new Shop();
-    GetGSComponent<GameObjectManager>()->Add(shop_ptr);
-
     // Dialog
     dialog_ptr = new Dialog({0,0});
     GetGSComponent<GameObjectManager>()->Add(dialog_ptr);
@@ -81,8 +79,9 @@ void Mode2::Load() {
     inven_ptr = new Inven({0,0});
     GetGSComponent<GameObjectManager>()->Add(inven_ptr);
 
-    shop_ptr = new Shop({ -200, 0 });
-    GetGSComponent<GameObjectManager>()->Add(shop_ptr);
+    //shop_ptr = new Shop({ -200, 0 });
+    //GetGSComponent<GameObjectManager>()->Add(shop_ptr);
+
     // Mouse
     GetGSComponent<GameObjectManager>()->Add(new Mouse);
 
@@ -120,9 +119,18 @@ void Mode2::Update(double dt) {
 #else
 #endif
 
-
     Engine::GetIconManager().AddIcon("go_shop", { 276,4.5 }, 2.0f, false, false, true);
     Engine::GetIconManager().AddIcon("ship", { 0,-250 }, 1.0f, false, false, true);
+
+    Icon* icon = Engine::GetIconManager().GetCollidingIconWithMouse({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY });
+    bool clicked = Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT);
+
+    if (icon != nullptr) {
+        if ((icon->GetAlias() == "ship") && clicked && !inven_ptr->GetIsOpened()) {
+            Engine::GetGameStateManager().ClearNextGameState();
+            Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode1));
+        }
+    }
 
     // Open Inven
     if (inven_ptr->Open())
