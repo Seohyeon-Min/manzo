@@ -36,8 +36,9 @@ void Mode2::Load() {
 #else
 #endif
     //shader
-    Engine::GetShaderManager().LoadShader("water_ripple", "assets/shaders/default.vert", "assets/shaders/water_ripple.frag");
-    
+    Engine::GetShaderManager().LoadShader("water_ripple", "assets/shaders/default.vert", "assets/shaders/water_ripple.frag");    
+    Engine::GetShaderManager().LoadShader("icon", "assets/shaders/default.vert", "assets/shaders/edge_detection.frag");
+
     // audio
     Engine::GetAudioManager().LoadMusic("assets/audios/bgm_original.wav", "Home_bgm", false);
 
@@ -85,7 +86,6 @@ void Mode2::Load() {
     inven_ptr = new Inven({0,0});
     GetGSComponent<GameObjectManager>()->Add(inven_ptr);
  
-    Engine::GetShaderManager().LoadShader("icon", "assets/shaders/default.vert", "assets/shaders/edge_detection.frag");
 
     // Mouse
     GetGSComponent<GameObjectManager>()->Add(new Mouse);
