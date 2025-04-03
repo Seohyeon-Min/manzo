@@ -4,10 +4,14 @@
 #include <list>
 #include <chrono>
 #include <vector>
+#include "../Engine/Procedual.h"
 
 class Boss : public GameObject
 {
 public:
+
+	ProceduralChain body_chain;
+
 	enum BossName //for jsonfile read
 	{
 		e,

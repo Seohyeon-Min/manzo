@@ -29,6 +29,7 @@
     <ClCompile Include="Engine\MapManager.cpp" />
     <ClCompile Include="Engine\MathUtils.cpp" />
     <ClCompile Include="Engine\Particle.cpp" />
+    <ClCompile Include="Engine\Procedual.cpp" />
     <ClCompile Include="Engine\Rapidjson.cpp" />
     <ClCompile Include="Engine\Render.cpp" />
     <ClCompile Include="Engine\ShaderManager.cpp" />
@@ -98,6 +99,7 @@
     <ClInclude Include="Engine\Particle.h" />
     <ClInclude Include="Engine\Polygon.h" />
     <ClInclude Include="Engine\AABB.h" />
+    <ClInclude Include="Engine\Procedual.h" />
     <ClInclude Include="Engine\Rapidjson.h" />
     <ClInclude Include="Engine\Rect.h" />
     <ClInclude Include="Engine\Render.h" />
