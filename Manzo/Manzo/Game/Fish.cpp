@@ -117,10 +117,12 @@ void Fish::Update(double dt) {
         }
     }
 
+    //temp destroy range
     if (GetPosition().x < 0.f || GetPosition().x > 3520.f)
     {
         this->Destroy();
     }
+
     //vec2 currentPosition = GetPosition();
     //vec2 nearestRock = { (GetVelocity().x <= 0 ? Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRockPoint(this).x + 20 : Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRockPoint(this).x - 20),
     //                      Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRockPoint(this).y - 20 };

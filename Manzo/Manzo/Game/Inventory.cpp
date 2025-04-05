@@ -12,6 +12,7 @@ Inven::Inven(vec2 position) : GameObject(position), page(0), dre_todayFish(rd())
 	change_state(&state_none);
 
 	fishCollection = Engine::GetLogger().GetFishCollection();
+	originCollection = fishCollection;
 
 	module_ptr = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Module>();
 	module_ptr->SetFirstModule(Engine::GetLogger().GetModule1());
@@ -24,7 +25,7 @@ Inven::Inven(vec2 position) : GameObject(position), page(0), dre_todayFish(rd())
 void Inven::Update(double dt)
 {
 	GameObject::Update(dt);
-	Engine::GetIconManager().AddIcon("money", {540,320}, 1.0f, false);
+	Engine::GetIconManager().AddIcon("money", { 540,320 }, 1.0f, false);
 
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::Left) && is_opened)
 	{
@@ -49,7 +50,7 @@ void Inven::Update(double dt)
 			is_picked = true;
 		}
 		todays_fish_icon = "fish" + std::to_string(todays_fish_index + 1);
-		Engine::GetIconManager().AddIcon(todays_fish_icon, { GetPosition().x,250}, 1.0f, false);
+		Engine::GetIconManager().AddIcon(todays_fish_icon, { GetPosition().x,250 }, 1.0f, false);
 	}
 	else
 	{
@@ -79,7 +80,7 @@ bool Inven::Open()
 
 	if (selectedIcon != nullptr)
 	{
-		if(selectedIcon->GetAlias() == "go_shop" && clicked)
+		if (selectedIcon->GetAlias() == "go_shop" && clicked)
 			return true;
 	}
 	return false;
@@ -88,7 +89,10 @@ bool Inven::Open()
 void Inven::State_None::Enter(GameObject* object)
 {
 	Inven* inven = static_cast<Inven*>(object);
-	inven->is_picked = false;
+
+	//select random index at each time when inventory is opened
+	//inven->is_picked = false;
+
 	inven->is_opened = false;
 	inven->page = 0;
 }
@@ -117,7 +121,7 @@ void Inven::State_Module::Enter(GameObject* object)
 
 	Engine::GetIconManager().AddIcon(
 		"module1",
-		(inven->module_ptr->IsFirstSetted()) ? vec2((float)inven->m1x, 100) : vec2(inven->GetPosition().x -130, -100),
+		(inven->module_ptr->IsFirstSetted()) ? vec2((float)inven->m1x, 100) : vec2(inven->GetPosition().x - 130, -100),
 		0.7f, true, true, true
 	);
 
@@ -180,10 +184,13 @@ void Inven::State_FC::Enter(GameObject* object)
 	inven->GetGOComponent<Sprite>()->PlayAnimation(static_cast<int>(Animations::FishCollection));
 	inven->in_fish_state = true;
 
-	for (auto& fish : inven->fishCollection)
+	for (auto& fish : inven->originCollection)
 	{
-		std::string file_name = "fish" + std::to_string(fish.first + 1);		
-		Engine::GetIconManager().AddIcon(file_name, { inven->GetPosition().x + 100,float(position -= 80) }, 1.0f, false);
+		if (fish.second != 0)
+		{
+			std::string file_name = "fish" + std::to_string(fish.first + 1);
+			Engine::GetIconManager().AddIcon(file_name, { inven->GetPosition().x + 100,float(position -= 80) }, 1.0f, false);
+		}
 	}
 
 	Engine::GetIconManager().AddIcon("plus1", { inven->GetPosition().x + 80,180 }, 1.f, false, false, true);
@@ -206,7 +213,7 @@ void Inven::State_FC::Update(GameObject* object, double dt)
 
 		//decrease each type of fish
 		inven->fishCollection[inven->todays_fish_index] = 0;
-		Engine::GetIconManager().RemoveIcon("fish" + std::to_string(inven->todays_fish_index + 1));
+		inven->how_much_sold = 0;
 	}
 
 	Icon* selectedIcon = Engine::GetIconManager().GetCollidingIconWithMouse({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY });

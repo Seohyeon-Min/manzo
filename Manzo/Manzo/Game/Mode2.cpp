@@ -160,14 +160,31 @@ void Mode2::Draw() {
         {
             Engine::GetFontManager().PrintText(FontType::Bold, std::to_string(inven_ptr->HowMuchSold()), { 167.f,35.f }, 0.05f, { 1.f,1.f,1.f }, 1.0f);
 
-            if(fishCaptureCount[0] != 0)
-                Engine::GetFontManager().PrintText(FontType::Bold, std::to_string(inven_ptr->HowManyFishes(0)), {190.f,5.5f}, 0.05f, {1.f,1.f,1.f}, 1.0f);
+            float currentY = 5.5f;
+            int printed = 0;
 
-            if (fishCaptureCount[1] != 0)
-                Engine::GetFontManager().PrintText(FontType::Bold, std::to_string(inven_ptr->HowManyFishes(1)), { 190.f,-35.5f }, 0.05f, { 1.f,1.f,1.f }, 1.0f);
+            // 총 몇 개 출력할 건지 먼저 계산
+            int totalCaptured = 0;
+            for (int i = 0; i < 3; ++i)
+                if (fishCaptureCount[i] != 0)
+                    totalCaptured++;
 
-            if (fishCaptureCount[2] != 0)
-                Engine::GetFontManager().PrintText(FontType::Bold, std::to_string(inven_ptr->HowManyFishes(2)), { 190.f,-55.5f }, 0.05f, { 1.f,1.f,1.f }, 1.0f);
+            for (int i = 0; i < 3; ++i) {
+                if (fishCaptureCount[i] != 0) {
+                    Engine::GetFontManager().PrintText(
+                        FontType::Bold,
+                        std::to_string(inven_ptr->HowManyFishes(i)),
+                        { 190.f, currentY },
+                        0.05f,
+                        { 1.f, 1.f, 1.f },
+                        1.0f
+                    );
+
+                    printed++;
+                    if (printed < totalCaptured - 1) currentY -= 36.f; // 첫~중간 항목은 -36
+                    else if (printed < totalCaptured) currentY -= 43.f; // 마지막 바로 전 항목은 -43
+                }
+            }
         }
     }
     else

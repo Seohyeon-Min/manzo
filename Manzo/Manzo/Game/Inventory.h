@@ -29,6 +29,7 @@ public:
 
 
 	std::map<int, int> fishCollection;
+	std::map<int, int> originCollection;
 
 private:
 	bool is_opened = false;
