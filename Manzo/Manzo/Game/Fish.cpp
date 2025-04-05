@@ -44,9 +44,9 @@ Fish::Fish(Fish* parent) : GameObject({ 0, 0 }) {
         ivec2 windowSize = { Engine::window_width, Engine::window_height };
         bool isLeft = rand() % 2;
 
-        float startX = isLeft ? -800.f : 800.f;
+        float startX = isLeft ? 50.f : 3520.f;   //end = 5120
 
-        float startY = static_cast<float>(rand() % 720) - 360.f;
+        float startY = -2000.f + static_cast<float>(rand() % (1701)); // -2000 ~ -300
 
         start_position = { startX , startY };
         SetPosition(start_position);
@@ -65,8 +65,6 @@ Fish::Fish(Fish* parent) : GameObject({ 0, 0 }) {
 
     AddGOComponent(new Sprite(fishBook[index].filePath, this));
     fishCnt++;
-
-    AddGOComponent(new ScreenWrap(*this));
 }
 
 bool Fish::CanCollideWith(GameObjectTypes other_object) {
@@ -93,13 +91,13 @@ void Fish::ResolveCollision(GameObject* other_object) {
         }
         this->Destroy();
         break;
-    case GameObjectTypes::RockBoundary:
+    /*case GameObjectTypes::RockBoundary:
         vec2 avoidanceVelocity = AvoidRock(GetPosition(),
             { Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRockPoint(this).x - 20,
               Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRockPoint(this).y - 20 });
         SetVelocity(GetVelocity() + avoidanceVelocity);
         IsAvoided = true;
-        break;
+        break;*/
     }
 }
 
@@ -119,75 +117,79 @@ void Fish::Update(double dt) {
         }
     }
 
-    vec2 currentPosition = GetPosition();
-    vec2 nearestRock = { (GetVelocity().x <= 0 ? Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRockPoint(this).x + 20 : Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRockPoint(this).x - 20),
-                          Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRockPoint(this).y - 20 };
-
-    float safeDistance = 155.0f;  // safety distance
-
-    // if it's avoiding some rock
-    if (AvoidanceActive) {
-        SetVelocity((GetVelocity() + AvoidanceVelocity) * 0.5f);
-
-        // clear avoid state
-        if ((currentPosition - nearestRock).LengthSquared() > safeDistance * safeDistance) {
-            AvoidanceActive = false;
-            IsAvoided = false;
-            coolTime = 1.5f;  // reset cooltime
-        }
-        return;  // if it's avoiding, continue
+    if (GetPosition().x < 0.f || GetPosition().x > 3520.f)
+    {
+        this->Destroy();
     }
+    //vec2 currentPosition = GetPosition();
+    //vec2 nearestRock = { (GetVelocity().x <= 0 ? Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRockPoint(this).x + 20 : Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRockPoint(this).x - 20),
+    //                      Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRockPoint(this).y - 20 };
 
-    if (IsRockInfront(currentPosition, nearestRock)) {
-        if (!IsAvoided) {
-            AvoidanceVelocity = AvoidRock(currentPosition, nearestRock);  // avoidance vector
-            SetVelocity((GetVelocity() + AvoidanceVelocity) * 0.5f);
+    //float safeDistance = 155.0f;  // safety distance
 
-            IsAvoided = true;
-            AvoidanceActive = true;  // avoiding now
+    //// if it's avoiding some rock
+    //if (AvoidanceActive) {
+    //    SetVelocity((GetVelocity() + AvoidanceVelocity) * 0.5f);
 
-            const float maxSpeed = 100.0f;
-            if (GetVelocity().Length() > maxSpeed) {
-                SetVelocity(GetVelocity().Normalize() * maxSpeed);
-            }
+    //    // clear avoid state
+    //    if ((currentPosition - nearestRock).LengthSquared() > safeDistance * safeDistance) {
+    //        AvoidanceActive = false;
+    //        IsAvoided = false;
+    //        coolTime = 1.5f;  // reset cooltime
+    //    }
+    //    return;  // if it's avoiding, continue
+    //}
 
-            if (GetVelocity().x > 0) SetRotation(GetVelocity().y > 0 ? PIover3 : -PIover3);
-            else SetRotation(GetVelocity().y <= 0 ? PIover3 : -PIover3);
-        }
-    }
-    else if (coolTime > 0) {
-        coolTime -= dt;
-    }
-    else {
-        coolTime = 1.5f;
-        SetVelocity(start_position.x >= 0 ? -fishBook[type - 1].velocity : fishBook[type - 1].velocity);
-        SetRotation(0);
-        IsAvoided = false;
-    }
+    //if (IsRockInfront(currentPosition, nearestRock)) {
+    //    if (!IsAvoided) {
+    //        AvoidanceVelocity = AvoidRock(currentPosition, nearestRock);  // avoidance vector
+    //        SetVelocity((GetVelocity() + AvoidanceVelocity) * 0.5f);
+
+    //        IsAvoided = true;
+    //        AvoidanceActive = true;  // avoiding now
+
+    //        const float maxSpeed = 100.0f;
+    //        if (GetVelocity().Length() > maxSpeed) {
+    //            SetVelocity(GetVelocity().Normalize() * maxSpeed);
+    //        }
+
+    //        if (GetVelocity().x > 0) SetRotation(GetVelocity().y > 0 ? PIover3 : -PIover3);
+    //        else SetRotation(GetVelocity().y <= 0 ? PIover3 : -PIover3);
+    //    }
+    //}
+    //else if (coolTime > 0) {
+    //    coolTime -= dt;
+    //}
+    //else {
+    //    coolTime = 1.5f;
+    //    SetVelocity(start_position.x >= 0 ? -fishBook[type - 1].velocity : fishBook[type - 1].velocity);
+    //    SetRotation(0);
+    //    IsAvoided = false;
+    //}
 }
 
-bool Fish::IsRockInfront(vec2 thisPos, vec2 rockPos) {
-    vec2 distanceVec = rockPos - thisPos;
-    float detectionRadius = 150.0f;
-    float detectionCosAngle = std::cos(30.0f * (3.14159265f / 180.0f));
-
-    if (distanceVec.LengthSquared() > detectionRadius * detectionRadius) {
-        return false;
-    }
-
-    vec2 forwardVec = GetVelocity().Normalize();
-    vec2 toRockVec = distanceVec.Normalize();
-
-    return dot(forwardVec, toRockVec) >= detectionCosAngle;
-}
-
-vec2 Fish::AvoidRock(vec2 thisPos, vec2 rockPos) {
-    vec2 distanceVec = rockPos - thisPos;
-    vec2 avoidanceVec = { 0, -distanceVec.y };
-
-    const float avoidanceStrength = 180.0f;
-    return avoidanceVec.Normalize() * avoidanceStrength;
-}
+//bool Fish::IsRockInfront(vec2 thisPos, vec2 rockPos) {
+//    vec2 distanceVec = rockPos - thisPos;
+//    float detectionRadius = 150.0f;
+//    float detectionCosAngle = std::cos(30.0f * (3.14159265f / 180.0f));
+//
+//    if (distanceVec.LengthSquared() > detectionRadius * detectionRadius) {
+//        return false;
+//    }
+//
+//    vec2 forwardVec = GetVelocity().Normalize();
+//    vec2 toRockVec = distanceVec.Normalize();
+//
+//    return dot(forwardVec, toRockVec) >= detectionCosAngle;
+//}
+//
+//vec2 Fish::AvoidRock(vec2 thisPos, vec2 rockPos) {
+//    vec2 distanceVec = rockPos - thisPos;
+//    vec2 avoidanceVec = { 0, -distanceVec.y };
+//
+//    const float avoidanceStrength = 180.0f;
+//    return avoidanceVec.Normalize() * avoidanceStrength;
+//}
 
 void Fish::Draw() {
     GameObject::Draw(DrawLayer::DrawLast);
