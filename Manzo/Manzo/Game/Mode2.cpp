@@ -152,12 +152,29 @@ void Mode2::Draw() {
     GetGSComponent<GameObjectManager>()->DrawAll();
     dialog_ptr->Draw();
 
-    Engine::GetFontManager().PrintText(FontType::Bold, "Click Ship to Start the Game", { -100.f,-150.f }, 0.05f, { 0.f,0.f,0.f }, 0.5f);
-    Engine::GetFontManager().PrintText(FontType::Bold, "Click Computer to Equip Module", { 30.f,30.f }, 0.05f, { 1.f,1.f,1.f }, 0.5f);
-
-    if(inven_ptr->GetIsOpened())
+    if (inven_ptr->GetIsOpened())
+    {
         Engine::GetFontManager().PrintText(FontType::Bold, std::to_string(inven_ptr->GetMoney()), { 285.f,157.f }, 0.05f, { 0.f,0.f,0.f }, 1.0f);
 
+        if (inven_ptr->GetFishState())
+        {
+            Engine::GetFontManager().PrintText(FontType::Bold, std::to_string(inven_ptr->HowMuchSold()), { 167.f,35.f }, 0.05f, { 1.f,1.f,1.f }, 1.0f);
+
+            if(fishCaptureCount[0] != 0)
+                Engine::GetFontManager().PrintText(FontType::Bold, std::to_string(inven_ptr->HowManyFishes(0)), {190.f,5.5f}, 0.05f, {1.f,1.f,1.f}, 1.0f);
+
+            if (fishCaptureCount[1] != 0)
+                Engine::GetFontManager().PrintText(FontType::Bold, std::to_string(inven_ptr->HowManyFishes(1)), { 190.f,-35.5f }, 0.05f, { 1.f,1.f,1.f }, 1.0f);
+
+            if (fishCaptureCount[2] != 0)
+                Engine::GetFontManager().PrintText(FontType::Bold, std::to_string(inven_ptr->HowManyFishes(2)), { 190.f,-55.5f }, 0.05f, { 1.f,1.f,1.f }, 1.0f);
+        }
+    }
+    else
+    {
+        Engine::GetFontManager().PrintText(FontType::Bold, "Click Ship to Start the Game", { -100.f,-150.f }, 0.05f, { 0.f,0.f,0.f }, 0.5f);
+        Engine::GetFontManager().PrintText(FontType::Bold, "Click Computer to Equip Module", { 30.f,30.f }, 0.05f, { 1.f,1.f,1.f }, 0.5f);
+    }
 }
 
 void Mode2::Unload() {

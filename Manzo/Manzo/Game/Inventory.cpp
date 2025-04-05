@@ -175,14 +175,15 @@ void Inven::State_Module::CheckExit(GameObject* object)
 
 void Inven::State_FC::Enter(GameObject* object)
 {
-	int position = -100;
+	int position = 100;
 	Inven* inven = static_cast<Inven*>(object);
 	inven->GetGOComponent<Sprite>()->PlayAnimation(static_cast<int>(Animations::FishCollection));
+	inven->in_fish_state = true;
 
 	for (auto& fish : inven->fishCollection)
 	{
 		std::string file_name = "fish" + std::to_string(fish.first + 1);		
-		Engine::GetIconManager().AddIcon(file_name, { inven->GetPosition().x + 100,float(position += 80) }, 1.0f, false);
+		Engine::GetIconManager().AddIcon(file_name, { inven->GetPosition().x + 100,float(position -= 80) }, 1.0f, false);
 	}
 
 	Engine::GetIconManager().AddIcon("plus1", { inven->GetPosition().x + 80,180 }, 1.f, false, false, true);
@@ -233,17 +234,12 @@ void Inven::State_FC::Update(GameObject* object, double dt)
 	}
 
 	// decide to sell
-	if (Engine::GetInput().KeyJustPressed(Input::Keys::F1))
+	if (Engine::GetInput().KeyJustPressed(Input::Keys::F1) && inven->fishCollection[inven->todays_fish_index] != 0)
 	{
 		inven->money += (inven->todays_price * inven->how_much_sold);
 		inven->fishCollection[inven->todays_fish_index] -= inven->how_much_sold;
-
-		if (inven->fishCollection[inven->todays_fish_index] == 0)
-		{
-			Engine::GetIconManager().RemoveIcon("fish"+ std::to_string(inven->todays_fish_index + 1));
-		}
+		inven->how_much_sold = 0;
 	}
-
 }
 
 void Inven::State_FC::CheckExit(GameObject* object)
@@ -253,11 +249,13 @@ void Inven::State_FC::CheckExit(GameObject* object)
 	{
 		Engine::GetIconManager().RemoveAllIcon();
 		inven->change_state(&inven->state_module);
+		inven->in_fish_state = false;
 	}
 	else if (inven->page == 3)
 	{
 		Engine::GetIconManager().RemoveAllIcon();
 		inven->change_state(&inven->state_sc);
+		inven->in_fish_state = false;
 	}
 
 	if (!inven->is_opened)

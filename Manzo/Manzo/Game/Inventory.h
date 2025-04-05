@@ -20,8 +20,13 @@ public:
 	bool Open();
 
 	int GetMoney() { return money; }
+	bool GetFishState() { return current_state == &state_fc;	}
 	float GetX1Pos() { return m1x; }
 	float GetX2Pos() { return m2x; }
+
+	int HowManyFishes(int index) { return fishCollection[index]; }
+	int HowMuchSold() { return how_much_sold; }
+
 
 	std::map<int, int> fishCollection;
 
@@ -29,6 +34,7 @@ private:
 	bool is_opened = false;
 	bool is_picked = false;
 	bool has_sold = false;
+	bool in_fish_state = false;
 	int page = 0;
 	int money = 0;
 	int total_fishNum = 3;
