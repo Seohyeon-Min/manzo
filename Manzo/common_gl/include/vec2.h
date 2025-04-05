@@ -347,3 +347,4 @@ constexpr int magnitude_squared(ivec2 a) noexcept
 {
     return dot(a, a);
 }
+

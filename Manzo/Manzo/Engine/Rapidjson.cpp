@@ -110,15 +110,22 @@ JsonParser_dialog::JsonParser_dialog(const std::string& language) {
     rapidjson::FileReadStream is(fptr, buffer, sizeof(buffer));
     rapidjson::Document doc;
     doc.ParseStream(is);
+    fclose(fptr);
 
     if (doc.HasParseError() || !doc.IsObject()) {
         std::cout << "JSON parse error.\n";
         return;
     }
 
+    translations.clear();
+    characters.clear();
+    groupedDialog.clear();
+
     for (auto it = doc.MemberBegin(); it != doc.MemberEnd(); ++it) {
         const std::string group_id = it->name.GetString();
         const auto& dialogArray = it->value;
+
+        if (!dialogArray.IsArray()) continue;
 
         std::vector<std::pair<std::string, std::string>> groupLines;
 
@@ -140,6 +147,12 @@ JsonParser_dialog::JsonParser_dialog(const std::string& language) {
 
         groupedDialog[group_id] = groupLines;
     }
+}
+
+const std::vector<std::pair<std::string, std::string>>& JsonParser_dialog::GetDialogGroup(const std::string& group_id) const {
+    static const std::vector<std::pair<std::string, std::string>> empty;
+    auto it = groupedDialog.find(group_id);
+    return it != groupedDialog.end() ? it->second : empty;
 }
 
 const std::string& JsonParser_dialog::GetText(const std::string& id)const {

@@ -3,6 +3,7 @@
 #include "Boss.h"
 #include "Ship.h"
 #include "BossBullet.h"
+#include "../Engine/Lerp.h"
 
 
 std::vector<GameObject::State*> stateMap;
@@ -284,12 +285,6 @@ void Boss::DrawShieldRange(vec2 pos, double radius)
 	Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call));
 }
 
-
-
-
-vec2 Lerp(const vec2& start, const vec2& end, float t) {
-	return start + t * (end - start);
-}
 
 void Boss::Move(double dt) {
 	Boss* boss = static_cast<Boss*>(this);

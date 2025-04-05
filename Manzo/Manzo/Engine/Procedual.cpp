@@ -1,9 +1,10 @@
 #include "Procedual.h" 
 #include <vector>
 #include <cmath> 
+#include "../Engine/Lerp.h"
 
 
-void ProceduralChain::Initialize(int count, int defaultSize) {
+void ProceduralChain::Initialize(int count, float defaultSize) {
     positions.resize(count, { 0, 0 });
     circle_size.resize(count, defaultSize);
 }
@@ -20,7 +21,7 @@ void ProceduralChain::Update(vec2 head_position, float followSpeed) {
 
         float distance = sqrtf(direction.x * direction.x + direction.y * direction.y);
         if (distance > 0.0f) {
-            direction = direction / distance;
+            direction = { direction / distance };
         }
 
         vec2 targetPosition;

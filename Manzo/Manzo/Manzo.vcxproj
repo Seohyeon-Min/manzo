@@ -25,6 +25,7 @@
     <ClCompile Include="Engine\Icon.cpp" />
     <ClCompile Include="Engine\IconManager.cpp" />
     <ClCompile Include="Engine\Input.cpp" />
+    <ClCompile Include="Engine\Lerp.cpp" />
     <ClCompile Include="Engine\logger.cpp" />
     <ClCompile Include="Engine\MapManager.cpp" />
     <ClCompile Include="Engine\MathUtils.cpp" />
@@ -103,6 +104,7 @@
     <ClInclude Include="Engine\Rapidjson.h" />
     <ClInclude Include="Engine\Rect.h" />
     <ClInclude Include="Engine\Render.h" />
+    <ClInclude Include="Engine\Lerp.h" />
     <ClInclude Include="Engine\ShaderManager.h" />
     <ClInclude Include="Engine\ShowCollision.h" />
     <ClInclude Include="Engine\Sprite.h" />
