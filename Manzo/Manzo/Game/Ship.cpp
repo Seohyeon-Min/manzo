@@ -90,7 +90,7 @@ void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
 		ship->dash_target = ship_position + direction * max_distance;
 	}
 	else {
-		ship->dash_target = pos;
+		ship->dash_target = ship_position + direction * max_distance;
 	}
 	ship->SetVelocity(force);
 
