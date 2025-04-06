@@ -195,7 +195,7 @@ void Mode2::Draw() {
 }
 
 void Mode2::Unload() {
-    Engine::GetLogger().WriteSaveFile(inven_ptr->fishCollection, inven_ptr->GetMoney(), module_ptr->IsFirstSetted(), inven_ptr->GetX1Pos(), module_ptr->IsSecondSetted(), inven_ptr->GetX2Pos());
+    Engine::GetLogger().WriteSaveFile(inven_ptr->fishCollection, inven_ptr->GetMoney(), inven_ptr->FirstModuleBought(), module_ptr->IsFirstSetted(), inven_ptr->GetX1Pos(), inven_ptr->SecondModuleBought(), module_ptr->IsSecondSetted(), inven_ptr->GetX2Pos());
 
     GetGSComponent<GameObjectManager>()->Unload();
     Engine::GetAudioManager().StopAllChannels();

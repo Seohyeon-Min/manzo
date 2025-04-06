@@ -21,6 +21,8 @@ public:
 
 	void BuyFirstModule(bool buy) { buy_first_module = buy; }
 	void BuySecondModule(bool buy) { buy_second_module = buy; }
+	bool FirstModuleBought() { return buy_first_module; }
+	bool SecondModuleBought() { return buy_second_module; }
 
 	void SetMoney(int new_money) { money = new_money; }
 	int GetMoney() { return money; }
@@ -36,8 +38,8 @@ public:
 	std::map<int, int> originCollection;
 
 	std::vector<vec2> savePos = {
-		{ -130, 100 },
-		{ 0, 100 },
+		{ -65, 100 },
+		{ 65, 100 },
 		{ 130, 100 }
 	};
 

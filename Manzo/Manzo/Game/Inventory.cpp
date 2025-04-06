@@ -16,6 +16,9 @@ Inven::Inven(vec2 position) : GameObject(position), page(0), dre_todayFish(rd())
 
 	module_ptr = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Module>();
 
+	buy_first_module = Engine::GetLogger().BuyModule1();
+	buy_second_module = Engine::GetLogger().BuyModule2();
+
 	module_ptr->SetFirstModule(Engine::GetLogger().GetModule1());
 	module_ptr->SetSecondModule(Engine::GetLogger().GetModule2());
 
