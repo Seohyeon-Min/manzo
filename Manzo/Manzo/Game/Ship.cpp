@@ -86,12 +86,9 @@ void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
 	ship_position.y + bubble_direction.y * -30.f
 	};
 
-	if (distance > max_distance) {
-		ship->dash_target = ship_position + direction * max_distance;
-	}
-	else {
-		ship->dash_target = ship_position + direction * max_distance;
-	}
+
+	ship->dash_target = ship_position + direction * max_distance;
+
 	ship->SetVelocity(force);
 
 	if (ship->fuel_bubble_timer->Remaining() == 0.0 && force_multiplier > 0.4) {

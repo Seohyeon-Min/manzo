@@ -15,8 +15,10 @@ Inven::Inven(vec2 position) : GameObject(position), page(0), dre_todayFish(rd())
 	originCollection = fishCollection;
 
 	module_ptr = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Module>();
+
 	module_ptr->SetFirstModule(Engine::GetLogger().GetModule1());
 	module_ptr->SetSecondModule(Engine::GetLogger().GetModule2());
+
 	money = Engine::GetLogger().GetMoney();
 	m1x = Engine::GetLogger().GetModule1XPos();
 	m2x = Engine::GetLogger().GetModule2XPos();
@@ -50,7 +52,7 @@ void Inven::Update(double dt)
 			is_picked = true;
 		}
 		todays_fish_icon = "fish" + std::to_string(todays_fish_index + 1);
-		Engine::GetIconManager().AddIcon(todays_fish_icon, { GetPosition().x,250 }, 1.0f, false);
+		Engine::GetIconManager().AddIcon(todays_fish_icon, { 0,250 }, 1.0f, false);
 	}
 	else
 	{
@@ -130,8 +132,6 @@ void Inven::State_Module::Enter(GameObject* object)
 		(inven->module_ptr->IsSecondSetted()) ? vec2((float)inven->m2x, 100) : vec2(inven->GetPosition().x, -100),
 		0.7f, true, true, true
 	);
-
-	//Engine::GetIconManager().AddIcon("module3", { 130,-100 }, 0.7f, true, true, true);
 }
 
 void Inven::State_Module::Update(GameObject* object, double dt)
@@ -189,15 +189,17 @@ void Inven::State_FC::Enter(GameObject* object)
 		if (fish.second != 0)
 		{
 			std::string file_name = "fish" + std::to_string(fish.first + 1);
-			Engine::GetIconManager().AddIcon(file_name, { inven->GetPosition().x + 100,float(position -= 80) }, 1.0f, false);
+
+			//0일땐 드래그 못하게 할지? 그리고 약간 몇 마리 남아있는지 짜치지 않나...좀 얘기해봐야할듯
+			Engine::GetIconManager().AddIcon(file_name, { inven->GetPosition().x + 100,float(position -= 80) }, 1.0f, true, false, true);   
 		}
 	}
 
-	Engine::GetIconManager().AddIcon("plus1", { inven->GetPosition().x + 80,180 }, 1.f, false, false, true);
-	Engine::GetIconManager().AddIcon("plus10", { inven->GetPosition().x + 50,180 }, 1.f, false, false, true);
+	Engine::GetIconManager().AddIcon("plus1", { 80,180 }, 1.f, false, false, true);
+	Engine::GetIconManager().AddIcon("plus10", { 50,180 }, 1.f, false, false, true);
 
-	Engine::GetIconManager().AddIcon("minus1", { inven->GetPosition().x - 80,180 }, 1.f, false, false, true);
-	Engine::GetIconManager().AddIcon("minus10", { inven->GetPosition().x - 50,180 }, 1.f, false, false, true);
+	Engine::GetIconManager().AddIcon("minus1", { - 80,180 }, 1.f, false, false, true);
+	Engine::GetIconManager().AddIcon("minus10", { - 50,180 }, 1.f, false, false, true);
 }
 
 void Inven::State_FC::Update(GameObject* object, double dt)

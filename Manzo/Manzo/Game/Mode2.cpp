@@ -158,7 +158,7 @@ void Mode2::Draw() {
 
         if (inven_ptr->GetFishState())
         {
-            Engine::GetFontManager().PrintText(FontType::Bold, std::to_string(inven_ptr->HowMuchSold()), { 167.f,35.f }, 0.05f, { 1.f,1.f,1.f }, 1.0f);
+            Engine::GetFontManager().PrintText(FontType::Bold, std::to_string(inven_ptr->HowMuchSold()), { -5.f,75.f }, 0.05f, { 1.f,1.f,1.f }, 1.0f);
 
             float currentY = 5.5f;
             int printed = 0;
