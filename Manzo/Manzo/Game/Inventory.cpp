@@ -118,8 +118,10 @@ void Inven::State_Module::Enter(GameObject* object)
 	inven->GetGOComponent<Sprite>()->PlayAnimation(static_cast<int>(Animations::Module));
 	inven->page = 1;
 
-	Engine::GetIconManager().AddIcon("module", { inven->GetPosition().x + inven->savePos[0].x, inven->savePos[0].y }, 0.7f, false);
-	Engine::GetIconManager().AddIcon("module", { inven->GetPosition().x + inven->savePos[1].x, inven->savePos[1].y }, 0.7f, false);
+	Engine::GetIconManager().AddIcon("module_set", { inven->GetPosition().x + inven->savePos[0].x, inven->savePos[0].y }, 0.7f, false);
+	Engine::GetIconManager().AddIcon("module_set", { inven->GetPosition().x + inven->savePos[1].x, inven->savePos[1].y }, 0.7f, false);
+	Engine::GetIconManager().AddIcon("module_have", { inven->GetPosition().x + inven->savePos[0].x, -inven->savePos[0].y }, 0.7f, false);
+	Engine::GetIconManager().AddIcon("module_have", { inven->GetPosition().x + inven->savePos[1].x, -inven->savePos[1].y }, 0.7f, false);
 
 	Engine::GetIconManager().AddIcon(
 		"module1",

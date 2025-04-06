@@ -45,7 +45,7 @@ void Shop::Update(double dt)
 			Engine::GetIconManager().AddIcon(
 				info.icon,
 				{ -575.0f + (120.0f * column), 200.0f - (120.0f * row) },
-				0.8f
+				0.7f
 			);
 
 			if (column == 3)
