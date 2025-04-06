@@ -56,6 +56,20 @@ void Shop::Update(double dt)
 			column++;
 		}
 
+		Engine::GetIconManager().AddIcon("rect1",{-270.f, -170.f},0.5f,false);
+
+		Icon* selectedIcon = Engine::GetIconManager().GetCollidingIconWithMouse({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY });
+		bool clicked = Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT);
+
+		if (selectedIcon != nullptr && clicked)
+		{
+			int num = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Inven>()->GetMoney() - 2; //2대신 물품 가격
+
+			if (selectedIcon->IsCollidingWith({0.f,0.f}))
+			{
+				Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Inven>()->SetMoney(num);
+			}
+		}
 	}
 }
 

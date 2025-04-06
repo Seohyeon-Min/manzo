@@ -19,6 +19,7 @@ public:
 	void SetIsOpened(bool open) { is_opened = open; }
 	bool Open();
 
+	void SetMoney(int new_money) { money = new_money; }
 	int GetMoney() { return money; }
 	bool GetFishState() { return current_state == &state_fc;	}
 	float GetX1Pos() { return m1x; }

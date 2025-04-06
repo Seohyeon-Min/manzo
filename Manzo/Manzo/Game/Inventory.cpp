@@ -240,6 +240,32 @@ void Inven::State_FC::Update(GameObject* object, double dt)
 		{
 			inven->how_much_sold -= 10;
 		}
+
+		// sell basic fishes
+		for (auto& fish : inven->originCollection)
+		{
+			int index = fish.first; 
+			int count = fish.second;
+
+			if (count != 0 && index != inven->todays_fish_index)
+			{
+				std::string fish_alias = "fish" + std::to_string(index + 1);
+
+				if (alias == fish_alias &&
+					Engine::GetIconManager().IsCollidingWith(fish_alias, "rect1") &&
+					inven->fishCollection[index] != 0 &&
+					!inven->has_sold)
+				{
+					inven->has_sold = true;
+					inven->fishCollection[index] -= 1;
+					inven->money += 1;
+				}
+			}
+		}
+	}
+	else
+	{
+		inven->has_sold = false;
 	}
 
 	// decide to sell
