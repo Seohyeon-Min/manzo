@@ -24,6 +24,8 @@ Shop::Shop(vec2 postion) : GameObject(postion)
 		++count;
 		is_on_shop = true;
 	}
+
+	inven = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Inven>();
 }
 
 Shop::~Shop()
@@ -35,7 +37,7 @@ void Shop::Update(double dt)
 {
 	GameObject::Update(dt);
 
-	if (Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Inven>()->GetIsOpened())
+	if (inven->GetIsOpened())
 	{
 		int row = 1;
 		int column = 1;
@@ -58,17 +60,30 @@ void Shop::Update(double dt)
 
 		Engine::GetIconManager().AddIcon("rect1",{-270.f, -170.f},0.5f,false);
 
-		Icon* selectedIcon = Engine::GetIconManager().GetCollidingIconWithMouse({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY });
-		bool clicked = Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT);
-
-		if (selectedIcon != nullptr && clicked)
+		if (Engine::GetIconManager().IsCollidingWith("temp1", "module_have"))
 		{
-			int num = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Inven>()->GetMoney() - 2; //2대신 물품 가격
-
-			if (selectedIcon->IsCollidingWith({0.f,0.f}))
+			if (Engine::GetIconManager().GetIconPosition("module_have", "temp1").x == 350 + inven->savePos[0].x)
 			{
+				inven->BuyFirstModule(true);
+			}
+
+			if (Engine::GetIconManager().GetIconPosition("module_have", "temp1").x == 350 + inven->savePos[1].x)
+			{
+				inven->BuySecondModule(true);
+			}
+
+			Engine::GetIconManager().RemoveIcon("temp1");
+
+			if (!already_buy)
+			{
+				already_buy = true;
+				int num = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Inven>()->GetMoney() - 2; //2대신 물건 가격
 				Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Inven>()->SetMoney(num);
 			}
+		}
+		else
+		{
+			already_buy = false;
 		}
 	}
 }

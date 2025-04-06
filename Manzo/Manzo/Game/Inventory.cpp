@@ -38,7 +38,6 @@ void Inven::Update(double dt)
 		page++;
 	}
 
-	// 
 	if (is_opened && (current_state == &state_fc))
 	{
 		if (!is_picked)
@@ -53,11 +52,6 @@ void Inven::Update(double dt)
 		}
 		todays_fish_icon = "fish" + std::to_string(todays_fish_index + 1);
 		Engine::GetIconManager().AddIcon(todays_fish_icon, { 0,250 }, 1.0f, false);
-	}
-	else
-	{
-		//today fish 아이콘만 지우기
-		//Engine::GetIconManager().RemoveIcon(todays_fish_icon);
 	}
 
 	if (!is_opened)
@@ -120,10 +114,11 @@ void Inven::State_Module::Enter(GameObject* object)
 
 	Engine::GetIconManager().AddIcon("module_set", { inven->GetPosition().x + inven->savePos[0].x, inven->savePos[0].y }, 0.7f, false);
 	Engine::GetIconManager().AddIcon("module_set", { inven->GetPosition().x + inven->savePos[1].x, inven->savePos[1].y }, 0.7f, false);
+
 	Engine::GetIconManager().AddIcon("module_have", { inven->GetPosition().x + inven->savePos[0].x, -inven->savePos[0].y }, 0.7f, false);
 	Engine::GetIconManager().AddIcon("module_have", { inven->GetPosition().x + inven->savePos[1].x, -inven->savePos[1].y }, 0.7f, false);
 
-	Engine::GetIconManager().AddIcon(
+	/*Engine::GetIconManager().AddIcon(
 		"module1",
 		(inven->module_ptr->IsFirstSetted()) ? vec2((float)inven->m1x, 100) : vec2(inven->GetPosition().x - 130, -100),
 		0.7f, true, true, true
@@ -133,7 +128,7 @@ void Inven::State_Module::Enter(GameObject* object)
 		"module2",
 		(inven->module_ptr->IsSecondSetted()) ? vec2((float)inven->m2x, 100) : vec2(inven->GetPosition().x, -100),
 		0.7f, true, true, true
-	);
+	);*/
 }
 
 void Inven::State_Module::Update(GameObject* object, double dt)
@@ -141,26 +136,36 @@ void Inven::State_Module::Update(GameObject* object, double dt)
 	Inven* inven = static_cast<Inven*>(object);
 	inven->GetGOComponent<Sprite>()->Update(dt);
 
-	if (Engine::GetIconManager().IsCollidingWith("module", "module1"))
+	if (inven->buy_first_module)
+	{
+		Engine::GetIconManager().AddIcon("module1", vec2(inven->GetPosition().x + inven->savePos[0].x, -100), 0.7f, true, true, true);
+	}
+
+	if (inven->buy_second_module)
+	{
+		Engine::GetIconManager().AddIcon("module2", vec2(inven->GetPosition().x + inven->savePos[1].x, -100),0.7f, true, true, true);
+	}
+
+	if (Engine::GetIconManager().IsCollidingWith("module_set", "module1"))
 	{
 		inven->module_ptr->SetFirstModule(true);
-		inven->m1x = Engine::GetIconManager().GetIconPosition("module", "module1").x;
+		inven->m1x = Engine::GetIconManager().GetIconPosition("module_set", "module1").x;
 	}
 	else
 	{
 		inven->module_ptr->SetFirstModule(false);
-		inven->m1x = -130;
+		inven->m1x = inven->GetPosition().x + inven->savePos[0].x;
 	}
 
-	if (Engine::GetIconManager().IsCollidingWith("module", "module2"))
+	if (Engine::GetIconManager().IsCollidingWith("module_set", "module2"))
 	{
 		inven->module_ptr->SetSecondModule(true);
-		inven->m2x = Engine::GetIconManager().GetIconPosition("module", "module2").x;
+		inven->m2x = Engine::GetIconManager().GetIconPosition("module_set", "module2").x;
 	}
 	else
 	{
 		inven->module_ptr->SetSecondModule(false);
-		inven->m2x = 0;
+		inven->m2x = inven->GetPosition().x + inven->savePos[1].x;
 	}
 }
 

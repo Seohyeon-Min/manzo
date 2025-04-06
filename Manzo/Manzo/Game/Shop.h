@@ -9,6 +9,7 @@
 #include "..\Engine\Engine.h"
 #include "Fish.h"
 #include "Skill.h"
+#include "Inventory.h"
 #include "..\Engine\Sprite.h"
 
 class Shop : public GameObject
@@ -41,9 +42,11 @@ public:
 
 private:
 
+	Inven* inven;
 	Skillsys*					skill_ptr;
 	int							Net_Money = 3;
 	bool						shop_available = false; // false = shop disappear / true = shop appear
+	bool already_buy;
 	
 	shop_list					pick = First; //player's pick
 	shop_list					sell_pick = First;
