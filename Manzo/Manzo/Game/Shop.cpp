@@ -56,35 +56,36 @@ void Shop::Update(double dt)
 				row++;
 			}
 			column++;
+
+			std::string icon_name = info.icon; // ex) "module_jet", "module_oxygen"
+
+			// 드래그된 아이콘이 이 아이콘이면 처리
+			if (Engine::GetIconManager().IsCollidingWith(icon_name, "module_have") && inven->GetMoney() >= info.price)
+			{
+				// 아이콘 위치로 어떤 모듈 위치에 들어갔는지 확인
+				vec2 drop_pos = Engine::GetIconManager().GetIconPosition("module_have", icon_name);
+
+				if (drop_pos.x == 350 + inven->savePos[0].x)
+				{
+					inven->BuyFirstModule(true);
+				}
+				else if (drop_pos.x == 350 + inven->savePos[1].x)
+				{
+					inven->BuySecondModule(true);
+				}
+
+				Engine::GetIconManager().RemoveIcon(icon_name);
+
+				if (!already_buy)
+				{
+					already_buy = true;
+					inven->SetMoney(inven->GetMoney() - info.price);
+				}
+			}
 		}
 
 		Engine::GetIconManager().AddIcon("rect1",{-270.f, -170.f},0.5f,false);
 
-		if (Engine::GetIconManager().IsCollidingWith("temp1", "module_have") && inven->GetMoney() > 0)
-		{
-			if (Engine::GetIconManager().GetIconPosition("module_have", "temp1").x == 350 + inven->savePos[0].x)
-			{
-				inven->BuyFirstModule(true);
-			}
-
-			if (Engine::GetIconManager().GetIconPosition("module_have", "temp1").x == 350 + inven->savePos[1].x)
-			{
-				inven->BuySecondModule(true);
-			}
-
-			Engine::GetIconManager().RemoveIcon("temp1");
-
-			if (!already_buy)
-			{
-				already_buy = true;
-				int num = inven->GetMoney() - 2; //2대신 물건 가격
-				inven->SetMoney(num);
-			}
-		}
-		else
-		{
-			already_buy = false;
-		}
 	}
 }
 
