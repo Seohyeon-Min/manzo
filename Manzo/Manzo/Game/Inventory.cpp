@@ -139,6 +139,7 @@ void Inven::State_Module::Update(GameObject* object, double dt)
 	Inven* inven = static_cast<Inven*>(object);
 	inven->GetGOComponent<Sprite>()->Update(dt);
 
+	/////////////////////////////////////////////////// Check Buy ///////////////////////////////////////////////////
 	if (inven->buy_first_module)
 	{
 		Engine::GetIconManager().AddIcon("module1", vec2(inven->GetPosition().x + inven->savePos[0].x, -100), 0.7f, true, true, true);
@@ -149,6 +150,7 @@ void Inven::State_Module::Update(GameObject* object, double dt)
 		Engine::GetIconManager().AddIcon("module2", vec2(inven->GetPosition().x + inven->savePos[1].x, -100),0.7f, true, true, true);
 	}
 
+	/////////////////////////////////////////////////// Check Set ///////////////////////////////////////////////////
 	if (Engine::GetIconManager().IsCollidingWith("module_set", "module1"))
 	{
 		inven->module_ptr->SetFirstModule(true);
@@ -169,6 +171,17 @@ void Inven::State_Module::Update(GameObject* object, double dt)
 	{
 		inven->module_ptr->SetSecondModule(false);
 		inven->m2x = inven->GetPosition().x + inven->savePos[1].x;
+	}
+
+	/////////////////////////////////////////////////// Update Position stay ///////////////////////////////////////////////////
+	if (inven->module_ptr->IsFirstSetted())
+	{
+		//Engine::GetIconManager().SetIconPosition("module1", { 0.f,0.f });
+	}
+
+	if (inven->module_ptr->IsSecondSetted())
+	{
+
 	}
 }
 

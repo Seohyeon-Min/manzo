@@ -60,7 +60,7 @@ void Shop::Update(double dt)
 
 		Engine::GetIconManager().AddIcon("rect1",{-270.f, -170.f},0.5f,false);
 
-		if (Engine::GetIconManager().IsCollidingWith("temp1", "module_have"))
+		if (Engine::GetIconManager().IsCollidingWith("temp1", "module_have") && inven->GetMoney() > 0)
 		{
 			if (Engine::GetIconManager().GetIconPosition("module_have", "temp1").x == 350 + inven->savePos[0].x)
 			{
@@ -77,8 +77,8 @@ void Shop::Update(double dt)
 			if (!already_buy)
 			{
 				already_buy = true;
-				int num = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Inven>()->GetMoney() - 2; //2대신 물건 가격
-				Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Inven>()->SetMoney(num);
+				int num = inven->GetMoney() - 2; //2대신 물건 가격
+				inven->SetMoney(num);
 			}
 		}
 		else
@@ -90,7 +90,7 @@ void Shop::Update(double dt)
 
 void Shop::Draw(DrawLayer drawlayer)
 {
-	if(Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Inven>()->GetIsOpened())
+	if(inven->GetIsOpened())
 	{
 		GameObject::Draw();
 	}
