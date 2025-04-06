@@ -57,12 +57,10 @@ void Shop::Update(double dt)
 			}
 			column++;
 
-			std::string icon_name = info.icon; // ex) "module_jet", "module_oxygen"
+			std::string icon_name = info.icon;
 
-			// 드래그된 아이콘이 이 아이콘이면 처리
-			if (Engine::GetIconManager().IsCollidingWith(icon_name, "module_have") && inven->GetMoney() >= info.price)
+			if (Engine::GetIconManager().IsCollidingWith(icon_name, "module_have") && inven->GetMoney() >= 0/*info.price*/)
 			{
-				// 아이콘 위치로 어떤 모듈 위치에 들어갔는지 확인
 				vec2 drop_pos = Engine::GetIconManager().GetIconPosition("module_have", icon_name);
 
 				if (drop_pos.x == 350 + inven->savePos[0].x)

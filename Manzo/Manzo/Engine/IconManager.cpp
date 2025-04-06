@@ -130,6 +130,7 @@ void IconManager::SetIconPosition(std::string alias, vec2 newPosition)
 	if (targetIcon)
 	{
 		targetIcon->SetPosition(newPosition);
+		targetIcon->position = newPosition;
 	}
 }
 

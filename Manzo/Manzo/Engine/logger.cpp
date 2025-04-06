@@ -73,8 +73,12 @@ void Logger::LoadSaveFile()
             if (module1Set == 1)
             {
                 module1_set = true;
-                module1Pos = module1x;
             }
+            else
+            {
+                module1_set = false;
+            }
+                module1Pos = module1x;
         }
         else if (line.find("Module2:") != std::string::npos) {
             int module2Buy, module2Set;
@@ -90,8 +94,12 @@ void Logger::LoadSaveFile()
             if (module2Set == 1)
             {
                 module2_set = true;
-                module2Pos = module2x;
             }
+            else
+            {
+                module2_set = false;
+            }
+            module2Pos = module2x;
         }
     }
 
@@ -109,8 +117,8 @@ void Logger::WriteSaveFile(std::map<int, int> fishCaptureCount, int money, bool 
         }
 
         saveFile << "Money: " << std::to_string(money) << "\n";
-        saveFile << "Module1: " << std::to_string(module1_buy) << " " << std::to_string(module1_set) << " " << std::to_string((module1_set == true) ? m1x : -130) << "\n";
-        saveFile << "Module2: " << std::to_string(module2_buy) << " " << std::to_string(module2_set) << " " << std::to_string((module2_set == true) ? m2x : 0) << "\n";
+        saveFile << "Module1: " << std::to_string(module1_buy) << " " << std::to_string(module1_set) << " " << std::to_string((module1_set == true) ? m1x : 285) << "\n";
+        saveFile << "Module2: " << std::to_string(module2_buy) << " " << std::to_string(module2_set) << " " << std::to_string((module2_set == true) ? m2x : 415) << "\n";
         saveFile.close();
     }
 }

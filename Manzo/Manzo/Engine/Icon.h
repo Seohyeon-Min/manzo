@@ -18,7 +18,7 @@ public:
 
 	bool CanCollideWith(GameObjectTypes) override;
 	void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
-
+	
 	const vec2 GetPosition() const { return position; }
 	const float GetScale() const { return scale; }
 	const std::string& GetAlias() const { return alias; }
@@ -30,10 +30,11 @@ public:
 	bool CanDrag() {	return can_drag;	}
 	void SetSelected(bool select) { selected = select; }
 
+	vec2 position;
+
 private:
 	GLTexture* texture;
 	std::string alias;
-	vec2 position;
 	float scale;
 	bool selected = false;
 	bool can_drag = false;
