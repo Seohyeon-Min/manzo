@@ -143,7 +143,6 @@ void Inven::State_Module::Update(GameObject* object, double dt)
 	{
 		inven->module_ptr->SetFirstModule(true);
 		inven->m1x = Engine::GetIconManager().GetIconPosition("module_set", "module1").x;
-
 	}
 	else
 	{
@@ -168,8 +167,6 @@ void Inven::State_Module::Update(GameObject* object, double dt)
 	{
 		inven->module_ptr->SetFirstModule(false);
 		inven->m1x = inven->GetPosition().x + inven->savePos[0].x;
-
-		std::cout << inven->m1x << std::endl;
 	}
 
 	if (Engine::GetIconManager().IsCollidingWith("module_have", "module2"))
