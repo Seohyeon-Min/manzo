@@ -59,7 +59,7 @@ void Shop::Update(double dt)
 
 			std::string icon_name = info.icon;
 
-			if (Engine::GetIconManager().IsCollidingWith(icon_name, "module_have") && inven->GetMoney() >= 0/*info.price*/)
+			if (Engine::GetIconManager().IsCollidingWith(icon_name, "module_have") && inven->GetMoney() >= info.price)
 			{
 				vec2 drop_pos = Engine::GetIconManager().GetIconPosition("module_have", icon_name);
 
