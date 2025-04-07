@@ -25,6 +25,6 @@ public:
 	Icon* GetCollidingIcon(Icon& icon);
 	Icon* GetCollidingIconWithMouse(vec2 mousePosition);
 
-private: 
+private:
 	std::unordered_map<std::string, std::filesystem::path> icon_list;
 };

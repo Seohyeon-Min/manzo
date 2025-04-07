@@ -304,7 +304,7 @@ void Mode1::Draw()
 void Mode1::Unload()
 {
 
-	Engine::GetLogger().WriteSaveFile(fishCaptureCount, GetGSComponent<Fish>()->GetMoney(), module->IsFirstSetted(), Engine::GetLogger().GetModule1XPos(), module->IsSecondSetted(), Engine::GetLogger().GetModule2XPos());
+	Engine::GetLogger().WriteSaveFile(fishCaptureCount, GetGSComponent<Fish>()->GetMoney(), firstBuy, module->IsFirstSetted(), Engine::GetLogger().GetModule1XPos(), secondBuy, module->IsSecondSetted(), Engine::GetLogger().GetModule2XPos());
 
 	ship_ptr = nullptr;
 	delete fishGenerator;

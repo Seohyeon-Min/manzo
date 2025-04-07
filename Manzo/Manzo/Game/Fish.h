@@ -43,18 +43,18 @@ public:
 
 	void Update(double dt);
 	void Draw();
-	vec2 AvoidRock(vec2 thisPos, vec2 rockPos);
-	bool IsRockInfront(vec2 thisPos, vec2 rockPos);
+	//vec2 AvoidRock(vec2 thisPos, vec2 rockPos);
+	//bool IsRockInfront(vec2 thisPos, vec2 rockPos);
 
 private:
 	static int money;
-	bool IsAvoided = false;
-	float angleRadians;
-	double coolTime = 1.5f;
+	//bool IsAvoided = false;
+	//float angleRadians;
+	//double coolTime = 1.5f;
 	Fish* parentFish = nullptr;
-	vec2 findRock;
-	vec2 AvoidanceVelocity;
-	bool AvoidanceActive = false;
+	//vec2 findRock;
+	//vec2 AvoidanceVelocity;
+	//bool AvoidanceActive = false;
 };
 
 extern int fishCnt;

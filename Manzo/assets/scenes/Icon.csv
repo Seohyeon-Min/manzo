@@ -2,7 +2,8 @@ alias,img
 fish1,assets/images/Fish1.spt
 fish2,assets/images/Fish2.spt
 fish3,assets/images/Fish3.spt
-module,assets/images/module_empty.spt
+module_have,assets/images/module_empty.spt
+module_set,assets/images/module_empty.spt
 module1,assets/images/module_icon1.spt
 module2,assets/images/module_icon1.spt
 module3,assets/images/module_icon1.spt
@@ -11,3 +12,11 @@ plus10,assets/images/button_p10.spt
 minus1,assets/images/button_m1.spt
 minus10,assets/images/button_m10.spt
 go_shop,assets/images/Monitor.spt
+ship,assets/images/ship.spt
+money,assets/images/money.spt
+temp1,assets/images/Temp_shop1.spt
+temp2,assets/images/Temp_shop1.spt
+temp3,assets/images/Temp_shop1.spt
+temp4,assets/images/Temp_shop1.spt
+temp5,assets/images/Temp_shop1.spt
+rect1,assets/images/rect1.spt

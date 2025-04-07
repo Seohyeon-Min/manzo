@@ -57,4 +57,7 @@ private:
     vec3 bossPosition;
     vec3 previousPosition = { 0,0,0 };
     vec3 smoothShipPosition = { 0,0,0 };
+
+    bool firstBuy = Engine::GetLogger().BuyModule1();
+    bool secondBuy = Engine::GetLogger().BuyModule2();
 };

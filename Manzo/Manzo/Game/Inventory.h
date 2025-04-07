@@ -19,22 +19,48 @@ public:
 	void SetIsOpened(bool open) { is_opened = open; }
 	bool Open();
 
+	void BuyFirstModule(bool buy) { buy_first_module = buy; }
+	void BuySecondModule(bool buy) { buy_second_module = buy; }
+	bool FirstModuleBought() { return buy_first_module; }
+	bool SecondModuleBought() { return buy_second_module; }
+
+	void SetMoney(int new_money) { money = new_money; }
 	int GetMoney() { return money; }
+	bool GetFishState() { return current_state == &state_fc;	}
 	float GetX1Pos() { return m1x; }
 	float GetX2Pos() { return m2x; }
 
+	int HowManyFishes(int index) { return fishCollection[index]; }
+	int HowMuchSold() { return how_much_sold; }
+
+
 	std::map<int, int> fishCollection;
+	std::map<int, int> originCollection;
+
+	std::vector<vec2> savePos = {
+		{ -65, 100 },
+		{ 65, 100 }
+	};
+
 
 private:
 	bool is_opened = false;
 	bool is_picked = false;
 	bool has_sold = false;
+
+	bool in_fish_state = false;
+
+	bool buy_first_module;
+	bool buy_second_module;
+
 	int page = 0;
 	int money = 0;
+
 	int total_fishNum = 3;
 	int todays_fish_index = 0;
 	int todays_price = 0;
 	int how_much_sold = 0;
+
 	float m1x, m2x;
 
 	std::string todays_fish_icon;
@@ -86,11 +112,5 @@ private:
 	State_SC state_sc;
 
 	Module* module_ptr;
-
-	std::vector<vec2> savePos = {
-		{ -130, 100 },
-		{ 0, 100 },
-		{ 130, 100 }
-	};
 
 };

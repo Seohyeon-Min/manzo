@@ -12,6 +12,7 @@ Created:    Sept 12, 2024
 #include "../Engine/GameState.h"
 #include "../Engine/Sprite.h"
 #include "..\Engine\GameObjectManager.h"
+#include "..\Engine\IconManager.h"
 #include "../Engine/Timer.h"
 #include "Background.h"
 #include "Fish.h"

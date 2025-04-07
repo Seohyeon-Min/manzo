@@ -98,6 +98,10 @@ bool IconManager::IsCollidingWith(std::string obj1, std::string obj2)
 		}
 	}
 
+	if (icons1.empty() || icons2.empty()) {
+		return false;
+	}
+
 	return false;
 }
 
@@ -119,13 +123,14 @@ void IconManager::SetIconPosition(std::string alias, vec2 newPosition)
 	{
 		if (icon->GetAlias() == alias)
 		{
-			icon = targetIcon;
+			targetIcon = icon;
 		}
 	}
 
 	if (targetIcon)
 	{
 		targetIcon->SetPosition(newPosition);
+		targetIcon->position = newPosition;
 	}
 }
 
