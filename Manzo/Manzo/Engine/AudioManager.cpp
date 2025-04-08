@@ -32,7 +32,7 @@ Implementation::~Implementation() {
 	AudioManager::ErrorCheck(mpStudioSystem->release());
 }
 
-void Implementation::Update(double slow) {
+void Implementation::Update() {
 	std::vector<ChannelMap::iterator> pStoppedChannels;
 	for (auto it = mChannels.begin(), itEnd = mChannels.end(); it != itEnd; ++it)
 	{
@@ -47,25 +47,8 @@ void Implementation::Update(double slow) {
 	{
 		mChannels.erase(it);
 	}
-
-	// slow_down_factor를 적용하여 재생 속도를 조절
-	for (auto& channelPair : mChannels) {
-		FMOD::Channel* pChannel = channelPair.second;
-		FMOD::Sound* sound = nullptr;
-		if (pChannel->getCurrentSound(&sound) == FMOD_OK && sound != nullptr) {
-			float defaultFrequency = 0.0f;
-			// sound의 기본 주파수를 가져옵니다.
-			if (sound->getDefaults(&defaultFrequency, nullptr) == FMOD_OK) {
-				// slow_down_factor를 곱하여 재생 속도를 조절합니다.
-				float newFrequency = defaultFrequency * static_cast<float>(slow);
-				AudioManager::ErrorCheck(pChannel->setFrequency(newFrequency));
-			}
-		}
-	}
 	AudioManager::ErrorCheck(mpStudioSystem->update());
 }
-
-
 
 Implementation* sgpImplementation = nullptr;
 
@@ -80,7 +63,7 @@ AudioManager::~AudioManager()
 }
 
 void AudioManager::Update() {
-	sgpImplementation->Update(slow_down);
+	sgpImplementation->Update();
 }
 
 void AudioManager::LoadMusic(const std::string& filePath, const std::string& alias, bool b3d, bool bLooping, bool bStream)
@@ -376,55 +359,4 @@ float AudioManager::dbToVolume(float dB)
 float AudioManager::VolumeTodB(float volume)
 {
 	return 20.0f * log10f(volume);
-}
-
-
-void AudioManager::LoadSound(const std::string& filePath, const std::string& alias, bool b3d, bool bLooping, bool bStream)
-{
-	auto tFoundIt = sgpImplementation->mEffects.find(alias);
-	if (tFoundIt != sgpImplementation->mEffects.end())
-		return;
-	FMOD_MODE eMode = FMOD_DEFAULT;
-	eMode |= b3d ? FMOD_3D : FMOD_2D;
-	eMode |= bLooping ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF;
-	eMode |= bStream ? FMOD_CREATESTREAM : FMOD_CREATECOMPRESSEDSAMPLE;
-	FMOD::Sound* pSound = nullptr;
-	ErrorCheck(sgpImplementation->mpSystem->createSound(filePath.c_str(), eMode, nullptr, &pSound));
-	if (pSound) {
-		sgpImplementation->mEffects[alias] = pSound;
-	}
-}
-
-std::string AudioManager::PlaySound(const std::string& alias, const vec3& vPosition, float fVolumedB)
-{
-	auto tFoundIt = sgpImplementation->mEffects.find(alias);
-	if (tFoundIt == sgpImplementation->mEffects.end()) {
-		std::cerr << "Error: Effect with alias " << alias << " not found. Please load it first." << std::endl;
-		return "";
-	}
-
-	FMOD::Channel* pChannel = nullptr;
-	ErrorCheck(sgpImplementation->mpSystem->playSound(tFoundIt->second, nullptr, true, &pChannel));
-	if (pChannel) {
-		FMOD_MODE currMode;
-		tFoundIt->second->getMode(&currMode);
-		if (currMode & FMOD_3D) {
-			FMOD_VECTOR position = VectorToFmod(vPosition);
-			ErrorCheck(pChannel->set3DAttributes(&position, nullptr));
-		}
-		ErrorCheck(pChannel->setVolume(dbToVolume(fVolumedB)));
-		ErrorCheck(pChannel->setPaused(false));
-
-		sgpImplementation->mEffectChannels[alias] = pChannel;
-	}
-	return alias;
-}
-
-void AudioManager::StopSound(const std::string& alias)
-{
-	auto tFoundIt = sgpImplementation->mEffectChannels.find(alias);
-	if (tFoundIt != sgpImplementation->mEffectChannels.end()) {
-		ErrorCheck(tFoundIt->second->stop());
-		sgpImplementation->mEffectChannels.erase(tFoundIt);
-	}
 }

@@ -14,20 +14,15 @@ struct Implementation {
 	Implementation();
 	~Implementation();
 
-	void Update(double slow);
+	void Update();
 
 	FMOD::Studio::System* mpStudioSystem;
 	FMOD::System* mpSystem;
 
 	std::string mChannelId;
 
-	//BGM
 	typedef std::map<std::string, FMOD::Sound*> SoundMap;
 	typedef std::map<std::string, FMOD::Channel*> ChannelMap;
-
-	//SFX
-	std::map<std::string, FMOD::Sound*> mEffects;
-	std::map<std::string, FMOD::Channel*> mEffectChannels;
 
 	SoundMap mSounds;
 	ChannelMap mChannels;
@@ -38,9 +33,8 @@ public:
 	AudioManager();
 	~AudioManager();
 
-	void Update();
+	static void Update();
 	static int ErrorCheck(FMOD_RESULT result);
-	void SetSlowDownFactor(double slow) { slow_down = slow; }
 
 	// music
 	void LoadMusic(const std::string& filePath, const std::string& alias, bool b3d = false, bool bLooping = true, bool bStream = false);
@@ -75,12 +69,8 @@ public:
 	float VolumeTodB(float volume);
 	FMOD_VECTOR VectorToFmod(const vec3& vPosition);
 
-	// SFX
-	void LoadSound(const std::string& filePath, const std::string& alias, bool b3d = false, bool bLooping = false, bool bStream = false);
-	std::string PlaySound(const std::string& alias, const vec3& vPos = vec3{ 0, 0, 0 }, float fVolumedB = 0.0f);
-	void StopSound(const std::string& alias);
+	// sound
 
 private:
 	bool isMute = false;
-	double slow_down = 1;
 };

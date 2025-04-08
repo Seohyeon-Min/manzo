@@ -50,7 +50,6 @@ void Mode1::Load()
 	Engine::GetShaderManager().LoadShader("change_color", "assets/shaders/default.vert", "assets/shaders/change_color.frag");
 	Engine::GetShaderManager().LoadShader("change_alpha_no_texture", "assets/shaders/default.vert", "assets/shaders/change_alpha_no_texture.frag");
 	Engine::GetShaderManager().LoadShader("health_bar", "assets/shaders/default.vert", "assets/shaders/health_bar.frag");
-	Engine::GetShaderManager().LoadShader("sea_background", "assets/shaders/post_default.vert", "assets/shaders/sea_background.frag");
 
 	Engine::GetShaderManager().LoadShader("under_water_god_ray", "assets/shaders/post_default.vert", "assets/shaders/underwater_god_ray.frag");
 	Engine::GetShaderManager().LoadShader("post_default", "assets/shaders/post_default.vert", "assets/shaders/post_default.frag");
@@ -61,9 +60,6 @@ void Mode1::Load()
 	Engine::GetAudioManager().LoadMusic("assets/audios/Level1_bgm.mp3", "Level1_bgm", false);
 	Engine::GetAudioManager().LoadMusic("assets/audios/morse/e.wav", "e morse", true);
 	Engine::GetAudioManager().Set3DMode(FMOD_3D_LINEARROLLOFF);
-
-	// sound
-	Engine::GetAudioManager().LoadSound("assets/audios/sound_effect/wind.mp3", "swing");
 
 	// component
 	AddGSComponent(new GameObjectManager());
@@ -87,23 +83,23 @@ void Mode1::Load()
 	camera->SetLimit(cam_limit);
 	AddGSComponent(camera);
 
-	//// background
-	background = new Background();
-	AddGSComponent(background);
-
 	//// ship
 	ship_ptr = new Ship(start_position);
 	GetGSComponent<GameObjectManager>()->Add(ship_ptr);
+
+	//// background
+	background = new Background();
+	AddGSComponent(background);
 
 	//// to generate fish
 	fishGenerator = new FishGenerator();
 	Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
 
 	// background
-	//background->Add("assets/images/background/temp_background4.png", 0.0f);
-	//background->Add("assets/images/background/bg1.png", 0.3f);
-	//background->Add("assets/images/background/bg2.png", 0.4f);
-	//background->Add("assets/images/background/bg3.png", 0.5f);
+	background->Add("assets/images/background/temp_background4.png", 0.0f);
+	background->Add("assets/images/background/bg1.png", 0.3f);
+	background->Add("assets/images/background/bg2.png", 0.4f);
+	background->Add("assets/images/background/bg3.png", 0.5f);
 	// background->Add("assets/images/background/bubble.png", 1.5f, DrawLayer::DrawUI);
 
 	// Map
@@ -283,8 +279,7 @@ void Mode1::FixedUpdate(double dt)
 
 void Mode1::Draw()
 {
-	//GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
-	background->ShaderBackgroundDraw(Engine::GetShaderManager().GetShader("sea_background"), *GetGSComponent<Cam>(), ship_ptr);
+	GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
 	// GetGSComponent<Map>()->AddDrawCall();
 	GetGSComponent<GameObjectManager>()->DrawAll();
 

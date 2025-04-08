@@ -5,8 +5,6 @@
 #include "GameObject.h"
 #include "Camera.h"
 #include "to_span.h"
-#include "GameObject.h"
-#include "../Game/Ship.h"
 
 #include <vector>
 #include <unordered_map>
@@ -191,14 +189,7 @@ void Render::ApplyPostProcessing(bool is_title)
                 shader->SendUniform("uBloomIntensity", 1.1f);
                 break;
             case 2: // God Ray
-                float how_deepY = 6000.f;
-                float pos_Y = 0.;
-                if(Engine::GetGameStateManager().GetGSComponent<GameObjectManager>())
-                pos_Y = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>()->GetPosition().y;
-                pos_Y = how_deepY + pos_Y + 200.f;
                 shader->SendUniform("uSceneTexture", 0);
-                shader->SendUniform("u_y_deep", how_deepY);
-                shader->SendUniform("u_y_position", pos_Y);
                 shader->SendUniform("iResolution", Engine::window_width, Engine::window_height);
                 shader->SendUniform("iTime", float(currentTime));
                 break;
@@ -483,17 +474,10 @@ void Render::DrawBackground(const DrawCall& draw_call) {
     }
 
     shader->SendUniform("uModelToNDC", util::to_span(model_to_ndc));
-    //if there is a uniform, add
-    if (draw_call.SetUniforms) {
-        draw_call.SetUniforms(shader);
-        RenderQuad();
-    }
-    else {
-        // ¸ðµ¨ ·»´õ¸µ
-        model.Use();
-        GLDrawIndexed(model);
-    }
 
+    // ¸ðµ¨ ·»´õ¸µ
+    model.Use();
+    GLDrawIndexed(model);
 
     model.Use(false);
     shader->Use(false);
