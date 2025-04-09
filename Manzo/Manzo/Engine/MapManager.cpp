@@ -41,19 +41,20 @@ void MapManager::LoadFirstMap() {
 }
 
 void MapManager::LoadNextMap() {
-    /*
+    
     if (currentMapIndex + 1 >= mapFiles.size()) return;
 
     currentMapIndex++;
 
     Map* nextMap = new Map();
     nextMap->ParseSVG(mapFiles[currentMapIndex]);
+    nextMap->SetMargin(800.0f);
 
-    float EndY = -10000.0f;
-    nextMap->Translate({ 0, EndY });
+    //float EndY = -10000.0f;
+    //nextMap->Translate({ 0, EndY });
 
     maps.push_back(nextMap);
-    */
+    
 }
 
 
@@ -62,8 +63,8 @@ void MapManager::UpdateMaps(const Math::rect& camera_boundary) {
         Map* map = maps[currentMapIndex];
         map->LoadMapInBoundary(camera_boundary);
 
-        if(true){
-        //if (camera_boundary.Bottom() <= EndY + 100) {
+        //if(true){
+        if (camera_boundary.Bottom() <= EndY + 1000) {
             LoadNextMap();
         }
     }
@@ -453,7 +454,7 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
 
             bool overlapping = IsOverlapping(camera_boundary, rockgroup->FindBoundary());
 
-            if (true) {
+            if (overlapping) {
                 //Add Rock in GameState
                 for (auto& rock : rockgroup->GetRocks()) {
 

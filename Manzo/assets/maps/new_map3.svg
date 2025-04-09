@@ -24,14 +24,14 @@
    inkscape:deskcolor="#d1d1d1"
    inkscape:document-units="px"
    inkscape:zoom="0.20244634"
-   inkscape:cx="1148.4525"
-   inkscape:cy="2571.0517"
+   inkscape:cx="1153.3921"
+   inkscape:cy="5337.2168"
    inkscape:window-width="1920"
-   inkscape:window-height="1129"
+   inkscape:window-height="1009"
    inkscape:window-x="-8"
    inkscape:window-y="-8"
    inkscape:window-maximized="1"
-   inkscape:current-layer="g72" /><defs
+   inkscape:current-layer="g1" /><defs
    id="defs1" /><g
    inkscape:label="Layer 1"
    inkscape:groupmode="layer"
@@ -526,7 +526,8 @@
      </g>
      <g
    id="g72-16"
-   inkscape:label="g72-16"><path
+   inkscape:label="g72-16"
+   transform="translate(93.85203,-276.61651)"><path
    style="fill:#5c4d37;stroke:#d52868;stroke-width:2.95181;stroke-opacity:0.498039"
    d="m 2446.9447,5503.3102 -71.0065,196.3483 157.4492,109.9057 118.5499,-112.9929 z"
    id="path71" />
@@ -556,65 +557,65 @@
 <g
    id="g74">
 <circle
-     style="fill:#ece15e;stroke:#d52868;stroke-width:1.62023;stroke-opacity:0.498039"
-     id="path72"
-     cx="416.02875"
-     cy="869.22089"
-     r="24.189886" />
+   style="fill:#ece15e;stroke:#d52868;stroke-width:1.62023;stroke-opacity:0.498039"
+   id="path72"
+   cx="416.02875"
+   cy="869.22089"
+   r="24.189886" />
 </g>
 <g
    id="g75">
 <circle
-     style="fill:#ece15e;stroke:#d52868;stroke-width:1.62023;stroke-opacity:0.498039"
-     id="path72-2"
-     cx="816.64362"
-     cy="1593.6627"
-     r="24.189886" />
+   style="fill:#ece15e;stroke:#d52868;stroke-width:1.62023;stroke-opacity:0.498039"
+   id="path72-2"
+   cx="816.64362"
+   cy="1593.6627"
+   r="24.189886" />
 </g>
 <g
    id="g76">
 <circle
-     style="fill:#ece15e;stroke:#d52868;stroke-width:1.62023;stroke-opacity:0.498039"
-     id="path72-2-4"
-     cx="3823.3535"
-     cy="3046.1904"
-     r="24.189886" />
+   style="fill:#ece15e;stroke:#d52868;stroke-width:1.62023;stroke-opacity:0.498039"
+   id="path72-2-4"
+   cx="3823.3535"
+   cy="3046.1904"
+   r="24.189886" />
 </g>
 <g
    id="g77">
 <circle
-     style="fill:#ece15e;stroke:#d52868;stroke-width:1.62023;stroke-opacity:0.498039"
-     id="path72-2-4-9"
-     cx="2818.9478"
-     cy="1441.4124"
-     r="24.189886" />
+   style="fill:#ece15e;stroke:#d52868;stroke-width:1.62023;stroke-opacity:0.498039"
+   id="path72-2-4-9"
+   cx="2818.9478"
+   cy="1441.4124"
+   r="24.189886" />
 </g>
 <g
    id="g78">
 <circle
-     style="fill:#ece15e;stroke:#d52868;stroke-width:1.62023;stroke-opacity:0.498039"
-     id="path72-2-4-9-3"
-     cx="1326.1703"
-     cy="2115.4351"
-     r="24.189886" />
+   style="fill:#ece15e;stroke:#d52868;stroke-width:1.62023;stroke-opacity:0.498039"
+   id="path72-2-4-9-3"
+   cx="1326.1703"
+   cy="2115.4351"
+   r="24.189886" />
 </g>
 <g
    id="g79">
 <circle
-     style="fill:#ece15e;stroke:#d52868;stroke-width:1.62023;stroke-opacity:0.498039"
-     id="path72-2-4-9-3-1"
-     cx="4835.4248"
-     cy="5979.9482"
-     r="24.189886" />
+   style="fill:#ece15e;stroke:#d52868;stroke-width:1.62023;stroke-opacity:0.498039"
+   id="path72-2-4-9-3-1"
+   cx="4835.4248"
+   cy="5979.9482"
+   r="24.189886" />
 </g>
 <g
    id="g80">
 <circle
-     style="fill:#ece15e;stroke:#d52868;stroke-width:1.62023;stroke-opacity:0.498039"
-     id="path72-2-4-9-3-1-2"
-     cx="2954.749"
-     cy="5681.4561"
-     r="24.189886" />
+   style="fill:#ece15e;stroke:#d52868;stroke-width:1.62023;stroke-opacity:0.498039"
+   id="path72-2-4-9-3-1-2"
+   cx="2954.749"
+   cy="5681.4561"
+   r="24.189886" />
 </g>
 </g>
 

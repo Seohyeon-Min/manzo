@@ -26,12 +26,12 @@ int main() {
         engine->GetFontManager().AddFontType("assets/fonts/Font4.ttf");
 
         std::ofstream saveFile("assets/scenes/save_data.txt", std::ios::trunc);
-
+        
+        Mode1 mode1;
+        engine->GetGameStateManager().AddGameState(mode1);
         Title title;
         engine->GetGameStateManager().AddGameState(title);
 
-        Mode1 mode1;
-        engine->GetGameStateManager().AddGameState(mode1);
 
         Mode2 mode2;
         engine->GetGameStateManager().AddGameState(mode2);

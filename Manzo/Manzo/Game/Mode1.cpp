@@ -77,7 +77,7 @@ void Mode1::Load()
 
 	//// camera
 	vec2 start_position = {600, -500};
-	Math::rect cam_limit = Math::rect({600, -500}, {4300, -6000});
+	Math::rect cam_limit = Math::rect({-1200, -500}, {4300, -12000});
 	camera = new Cam();
 	camera->SetPosition(start_position);
 	camera->SetLimit(cam_limit);
@@ -105,9 +105,8 @@ void Mode1::Load()
 	// Map
 	AddGSComponent(new MapManager());
 	// GetGSComponent<MapManager>()->AddMapFile("assets/maps/TemporaryMap.svg");
-
-	// Ear Clipping Test
-	GetGSComponent<MapManager>()->AddMapFile("assets/maps/map_temp.svg");
+	GetGSComponent<MapManager>()->AddMapFile("assets/maps/new_map3.svg");
+	GetGSComponent<MapManager>()->AddMapFile("assets/maps/output.svg");
 	GetGSComponent<MapManager>()->LoadFirstMap();
 
 	// Boss
