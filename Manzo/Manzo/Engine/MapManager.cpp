@@ -64,7 +64,7 @@ void MapManager::UpdateMaps(const Math::rect& camera_boundary) {
         map->LoadMapInBoundary(camera_boundary);
 
         //if(true){
-        if (camera_boundary.Bottom() <= EndY + 1000) {
+        if (camera_boundary.Bottom() <= EndY + 500) {
             LoadNextMap();
         }
     }
@@ -460,7 +460,7 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
 
                     Polygon original_poly = rock->GetOriginalPoly();
                     Polygon modified_poly = rock->GetModifiedPoly();
-                    if (!rock->IsActivated()) {
+                    if (!rock->IsActivated() && !rock->IsCrashed()) {
                         rock->Active(true);
                         rock->AddGOComponent(new MAP_SATCollision(modified_poly, rock));
                         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rock);

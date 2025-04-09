@@ -180,10 +180,25 @@ void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_
 		//this should be started in a next frame
 		//ship->nearestRock = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRock(ship); // it should be FindNearestRockNextFrame
 		if (ship->nearestRock) {
+			
+
 			if (!ship->collide_timer->IsRunning()) {
 				ship->collide_timer->Start();
 			}
+			/*
+			std::string rock_index = (ship->nearestRock)->GetOriginalPoly().polyindex;
+			std::string type_index = rock_index.substr(0, 1);
+			if (type_index == "o") {
+				ship->HitWithBounce(ship->nearestRock, velocity); // calculate normal
+				(ship->nearestRock)->Destroy();
+			}
+			else {
+
+				//(ship->nearestRock)->GetRockGroup()->Destroy();
+				//(ship->nearestRock)->Destroy();
+			}*/
 			ship->HitWithBounce(ship->nearestRock, velocity); // calculate normal
+			(ship->nearestRock)->Crash(true);
 		}
 		else {
 			Engine::GetLogger().LogEvent("@@@@ Error: No nearest rock!! @@@@");

@@ -48,6 +48,10 @@ public:
 	void Active(bool active) { loaded = active; }
 	bool IsActivated() { return loaded; }
 
+	// Crash
+	void Crash(bool crashed) { this->crashed = crashed; }
+	bool IsCrashed() { return crashed; }
+
 	std::vector<vec2> GetPoints() { return original_poly.vertices; }
 
 private:
@@ -56,6 +60,7 @@ private:
 	Polygon original_poly;
 	Polygon modified_poly;
 	bool loaded = false;
+	bool crashed = false;
 };
 
 

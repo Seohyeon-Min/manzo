@@ -29,6 +29,7 @@ int main() {
         
         Mode1 mode1;
         engine->GetGameStateManager().AddGameState(mode1);
+
         Title title;
         engine->GetGameStateManager().AddGameState(title);
 

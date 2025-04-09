@@ -134,6 +134,7 @@ Rock* GameObjectManager::FindNearestRock(GameObject* object) {
 			rock = static_cast<ObstacleRock*>(gameObj);
 			rockPoints = rock->GetPoints();
 		}
+		if (!rock || rock->IsCrashed()) continue;
 		else {
 			continue;
 		}

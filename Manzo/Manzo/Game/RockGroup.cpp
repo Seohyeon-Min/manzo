@@ -20,10 +20,17 @@ RockGroup::~RockGroup() {
     moving_rocks.clear();
 }
 
-void RockGroup::Update(double dt)
-{
+void RockGroup::Update(double dt) {
     GameObject::Update(dt);
+
+    rocks.erase(
+        std::remove_if(rocks.begin(), rocks.end(), [](Rock* rock) {
+            return rock->IsCrashed();
+            }),
+        rocks.end()
+    );
 }
+
 
 void RockGroup::Draw()
 {
