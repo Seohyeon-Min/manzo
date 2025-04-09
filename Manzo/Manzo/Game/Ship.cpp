@@ -43,6 +43,7 @@ void Ship::State_Idle::Enter(GameObject* object) {
 	if (ship->GetVelocity() != vec2{})
 		ship->SetVelocity(ship->direction * skidding_speed);
 }
+
 void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
 	//get mouse pos and move to there
 	Ship* ship = static_cast<Ship*>(object);
@@ -190,6 +191,7 @@ void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_
 		ship->should_resolve_collision = false;
 	}
 }
+
 void Ship::State_Move::CheckExit(GameObject* object) {
 	Ship* ship = static_cast<Ship*>(object);
 	if (!ship->beat->GetIsOnBeat() && !ship->hit_with) {
@@ -468,45 +470,56 @@ vec2 ComputeCollisionNormal(std::span<const vec2> points, const vec2& pos, const
 
 bool Ship::CanCollideWith(GameObjectTypes other_object)
 {
-	switch (other_object) {
-	case GameObjectTypes::Fish:
-	case GameObjectTypes::Rock:
-		return true;
-		break;
-	case GameObjectTypes::Monster:
-		if (invincibility_timer->IsFinished())
-			return true;
-		break;
-	case GameObjectTypes::Mouse:
-		if (Engine::GetGameStateManager().GetStateName() == "Mode2") {
-			return true;
-		}
-		break;
-	case GameObjectTypes::BossBullet:
-		return true;
-		break;
-	}
+    switch (other_object) {
+    case GameObjectTypes::Fish:
+    case GameObjectTypes::Rock:
+        return true;
+        break;
+    case GameObjectTypes::ObstacleRock:
+        return true;
+        break;
+    case GameObjectTypes::Monster:
+        if(invincibility_timer->IsFinished())
+        return true;
+        break;
+    case GameObjectTypes::Mouse:
+        if (Engine::GetGameStateManager().GetStateName() == "Mode2") {
+            return true;
+        }
+        break;
+    case GameObjectTypes::BossBullet:
+        return true;
+        break;
+    }
 
 	return false;
 }
 
 void Ship::ResolveCollision(GameObject* other_object) {
 
-	switch (other_object->Type()) {
-	case GameObjectTypes::Fish:
-		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new GetFishEffect(GetPosition()));
-		change_state(&state_idle);
-		break;
-	case GameObjectTypes::Rock:
-		if (GetVelocity().Length() <= skidding_speed + 10.f) { // if it was skidding, don't reflect
-			vec2 smallCorrection = -GetVelocity().Normalize(); // with this, ship should not able to move!
-			UpdatePosition(smallCorrection);
-			can_dash = false;
-			return;
-		}
-		break;
-	case GameObjectTypes::Monster:
-		hit_with = true;
+    switch (other_object->Type()) {
+    case GameObjectTypes::Fish:
+        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new GetFishEffect(GetPosition()));
+        change_state(&state_idle);
+        break;
+    case GameObjectTypes::Rock:
+        if (GetVelocity().Length() <= skidding_speed + 10.f) { // if it was skidding, don't reflect
+            vec2 smallCorrection = -GetVelocity().Normalize(); // with this, ship should not able to move!
+            UpdatePosition(smallCorrection);
+            can_dash = false;
+            return;
+        }
+        break;
+    case GameObjectTypes::ObstacleRock:
+        if (GetVelocity().Length() <= skidding_speed + 10.f) { // if it was skidding, don't reflect
+            vec2 smallCorrection = -GetVelocity().Normalize(); // with this, ship should not able to move!
+            UpdatePosition(smallCorrection);
+            can_dash = false;
+            return;
+        }
+        break;
+    case GameObjectTypes::Monster:
+        hit_with = true;
 
 		if (!collide_timer->IsRunning()) {
 			collide_timer->Start();
@@ -527,7 +540,6 @@ void Ship::ResolveCollision(GameObject* other_object) {
 		ReduceFuel(BossBulletHitDecFuel);
 		break;
 	}
-
 
 }
 

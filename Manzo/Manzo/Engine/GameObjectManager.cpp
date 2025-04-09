@@ -87,10 +87,20 @@ vec2 GameObjectManager::FindNearestRockPoint(GameObject* object) {
 	vec2 object_Position = object->GetPosition();
 
 	for (GameObject* gameObj : objects) {
-		if (gameObj->Type() == GameObjectTypes::Rock) {
-			Rock* rock = static_cast<Rock*>(gameObj);
-			std::vector<vec2> rockPoints = rock->GetRockGroup()->GetPoints();
+		Rock* rock = nullptr;
+		std::vector<vec2> rockPoints;
 
+		if (gameObj->Type() == GameObjectTypes::Rock) {
+			rock = static_cast<Rock*>(gameObj);
+			rockPoints = rock->GetRockGroup()->GetPoints();
+		}
+		else if (gameObj->Type() == GameObjectTypes::ObstacleRock) {
+			rock = static_cast<ObstacleRock*>(gameObj);
+			rockPoints = rock->GetRockGroup()->GetPoints();
+		}
+		else {
+			continue;
+		}
 			for (const vec2& rockPoint : rockPoints) {
 				float distance = (rockPoint - object_Position).LengthSquared();
 
@@ -99,7 +109,6 @@ vec2 GameObjectManager::FindNearestRockPoint(GameObject* object) {
 					nearestRockpoints = rockPoint;
 				}
 			}
-		}
 	}
 
 	return nearestRockpoints;
@@ -114,9 +123,20 @@ Rock* GameObjectManager::FindNearestRock(GameObject* object) {
 	auto camera_bounds = Engine::GetGameStateManager().GetGSComponent<Cam>()->GetBounds();
 
 	for (GameObject* gameObj : objects) {
+		Rock* rock = nullptr;
+		std::vector<vec2> rockPoints;
+
 		if (gameObj->Type() == GameObjectTypes::Rock/* && gameObj->IsVisible(camera_bounds)*/) {
-			Rock* rock = static_cast<Rock*>(gameObj);
-			std::vector<vec2> rockPoints = rock->GetPoints();
+			rock = static_cast<Rock*>(gameObj);
+			rockPoints = rock->GetPoints();
+		}
+		else if (gameObj->Type() == GameObjectTypes::ObstacleRock/* && gameObj->IsVisible(camera_bounds)*/) {
+			rock = static_cast<ObstacleRock*>(gameObj);
+			rockPoints = rock->GetPoints();
+		}
+		else {
+			continue;
+		}
 
 			for (size_t i = 0; i < rockPoints.size(); ++i) {
 				vec2 p1 = rockPoints[i];
@@ -130,7 +150,6 @@ Rock* GameObjectManager::FindNearestRock(GameObject* object) {
 					nearestRock = rock;
 				}
 			}
-		}
 	}
 
 	return nearestRock;

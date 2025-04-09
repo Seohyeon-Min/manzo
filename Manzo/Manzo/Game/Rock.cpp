@@ -39,10 +39,16 @@ void Rock::SetCenter() {
 
 }
 
+// Obstacle Rock
+ObstacleRock::ObstacleRock(Polygon original_poly, Polygon modified_poly, vec2 position, double rotation, vec2 scale)
+    :Rock( original_poly, modified_poly, position, rotation, scale)
+{}
+
 // Moving Rock
 
-/*
-* MovingRock::MovingRock(Polygon poly) :Rock(poly), hit(false)
+
+MovingRock::MovingRock(Polygon original_poly, Polygon modified_poly, vec2 position, double rotation, vec2 scale) 
+    :Rock(original_poly, modified_poly, position, rotation, scale), hit(false)
 {
     SetCenter();
 
@@ -97,8 +103,8 @@ void MovingRock::State_Pop::Enter(GameObject* object) {
 void MovingRock::State_Pop::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
     MovingRock* rock = static_cast<MovingRock*>(object);
     RockGroup* rockgroup = rock->GetRockGroup();
-    vec2 direction = { rockgroup->GetRockPoint()->GetPosition() - rockgroup->GetPosition()};
-    rock->Pop(direction, rock->pop_speed);
+    //vec2 direction = { rockgroup->GetRockPoint()->GetPosition() - rockgroup->GetPosition()};
+    //rock->Pop(direction, rock->pop_speed);
 }
 void MovingRock::State_Pop::CheckExit(GameObject* object) {
     MovingRock* rock = static_cast<MovingRock*>(object);
@@ -116,11 +122,12 @@ void MovingRock::State_PopBack::Update([[maybe_unused]] GameObject* object, [[ma
     MovingRock* rock = static_cast<MovingRock*>(object);
     RockGroup* rockgroup = rock->GetRockGroup();
 
-    vec2 back_position = rockgroup->GetRockPoint()->GetPosition();
+    //vec2 back_position = rockgroup->GetRockPoint()->GetPosition();
     vec2 point_position = rockgroup->GetPosition();
 
     for (auto& rock : rockgroup->GetMovingRocks()) {
-        vec2 direction = point_position - back_position;
+        vec2 direction = { 0, 0 };
+        //direction = point_position - back_position;
         rock->PopBack(direction, rock->pop_back_speed);
     }
 }
@@ -131,4 +138,4 @@ void MovingRock::State_PopBack::CheckExit(GameObject* object) {
         rock->change_state(&rock->state_idle);
     }
 }
-*/
+

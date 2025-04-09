@@ -7,7 +7,7 @@ Project:    Manzo
 Author:     Won Kim
 Created:    November 25, 2024
 */
-
+/*
 #pragma once
 
 #include "vec2.h"
@@ -34,3 +34,4 @@ public:
 private:
 	std::string index = "";
 };
+*/

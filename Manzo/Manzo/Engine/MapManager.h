@@ -35,7 +35,7 @@ private:
 	std::vector<Map*> maps;
 	std::vector<std::string> mapFiles;
 	int currentMapIndex = 0;
-	float EndY = -100.0f;
+	float EndY = -5600.0f;
 };
 
 class Map : public Component {
@@ -48,21 +48,24 @@ public:
 	std::vector<vec2> parsePathData(const std::string& pathData);	// path parsing
 	void LoadMapInBoundary(const Math::rect& camera_boundary);
 	bool IsOverlapping(const Math::rect& a, const Math::rect& b);
-
+	
+	void SetMargin(float margin) { this->margin = margin; }
+	float GetMargin() { return margin; }
+	
 	void Translate(const vec2& offset);
 	void UnloadAll();
 
 
 private:
 	char currentCommand = '\0';
-	float margin = 2000.f;
+	float margin = 1500.f;
 
 	std::vector<Polygon> original_polygons;
 	std::vector<Polygon> modified_polygons;
 	std::vector<Rock*> rocks;
 	std::vector<RockGroup*> rock_groups;
 	vec2 circle_position{ 0,0 };
-	float EndY = 100.0f;
+	float EndY = -7000.0f;
 
 
 };

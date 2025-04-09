@@ -41,19 +41,20 @@ void MapManager::LoadFirstMap() {
 }
 
 void MapManager::LoadNextMap() {
-    /*
+    
     if (currentMapIndex + 1 >= mapFiles.size()) return;
 
     currentMapIndex++;
 
     Map* nextMap = new Map();
     nextMap->ParseSVG(mapFiles[currentMapIndex]);
+    nextMap->SetMargin(800.0f);
 
-    float EndY = -10000.0f;
-    nextMap->Translate({ 0, EndY });
+    //float EndY = -10000.0f;
+    //nextMap->Translate({ 0, EndY });
 
     maps.push_back(nextMap);
-    */
+    
 }
 
 
@@ -62,8 +63,8 @@ void MapManager::UpdateMaps(const Math::rect& camera_boundary) {
         Map* map = maps[currentMapIndex];
         map->LoadMapInBoundary(camera_boundary);
 
-        if(true){
-        //if (camera_boundary.Bottom() <= EndY + 100) {
+        //if(true){
+        if (camera_boundary.Bottom() <= EndY + 1000) {
             LoadNextMap();
         }
     }
@@ -282,13 +283,26 @@ void Map::ParseSVG(const std::string& filename) {
                 modified_poly.vertices = new_vertices;
 
 
-                // Making Polygons into Rock
-                Rock* rock = new Rock(original_poly, modified_poly, poly_center, rotateAngle, scale);
 
                
 
-
+                // group index
                 std::string group_index = (poly.polyindex).substr(poly.polyindex.size() - 2, 2);
+
+                // type index
+                std::string type_index = (poly.polyindex).substr(0, 1);
+
+                Rock* rock = nullptr;
+
+                // Making Polygons into Rock
+                if (type_index == "o") {
+
+                    rock = new ObstacleRock(original_poly, modified_poly, poly_center, rotateAngle, scale);
+                }
+                else {
+                    rock = new Rock(original_poly, modified_poly, poly_center, rotateAngle, scale);
+                }
+
                 // Making RockGroups
                 if (rock_groups.empty()) {
 
@@ -311,10 +325,8 @@ void Map::ParseSVG(const std::string& filename) {
                         rock->SetRockGroup(rock_groups.back());
                     }
                 }
-                rocks.push_back(rock);
-                //add rock and rockgroups in MapManager
+                rocks.push_back(rock); //add rock and rockgroups in MapManager
                 
-
             }
 
             //std::cout << "vertex count : " << poly.vertexCount << std::endl;
@@ -442,7 +454,7 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
 
             bool overlapping = IsOverlapping(camera_boundary, rockgroup->FindBoundary());
 
-            if (true) {
+            if (overlapping) {
                 //Add Rock in GameState
                 for (auto& rock : rockgroup->GetRocks()) {
 

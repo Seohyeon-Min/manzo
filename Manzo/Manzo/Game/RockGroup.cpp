@@ -12,13 +12,12 @@ Created:    November 25, 2024
 
 RockGroup::RockGroup(const std::string& index, double rotation, vec2 scale) :GameObject({ 0,0 }, rotation, scale), index(index)
 {
-    AddGOComponent(new Sprite("assets/images/rock/g" + index +".spt", this));
+    //AddGOComponent(new Sprite("assets/images/rock/g" + index +".spt", this));
 }
 
 RockGroup::~RockGroup() {
     rocks.clear();
     moving_rocks.clear();
-    delete this->rockpoint;
 }
 
 void RockGroup::Update(double dt)
