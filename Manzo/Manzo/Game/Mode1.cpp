@@ -88,18 +88,18 @@ void Mode1::Load()
 	GetGSComponent<GameObjectManager>()->Add(ship_ptr);
 
 	//// background
-	//background = new Background();
-	//AddGSComponent(background);
+	background = new Background();
+	AddGSComponent(background);
 
 	//// to generate fish
 	fishGenerator = new FishGenerator();
 	Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
 
 	// background
-	/*background->Add("assets/images/background/temp_background4.png", 0.0f);
+	background->Add("assets/images/background/temp_background4.png", 0.0f);
 	background->Add("assets/images/background/bg1.png", 0.3f);
 	background->Add("assets/images/background/bg2.png", 0.4f);
-	background->Add("assets/images/background/bg3.png", 0.5f);*/
+	background->Add("assets/images/background/bg3.png", 0.5f);
 	// background->Add("assets/images/background/bubble.png", 1.5f, DrawLayer::DrawUI);
 
 	// Map
@@ -278,7 +278,7 @@ void Mode1::FixedUpdate(double dt)
 
 void Mode1::Draw()
 {
-	//GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
+	GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
 	// GetGSComponent<Map>()->AddDrawCall();
 	GetGSComponent<GameObjectManager>()->DrawAll();
 
@@ -311,8 +311,7 @@ void Mode1::Unload()
 	beat_system->CleartoOriginal();
 
 	GetGSComponent<GameObjectManager>()->Unload();
-	GetGSComponent<MapManager>()->Unload();
-	//GetGSComponent<Background>()->Unload();
+	GetGSComponent<Background>()->Unload();
 	Engine::GetRender().ClearDrawCalls();
 	ClearGSComponents();
 	Engine::GetAudioManager().StopAllChannels();

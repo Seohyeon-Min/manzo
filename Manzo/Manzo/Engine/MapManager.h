@@ -30,7 +30,7 @@ public:
 	void LoadFirstMap();
 	void LoadNextMap();
 	void UpdateMaps(const Math::rect& camera_boundary);
-	void Unload();
+	void UnloadMap();
 	
 private:
 	std::vector<Map*> maps;
