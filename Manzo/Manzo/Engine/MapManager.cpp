@@ -70,6 +70,11 @@ void MapManager::UpdateMaps(const Math::rect& camera_boundary) {
     }
 }
 
+void MapManager::UnloadMap() {
+    for (Map* map : maps) {
+        map->Unload();
+    }
+}
 
 //===============================================================Map
 
@@ -509,7 +514,7 @@ void Map::Translate(const vec2& offset) {
 }
 
 
-void Map::UnloadAll() {
+void Map::Unload() {
     for (Rock* rock : rocks) {
         if (!rock->IsActivated()) {
             delete rock;
