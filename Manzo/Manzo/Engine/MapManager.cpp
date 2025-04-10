@@ -70,7 +70,7 @@ void MapManager::UpdateMaps(const Math::rect& camera_boundary) {
     }
 }
 
-void MapManager::UnloadMap() {
+void MapManager::Unload() {
     for (Map* map : maps) {
         map->Unload();
     }
