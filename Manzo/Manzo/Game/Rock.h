@@ -27,9 +27,7 @@ class Rock : public GameObject
 {
 public:
 	Rock(Polygon original_poly, Polygon modified_poly, vec2 position, double rotation, vec2 scale);
-	~Rock() {
-		rockgroup = nullptr;
-	}
+	~Rock() {};
 	GameObjectTypes Type() override { return GameObjectTypes::Rock; }
 	std::string TypeName() override { return "Rock"; }
 	void Update(double dt);

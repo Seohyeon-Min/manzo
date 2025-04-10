@@ -18,7 +18,6 @@ RockGroup::RockGroup(const std::string& index, double rotation, vec2 scale) :Gam
 RockGroup::~RockGroup() {
     rocks.clear();
     moving_rocks.clear();
-    rockpoint = nullptr;
 }
 
 void RockGroup::Update(double dt) {

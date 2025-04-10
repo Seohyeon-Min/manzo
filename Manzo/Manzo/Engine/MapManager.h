@@ -30,7 +30,6 @@ public:
 	void LoadFirstMap();
 	void LoadNextMap();
 	void UpdateMaps(const Math::rect& camera_boundary);
-	void UnloadMap();
 	
 private:
 	std::vector<Map*> maps;
@@ -54,7 +53,7 @@ public:
 	float GetMargin() { return margin; }
 	
 	void Translate(const vec2& offset);
-	void Unload();
+	void UnloadAll();
 
 
 private:
