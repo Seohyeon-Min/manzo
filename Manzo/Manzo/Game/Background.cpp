@@ -12,7 +12,8 @@ Updated:    March 29, 2023
 #include "Background.h"
 #include <iostream>
 
-
+//background to tile map
+//trim = add offset
 void Background::Add(const std::filesystem::path& texture_path, float speed, DrawLayer draw_layer)
 {
     backgrounds.push_back(ParallaxLayer({ Engine::GetTextureManager().Load(texture_path), speed, mat3{},draw_layer }));
@@ -33,6 +34,7 @@ void Background::Unload()
     backgrounds.clear();
 }
 
+// not outside¸é Ãß°¡
 void Background::Draw(const Cam& camera)
 {
     vec2 cameraPos = camera.GetPosition();
