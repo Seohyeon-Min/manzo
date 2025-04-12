@@ -28,6 +28,9 @@ void WaterRipple::Draw(DrawLayer drawlayer)
 }
 
 void WaterRipple::SetUni(const GLShader* shader) {
-    float time = Engine::GetAudioManager().GetCurrentMusicTime("Home_bgm");
+    float time = 0.f;
+    if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+        time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+    }
     shader->SendUniform("uTime", time);
 }

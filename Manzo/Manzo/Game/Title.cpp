@@ -119,7 +119,10 @@ void TitleText::Draw(DrawLayer drawlayer)
 }
 
 void TitleText::SetUniform(const GLShader* shader) {
-	double currentTime = Engine::GetAudioManager().GetCurrentMusicTime("title_bgm");
+	float currentTime = 0.f;
+	if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+		currentTime = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+	}
 	shader->SendUniform("iResolution", Engine::window_width, Engine::window_height);
 	shader->SendUniform("iTime", float(currentTime));
 }

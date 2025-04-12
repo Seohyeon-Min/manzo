@@ -52,9 +52,34 @@ void Monster::Update(double dt)
     }
 }
 
+void Monster::SetUni(const GLShader* shader) {
+    float time = 0.f;
+    if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+        time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+    }
+
+    shader->SendUniform("uTime", time);
+    shader->SendUniform("uX", 0);
+    shader->SendUniform("uY", 1);
+    shader->SendUniform("uWaveNum", 4);
+
+    shader->SendUniform("waveStrength", 0.034f);
+    shader->SendUniform("frequency", 27.0f);
+    shader->SendUniform("speed", 4.4f);
+}
+
 void Monster::Draw(DrawLayer drawlayer)
 {
-    GameObject::Draw(drawlayer);
+    DrawCall draw_call = {
+    GetGOComponent<Sprite>()->GetTexture(),					// Texture to draw
+    &GetMatrix(),											// Transformation matrix
+    Engine::GetShaderManager().GetShader("wave")
+    };
+
+    draw_call.settings.do_blending = true;
+    draw_call.SetUniforms = [this](const GLShader* shader) { SetUni(shader); };
+
+    GameObject::Draw(draw_call);
 #ifdef _DEBUG
     DrawSight();
 #endif // _DEBUG

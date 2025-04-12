@@ -13,6 +13,7 @@ public:
 	GameObjectTypes Type() override { return GameObjectTypes::Monster; }
 	std::string TypeName() override { return "Monster"; }
 	void Update(double dt)override;
+    void SetUni(const GLShader* shader);
 	void Draw(DrawLayer drawlayer = DrawLayer::Draw)override;
 	bool IsPlayerInSight(const vec2& playerPos);
     bool IsPlayerInRange(const vec2& playerPos);
