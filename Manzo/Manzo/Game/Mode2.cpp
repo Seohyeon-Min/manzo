@@ -112,10 +112,6 @@ void Mode2::Update(double dt) {
     if (Engine::GetInput().KeyJustPressed(Input::Keys::W)) {
         Engine::GetGameStateManager().ReloadState();
     }
-    if (Engine::GetInput().KeyJustPressed(Input::Keys::Space) && !isLoaded) {
-        dialog_ptr->LoadDialog(1, 0.05);
-        isLoaded = true;
-    }
 #else
 #endif
 
@@ -142,6 +138,29 @@ void Mode2::Update(double dt) {
     {
         inven_ptr->SetIsOpened(false);
     }
+
+
+    //Dialog
+    //에셋에 있는  en 파일하고 같이 보면 이해가 더 쉬울거임
+    if (Engine::GetInput().KeyJustPressed(Input::Keys::Z) && !isLoaded) {
+        dialog_ptr->LoadDialogGroup("dialog-1", 0.05);
+        isLoaded = true;
+    }
+    if (Engine::GetInput().KeyJustPressed(Input::Keys::Enter)) {
+        dialog_ptr->NextLine(); 
+    }
+    if ((Engine::GetInput().KeyJustPressed(Input::Keys::X) && !isLoaded)) {
+        dialog_ptr->LoadRandomDialog("dialog-2", 0.05);
+        isLoaded = true;
+    }
+
+
+    if (Engine::GetInput().KeyJustPressed(Input::Keys::C) && isLoaded) {
+        dialog_ptr->Hide();
+        isLoaded = false;
+    }
+
+    dialog_ptr->Update(dt);
 }
 
 void Mode2::FixedUpdate(double dt)

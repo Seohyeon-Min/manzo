@@ -1,5 +1,6 @@
 #define SDL_MAIN_HANDLED 
 #include <iostream>
+#include <ctime>
 
 #include "Engine/Engine.h"
 #include "Game/Splash.h"
@@ -15,6 +16,7 @@ util::owner<IProgram*> create_program(int viewport_width, int viewport_height)
 }
 
 int main() {
+    srand(static_cast<unsigned int>(time(nullptr)));
     try {
         GLApp OpenGLAPPlication("Manzo");
         Engine* engine = Engine::Instance();

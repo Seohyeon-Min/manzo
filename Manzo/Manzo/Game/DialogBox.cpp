@@ -35,16 +35,53 @@ Dialog::Dialog(vec2 start_position)
     boxposition = { 50, 100 };
 }
 
-void Dialog::LoadDialog(int id, double Speed) {
-    idToString = std::to_string(id);
-    fullText = dialog->GetText(idToString);
-    character = dialog->GetCharacter(idToString);
+void Dialog::LoadDialogGroup(const std::string& group_id, double Speed) {
+    currentDialogGroup = dialog->GetDialogGroup(group_id);
+    currentLineIndex = 0;
+    typingSpeed = Speed;
+    StartLine(currentLineIndex);
+    isVisible = true;
+}
+
+void Dialog::LoadRandomDialog(const std::string& group_id, double Speed) {
+    const auto& lines = dialog->GetDialogGroup(group_id);
+    if (lines.empty()) return;
+
+    int randIndex = rand() % lines.size();
+    const auto& [charName, textLine] = lines[randIndex];
+
+    character = charName;
+    fullText = textLine;
     displayedText = "";
     currentIndex = 0;
     elapsedTime = 0.0;
     typingSpeed = Speed;
     IsTyping = true;
+    isVisible = true;
 }
+
+void Dialog::StartLine(int index) {
+    if (index >= static_cast<int>(currentDialogGroup.size())) {
+        IsTyping = false;
+        return;
+    }
+
+    const auto& [charName, textLine] = currentDialogGroup[index];
+    character = charName;
+    fullText = textLine;
+    displayedText = "";
+    currentIndex = 0;
+    elapsedTime = 0.0;
+    IsTyping = true;
+}
+
+void Dialog::NextLine() {
+    if (!IsTyping && currentLineIndex + 1 < static_cast<int>(currentDialogGroup.size())) {
+        currentLineIndex++;
+        StartLine(currentLineIndex);
+    }
+}
+
 
 void Dialog::Update(double dt) {
     if (!IsTyping) return;
@@ -62,7 +99,16 @@ void Dialog::Update(double dt) {
     }
 }
 
+void Dialog::Hide() {
+    isVisible = false;
+    IsTyping = false;
+    displayedText = "";
+    fullText = "";
+    currentIndex = 0;
+}
+
 void Dialog::Draw() {
+    if (!isVisible) return;
     DrawCall draw_call_box = { DialogBox, &back_matrix, Engine::GetShaderManager().GetDefaultShader()};
     DrawCall draw_call_effect = { Box_effect, &effect_matrix, Engine::GetShaderManager().GetDefaultShader() };
     DrawCall draw_call_Me = { Me, &me_matrix, Engine::GetShaderManager().GetDefaultShader() };
