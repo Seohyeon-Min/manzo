@@ -1,6 +1,6 @@
 {
     "dialog-1": [
-      { "character": "Me", "text": ["Hello", "Leave me alone"] },
+      { "character": "Me", "text": ["Hello"] },
       { "character": "Man", "text": "This is fun." },
       { "character": "Man", "text": "what the hell." }
     ],

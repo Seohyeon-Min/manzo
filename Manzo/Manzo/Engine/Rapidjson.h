@@ -46,13 +46,17 @@ private:
     Document document;
 };
 
-class JsonParser_dialog : public Component {
+class JsonParser_dialog {
 public:
     JsonParser_dialog(const std::string& language);
+
     const std::string& GetText(const std::string& id) const;
-    const std::string& GetCharacter(const std::string& id)const;
+    const std::string& GetCharacter(const std::string& id) const;
+
+    const std::vector<std::pair<std::string, std::string>>& GetDialogGroup(const std::string& group_id) const;
+
 private:
     std::unordered_map<std::string, std::string> translations;
     std::unordered_map<std::string, std::string> characters;
-
+    std::unordered_map<std::string, std::vector<std::pair<std::string, std::string>>> groupedDialog;
 };
