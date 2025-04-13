@@ -1,3 +1,4 @@
+
 #ifndef DIALOG_H
 #define DIALOG_H
 
@@ -8,24 +9,27 @@
 #include "../Engine/Render.h"
 #include "../Engine/ShaderManager.h"
 #include <string>
+#include <vector>
 
 class Dialog : public GameObject {
 public:
     Dialog(vec2 start_position);
 
-    void LoadDialogGroup(const std::string& group_id, double Speed); 
-    void LoadRandomDialog(const std::string& group_id, double Speed); 
-    void NextLine(); 
+    void LoadDialog(int id, double Speed);
+    void LoadDialogGroup(const std::string& group_id, double Speed);
+    void LoadRandomDialog(const std::string& group_id, double Speed);
+    void NextLine();
     void Update(double dt) override;
     void Draw();
     void Hide();
     void Unload();
 
-    GameObjectTypes Type() override {return GameObjectTypes::Dialog;}
+    GameObjectTypes Type() override { return GameObjectTypes::Dialog; }
     std::string TypeName() override { return "Dialog"; }
 
 private:
-    void SetDrawSetting(DrawCall &draw_call);
+    void SetDrawSetting(DrawCall& draw_call);
+    void StartLine(int index);
 
     JsonParser_dialog* dialog;
     std::string fullText;
@@ -36,10 +40,11 @@ private:
     double elapsedTime;
     double typingSpeed;
     bool IsTyping;
-
     int currentIndex;
     bool isVisible = false;
 
+    std::vector<std::pair<std::string, std::string>> currentDialogGroup;
+    int currentLineIndex = 0;
 
     GLTexture* DialogBox;
     GLTexture* Box_effect;

@@ -143,19 +143,24 @@ void Mode2::Update(double dt) {
     //Dialog
     //에셋에 있는  en 파일하고 같이 보면 이해가 더 쉬울거임
     if (Engine::GetInput().KeyJustPressed(Input::Keys::Z) && !isLoaded) {
+        //묶음으로 되어있는거 출력 입력 받는 id는 알아서 설정해도 됨
         dialog_ptr->LoadDialogGroup("dialog-1", 0.05);
         isLoaded = true;
     }
     if (Engine::GetInput().KeyJustPressed(Input::Keys::Enter)) {
+        //묶음으로 출력된 다이얼로그 다음 으로 넘겨주기
         dialog_ptr->NextLine(); 
     }
     if ((Engine::GetInput().KeyJustPressed(Input::Keys::X) && !isLoaded)) {
+
+        //array 안에 string이 여러개 있으면 랜덤 출력함
         dialog_ptr->LoadRandomDialog("dialog-2", 0.05);
         isLoaded = true;
     }
 
 
     if (Engine::GetInput().KeyJustPressed(Input::Keys::C) && isLoaded) {
+        //다이얼로그 숨김 뒤어 unload nullptr 처리해주기는 하는데 그냥 이건 안보이게만 하는거임
         dialog_ptr->Hide();
         isLoaded = false;
     }
