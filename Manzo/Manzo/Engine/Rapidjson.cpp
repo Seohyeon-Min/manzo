@@ -139,3 +139,84 @@ const std::string& JsonParser_dialog::GetCharacter(const std::string& id)const {
     auto it = characters.find(id);
     return it != characters.end() ? it->second : empty;
 }
+
+
+
+
+
+JsonParser_save::JsonParser_save()
+{
+}
+
+std::string JsonParser_save::SerializeGameData(const SaveData& data)
+{
+    Document doc;
+    doc.SetObject();
+    Document::AllocatorType& alloc = doc.GetAllocator();
+
+    doc.AddMember("day", data.day, alloc);
+
+    //Value flags(kObjectType);
+
+    Value inventory(kObjectType);
+    inventory.AddMember("money", data.money, alloc);
+    doc.AddMember("inventory", inventory, alloc);
+
+    //// eventsDone 배열 생성 (이벤트 완료 내역 저장)
+    //Value events(kArrayType);
+    //for (const auto& evt : data.eventsDone) {       // 각 이벤트 문자열에 대해 반복
+    //    Value eventStr;
+    //    eventStr.SetString(evt.c_str(), alloc);       // 문자열 값을 할당, alloc을 사용해 문자열의 메모리를 할당
+    //    events.PushBack(eventStr, alloc);             // 배열에 추가
+    //}
+    //doc.AddMember("eventsDone", events, alloc);       // 최상위에 "eventsDone" 배열 추가
+
+    // JSON 객체를 문자열로 변환하는 단계
+    StringBuffer buffer;
+    Writer<StringBuffer> writer(buffer);
+    doc.Accept(writer);                               // Document의 내용을 Writer를 통해 StringBuffer에 기록
+
+    return buffer.GetString();                        // 최종적으로 생성된 JSON 문자열 반환
+}
+
+SaveData JsonParser_save::Deserialize(const std::string& jsonStr)
+{
+    SaveData data;
+    Document doc;
+    doc.Parse(jsonStr.c_str());                       // JSON 문자열을 파싱하여 Document 객체로 생성
+    if (doc.HasParseError()) {                        // 파싱 에러가 있다면 에러 메시지 출력 후 기본 data 반환
+        std::cerr << "Error parsing JSON" << std::endl;
+        return data;
+    }
+
+    // JSON 객체에서 "day" 값을 읽어서 data.day에 저장
+    if (doc.HasMember("day") && doc["day"].IsInt())
+        data.day = doc["day"].GetInt();
+
+    //// "flags" 객체 내의 멤버들 읽기
+    //if (doc.HasMember("flags") && doc["flags"].IsObject()) {
+    //    const Value& flags = doc["flags"];
+    //    if (flags.HasMember("tutorialComplete") && flags["tutorialComplete"].IsBool())
+    //        data.tutorialComplete = flags["tutorialComplete"].GetBool();
+    //    if (flags.HasMember("gotWeedkiller") && flags["gotWeedkiller"].IsBool())
+    //        data.gotWeedkiller = flags["gotWeedkiller"].GetBool();
+    //}
+
+    // "inventory" 객체 내의 값 읽기
+    if (doc.HasMember("inventory") && doc["inventory"].IsObject()) {
+        const Value& inv = doc["inventory"];
+        if (inv.HasMember("money") && inv["money"].IsInt())
+            data.money = inv["money"].GetInt();
+    }
+
+    //// "eventsDone" 배열에서 각 문자열을 읽어 data.eventsDone에 push_back
+    //if (doc.HasMember("eventsDone") && doc["eventsDone"].IsArray()) {
+    //    const Value& events = doc["eventsDone"];
+    //    for (SizeType i = 0; i < events.Size(); i++) {
+    //        if (events[i].IsString())
+    //            data.eventsDone.push_back(events[i].GetString());
+    //    }
+    //}
+
+    return data;  // 완전히 복원된 Gamedata 객체 반환
+}

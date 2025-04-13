@@ -28,6 +28,7 @@ public:
     }
 
 private:
+    void CheckSaveFile();
     Background* background;
     const float start_alpha = 0.6f;
     float alpha;

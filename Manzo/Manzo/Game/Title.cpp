@@ -62,6 +62,7 @@ void Title::Update(double dt)
 	// Move to next scean
 	if (Engine::GetInput().MouseButtonJustReleased((SDL_BUTTON_LEFT))) {
 		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
+		CheckSaveFile();
 	}
 }
 
@@ -92,6 +93,21 @@ void Title::Unload()
 	Engine::GetAudioManager().StopAllChannels();
 	//GetGSComponent<Background>()->Unload();
 	playing = false;
+}
+
+void Title::CheckSaveFile() {
+	std::string saveFilePath = "assets/images/jsons/save.json";
+	if (FileExists(saveFilePath)) {
+		// 기존 저장 데이터 로드
+		GameState currentState = LoadGame(saveFilePath);
+		StartGameWithState(currentState);
+	}
+	else {
+		// 파일이 없으면 신규 게임 상태 생성 및 저장
+		GameState newState = CreateDefaultGameState();
+		SaveGame(newState, saveFilePath);
+		StartGameWithState(newState);
+	}
 }
 
 TitleText::TitleText(vec2 start_position) : GameObject({0.f, 50.f})

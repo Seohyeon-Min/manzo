@@ -60,6 +60,7 @@
     <ClCompile Include="Game\Rock.cpp" />
     <ClCompile Include="Game\RockGroup.cpp" />
     <ClCompile Include="Game\RockPoint.cpp" />
+    <ClCompile Include="Game\SeaweedMonster.cpp" />
     <ClCompile Include="Game\Ship.cpp" />
     <ClCompile Include="Game\Shop.cpp" />
     <ClCompile Include="Game\Skill.cpp" />
@@ -126,10 +127,12 @@
     <ClInclude Include="Game\Mouse.h" />
     <ClInclude Include="Game\Particles.h" />
     <ClInclude Include="Game\Player.h" />
+    <ClInclude Include="Game\SaveData.h" />
     <ClInclude Include="Game\ScreenWrap.h" />
     <ClInclude Include="Game\Rock.h" />
     <ClInclude Include="Game\RockGroup.h" />
     <ClInclude Include="Game\RockPoint.h" />
+    <ClInclude Include="Game\SeaweedMonster.h" />
     <ClInclude Include="Game\Ship.h" />
     <ClInclude Include="Game\Shop.h" />
     <ClInclude Include="Game\Skill.h" />
