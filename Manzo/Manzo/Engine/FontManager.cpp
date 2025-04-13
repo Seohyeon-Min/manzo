@@ -47,7 +47,7 @@ Font* FontManager::loadFont(const std::string& filename, float worldSize, bool h
 	return new Font(face, worldSize, hinting);
 }
 
-void FontManager::PrintText(FontType font, std::string txt, vec2 position, float scale, vec3 color, float alpha, bool in_world)
+void FontManager::PrintText(FontType font, FontAlignment align, std::string txt, vec2 position, float scale, vec3 color, float alpha, bool in_world)
 {
 	shader = Engine::GetShaderManager().GetShader("font_shader");
 
@@ -58,6 +58,20 @@ void FontManager::PrintText(FontType font, std::string txt, vec2 position, float
 
 	font_list[font]->setWorldSize(scale);
 	font_list[font]->drawSetup(shader);
+
+	if (align == FontAlignment::CENTER)
+	{
+		float totalWidth = font_list[font]->CalculateTextWidth(txt) * Engine::window_width * 0.25f;
+		position.x -= (totalWidth * 0.5f);
+
+		std::cout << "Position.x : " << position.x << std::endl;
+		std::cout << "Total Width : " << totalWidth << std::endl;
+	}
+	else if (align == FontAlignment::RIGHT)
+	{
+		float totalWidth = font_list[font]->CalculateTextWidth(txt) * Engine::window_width * 0.5f;
+		position.x -= (totalWidth * 0.5f);
+	}
 
 	if (in_world)
 	{

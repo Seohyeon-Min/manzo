@@ -14,6 +14,13 @@ enum FontType
 	Count
 };
 
+enum FontAlignment
+{
+	LEFT,
+	CENTER,
+	RIGHT
+};
+
 static int num_font = 0;
 
 class FontManager
@@ -23,7 +30,7 @@ public:
 	~FontManager();
 
 	void AddFontType(const char* file_path);
-	void PrintText(FontType font, std::string txt, vec2 position, float scale, vec3 color, float alpha, bool in_world = true);
+	void PrintText(FontType font, FontAlignment align, std::string txt, vec2 position, float scale, vec3 color, float alpha, bool in_world = true);
 	Font* loadFont(const std::string& filename, float worldSize = 1.0f, bool hinting = false);
 
 private:

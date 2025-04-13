@@ -154,11 +154,11 @@ void Mode2::Draw() {
 
     if (inven_ptr->GetIsOpened())
     {
-        Engine::GetFontManager().PrintText(FontType::Bold, std::to_string(inven_ptr->GetMoney()), { 285.f,157.f }, 0.05f, { 0.f,0.f,0.f }, 1.0f);
+        Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, std::to_string(inven_ptr->GetMoney()), { 285.f,157.f }, 0.05f, { 0.f,0.f,0.f }, 1.0f);
 
         if (inven_ptr->GetFishState())
         {
-            Engine::GetFontManager().PrintText(FontType::Bold, std::to_string(inven_ptr->HowMuchSold()), { -5.f,75.f }, 0.05f, { 1.f,1.f,1.f }, 1.0f);
+            Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, std::to_string(inven_ptr->HowMuchSold()), { -5.f,75.f }, 0.05f, { 1.f,1.f,1.f }, 1.0f);
 
             float currentY = 5.5f;
             int printed = 0;
@@ -172,7 +172,7 @@ void Mode2::Draw() {
             for (int i = 0; i < 3; ++i) {
                 if (fishCaptureCount[i] != 0) {
                     Engine::GetFontManager().PrintText(
-                        FontType::Bold,
+                        FontType::Bold, FontAlignment::LEFT,
                         std::to_string(inven_ptr->HowManyFishes(i)),
                         { 190.f, currentY },
                         0.05f,
@@ -189,8 +189,8 @@ void Mode2::Draw() {
     }
     else
     {
-        Engine::GetFontManager().PrintText(FontType::Bold, "Click Ship to Start the Game", { -100.f,-150.f }, 0.05f, { 0.f,0.f,0.f }, 0.5f);
-        Engine::GetFontManager().PrintText(FontType::Bold, "Click Computer to Equip Module", { 30.f,30.f }, 0.05f, { 1.f,1.f,1.f }, 0.5f);
+        Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, "Click Ship to Start the Game", { -100.f,-150.f }, 0.05f, { 0.f,0.f,0.f }, 0.5f);
+        Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, "Click Computer to Equip Module", { 30.f,30.f }, 0.05f, { 1.f,1.f,1.f }, 0.5f);
     }
 }
 

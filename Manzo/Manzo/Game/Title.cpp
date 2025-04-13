@@ -76,7 +76,8 @@ void Title::Draw()
 		add_val *= -1.f;
 	if (alpha <= start_alpha)
 		add_val *= -1.f;
-	Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, "CLICK TO START", { -72.f,-130.f }, 0.098f, { 1.f,1.f,1.f }, alpha);
+
+	Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::CENTER, "CLICK TO START", { 0.f,-130.f }, 0.098f, { 1.f,1.f,1.f }, alpha);
 }
 
 void Title::FixedUpdate(double dt)
