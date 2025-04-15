@@ -141,9 +141,6 @@ const std::string& JsonParser_dialog::GetCharacter(const std::string& id)const {
 }
 
 
-
-
-
 JsonParser_save::JsonParser_save()
 {
 }
@@ -218,5 +215,17 @@ SaveData JsonParser_save::Deserialize(const std::string& jsonStr)
     //    }
     //}
 
-    return data;  // 완전히 복원된 Gamedata 객체 반환
+    return data;
+}
+
+const std::string JsonParser_save::LoadFromFile(const std::string& filePath) {
+    std::ifstream file(filePath, std::ios::binary);
+    if (!file) {
+        std::cerr << "Failed to open file: " << filePath << std::endl;
+        return "";
+    }
+
+    std::ostringstream oss;
+    oss << file.rdbuf();
+    return oss.str();
 }

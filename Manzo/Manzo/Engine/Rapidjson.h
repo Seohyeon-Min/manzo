@@ -62,8 +62,9 @@ private:
 class JsonParser_save : public Component {
 public:
     JsonParser_save();
-    std::string SerializeGameData(const SaveData& state);
+    std::string SerializeGameData(const SaveData& data);
     SaveData Deserialize(const std::string& jsonStr);
+    const std::string LoadFromFile(const std::string& filePath);
 private:
 
 

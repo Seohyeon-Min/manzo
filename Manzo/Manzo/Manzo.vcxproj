@@ -31,6 +31,7 @@
     <ClCompile Include="Engine\Particle.cpp" />
     <ClCompile Include="Engine\Rapidjson.cpp" />
     <ClCompile Include="Engine\Render.cpp" />
+    <ClCompile Include="Engine\SaveDataManager.cpp" />
     <ClCompile Include="Engine\ShaderManager.cpp" />
     <ClCompile Include="Engine\ShowCollision.cpp" />
     <ClCompile Include="Engine\Sprite.cpp" />
@@ -102,6 +103,7 @@
     <ClInclude Include="Engine\Rapidjson.h" />
     <ClInclude Include="Engine\Rect.h" />
     <ClInclude Include="Engine\Render.h" />
+    <ClInclude Include="Engine\SaveDataManager.h" />
     <ClInclude Include="Engine\ShaderManager.h" />
     <ClInclude Include="Engine\ShowCollision.h" />
     <ClInclude Include="Engine\Sprite.h" />

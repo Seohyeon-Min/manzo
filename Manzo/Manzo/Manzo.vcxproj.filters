@@ -183,6 +183,9 @@
     <ClCompile Include="Game\SeaweedMonster.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\SaveDataManager.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <!-- 헤더 파일(ClInclude)에 필터 적용 -->
   <ItemGroup>
@@ -380,6 +383,9 @@
     </ClInclude>
     <ClInclude Include="Game\SaveData.h">
       <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\SaveDataManager.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

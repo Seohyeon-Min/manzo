@@ -12,3 +12,4 @@ struct SaveData {
 
     //std::vector<std::string> eventsDone;
 };
+

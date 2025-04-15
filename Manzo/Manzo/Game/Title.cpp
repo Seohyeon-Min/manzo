@@ -1,11 +1,14 @@
 #include "Title.h"
 #include "../Engine/AudioManager.h"
 #include "../Engine/Particle.h"
+#include "../Engine/Rapidjson.h"
 #include "Particles.h"
 #include "Background.h"
 #include "Ship.h"
 #include "Mouse.h"
 #include "States.h"
+
+#include <fstream>
 
 Title::Title()
 {
@@ -96,18 +99,12 @@ void Title::Unload()
 }
 
 void Title::CheckSaveFile() {
-	std::string saveFilePath = "assets/images/jsons/save.json";
-	if (FileExists(saveFilePath)) {
-		// 기존 저장 데이터 로드
-		GameState currentState = LoadGame(saveFilePath);
-		StartGameWithState(currentState);
-	}
-	else {
-		// 파일이 없으면 신규 게임 상태 생성 및 저장
-		GameState newState = CreateDefaultGameState();
-		SaveGame(newState, saveFilePath);
-		StartGameWithState(newState);
-	}
+	Engine::GetSaveDataManager().Load();
+}
+
+bool Title::FileExists(const std::string& filePath) {
+	std::ifstream file(filePath);
+	return file.good();
 }
 
 TitleText::TitleText(vec2 start_position) : GameObject({0.f, 50.f})
