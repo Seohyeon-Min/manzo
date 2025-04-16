@@ -24,6 +24,7 @@ Created:    March 8, 2023
 #include "IconManager.h"
 #include "BeatSystem.h"
 #include "SaveDataManager.h"
+#include "EventManager.h"
 
 #include <chrono>
 #include <time.h>
@@ -82,6 +83,10 @@ public:
         return Instance()->savedatamanager;
     }
 
+    static EventManager& GetEventManager() {
+        return Instance()->eventmanager;
+    }
+
     void Start(std::string window_title);
     void Stop();
     void Update();
@@ -127,4 +132,5 @@ private:
     IconManager iconmanager;
     Beat beat;
     SaveDataManager savedatamanager;
+    EventManager eventmanager;
 };

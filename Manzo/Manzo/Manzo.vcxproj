@@ -57,6 +57,7 @@
     <ClCompile Include="Game\Module.cpp" />
     <ClCompile Include="Game\Mouse.cpp" />
     <ClCompile Include="Game\Player.cpp" />
+    <ClCompile Include="Game\ScenarioComponent.cpp" />
     <ClCompile Include="Game\ScreenWrap.cpp" />
     <ClCompile Include="Game\Rock.cpp" />
     <ClCompile Include="Game\RockGroup.cpp" />
@@ -86,6 +87,7 @@
     <ClInclude Include="Engine\ComponentManager.h" />
     <ClInclude Include="Engine\DrawSetting.h" />
     <ClInclude Include="Engine\Engine.h" />
+    <ClInclude Include="Engine\EventManager.h" />
     <ClInclude Include="Engine\FontManager.h" />
     <ClInclude Include="Engine\GameObject.h" />
     <ClInclude Include="Engine\GameObjectManager.h" />
@@ -118,6 +120,7 @@
     <ClInclude Include="Game\Effect.h" />
     <ClInclude Include="Game\DialogBox.h" />
     <ClInclude Include="Game\Dragging.h" />
+    <ClInclude Include="Game\Event.h" />
     <ClInclude Include="Game\Fish.h" />
     <ClInclude Include="Game\FishEcosystem.h" />
     <ClInclude Include="Game\GameObjectTypes.h" />
@@ -130,6 +133,7 @@
     <ClInclude Include="Game\Particles.h" />
     <ClInclude Include="Game\Player.h" />
     <ClInclude Include="Game\SaveData.h" />
+    <ClInclude Include="Game\ScenarioComponent.h" />
     <ClInclude Include="Game\ScreenWrap.h" />
     <ClInclude Include="Game\Rock.h" />
     <ClInclude Include="Game\RockGroup.h" />
