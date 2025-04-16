@@ -23,6 +23,8 @@ Created:    March 8, 2023
 #include "WindowState.h"
 #include "IconManager.h"
 #include "BeatSystem.h"
+#include "SaveDataManager.h"
+#include "EventManager.h"
 
 #include <chrono>
 #include <time.h>
@@ -77,6 +79,14 @@ public:
         return Instance()->beat;
     }
 
+    static SaveDataManager& GetSaveDataManager() {
+        return Instance()->savedatamanager;
+    }
+
+    static EventManager& GetEventManager() {
+        return Instance()->eventmanager;
+    }
+
     void Start(std::string window_title);
     void Stop();
     void Update();
@@ -119,4 +129,6 @@ private:
     FontManager fontmanager;
     IconManager iconmanager;
     Beat beat;
+    SaveDataManager savedatamanager;
+    EventManager eventmanager;
 };

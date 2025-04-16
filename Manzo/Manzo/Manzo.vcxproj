@@ -31,6 +31,7 @@
     <ClCompile Include="Engine\Particle.cpp" />
     <ClCompile Include="Engine\Rapidjson.cpp" />
     <ClCompile Include="Engine\Render.cpp" />
+    <ClCompile Include="Engine\SaveDataManager.cpp" />
     <ClCompile Include="Engine\ShaderManager.cpp" />
     <ClCompile Include="Engine\ShowCollision.cpp" />
     <ClCompile Include="Engine\Sprite.cpp" />
@@ -56,10 +57,12 @@
     <ClCompile Include="Game\Module.cpp" />
     <ClCompile Include="Game\Mouse.cpp" />
     <ClCompile Include="Game\Player.cpp" />
+    <ClCompile Include="Game\ScenarioComponent.cpp" />
     <ClCompile Include="Game\ScreenWrap.cpp" />
     <ClCompile Include="Game\Rock.cpp" />
     <ClCompile Include="Game\RockGroup.cpp" />
     <ClCompile Include="Game\RockPoint.cpp" />
+    <ClCompile Include="Game\SeaweedMonster.cpp" />
     <ClCompile Include="Game\Ship.cpp" />
     <ClCompile Include="Game\Shop.cpp" />
     <ClCompile Include="Game\Skill.cpp" />
@@ -84,6 +87,7 @@
     <ClInclude Include="Engine\ComponentManager.h" />
     <ClInclude Include="Engine\DrawSetting.h" />
     <ClInclude Include="Engine\Engine.h" />
+    <ClInclude Include="Engine\EventManager.h" />
     <ClInclude Include="Engine\FontManager.h" />
     <ClInclude Include="Engine\GameObject.h" />
     <ClInclude Include="Engine\GameObjectManager.h" />
@@ -101,6 +105,7 @@
     <ClInclude Include="Engine\Rapidjson.h" />
     <ClInclude Include="Engine\Rect.h" />
     <ClInclude Include="Engine\Render.h" />
+    <ClInclude Include="Engine\SaveDataManager.h" />
     <ClInclude Include="Engine\ShaderManager.h" />
     <ClInclude Include="Engine\ShowCollision.h" />
     <ClInclude Include="Engine\Sprite.h" />
@@ -115,6 +120,7 @@
     <ClInclude Include="Game\Effect.h" />
     <ClInclude Include="Game\DialogBox.h" />
     <ClInclude Include="Game\Dragging.h" />
+    <ClInclude Include="Game\Event.h" />
     <ClInclude Include="Game\Fish.h" />
     <ClInclude Include="Game\FishEcosystem.h" />
     <ClInclude Include="Game\GameObjectTypes.h" />
@@ -126,10 +132,13 @@
     <ClInclude Include="Game\Mouse.h" />
     <ClInclude Include="Game\Particles.h" />
     <ClInclude Include="Game\Player.h" />
+    <ClInclude Include="Game\SaveData.h" />
+    <ClInclude Include="Game\ScenarioComponent.h" />
     <ClInclude Include="Game\ScreenWrap.h" />
     <ClInclude Include="Game\Rock.h" />
     <ClInclude Include="Game\RockGroup.h" />
     <ClInclude Include="Game\RockPoint.h" />
+    <ClInclude Include="Game\SeaweedMonster.h" />
     <ClInclude Include="Game\Ship.h" />
     <ClInclude Include="Game\Shop.h" />
     <ClInclude Include="Game\Skill.h" />

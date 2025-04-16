@@ -121,6 +121,33 @@ float AudioManager::GetCurrentMusicTime(const std::string& alias) {
 	return 0.0f;
 }
 
+float AudioManager::GetCurrentPlayingMusicTime() {
+	for (auto it = sgpImplementation->mChannels.begin(); it != sgpImplementation->mChannels.end(); ++it) {
+		FMOD::Channel* channel = it->second;
+		bool isPlaying = false;
+
+		FMOD_RESULT result = channel->isPlaying(&isPlaying);
+		if (ErrorCheck(result) != 0) {
+			std::cerr << "Error: Failed to check playing status for channel: " << it->first << std::endl;
+			continue;
+		}
+
+		if (isPlaying) {
+			unsigned int currentPosition = 0;
+			result = channel->getPosition(&currentPosition, FMOD_TIMEUNIT_MS);
+			if (ErrorCheck(result) == 0) {
+				return currentPosition / 1000.0f;
+			}
+			else {
+				std::cerr << "Error: Failed to get current music time for channel: " << it->first << std::endl;
+			}
+		}
+	}
+
+	std::cerr << "Error: No music is currently playing." << std::endl;
+	return 0.0f;
+}
+
 float AudioManager::GetMusicLength(const std::string& alias)
 {
 	FMOD::Sound* sound = GetMusic(alias);
@@ -312,6 +339,17 @@ bool AudioManager::IsPlayingMusic(const std::string& alias) const
 		bool bIsPlaying = false;
 		ErrorCheck(tFoundIt->second->isPlaying(&bIsPlaying));
 		return bIsPlaying;
+	}
+	return false;
+}
+
+bool AudioManager::IsAnyMusicPlaying() const {
+	for (auto it = sgpImplementation->mChannels.begin(); it != sgpImplementation->mChannels.end(); ++it) {
+		bool bIsPlaying = false;
+		// 각 채널의 재생 여부를 확인합니다.
+		if (ErrorCheck(it->second->isPlaying(&bIsPlaying)) == 0 && bIsPlaying) {
+			return true;
+		}
 	}
 	return false;
 }

@@ -130,7 +130,10 @@ void Render::ApplyPostProcessing(bool is_title)
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer[!horizontal].GetColorAttachment());
 
-            double currentTime = Engine::GetAudioManager().GetCurrentMusicTime("Home_bgm");
+            float currentTime = 0.f;
+            if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+                currentTime = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+            }
 
             switch (i) {
             case 0: // Bloom
@@ -174,7 +177,10 @@ void Render::ApplyPostProcessing(bool is_title)
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer[!horizontal].GetColorAttachment());
 
-            double currentTime = Engine::GetAudioManager().GetCurrentMusicTime("Level1_bgm");
+            float currentTime = 0.f;
+            if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+                currentTime = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+            }
 
             switch (i) {
             case 0: // Distortion
@@ -224,7 +230,10 @@ void Render::ApplyPostProcessing(bool is_title)
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer[!horizontal].GetColorAttachment());
 
-            double currentTime = Engine::GetAudioManager().GetCurrentMusicTime("title_bgm");
+            float currentTime = 0.f;
+            if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+                currentTime = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+            }
 
             switch (i) {
             case 0: // Gra
@@ -265,7 +274,10 @@ void Render::ApplyPostProcessing(bool is_title)
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer[!horizontal].GetColorAttachment());
 
-            double currentTime = Engine::GetAudioManager().GetCurrentMusicTime("title_bgm");
+            float currentTime = 0.f;
+            if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+                currentTime = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+            }
 
             switch (i) {
             case 0: // Bloom

@@ -6,6 +6,33 @@ struct MovementRange {
     vec2 pos;
 };
 
+struct Vision {
+    float radius = 500.f;
+    float angle = 90.f;
+    float dist_from_ship = 750.f;
+};
+
+struct Movement {
+    vec2 init_pos = { 300, 300 };
+    vec2 position;
+    vec2 direction;
+    float speed = 700.f;
+    MovementRange range;
+};
+
+struct Dash {
+    float offset = 7.f;
+    const float initial_offset = 7.f;
+    const double dash_time = 0.86;
+    RealTimeTimer* timer = nullptr;
+};
+
+struct TransformData {
+    float scale = 1.f;
+    const float max_scale = 2.f;
+    float angle = 0.f;
+};
+
 class Monster : public GameObject
 {
 public:
@@ -21,26 +48,17 @@ public:
     void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
 
 private:
+    void SetUni(const GLShader* shader);
 	void DrawSight();
     Math::rect GetCollisionBox() { return this->GetGOComponent<RectCollision>()->WorldBoundary_rect(); }
 	Ship* ship_ptr;
     Beat* beat;
-    float dist_from_ship = 750.f;
-	const float sight_radius = 500;
-	const float sight_angle = 90;
-    vec2 init_pos = {300,300 };
-    vec2 direction;
-    vec2 position;
-    float speed = 700.f;
-    float offset = 7;
-    const float initial_offset = 7;
-    const double dash_time = 0.86;
-    RealTimeTimer* dash_timer;
-    MovementRange movement_range;
-    bool wait = false;
-    float scale = 1.0f;
-    const float max_scale = 2.0f;
-    float angle;
+    bool  wait = false;
+
+    Vision vision;
+    Movement movement;
+    Dash dash;
+    TransformData transform;
 
     class Stanby : public State {
     public:

@@ -27,6 +27,7 @@ Created:    March 8, 2023
 #include "Skill.h"
 #include "Boss.h"
 #include "Monster.h"
+#include "ScenarioComponent.h"
 
 #include <utility>
 #include <iostream>
@@ -50,6 +51,8 @@ void Mode1::Load()
 	Engine::GetShaderManager().LoadShader("change_color", "assets/shaders/default.vert", "assets/shaders/change_color.frag");
 	Engine::GetShaderManager().LoadShader("change_alpha_no_texture", "assets/shaders/default.vert", "assets/shaders/change_alpha_no_texture.frag");
 	Engine::GetShaderManager().LoadShader("health_bar", "assets/shaders/default.vert", "assets/shaders/health_bar.frag");
+	Engine::GetShaderManager().LoadShader("sea_background", "assets/shaders/post_default.vert", "assets/shaders/sea_background.frag");
+	Engine::GetShaderManager().LoadShader("wave", "assets/shaders/default.vert", "assets/shaders/wave.frag");
 
 	Engine::GetShaderManager().LoadShader("under_water_god_ray", "assets/shaders/post_default.vert", "assets/shaders/underwater_god_ray.frag");
 	Engine::GetShaderManager().LoadShader("post_default", "assets/shaders/post_default.vert", "assets/shaders/post_default.frag");
@@ -74,6 +77,9 @@ void Mode1::Load()
 	AddGSComponent(new ParticleManager<Particles::HitPraticle2>());
 	AddGSComponent(new ParticleManager<Particles::CaptureEffect>());
 	AddGSComponent(new ParticleManager<Particles::BulletParticle>());
+
+	//ScenarioComponent
+	AddGSComponent(new ScenarioComponent(Engine::GetEventManager(),Engine::GetSaveDataManager()));
 
 	//// camera
 	vec2 start_position = {600, -500};

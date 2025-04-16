@@ -1,11 +1,14 @@
 #include "Title.h"
 #include "../Engine/AudioManager.h"
 #include "../Engine/Particle.h"
+#include "../Engine/Rapidjson.h"
 #include "Particles.h"
 #include "Background.h"
 #include "Ship.h"
 #include "Mouse.h"
 #include "States.h"
+
+#include <fstream>
 
 Title::Title()
 {
@@ -62,6 +65,7 @@ void Title::Update(double dt)
 	// Move to next scean
 	if (Engine::GetInput().MouseButtonJustReleased((SDL_BUTTON_LEFT))) {
 		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
+		CheckSaveFile();
 	}
 }
 
@@ -94,6 +98,15 @@ void Title::Unload()
 	playing = false;
 }
 
+void Title::CheckSaveFile() {
+	Engine::GetSaveDataManager().Load();
+}
+
+bool Title::FileExists(const std::string& filePath) {
+	std::ifstream file(filePath);
+	return file.good();
+}
+
 TitleText::TitleText(vec2 start_position) : GameObject({0.f, 50.f})
 {
 	AddGOComponent(new Sprite("assets/images/title_text.spt", this));
@@ -119,7 +132,10 @@ void TitleText::Draw(DrawLayer drawlayer)
 }
 
 void TitleText::SetUniform(const GLShader* shader) {
-	double currentTime = Engine::GetAudioManager().GetCurrentMusicTime("title_bgm");
+	float currentTime = 0.f;
+	if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+		currentTime = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+	}
 	shader->SendUniform("iResolution", Engine::window_width, Engine::window_height);
 	shader->SendUniform("iTime", float(currentTime));
 }

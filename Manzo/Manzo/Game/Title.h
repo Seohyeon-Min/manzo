@@ -28,6 +28,8 @@ public:
     }
 
 private:
+    void CheckSaveFile();
+    bool FileExists(const std::string& filePath);
     Background* background;
     const float start_alpha = 0.6f;
     float alpha;

@@ -13,7 +13,10 @@ Boss::Boss(vec2 start_position, BossName name, BossType type)
 {
 	ReadBossJSON(name);
 	InitializeStates();
-	AddGOComponent(new Sprite("assets/images/boss_E.spt", this));
+	///// have new texture : boss body
+	AddGOComponent(new Sprite("assets/images/boss/boss_e.spt", this));
+	boss_body = Engine::GetTextureManager().Load("assets/images/boss/boss_e_body.png");
+	/////
 	SetVelocity({ start_position });
 	current_position = start_position;
 	// cutscean
@@ -346,16 +349,42 @@ void Boss::RunMusic()
 }
 
 
+void SetUni(const GLShader* shader) {
+	float time = 0.f;
+	if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+		time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+	}
+	shader->SendUniform("uTime", time);
+	shader->SendUniform("uX", 0);
+	shader->SendUniform("uY", 1);
+	shader->SendUniform("uWaveNum", 4);
+
+	shader->SendUniform("waveStrength", 0.034f);
+	shader->SendUniform("frequency", 27.0f);
+	shader->SendUniform("speed", 4.4f);
+}
+
 void Boss::Draw(DrawLayer drawlayer)
 {
 	DrawCall draw_call = {
-		GetGOComponent<Sprite>()->GetTexture(),                       // Texture to draw
-		&GetMatrix(),                          // Transformation matrix
-		Engine::GetShaderManager().GetDefaultShader()
+		GetGOComponent<Sprite>()->GetTexture(),					// Texture to draw
+		&GetMatrix(),											// Transformation matrix
+		Engine::GetShaderManager().GetShader("wave")
 	};
 
 	draw_call.settings.do_blending = true;
+	draw_call.SetUniforms = [this](const GLShader* shader) { SetUni(shader); };
+
+	DrawCall draw_call_body = {
+	boss_body,
+	&GetMatrix(),
+	Engine::GetShaderManager().GetDefaultShader()
+	};
+
+	draw_call_body.settings.do_blending = true;
+
 	GameObject::Draw(draw_call);
+	GameObject::Draw(draw_call_body);
 }
 
 bool Boss::CanCollideWith(GameObjectTypes other_object) {

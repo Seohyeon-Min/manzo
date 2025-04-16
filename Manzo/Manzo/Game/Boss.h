@@ -130,7 +130,7 @@ private:
 	bool isattack;
 
 
-
+	GLTexture* boss_body = nullptr;
 
 };
 

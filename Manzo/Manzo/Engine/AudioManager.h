@@ -41,6 +41,7 @@ public:
 	void UnLoadMusic(const std::string& alias);
 	FMOD::Sound* GetMusic(const std::string& alias);
 	float GetCurrentMusicTime(const std::string& alias);
+	float GetCurrentPlayingMusicTime();
 	float GetMusicLength(const std::string& alias);
 	std::string GetID(const std::string& alias);
 
@@ -50,6 +51,8 @@ public:
 	void RestartPlayMusic(const std::string& alias);
 	void StopPlayingMusic(const std::string& alias);
 	bool IsPlayingMusic(const std::string& alias) const;
+
+	bool IsAnyMusicPlaying() const;
 
 	bool IsMusicFinished(const std::string& alias);
 
