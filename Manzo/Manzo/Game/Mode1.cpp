@@ -27,7 +27,6 @@ Created:    March 8, 2023
 #include "Skill.h"
 #include "Boss.h"
 #include "Monster.h"
-#include "ScenarioComponent.h"
 
 #include <utility>
 #include <iostream>
@@ -77,9 +76,6 @@ void Mode1::Load()
 	AddGSComponent(new ParticleManager<Particles::HitPraticle2>());
 	AddGSComponent(new ParticleManager<Particles::CaptureEffect>());
 	AddGSComponent(new ParticleManager<Particles::BulletParticle>());
-
-	//ScenarioComponent
-	AddGSComponent(new ScenarioComponent(Engine::GetEventManager(),Engine::GetSaveDataManager()));
 
 	//// camera
 	vec2 start_position = {600, -500};

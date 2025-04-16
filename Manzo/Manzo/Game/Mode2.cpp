@@ -22,6 +22,7 @@ Created:    March 8, 2023
 #include "Mouse.h"
 #include "DialogBox.h"
 #include "WaterRippleEffect.h"
+#include "ScenarioComponent.h"
 
 #include <iostream>     // for debug
 #include "Module.h"
@@ -68,6 +69,9 @@ void Mode2::Load() {
     // Dialog
     dialog_ptr = new Dialog({0,0});
     GetGSComponent<GameObjectManager>()->Add(dialog_ptr);
+
+    //ScenarioComponent
+    AddGSComponent(new ScenarioComponent(Engine::GetEventManager(), Engine::GetSaveDataManager(), dialog_ptr));
     
     Engine::GetLogger().LoadSaveFile();
 
