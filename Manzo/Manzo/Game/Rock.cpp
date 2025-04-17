@@ -15,6 +15,10 @@ Rock::Rock(Polygon original_poly, Polygon modified_poly, vec2 position, double r
 {
     
 }
+Rock::~Rock() {
+    rockgroup = nullptr;
+    delete rockgroup;
+}
 
 void Rock::Update(double dt)
 {

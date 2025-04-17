@@ -73,6 +73,8 @@ void MapManager::UpdateMaps(const Math::rect& camera_boundary) {
 
 //===============================================================Map
 
+int line_number = -1;
+bool level_loaded = false;
 void Map::ParseSVG(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
@@ -109,7 +111,13 @@ void Map::ParseSVG(const std::string& filename) {
     std::string polyIndex;
     std::string circleIndex;
 
+    int read_line_number = -1;
     while (std::getline(file, line)) {
+        read_line_number++;
+        if (read_line_number < line_number) {
+            continue;
+        }
+        line_number++;
         currentTag += line;
 
         if (line.find(">") != std::string::npos) {
@@ -130,7 +138,7 @@ void Map::ParseSVG(const std::string& filename) {
                 IsTranslate = false;
                 IsRotate = false;
                 currentTag.clear();
-                continue;
+                break;
             }
 
             // g id
@@ -350,6 +358,9 @@ void Map::ParseSVG(const std::string& filename) {
             
         }
 
+        if (text is "</svg>") {
+            level_loaded = true;
+        }
     }
 
     //debugging & matching index, points

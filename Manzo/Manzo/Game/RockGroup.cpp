@@ -23,12 +23,6 @@ RockGroup::~RockGroup() {
 void RockGroup::Update(double dt) {
     GameObject::Update(dt);
 
-    rocks.erase(
-        std::remove_if(rocks.begin(), rocks.end(), [](Rock* rock) {
-            return rock->IsCrashed();
-            }),
-        rocks.end()
-    );
 }
 
 
