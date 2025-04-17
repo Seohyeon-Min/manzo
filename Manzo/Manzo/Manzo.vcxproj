@@ -47,6 +47,7 @@
     <ClCompile Include="Game\DialogBox.cpp" />
     <ClCompile Include="Game\Effect.cpp" />
     <ClCompile Include="Game\Dragging.cpp" />
+    <ClCompile Include="Game\Event.cpp" />
     <ClCompile Include="Game\Fish.cpp" />
     <ClCompile Include="Game\FishEcosystem.cpp" />
     <ClCompile Include="Game\GameObjectTypes.cpp" />

@@ -21,6 +21,7 @@ Created:    Sept 12, 2024
 #include "Player.h"
 #include "Inventory.h"
 #include "Module.h"
+#include "ScenarioComponent.h"
 
 class Fish;
 
@@ -50,6 +51,7 @@ private:
     Player* player_ptr;
     Inven* inven_ptr;
     Module* module_ptr;
+    ScenarioComponent* scenario;
 
     float y_limit = 15.0f;
     float frequency = 0.9f;

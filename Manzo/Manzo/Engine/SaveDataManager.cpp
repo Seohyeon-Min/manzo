@@ -64,6 +64,7 @@ SaveData SaveDataManager::CreateDefaultSaveData() {
     SaveData defaultData;
     defaultData.day = 1;
     defaultData.money = 0;
+    defaultData.eventsDone = {};
     //defaultData.fish = 0;
     //defaultData.inventory = {};
     return defaultData;

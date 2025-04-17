@@ -1,10 +1,20 @@
 {
     "dialog-1": [
-      { "character": "Me", "text": ["Hello"] },
+      { "character": "Me", "text": ["dialog"] },
       { "character": "Man", "text": "This is fun." },
       { "character": "Man", "text": "what the hell." }
     ],
     "dialog-2": [
       { "character": "Perry", "text": ["Beep", "Boop", "I am Perry"] }
+    ],
+    "day-1": [
+      { "character": "Me", "text": ["Day One"] },
+      { "character": "Man", "text": "This is fun." },
+      { "character": "Man", "text": "what the hell." }
+    ],
+    "day-2": [
+      { "character": "Me", "text": ["Day two"] },
+      { "character": "Man", "text": "This is day two." },
+      { "character": "Man", "text": "what the hell." }
     ]
   }

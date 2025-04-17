@@ -16,8 +16,8 @@ public:
     Dialog(vec2 start_position);
 
     void LoadDialog(int id, double Speed);
-    void LoadDialogGroup(const std::string& group_id, double Speed);
-    void LoadRandomDialog(const std::string& group_id, double Speed);
+    void LoadDialogGroup(const std::string& group_id, double Speed = dialogBasicSpeed);
+    void LoadRandomDialog(const std::string& group_id, double Speed = dialogBasicSpeed);
     void NextLine();
     void Update(double dt) override;
     void Draw();
@@ -42,6 +42,7 @@ private:
     bool IsTyping;
     int currentIndex;
     bool isVisible = false;
+    static constexpr double dialogBasicSpeed = 0.05;
 
     std::vector<std::pair<std::string, std::string>> currentDialogGroup;
     int currentLineIndex = 0;

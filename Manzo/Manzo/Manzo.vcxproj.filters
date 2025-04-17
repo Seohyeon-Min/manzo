@@ -189,6 +189,9 @@
     <ClCompile Include="Game\ScenarioComponent.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Event.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <!-- 헤더 파일(ClInclude)에 필터 적용 -->
   <ItemGroup>

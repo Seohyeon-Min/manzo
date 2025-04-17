@@ -22,7 +22,6 @@ Created:    March 8, 2023
 #include "Mouse.h"
 #include "DialogBox.h"
 #include "WaterRippleEffect.h"
-#include "ScenarioComponent.h"
 
 #include <iostream>     // for debug
 #include "Module.h"
@@ -71,7 +70,9 @@ void Mode2::Load() {
     GetGSComponent<GameObjectManager>()->Add(dialog_ptr);
 
     //ScenarioComponent
-    AddGSComponent(new ScenarioComponent(Engine::GetEventManager(), Engine::GetSaveDataManager(), dialog_ptr));
+    scenario = new ScenarioComponent(Engine::GetEventManager(), Engine::GetSaveDataManager(), dialog_ptr);
+    AddGSComponent(scenario);
+    scenario->Load();
     
     Engine::GetLogger().LoadSaveFile();
 
@@ -225,11 +226,14 @@ void Mode2::Draw() {
 void Mode2::Unload() {
     Engine::GetLogger().WriteSaveFile(inven_ptr->fishCollection, inven_ptr->GetMoney(), inven_ptr->FirstModuleBought(), module_ptr->IsFirstSetted(), inven_ptr->GetX1Pos(), inven_ptr->SecondModuleBought(), module_ptr->IsSecondSetted(), inven_ptr->GetX2Pos());
 
-    GetGSComponent<GameObjectManager>()->Unload();
     Engine::GetAudioManager().StopAllChannels();
+    GetGSComponent<GameObjectManager>()->Unload();
     GetGSComponent<Background>()->Unload();
     ClearGSComponents();
-    background = nullptr;
     dialog_ptr->Unload();
     playing = false;
+    delete background;
+    background = nullptr;
+    delete scenario;
+    scenario = nullptr;
 }
