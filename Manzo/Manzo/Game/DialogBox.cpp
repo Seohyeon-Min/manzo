@@ -80,6 +80,9 @@ void Dialog::NextLine() {
         currentLineIndex++;
         StartLine(currentLineIndex);
     }
+    else {
+        Hide();
+    }
 }
 
 
