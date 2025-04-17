@@ -30,6 +30,7 @@ public:
     inline std::string GetMp3() { return mp3; }
     inline std::array<int, 2> GetMovePosition() { return move_position; }
     inline std::vector<std::vector<EntryData>> GetParttern() { return parttern; }
+    const std::vector<CircleAttackData>& GetOParttern() const { return o_parttern; }
     inline std::vector<int> GetTotalEntry() { return total_entry; }
 
 private:
@@ -41,6 +42,7 @@ private:
     std::string mp3;
     std::array<int, 2> move_position;
     std::vector<std::vector<EntryData>> parttern;
+    std::vector<CircleAttackData> o_parttern;
     std::vector<int> total_entry;
 
     Document document;

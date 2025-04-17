@@ -94,6 +94,17 @@ JsonParser_boss::JsonParser_boss(std::string path)
             }
         }
     }
+    if (document.HasMember("O_Parttern") && document["O_Parttern"].IsArray()) {
+        const auto& oPatternArray = document["O_Parttern"].GetArray();
+        for (const auto& circle : oPatternArray) {
+            if (circle.IsArray() && circle.Size() == 3) {
+                CircleAttackData data;
+                data.position = vec2(circle[0].GetFloat(), circle[1].GetFloat());
+                data.radius = circle[2].GetFloat();
+                o_parttern.push_back(data);
+            }
+        }
+    }
 }
 
 

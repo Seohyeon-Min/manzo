@@ -59,8 +59,20 @@ void Boss::Movingtolocation_Boss(int targetEntryNum, Boss* boss) {
 			if (entryData.attacktype == 3) {
 				if (boss->beat->GetBeat()) {
 					boss->isattack = false;
+					boss->circle_count += 1;
+
+					if(boss->circle_count == 5){
+						boss->circlenum += 1;
+						boss->circle_count = 0;
+					}
+					std::cout << boss->circlenum << std::endl;
 				}
-				boss->AttackCircle(entryData.position, 350, (double)(boss->beat->GetFixedDuration() * 4));
+
+				if (boss->circlenum < boss->o_parttern.size()) {
+					const auto& circle = boss->o_parttern[boss->circlenum];
+					boss->AttackCircle(circle.position, circle.radius, (double)(boss->beat->GetFixedDuration() * 4));
+				}
+			
 			}
 		}
 		
@@ -336,7 +348,7 @@ void Boss::ReadBossJSON(BossName name)
 	position = ReadJson->GetMovePosition();
 	parttern = ReadJson->GetParttern();
 	total_entry = ReadJson->GetTotalEntry();
-
+	o_parttern = ReadJson->GetOParttern();
 }
 
 

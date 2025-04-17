@@ -117,6 +117,7 @@ private:
 	std::string mp3_file_name;
 	std::array<int, 2> position;
 	std::vector<std::vector<EntryData>> parttern;
+	std::vector<CircleAttackData> o_parttern;
 	std::vector<int> total_entry;
 	int Boss_damage;
 	std::vector<int> Boss_procedural;
@@ -128,7 +129,8 @@ private:
 	bool bulletSpawned = false;
 	int barCount;
 	bool isattack;
-
+	int circlenum = 0 ;
+	int circle_count = 0;
 
 
 

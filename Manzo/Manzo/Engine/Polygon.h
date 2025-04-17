@@ -42,6 +42,9 @@ struct [[nodiscard]] EntryData {
 	float attacktype;
 	vec2 position;
 	float delay;
+};
 
-
+struct [[nodiscard]] CircleAttackData {
+	vec2 position;
+	float radius;
 };
