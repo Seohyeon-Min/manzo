@@ -128,7 +128,7 @@ private:
     Render render;
     FontManager fontmanager;
     IconManager iconmanager;
-    Beat beat;
     SaveDataManager savedatamanager;
+    Beat beat;
     EventManager eventmanager;
 };

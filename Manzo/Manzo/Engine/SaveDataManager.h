@@ -16,7 +16,10 @@ inline bool FileExists(const std::string& filePath) {
 
 class SaveDataManager {
 public:
+    explicit SaveDataManager();
     explicit SaveDataManager(const std::string& path);
+    SaveDataManager(const SaveDataManager&) = delete;
+    SaveDataManager& operator=(const SaveDataManager&) = delete;
     ~SaveDataManager();
     bool Load();
     bool Save();
@@ -28,7 +31,7 @@ private:
     std::string saveFilePath;
     SaveData currentSaveData;
     SaveData CreateDefaultSaveData();
-    JsonParser_save* json_reader;
+    std::unique_ptr<JsonParser_save>json_reader;
 };
 
 

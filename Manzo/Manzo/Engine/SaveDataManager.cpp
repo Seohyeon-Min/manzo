@@ -1,16 +1,19 @@
 #include "SaveDataManager.h"
 #include "Rapidjson.h"
 
+SaveDataManager::SaveDataManager()
+{
+    json_reader = std::make_unique<JsonParser_save>();
+}
+
 SaveDataManager::SaveDataManager(const std::string& path)
     : saveFilePath(path)
 {
-    json_reader = new JsonParser_save();
-    Load();
+    json_reader = std::make_unique<JsonParser_save>();
 }
 
 SaveDataManager::~SaveDataManager()
 {
-    delete json_reader;
     json_reader = nullptr;
 }
 
