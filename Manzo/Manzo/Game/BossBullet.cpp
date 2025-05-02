@@ -1,5 +1,7 @@
 #include "BossBullet.h"
 #include "../Engine/Collision.h"
+#include "../Engine/Procedual.h"
+#include "../Engine/ProceduralAnimationManager.h"
 #include "Particles.h"
 #include <cmath>
 #include <stdlib.h>
@@ -35,24 +37,30 @@ BossBullet::BossBullet(vec2 Boss_position, float lifetime)
     direction.y /= length;
 
     this->velocity = vec2(0.0f, 0.0f);
-    float angleOffset = (float)(GetRandomValue(-10,10) * DEG2RAD); 
+    float angleOffset = (float)(GetRandomValue(-10, 10) * DEG2RAD);
     float cosA = cos(angleOffset);
     float sinA = sin(angleOffset);
 
     vec2 modifiedDirection = {
-                direction.x * cosA - direction.y * sinA,
-                direction.x * sinA + direction.y * cosA
+        direction.x * cosA - direction.y * sinA,
+        direction.x * sinA + direction.y * cosA
     };
 
     velocity = { -modifiedDirection.x * 300, -modifiedDirection.y * 300 };
     speed = 30;
-    position = Boss_position;
+    bullet_position = Boss_position;
     timeElapsed = 0.0f;
+
+    bullet_chain.Initialize(3, 10.f, bullet_position);
 }
 
 void BossBullet::Update(double dt) {
     GameObject::Update(dt);
     Move(dt);
+
+    if (!std::isnan(bullet_position.x) && !std::isnan(bullet_position.y)) {
+        bullet_chain.Update(bullet_position, 0.2f);
+    }
 
     if (lifetime <= -1.0f) {
         this->Destroy();
@@ -61,17 +69,17 @@ void BossBullet::Update(double dt) {
         lifetime -= dt;
     }
 
-    Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::BulletParticle>>()->Emit(1, GetPosition(), { 0,0 }, /*-GetVelocity() * 0.4f*/{}, 1.5);
-
+    Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::BulletParticle>>()->Emit(
+        1, GetPosition(), { 0,0 }, {}, 1.5
+    );
 }
-
 
 void BossBullet::Move(double dt) {
     Ship* ship = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>();
     if (ship != nullptr) {
         this->targetPosition = ship->GetPosition();
     }
-    toPlayer = this->targetPosition - this->position;
+    toPlayer = this->targetPosition - this->bullet_position;
     distanceToPlayer = sqrt(toPlayer.x * toPlayer.x + toPlayer.y * toPlayer.y);
     this->timeElapsed += dt;
 
@@ -81,17 +89,14 @@ void BossBullet::Move(double dt) {
     }
     if (distanceToPlayer > 10.f) {
         this->velocity += (normalize(this->toPlayer) * bulletspeed * (float)dt);
-        
     }
     else if (distanceToPlayer < 10.f) {
         this->velocity += (normalize(this->toPlayer) * bulletspeed * (float)dt);
-        
     }
-    this->position += (this->velocity) * 0.8f * (float)dt;
-    
+    this->bullet_position += (this->velocity) * 0.8f * (float)dt;
+
     SetVelocity(this->velocity);
 }
-
 
 void BossBullet::Draw(DrawLayer drawlayer) {
     DrawCall draw_call = {
@@ -102,6 +107,8 @@ void BossBullet::Draw(DrawLayer drawlayer) {
 
     draw_call.settings.do_blending = 1;
     GameObject::Draw(draw_call);
+
+    bullet_chain.Draw(GetMatrix(), drawlayer);
 }
 
 bool BossBullet::CanCollideWith(GameObjectTypes other_object) {
@@ -110,7 +117,6 @@ bool BossBullet::CanCollideWith(GameObjectTypes other_object) {
 
 void BossBullet::ResolveCollision(GameObject* other_object) {
     if (other_object->Type() == GameObjectTypes::Ship) {
-
         this->Destroy();
     }
 }

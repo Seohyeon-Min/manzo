@@ -186,6 +186,9 @@
     <ClCompile Include="Engine\Lerp.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\ProceduralAnimationManager.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <!-- 헤더 파일(ClInclude)에 필터 적용 -->
   <ItemGroup>
@@ -382,6 +385,9 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Lerp.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\ProceduralAnimationManager.h">
       <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
