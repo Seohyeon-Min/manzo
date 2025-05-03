@@ -2,8 +2,9 @@
 #include <vector>
 #include <cmath> 
 #include "../Engine/Lerp.h"
+#include "../Engine/Engine.h"
+#include "../Engine/GameObject.h"
 
-void Initialize(int count, float defaultSize, vec2 start_position);
 
 void ProceduralChain::Initialize(int count, float defaultSize, vec2 start_position) {
     positions.clear();
@@ -15,28 +16,34 @@ void ProceduralChain::Initialize(int count, float defaultSize, vec2 start_positi
     }
 }
 
-void ProceduralChain::Update(vec2 head_position, float followSpeed) {
+void ProceduralChain::Initialize(const std::vector<int>& sizes, vec2 start_position) {
+    positions.clear();
+    circle_size.clear();
+
+    for (size_t i = 0; i < sizes.size(); ++i) {
+        positions.push_back(start_position);
+        circle_size.push_back(static_cast<float>(sizes[i]));
+    }
+}
+
+void ProceduralChain::Update(GameObject* headObject, float followSpeed) {
+    if (headObject == nullptr) {
+        Clear(); 
+        return;
+    }
+
+    vec2 head_position = headObject->GetPosition();
+
     for (int i = 0; i < positions.size(); i++) {
-        vec2 direction;
-        if (i == 0) {
-            direction = head_position - positions[i];
-        }
-        else {
-            direction = positions[i - 1] - positions[i];
-        }
-
-        float distance = sqrtf(direction.x * direction.x + direction.y * direction.y);
+        vec2 direction = (i == 0) ? (head_position - positions[i]) : (positions[i - 1] - positions[i]);
+        float distance = direction.Length();
         if (distance > 0.0f) {
-            direction = { direction / distance };
+            direction = direction / distance;
         }
 
-        vec2 targetPosition;
-        if (i == 0) {
-            targetPosition = head_position - direction * circle_size[i];
-        }
-        else {
-            targetPosition = positions[i - 1] - direction * circle_size[i];
-        }
+        vec2 targetPosition = (i == 0)
+            ? head_position - direction * circle_size[i]
+            : positions[i - 1] - direction * circle_size[i];
 
         positions[i] = Lerp(positions[i], targetPosition, followSpeed);
     }

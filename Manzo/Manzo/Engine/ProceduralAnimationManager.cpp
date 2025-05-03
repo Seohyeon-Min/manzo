@@ -20,9 +20,9 @@ void ProceduralAnimationManager::DestroyInstance(const std::string& id) {
     instances.erase(id);
 }
 
-void ProceduralAnimationManager::UpdateAll(vec2 head, float followSpeed) {
+void ProceduralAnimationManager::UpdateAll(GameObject* head, float followSpeed) {
     for (auto& [id, chain] : instances) {
-        chain->Update(head, followSpeed);
+        chain->Update(head, followSpeed); // 
     }
 }
 

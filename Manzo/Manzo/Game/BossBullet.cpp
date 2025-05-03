@@ -50,8 +50,8 @@ BossBullet::BossBullet(vec2 Boss_position, float lifetime)
     speed = 30;
     bullet_position = Boss_position;
     timeElapsed = 0.0f;
-
-    bullet_chain.Initialize(3, 10.f, bullet_position);
+    std::vector<int> circleSizes = { 20, 30, 30, 30, 30, 30, 30, 30 };
+    bullet_chain.Initialize(circleSizes, bullet_position);
 }
 
 void BossBullet::Update(double dt) {
@@ -59,7 +59,7 @@ void BossBullet::Update(double dt) {
     Move(dt);
 
     if (!std::isnan(bullet_position.x) && !std::isnan(bullet_position.y)) {
-        bullet_chain.Update(bullet_position, 0.2f);
+        bullet_chain.Update(this, 0.2f);
     }
 
     if (lifetime <= -1.0f) {
