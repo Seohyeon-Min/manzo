@@ -64,6 +64,7 @@ void BossBullet::Update(double dt) {
 
     if (lifetime <= -1.0f) {
         this->Destroy();
+        bullet_chain.Clear();
     }
     else {
         lifetime -= dt;

@@ -12,6 +12,7 @@ public:
     const std::vector<vec2>& GetPositions() const;
     void SetSizeAt(int index, float size);
     void SetAllSize(float size);
+    void Clear();
 
 private:
     std::vector<vec2> positions;

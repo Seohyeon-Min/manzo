@@ -74,3 +74,8 @@ void ProceduralChain::SetAllSize(float size) {
         s = size;
     }
 }
+
+void ProceduralChain::Clear() {
+    positions.clear();
+    circle_size.clear();
+}
