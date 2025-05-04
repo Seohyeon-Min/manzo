@@ -319,7 +319,7 @@ void Mode1::Unload()
 	);
 
 	Engine::GetSaveDataManager().SetModuleData(m1, m2);
-	Engine::GetSaveDataManager().UpdateSaveData(save);
+	//Engine::GetSaveDataManager().UpdateSaveData(save);
 
 	ship_ptr = nullptr;
 	delete fishGenerator;
