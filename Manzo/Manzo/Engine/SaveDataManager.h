@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Game/SaveData.h"  // SaveData ����ü �� ���� �Լ� ���� ����
+#include "../Game/SaveData.h"
 
 #include <string>
 #include <fstream>
@@ -37,26 +37,6 @@ private:
     SaveData CreateDefaultSaveData();
     std::unique_ptr<JsonParser_save>json_reader;
 };
-
-
-// ���� ����
-//int main() {
-//    // ���� ��δ� ������ ���� (��: assets/images/jsons/save.json)
-//    std::string saveFilePath = "assets/images/jsons/save.json";
-//
-//    SaveDataManager saveManager(saveFilePath);
-//
-//    // �̹� ����� �����͸� �ҷ��� ��, �ʿ�� ���� �������� ���
-//    SaveData& data = saveManager.GetSaveData();
-//    std::cout << "Current Day: " << data.day << "\nMoney: " << data.money << std::endl;
-//
-//    // ���� ���, �̺�Ʈ�� �Ϸ����� �� ������ ���� �� ������Ʈ:
-//    data.money += 500;
-//    data.fish += 2;
-//    saveManager.UpdateSaveData(data);
-//
-//    return 0;
-//}
 
 
     //bool BuyModule1() { return currentSaveData.module1.buy; }
