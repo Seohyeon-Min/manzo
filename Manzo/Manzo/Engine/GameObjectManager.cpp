@@ -41,6 +41,8 @@ void GameObjectManager::UpdateAll(double dt)
 
 void GameObjectManager::FixedUpdateAll(double dt)
 {
+	if (objects.empty()) return;
+
 	for (auto object : objects) {
 		object->FixedUpdate(dt);
 	}

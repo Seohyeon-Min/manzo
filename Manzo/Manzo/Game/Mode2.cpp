@@ -174,7 +174,11 @@ void Mode2::Update(double dt) {
 }
 
 void Mode2::FixedUpdate(double dt)
-{}
+{
+    if (GetGSComponent<GameObjectManager>()) {
+        GetGSComponent<GameObjectManager>()->FixedUpdateAll(dt);
+    }
+}
 
 void Mode2::Draw() {
     if (GetGSComponent<Background>() && GetGSComponent<Cam>()) {

@@ -1,16 +1,19 @@
-#include "Player.h"
-#include "../Engine/Timer.h"
 #pragma once
+#include "..\Engine\GameObject.h"
+#include "../Engine/Timer.h"
+constexpr vec2 start_pos_NPC = { -600,-115 };
 
-class NPC : public Player {
+class NPC : public GameObject {
 public:
-    NPC(vec2 start_position = { -100, -115 });
+    NPC(vec2 start_position = start_pos_NPC);
     GameObjectTypes Type() override { return GameObjectTypes::Player; }
     std::string TypeName() override { return "NPC"; }
     void Update(double dt) override;
-    bool Walk();
+    void FixedUpdate(double fixed_dt) override;
+    void Walk();
     void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
 private:
+    bool is_walking = false;
     Timer* walk_timer;
-    bool has_run = false;
+    float walking_speed = 60.f;
 };

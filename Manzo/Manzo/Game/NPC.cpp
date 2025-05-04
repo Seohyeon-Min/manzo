@@ -1,7 +1,8 @@
 #include "NPC.h"
 
+
 NPC::NPC(vec2 start_position) :
-	Player(start_position)
+	GameObject({ -650,-115 })
 {
 	AddGOComponent(new Sprite("assets/images/ship.spt", this));
 	walk_timer = new Timer(0.0);
@@ -10,25 +11,35 @@ NPC::NPC(vec2 start_position) :
 
 void NPC::Update(double dt)
 {
-	GameObject::Update(dt);
+    GameObject::Update(dt);
 }
 
-bool NPC::Walk()
+void NPC::FixedUpdate(double fixed_dt)
 {
-    if (!has_run) {
-        walk_timer->Set(30.);
-        has_run = true;
-    }
+    GameObject::FixedUpdate(fixed_dt);
 
-    if (!walk_timer->IsFinished()) {
-        SetPosition({ GetPosition().x + 2.f, GetPosition().y });
-        return false; // °È´Â Áß
+    if (is_walking) {
+        if (walk_timer->IsFinished()) {
+            SetVelocity({});
+            is_walking = false;
+            std::cout << "Im Stop\n";
+        }
+        else {
+            SetVelocity({ walking_speed, 0 });
+            std::cout << "Im Moving\n";
+            std::cout << GetPosition().x << "\n";
+        }
     }
-
-    has_run = false;
-    return true; // °È±â ³¡
 }
 
+
+void NPC::Walk()
+{
+    if (!is_walking) {
+        is_walking = true;
+        walk_timer->Set(3.);
+    }
+}
 void NPC::Draw(DrawLayer drawlayer)
 {
 	GameObject::Draw(drawlayer);

@@ -8,7 +8,6 @@
 
 class JsonParser_save;
 
-// 파일 존재 여부 확인 함수 (inline 함수로 헤더에 정의)
 inline bool FileExists(const std::string& filePath) {
     std::ifstream file(filePath);
     return file.good();
@@ -26,6 +25,9 @@ public:
     bool SaveToFile(const std::string& filePath, const SaveData& data) const;
     SaveData& GetSaveData();
     void UpdateSaveData(const SaveData& newData);
+
+    std::map<int, int> GetFishCollection() { return currentSaveData.fishCollection; }
+    int GetMoney() { return currentSaveData.money; }
 
 private:
     std::string saveFilePath;
@@ -53,3 +55,12 @@ private:
 //
 //    return 0;
 //}
+
+
+    //bool BuyModule1() { return currentSaveData.module1.buy; }
+    //bool BuyModule2() { return module2.buy; }
+    //bool GetModule1() { return module1.set; }
+    //bool GetModule2() { return module2.set; }
+
+    //float GetModule1XPos() { return module1Pos; }
+    //float GetModule2XPos() { return module2Pos; }   
