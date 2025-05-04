@@ -146,23 +146,29 @@ void Mode1::Load()
 	// }
 
 	// Module
+	auto& saveData = Engine::GetSaveDataManager().GetSaveData();
+	firstBuy = saveData.module1.buy;
+	secondBuy = saveData.module2.buy;
+
 	module = new Module({0, 0});
 	GetGSComponent<GameObjectManager>()->Add(module);
 
-	Engine::GetLogger().LoadSaveFile();
+	//Engine::GetLogger().LoadSaveFile();
 
-	fishCaptureCount = Engine::GetLogger().GetFishCollection();
+	// fish collection
+	fishCollection = saveData.fishCollection;
 
-	fish->SetMoney(Engine::GetLogger().GetMoney());
+	// money
+	fish->SetMoney(saveData.money);
 
-	if (Engine::GetLogger().GetModule1())
-	{
+	// module1
+	if (saveData.module1.set) {
 		module->SetFirstModule(true);
 		GetGSComponent<GameObjectManager>()->Add(new FirstModule(ship_ptr));
 	}
 
-	if (Engine::GetLogger().GetModule2())
-	{
+	// module2
+	if (saveData.module2.set) {
 		module->SetSecondModule(true);
 		GetGSComponent<GameObjectManager>()->Add(new SecondModule(ship_ptr));
 	}
@@ -301,7 +307,19 @@ void Mode1::Draw()
 void Mode1::Unload()
 {
 
-	Engine::GetLogger().WriteSaveFile(fishCaptureCount, GetGSComponent<Fish>()->GetMoney(), firstBuy, module->IsFirstSetted(), Engine::GetLogger().GetModule1XPos(), secondBuy, module->IsSecondSetted(), Engine::GetLogger().GetModule2XPos());
+	//Engine::GetLogger().WriteSaveFile(fishCollection, GetGSComponent<Fish>()->GetMoney(), firstBuy, module->IsFirstSetted(), Engine::GetLogger().GetModule1XPos(), secondBuy, module->IsSecondSetted(), Engine::GetLogger().GetModule2XPos());
+	SaveData save = Engine::GetSaveDataManager().GetSaveData();
+
+	ModuleData m1{ firstBuy, module->IsFirstSetted(), save.module1.pos };
+	ModuleData m2{ secondBuy, module->IsSecondSetted(), save.module1.pos };
+
+	Engine::GetSaveDataManager().SetFishData(
+		GetGSComponent<Fish>()->GetMoney(),
+		fishCollection
+	);
+
+	Engine::GetSaveDataManager().SetModuleData(m1, m2);
+	//Engine::GetSaveDataManager().UpdateSaveData(save);
 
 	ship_ptr = nullptr;
 	delete fishGenerator;

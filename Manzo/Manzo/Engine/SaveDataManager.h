@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Game/SaveData.h"  // SaveData ±¸Á¶Ã¼ ¹× °ü·Ã ÇÔ¼ö ¼±¾ð Æ÷ÇÔ
+#include "../Game/SaveData.h"  // SaveData ï¿½ï¿½ï¿½ï¿½Ã¼ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 #include <string>
 #include <fstream>
@@ -24,6 +24,8 @@ public:
     bool Save();
     bool SaveToFile(const std::string& filePath, const SaveData& data) const;
     SaveData& GetSaveData();
+    void SetFishData(int money, const std::map<int, int>& fishCollection);
+    void SetModuleData(const ModuleData& m1, const ModuleData& m2);
     void UpdateSaveData(const SaveData& newData);
 
     std::map<int, int> GetFishCollection() { return currentSaveData.fishCollection; }
@@ -37,18 +39,18 @@ private:
 };
 
 
-// ¿¹½Ã »ç¿ë¹ý
+// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 //int main() {
-//    // ÆÄÀÏ °æ·Î´Â ÀûÀýÈ÷ ÁöÁ¤ (¿¹: assets/images/jsons/save.json)
+//    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Î´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½: assets/images/jsons/save.json)
 //    std::string saveFilePath = "assets/images/jsons/save.json";
 //
 //    SaveDataManager saveManager(saveFilePath);
 //
-//    // ÀÌ¹Ì ÀúÀåµÈ µ¥ÀÌÅÍ¸¦ ºÒ·¯¿Â ÈÄ, ÇÊ¿ä½Ã °ÔÀÓ ·ÎÁ÷¿¡¼­ »ç¿ë
+//    // ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½Ò·ï¿½ï¿½ï¿½ ï¿½ï¿½, ï¿½Ê¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 //    SaveData& data = saveManager.GetSaveData();
 //    std::cout << "Current Day: " << data.day << "\nMoney: " << data.money << std::endl;
 //
-//    // ¿¹¸¦ µé¾î, ÀÌº¥Æ®¸¦ ¿Ï·áÇßÀ» ¶§ µ¥ÀÌÅÍ ¼öÁ¤ ÈÄ ¾÷µ¥ÀÌÆ®:
+//    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½Ìºï¿½Æ®ï¿½ï¿½ ï¿½Ï·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®:
 //    data.money += 500;
 //    data.fish += 2;
 //    saveManager.UpdateSaveData(data);

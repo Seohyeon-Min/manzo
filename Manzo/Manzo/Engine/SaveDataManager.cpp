@@ -54,10 +54,20 @@ bool SaveDataManager::Save() {
     }
 }
 
+
 SaveData& SaveDataManager::GetSaveData() {
     return currentSaveData;
 }
 
+void SaveDataManager::SetFishData(int money, const std::map<int, int>& fishCollection) {
+    currentSaveData.money = money;
+    currentSaveData.fishCollection = fishCollection;
+}
+
+void SaveDataManager::SetModuleData(const ModuleData& m1, const ModuleData& m2) {
+    currentSaveData.module1 = m1;
+    currentSaveData.module2 = m2;
+}
 void SaveDataManager::UpdateSaveData(const SaveData& newData) {
     currentSaveData = newData;
     Save();

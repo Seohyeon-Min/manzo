@@ -49,19 +49,8 @@ public:
     void SetTraceLogLevel(LoggerLogLevel level) {
         currentLogLevel = level;
     }
-    void LoadSaveFile();
-    void WriteSaveFile(std::map<int, int> fishCaptureCount, int money, bool module1_buy, bool module1_set, float m1x, bool module2_buy, bool module2_set, float m2x);
-
-    std::map<int, int> GetFishCollection() { return fiShCollection; }
-    int GetMoney() { return money; }
-
-    bool BuyModule1() { return module1_buy; }
-    bool BuyModule2() { return module2_buy; }
-    bool GetModule1() { return module1_set; }
-    bool GetModule2() { return module2_set; }
-
-    float GetModule1XPos() { return module1Pos; }
-    float GetModule2XPos() { return module2Pos; }
+    //void LoadSaveFile();
+    //void WriteSaveFile(std::map<int, int> fishCollection, int money, bool module1_buy, bool module1_set, float m1x, bool module2_buy, bool module2_set, float m2x);
 
 private:
     const std::string word[4]{ "Verbose","Debug","Event","Error" };
@@ -71,11 +60,4 @@ private:
     double seconds_since_start();
     void log(Severity severity, std::string message);
     LoggerLogLevel currentLogLevel = LOGINFO;
-
-    int money;
-    bool module1_buy, module2_buy;
-    bool module1_set, module2_set;
-    float module1Pos, module2Pos;
-
-    std::map<int, int> fiShCollection;
 };
