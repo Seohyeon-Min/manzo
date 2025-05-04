@@ -25,7 +25,20 @@ public:
     bool Save();
     bool SaveToFile(const std::string& filePath, const SaveData& data) const;
     SaveData& GetSaveData();
+    void SetFishData(int money, const std::map<int, int>& fishCollection);
+    void SetModuleData(const ModuleData& m1, const ModuleData& m2);
     void UpdateSaveData(const SaveData& newData);
+
+    std::map<int, int> GetFishCollection() { return currentSaveData.fishCollection; }
+    int GetMoney() { return currentSaveData.money; }
+
+    //bool BuyModule1() { return currentSaveData.module1.buy; }
+    //bool BuyModule2() { return module2.buy; }
+    //bool GetModule1() { return module1.set; }
+    //bool GetModule2() { return module2.set; }
+
+    //float GetModule1XPos() { return module1Pos; }
+    //float GetModule2XPos() { return module2Pos; }   
 
 private:
     std::string saveFilePath;

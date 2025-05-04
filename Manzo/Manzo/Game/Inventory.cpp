@@ -11,20 +11,27 @@ Inven::Inven(vec2 position) : GameObject(position), page(0), dre_todayFish(rd())
 	AddGOComponent(new Sprite("assets/images/window.spt", this));
 	change_state(&state_none);
 
-	fishCollection = Engine::GetLogger().GetFishCollection();
+	auto& saveData = Engine::GetSaveDataManager().GetSaveData();
+
+	// 물고기
+	fishCollection = saveData.fishCollection;
 	originCollection = fishCollection;
 
+	// 모듈 포인터
 	module_ptr = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Module>();
 
-	buy_first_module = Engine::GetLogger().BuyModule1();
-	buy_second_module = Engine::GetLogger().BuyModule2();
+	// 모듈 구매 여부
+	buy_first_module = saveData.module1.buy;
+	buy_second_module = saveData.module2.buy;
 
-	module_ptr->SetFirstModule(Engine::GetLogger().GetModule1());
-	module_ptr->SetSecondModule(Engine::GetLogger().GetModule2());
+	// 모듈 장착 여부
+	module_ptr->SetFirstModule(saveData.module1.set);
+	module_ptr->SetSecondModule(saveData.module2.set);
 
-	money = Engine::GetLogger().GetMoney();
-	m1x = Engine::GetLogger().GetModule1XPos();
-	m2x = Engine::GetLogger().GetModule2XPos();
+	// 돈 및 위치
+	money = saveData.money;
+	m1x = saveData.module1.pos;
+	m2x = saveData.module2.pos;
 }
 
 void Inven::Update(double dt)

@@ -69,12 +69,12 @@ void Mode2::Load() {
     dialog_ptr = new Dialog({0,0});
     GetGSComponent<GameObjectManager>()->Add(dialog_ptr);
 
-    Engine::GetLogger().LoadSaveFile();
+    //Engine::GetLogger().LoadSaveFile();
 
-    ////ScenarioComponent
-    //scenario = new ScenarioComponent(dialog_ptr);
-    //AddGSComponent(scenario);
-    //scenario->Load();
+    //ScenarioComponent
+    scenario = new ScenarioComponent(dialog_ptr);
+    AddGSComponent(scenario);
+    scenario->Load();
     
     // Module
     module_ptr = new Module({ 0, 0 });
@@ -197,11 +197,11 @@ void Mode2::Draw() {
             // 총 몇 개 출력할 건지 먼저 계산
             int totalCaptured = 0;
             for (int i = 0; i < 3; ++i)
-                if (fishCaptureCount[i] != 0)
+                if (fishCollection[i] != 0)
                     totalCaptured++;
 
             for (int i = 0; i < 3; ++i) {
-                if (fishCaptureCount[i] != 0) {
+                if (fishCollection[i] != 0) {
                     Engine::GetFontManager().PrintText(
                         FontType::Bold,
                         std::to_string(inven_ptr->HowManyFishes(i)),
@@ -226,7 +226,26 @@ void Mode2::Draw() {
 }
 
 void Mode2::Unload() {
-    Engine::GetLogger().WriteSaveFile(inven_ptr->fishCollection, inven_ptr->GetMoney(), inven_ptr->FirstModuleBought(), module_ptr->IsFirstSetted(), inven_ptr->GetX1Pos(), inven_ptr->SecondModuleBought(), module_ptr->IsSecondSetted(), inven_ptr->GetX2Pos());
+
+    Engine::GetSaveDataManager().SetFishData(
+        inven_ptr->GetMoney(),
+        inven_ptr->fishCollection
+    );
+
+    ModuleData m1{
+        inven_ptr->FirstModuleBought(),
+        module_ptr->IsFirstSetted(),
+        inven_ptr->GetX1Pos()
+    };
+
+    ModuleData m2{
+        inven_ptr->SecondModuleBought(),
+        module_ptr->IsSecondSetted(),
+        inven_ptr->GetX2Pos()
+    };
+
+    Engine::GetSaveDataManager().SetModuleData(m1, m2);
+    Engine::GetSaveDataManager().Save();
 
     Engine::GetAudioManager().StopAllChannels();
     GetGSComponent<GameObjectManager>()->Unload();

@@ -17,7 +17,7 @@
 #include <map>
 
 // 초기화 되는지 확인하기
-std::map<int, int> fishCaptureCount;
+std::map<int, int> fishCollection;
 
 #ifndef PIover3
 #define PIover3  (3.1415926535987932f / 3.0f)
@@ -87,7 +87,7 @@ void Fish::ResolveCollision(GameObject* other_object) {
             collided = true;
             fishCnt--;
             money += moneys[type - 1];
-            fishCaptureCount[type - 1]++;
+            fishCollection[type - 1]++;
         }
         this->Destroy();
         break;

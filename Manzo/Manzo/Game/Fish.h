@@ -5,7 +5,7 @@
 #include "../Engine/MapManager.h"
 #include <map>
 
-extern std::map<int, int> fishCaptureCount;
+extern std::map<int, int> fishCollection;
 
 class Fish : public GameObject
 {
