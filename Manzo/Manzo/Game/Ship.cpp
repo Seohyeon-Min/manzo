@@ -225,6 +225,10 @@ std::vector<vec2> spline_points;
 
 void Ship::Update(double dt)
 {
+	if (Engine::GetInput().KeyJustPressed(Input::Keys::B))
+	{
+		std::cout << GetPosition().x << ", " << GetPosition().y << std::endl;
+	}
 
 	if (!IsFuelZero()) {
 		can_dash = true;

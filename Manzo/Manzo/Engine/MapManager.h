@@ -30,7 +30,8 @@ public:
 	void LoadFirstMap();
 	void LoadNextMap();
 	void UpdateMaps(const Math::rect& camera_boundary);
-	
+	Map* GetMap(int index) { return maps[index]; }
+
 private:
 	std::vector<Map*> maps;
 	std::vector<std::string> mapFiles;
@@ -52,10 +53,20 @@ public:
 	void Translate(const vec2& offset);
 	void UnloadAll();
 
+	void LoadPNG();
+	vec2 MaskToWorld(int maskX, int maskY);
+	ivec2 WorldToMask(vec2 worldPos);
+	bool IsMaskTrue(vec2 worldPos);
+	int GetWorldWidth() { return width; }
+	int GetWorldHeight() { return height; }
+	std::vector<std::vector<bool>> GetMask() { return mask; }
 
 private:
 	char currentCommand = '\0';
 	float margin = 2000.f;
+
+	int width, height, channels;
+	std::vector<std::vector<bool>> mask;
 
 	std::vector<Polygon> original_polygons;
 	std::vector<Polygon> modified_polygons;

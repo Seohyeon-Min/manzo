@@ -77,7 +77,7 @@ void Mode1::Load()
 
 	//// camera
 	vec2 start_position = {600, -500};
-	Math::rect cam_limit = Math::rect({600, -500}, {4300, -6000});
+	Math::rect cam_limit = Math::rect({600, -346}, {4345, -6000});
 	camera = new Cam();
 	camera->SetPosition(start_position);
 	camera->SetLimit(cam_limit);

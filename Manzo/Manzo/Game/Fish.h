@@ -47,6 +47,7 @@ public:
 	//bool IsRockInfront(vec2 thisPos, vec2 rockPos);
 
 private:
+	Map* map;
 	static int money;
 	//bool IsAvoided = false;
 	//float angleRadians;

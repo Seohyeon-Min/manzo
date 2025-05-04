@@ -38,7 +38,7 @@ void FishGenerator::GenerateFish(double dt)
 		fishList.resize(fishCnt);
 		fishList.shrink_to_fit();
 
-		if (fishList.size() < 40) //limit of fish num
+		if (fishList.size() < 1) //limit of fish num
 		{
 
 			Fish* newFish = new Fish();

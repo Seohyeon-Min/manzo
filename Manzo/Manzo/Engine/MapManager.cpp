@@ -8,6 +8,7 @@ Author:     SeokWha Hong
 Created:    September 12, 2024
 */
 
+#include "stb_image.h"
 #include "MapManager.h"
 #include "GameObjectManager.h"
 #include "vec2.h"
@@ -37,6 +38,7 @@ void MapManager::LoadFirstMap() {
 
     Map* initialMap = new Map();
     initialMap->ParseSVG(mapFiles[currentMapIndex]);
+    initialMap->LoadPNG();
     maps.push_back(initialMap);
 }
 
@@ -423,10 +425,6 @@ std::vector<vec2> Map::parsePathData(const std::string& pathData) {
     return positions;
 }
 
-
-
-
-
 bool Map::IsOverlapping(const Math::rect& camera_boundary, const Math::rect& rock) {
     return !(camera_boundary.Right() + margin < rock.Left() ||
         camera_boundary.Left() - margin > rock.Right() ||
@@ -496,7 +494,6 @@ void Map::Translate(const vec2& offset) {
     }
 }
 
-
 void Map::UnloadAll() {
     for (Rock* rock : rocks) {
         if (!rock->IsActivated()) {
@@ -508,4 +505,80 @@ void Map::UnloadAll() {
             delete rockgroup;
         }
     }
+}
+
+void Map::LoadPNG()
+{
+    unsigned char* imgData = stbi_load("assets/maps/mask.png", &width, &height, &channels, 0);
+
+    if (!imgData) {
+        std::cerr << "Failed to load map mask .png file.\n";
+        return;
+    }
+
+    mask.resize(height, std::vector<bool>(width));
+
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            int idx = (y * width + x) * channels;
+            unsigned char r = imgData[idx];
+            unsigned char g = imgData[idx + 1];
+            unsigned char b = imgData[idx + 2];
+            int flippedY = height - 1 - y;
+            mask[flippedY][x] = (r < 10 && g < 10 && b < 10);
+        }
+    }
+
+    std::cout << "Load PNG successfully" << std::endl;
+    //for (int i = 0; i < height; i++)
+    //{
+    //    for (int j = 0; j < width; j++)
+    //    {
+    //        if(mask[i][j] ==  1) std::cout << "mask[" << i << "][" << j << "] : " << mask[i][j] << std::endl;
+    //    } 
+    //}
+    stbi_image_free(imgData);
+
+}
+
+vec2 Map::MaskToWorld(int maskX, int maskY)
+{
+    float world_left = 0.0f;
+    float world_top = 0.0f;
+    float world_right = 4970.0f;
+    float world_bottom = -6000.0f;
+
+    float world_width = world_right - world_left;
+    float world_height = world_bottom - world_top;
+
+    float x = (float)maskX / (float)width * world_width + world_left;
+    float y = (float)( maskY) / (float)height * world_height + world_top;
+
+    return { x, y };
+}
+
+ivec2 Map::WorldToMask(vec2 worldPos)
+{
+    float world_left = 0.0f;
+    float world_top = 0.0f;
+    float world_right = 4970.0f;
+    float world_bottom = -6000.0f;
+
+    float world_width = world_right - world_left;
+    float world_height = world_bottom - world_top;
+
+
+    int maskX = static_cast<int>(((worldPos.x - world_left) / world_width) * width);
+    int maskY = static_cast<int>(((worldPos.y - world_top) / world_height) * height);
+
+    maskX = std::max(0, std::min(maskX, width - 1));
+    maskY = std::max(0, std::min(maskY, height - 1));
+
+    return { maskX, maskY };
+}
+
+bool Map::IsMaskTrue(vec2 worldPos)
+{
+    ivec2 maskPos = WorldToMask(worldPos);
+    return mask[maskPos.y][maskPos.x];
 }
