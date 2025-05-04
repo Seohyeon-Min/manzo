@@ -69,15 +69,15 @@ void Mode2::Load() {
     dialog_ptr = new Dialog({0,0});
     GetGSComponent<GameObjectManager>()->Add(dialog_ptr);
 
-    //ScenarioComponent
-    scenario = new ScenarioComponent(Engine::GetEventManager(), Engine::GetSaveDataManager(), dialog_ptr);
-    AddGSComponent(scenario);
-    scenario->Load();
-    
     Engine::GetLogger().LoadSaveFile();
 
+    ////ScenarioComponent
+    //scenario = new ScenarioComponent(dialog_ptr);
+    //AddGSComponent(scenario);
+    //scenario->Load();
+    
     // Module
-   module_ptr = new Module({ 0, 0 });
+    module_ptr = new Module({ 0, 0 });
     GetGSComponent<GameObjectManager>()->Add(module_ptr);
 
     // Inven
@@ -177,7 +177,9 @@ void Mode2::FixedUpdate(double dt)
 {}
 
 void Mode2::Draw() {
-    GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
+    if (GetGSComponent<Background>() && GetGSComponent<Cam>()) {
+        GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
+    }
     GetGSComponent<GameObjectManager>()->DrawAll();
     dialog_ptr->Draw();
 
@@ -232,8 +234,7 @@ void Mode2::Unload() {
     ClearGSComponents();
     dialog_ptr->Unload();
     playing = false;
-    delete background;
+
     background = nullptr;
-    delete scenario;
     scenario = nullptr;
 }

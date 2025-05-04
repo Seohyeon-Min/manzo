@@ -10,7 +10,7 @@ public:
 
     void Update() {
         for (auto& event : events) {
-            event.Update();
+            if (!event.HasRun()) event.Update();
         }
     }
 

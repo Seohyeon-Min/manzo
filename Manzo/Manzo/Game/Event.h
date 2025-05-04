@@ -10,6 +10,7 @@ public:
 
     void Update();
     void Reset();
+    bool HasRun() { return triggered; }
 
 private:
     std::string            id;

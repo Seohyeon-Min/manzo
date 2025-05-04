@@ -65,6 +65,7 @@ void Engine::Update() {
     }
 
     //FPS = 1.0 / dt;
+    eventmanager.Update();
     gamestatemanager.Update(dt);
     input.Update();
 

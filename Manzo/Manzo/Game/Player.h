@@ -10,7 +10,7 @@ public:
     void Update(double dt) override;
     void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
 
-private:
+protected:
     float speed = 500.f;
 
     class Player_Idle : public State {
