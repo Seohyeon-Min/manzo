@@ -526,6 +526,10 @@ void Map::LoadPNG()
             unsigned char b = imgData[idx + 2];
             int flippedY = height - 1 - y;
             mask[flippedY][x] = (r < 10 && g < 10 && b < 10);
+
+            if (mask[flippedY][x]) {
+                valid_spawn_positions.emplace_back(x, flippedY);
+            }
         }
     }
 
@@ -568,11 +572,17 @@ ivec2 Map::WorldToMask(vec2 worldPos)
     float world_height = world_bottom - world_top;
 
 
-    int maskX = static_cast<int>(((worldPos.x - world_left) / world_width) * width);
-    int maskY = static_cast<int>(((worldPos.y - world_top) / world_height) * height);
+    int maskX = static_cast<int>(std::floor(((worldPos.x - world_left) / world_width) * width));
+    int maskY = static_cast<int>(std::floor(((worldPos.y - world_top) / world_height) * height));
 
-    maskX = std::max(0, std::min(maskX, width - 1));
-    maskY = std::max(0, std::min(maskY, height - 1));
+    maskX = std::clamp(maskX, 0, width - 1);
+    maskY = std::clamp(maskY, 0, height - 1);
+
+    //int maskX = static_cast<int>(((worldPos.x - world_left) / world_width) * width);
+    //int maskY = static_cast<int>(((worldPos.y - world_top) / world_height) * height);
+
+    //maskX = std::max(0, std::min(maskX, width - 1));
+    //maskY = std::max(0, std::min(maskY, height - 1));
 
     return { maskX, maskY };
 }
@@ -581,4 +591,23 @@ bool Map::IsMaskTrue(vec2 worldPos)
 {
     ivec2 maskPos = WorldToMask(worldPos);
     return mask[maskPos.y][maskPos.x];
+}
+
+vec2 Map::Spawn() {
+    std::uniform_int_distribution<> distX(0, width - 1);
+    std::uniform_int_distribution<> distY(0, height - 1);
+    int max_attempts = 1000;
+
+    for (int i = 0; i < max_attempts; ++i) {
+        int maskX = distX(gen);
+        int maskY = distY(gen);
+
+        vec2 worldPos = MaskToWorld(maskX, maskY);
+
+        if (IsMaskTrue(worldPos)) {
+            return worldPos;
+        }
+    }
+
+    return { 0.0f, 0.0f };
 }

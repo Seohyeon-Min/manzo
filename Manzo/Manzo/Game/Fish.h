@@ -47,6 +47,13 @@ public:
 	//bool IsRockInfront(vec2 thisPos, vec2 rockPos);
 
 private:
+	float RandomFloat(float min, float max) {
+		static std::random_device rd;
+		static std::mt19937 gen(rd());
+		std::uniform_real_distribution<float> dist(min, max);
+		return dist(gen);
+	}
+
 	Map* map;
 	static int money;
 	//bool IsAvoided = false;

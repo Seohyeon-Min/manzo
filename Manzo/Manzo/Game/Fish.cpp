@@ -42,16 +42,14 @@ Fish::Fish(Fish* parent) : GameObject({ 0, 0 }) {
     int index = fishIndex(dre_fishIndex);
 
     if (parent == nullptr) {
-        ivec2 windowSize = { Engine::window_width, Engine::window_height };
         bool isLeft = true; // rand() % 2;
 
-        float startX = 0; //isLeft ? 50.f : 3520.f;   //end = 5120
-        float startY = 0; //-2000.f + static_cast<float>(rand() % (1701)); // -2000 ~ -300
-
-        start_position = map->MaskToWorld(4700,5900);//{ startX , startY };
+        start_position = map->Spawn();//map->MaskToWorld(4700,5900);//{ startX , startY };
         SetPosition(start_position);
-        SetVelocity({ 0,0 });
-        //SetVelocity(isLeft ? fishBook[index].velocity : -fishBook[index].velocity);
+        
+        //SetVelocity({ 0,0 });
+        
+        SetVelocity(isLeft ? fishBook[index].velocity : -fishBook[index].velocity);
         SetFlipX(!isLeft);
 
         SetScale(fishBook[index].scale);
@@ -116,12 +114,29 @@ void Fish::Update(double dt) {
     //    this->Destroy();
     //}
 
-    //if(!map->IsMaskTrue(GetPosition()))
-    //{
-    //    std::cout << "Not In Black" << std::endl;
-    //}
-    //else
-    //    std::cout << "In Black" << std::endl;
+    if(!map->IsMaskTrue(GetPosition()))
+    {
+        int max_attempts = 100;
+        float try_distance = 100.0f; // 이동 거리
+
+        for (int i = 0; i < max_attempts; ++i) {
+            float angle_deg = RandomFloat(0.0f, 360.0f);
+            float angle_rad = glm::radians(angle_deg);
+            vec2 dir = { cos(angle_rad), sin(angle_rad) };
+            vec2 testPos = GetPosition() + dir * try_distance;
+
+            if (map->IsMaskTrue(testPos)) {
+                SetVelocity(dir * GetVelocity().Length());  
+                break;
+            }
+        }
+
+    }
+    else
+    {
+
+        //std::cout << "In Black" << std::endl;
+    }
 }
 
 void Fish::Draw() {
