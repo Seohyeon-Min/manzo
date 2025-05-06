@@ -135,7 +135,7 @@ void Mode2::Update(double dt) {
 		Engine::GetGameStateManager().ReloadState();
 	}
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::Space) && !isLoaded) {
-		dialog_ptr->LoadDialog(1, 0.05);
+		//dialog_ptr->LoadDialog(1, 0.05);
 		isLoaded = true;
 	}
 #else
@@ -204,7 +204,6 @@ void Mode2::Draw() {
 			float currentY = 5.5f;
 			int printed = 0;
 
-			// �� �� �� ����� ���� ���� ���
 			int totalCaptured = 0;
 			for (int i = 0; i < 3; ++i)
 				if (fishCollection[i] != 0)
@@ -222,8 +221,8 @@ void Mode2::Draw() {
 					);
 
 					printed++;
-					if (printed < totalCaptured - 1) currentY -= 36.f; // ù~�߰� �׸��� -36
-					else if (printed < totalCaptured) currentY -= 43.f; // ������ �ٷ� �� �׸��� -43
+					if (printed < totalCaptured - 1) currentY -= 36.f;
+					else if (printed < totalCaptured) currentY -= 43.f;
 				}
 			}
 

@@ -13,22 +13,17 @@ Inven::Inven(vec2 position) : GameObject(position), dre_todayFish(rd()), dre_pri
 
 	auto& saveData = Engine::GetSaveDataManager().GetSaveData();
 
-	// ������
 	fishCollection = saveData.fishCollection;
 	originCollection = fishCollection;
 
-	// ��� ������
 	module_ptr = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Module>();
 
-	// ��� ���� ����
 	buy_first_module = saveData.module1.buy;
 	buy_second_module = saveData.module2.buy;
 
-	// ��� ���� ����
 	module_ptr->SetFirstModule(saveData.module1.set);
 	module_ptr->SetSecondModule(saveData.module2.set);
 
-	// �� �� ��ġ
 	money = saveData.money;
 	m1x = saveData.module1.pos;
 	m2x = saveData.module2.pos;
@@ -76,7 +71,6 @@ Inven::Inven(vec2 position) : GameObject(position), dre_todayFish(rd()), dre_pri
 		{
 			std::string file_name = "fish" + std::to_string(fish.first + 1);
 
-			//0�϶� �巡�� ���ϰ� ����? �׸��� �ణ �� ���� �����ִ��� ¥ġ�� �ʳ�...�� ����غ����ҵ�
 			Engine::GetIconManager().AddIcon(file_name, { GetPosition().x + 100,float(p -= 80) }, 1.0f, true, false, true);
 		}
 	}

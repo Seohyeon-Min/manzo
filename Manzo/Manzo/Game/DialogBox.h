@@ -15,7 +15,7 @@ class Dialog : public GameObject {
 public:
     Dialog(vec2 start_position);
 
-    void LoadDialog(int id, double Speed);
+    //void LoadDialog(int id, double Speed);
     void LoadDialogGroup(const std::string& group_id, double Speed = dialogBasicSpeed);
     void LoadRandomDialog(const std::string& group_id, double Speed = dialogBasicSpeed);
     void NextLine();

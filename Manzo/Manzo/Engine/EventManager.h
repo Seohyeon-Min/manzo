@@ -7,10 +7,7 @@ class EventManager {
 public:
     void AddEvent(const Event& e) { one_shot_events.push_back(e); }
     void AddStepEvent(std::shared_ptr<StepEvent> s) {
-        if (!s) {
-            Engine::GetLogger().LogError("Tried to add null StepEvent!");
-            return;
-        }
+
         step_events.push_back(std::move(s));
     }
 
