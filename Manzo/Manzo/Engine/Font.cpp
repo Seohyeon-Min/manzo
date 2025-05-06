@@ -451,6 +451,34 @@ public:
 		shader->SetTexture("curves", 1, curveTexture);
 	}
 
+	float CalculateTextWidth(const std::string& text)
+	{
+		float width = 0.0f;
+		FT_UInt previous = 0;
+
+		for (const char* textIt = text.c_str(); *textIt != '\0'; ) {
+			uint32_t charcode = decodeCharcode(&textIt);
+			auto glyphIt = glyphs.find(charcode);
+			Glyph& glyph = (glyphIt == glyphs.end()) ? glyphs[0] : glyphIt->second;
+
+			// Add kerning if applicable
+			if (previous != 0 && glyph.index != 0) {
+				FT_Vector kerning;
+				FT_Error error = FT_Get_Kerning(face, previous, glyph.index, kerningMode, &kerning);
+				if (!error) {
+					width += (float)kerning.x / emSize * worldSize;
+				}
+			}
+
+			width += (float)glyph.advance / emSize * worldSize;
+			previous = glyph.index;
+		}
+
+		return width;
+	}
+
+	float GetWorldSize() { return worldSize; }
+
 	void draw(const vec3& ndcPosition, const std::string& text) {
 		float x = ndcPosition.x;
 		float y = ndcPosition.y;

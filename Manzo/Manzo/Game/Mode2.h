@@ -22,6 +22,7 @@ Created:    Sept 12, 2024
 #include "Inventory.h"
 #include "Module.h"
 #include "ScenarioComponent.h"
+#include "PopUp.h"
 
 class Fish;
 
@@ -52,6 +53,8 @@ private:
     Inven* inven_ptr;
     Module* module_ptr;
     ScenarioComponent* scenario;
+    PopUp* sell_popup;
+    PopUp* today_fish_popup;
 
     float y_limit = 15.0f;
     float frequency = 0.9f;

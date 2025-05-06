@@ -62,7 +62,6 @@ public:
         return Instance()->render;
     }
 
-
     static AudioManager& GetAudioManager() {
         return Instance()->audiomanager;
     }

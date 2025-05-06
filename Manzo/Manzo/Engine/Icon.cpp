@@ -2,14 +2,23 @@
 #include "GameObjectManager.h"
 #include "../Game/Dragging.h"
 #include "../Game/Mouse.h"
+#include "../Game/PopUpMovement.h"
 
-Icon::Icon(const std::string& alias, const std::filesystem::path& filename, vec2 position, float scale, bool drag, bool change_pos, bool interactiveWithMouse) : GameObject(position), alias(alias), position(position), scale(scale), can_drag(drag), can_change_pos(change_pos), interaction(interactiveWithMouse)
+Icon::Icon(const std::string& alias, const std::filesystem::path& filename, vec2 position, float scale, bool drag, bool change_pos, bool interactiveWithMouse, bool draw, bool moving) : GameObject(position), alias(alias), position(position), scale(scale), can_drag(drag), can_change_pos(change_pos), interaction(interactiveWithMouse), draw(draw)
 {
+	//Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(this);
 	AddGOComponent(new Sprite(filename, this));
 	SetScale({ scale,scale });
 
 	Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(this);
 	AddGOComponent(new Dragging(*this));
+
+	if (moving)
+	{
+		vec2 start = { position.x - 5000.f - GetGOComponent<Sprite>()->GetFrameSize().x, position.y };
+		AddGOComponent(new PopUpMovement(this, start, position));
+		SetPosition(start);
+	}
 }
 
 Icon::~Icon()
@@ -19,7 +28,7 @@ Icon::~Icon()
 
 void Icon::Update(double dt)
 {
-	GameObject::Update(dt);
+	GameObject::Update(dt); 
 }
 
 void Icon::Draw(DrawLayer drawlayer)

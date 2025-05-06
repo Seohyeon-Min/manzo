@@ -79,7 +79,7 @@ void Mode1::Load()
 
 	//// camera
 	vec2 start_position = {600, -500};
-	Math::rect cam_limit = Math::rect({600, -500}, {4300, -6000});
+	Math::rect cam_limit = Math::rect({600, -346}, {4345, -6000});
 	camera = new Cam();
 	camera->SetPosition(start_position);
 	camera->SetLimit(cam_limit);
@@ -295,13 +295,13 @@ void Mode1::Draw()
 	// Engine::GetFontManager().PrintText(FontType::Bold,"E", { 0.f,0.f }, 0.2f,{ 1.f,1.f,1.f }, 0.5f);
 	if (ship_ptr->GetFuel() <= 0)
 	{
-		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, "CLICK TO RESTART", {ship_ptr->GetPosition().x, ship_ptr->GetPosition().y - 60.f}, 88.098f, {1.f, 1.f, 1.f}, 1.0f);
+		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "CLICK TO RESTART", {ship_ptr->GetPosition().x, ship_ptr->GetPosition().y - 60.f}, 88.098f, {1.f, 1.f, 1.f}, 1.0f);
 		// Draw Font
 	}
-	Engine::GetFontManager().PrintText(FontType::Bold, "E", {750, 500}, 0.5f, {1.f, 1.f, 1.f}, 0.5f);
+	Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, "E", {750, 500}, 0.5f, {1.f, 1.f, 1.f}, 0.5f);
 	if (module->IsSecondSetted())
 	{
-		Engine::GetFontManager().PrintText(FontType::VeryThin, std::to_string(static_cast<int>(ship_ptr->GetFuel())), {-0.001f, 0.75f}, 0.05f, {1.f, 1.f, 1.f}, 1.f, false);
+		Engine::GetFontManager().PrintText(FontType::VeryThin, FontAlignment::LEFT, std::to_string(static_cast<int>(ship_ptr->GetFuel())), {-0.001f, 0.75f}, 0.05f, {1.f, 1.f, 1.f}, 1.f, false);
 	}
 }
 void Mode1::Unload()

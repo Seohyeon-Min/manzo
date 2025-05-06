@@ -60,6 +60,7 @@
     <ClCompile Include="Game\NPC.cpp" />
     <ClCompile Include="Game\Player.cpp" />
     <ClCompile Include="Game\ScenarioComponent.cpp" />
+    <ClCompile Include="Game\PopUp.cpp" />
     <ClCompile Include="Game\ScreenWrap.cpp" />
     <ClCompile Include="Game\Rock.cpp" />
     <ClCompile Include="Game\RockGroup.cpp" />
@@ -137,6 +138,8 @@
     <ClInclude Include="Game\Player.h" />
     <ClInclude Include="Game\SaveData.h" />
     <ClInclude Include="Game\ScenarioComponent.h" />
+    <ClInclude Include="Game\PopUp.h" />
+    <ClInclude Include="Game\PopUpMovement.h" />
     <ClInclude Include="Game\ScreenWrap.h" />
     <ClInclude Include="Game\Rock.h" />
     <ClInclude Include="Game\RockGroup.h" />

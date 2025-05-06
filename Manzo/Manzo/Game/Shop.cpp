@@ -23,6 +23,13 @@ Shop::Shop(vec2 postion) : GameObject(postion)
 		std::cout << "script : " << info.script << std::endl;
 		++count;
 		is_on_shop = true;
+
+		std::cout << info.icon << " ";
+		Engine::GetIconManager().AddIcon(
+				info.icon,
+				{ -500.0f, 300.0f - (80.0f * count) },
+				1.f
+			);
 	}
 
 	inven = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Inven>();
@@ -39,25 +46,11 @@ void Shop::Update(double dt)
 
 	if (inven->GetIsOpened())
 	{
-		int row = 1;
-		int column = 1;
-
 		for (auto& info : shop_infos)
 		{
-			Engine::GetIconManager().AddIcon(
-				info.icon,
-				{ -575.0f + (120.0f * column), 200.0f - (120.0f * row) },
-				0.7f
-			);
-
-			if (column == 3)
-			{
-				column = 0;
-				row++;
-			}
-			column++;
-
 			std::string icon_name = info.icon;
+
+			Engine::GetIconManager().ShowIcon(icon_name);
 
 			if (Engine::GetIconManager().IsCollidingWith(icon_name, "module_have") && inven->GetMoney() >= info.price)
 			{
@@ -72,7 +65,7 @@ void Shop::Update(double dt)
 					inven->BuySecondModule(true);
 				}
 
-				Engine::GetIconManager().RemoveIcon(icon_name);
+				//Engine::GetIconManager().RemoveIcon(icon_name);
 
 				if (!already_buy)
 				{
@@ -81,9 +74,13 @@ void Shop::Update(double dt)
 				}
 			}
 		}
-
-		Engine::GetIconManager().AddIcon("rect1",{-270.f, -170.f},0.5f,false);
-
+	}
+	else
+	{
+		for (auto& info : shop_infos)
+		{
+			Engine::GetIconManager().HideIcon(info.icon);
+		}
 	}
 }
 

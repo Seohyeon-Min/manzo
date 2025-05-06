@@ -4,8 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-
-std::vector<Icon*> icons;
+#include "GameObjectManager.h"
 
 IconManager::IconManager()
 {
@@ -13,7 +12,12 @@ IconManager::IconManager()
 
 IconManager::~IconManager()
 {
-	RemoveAllIcon();
+	Unload();
+}
+
+void IconManager::Unload()
+{
+	icons.clear();
 	icon_list.clear();
 }
 
@@ -41,7 +45,7 @@ void IconManager::LoadIconList()
 }
 
 
-void IconManager::AddIcon(std::string alias, vec2 position, float scale, bool drag, bool change_pos, bool interaction)
+void IconManager::AddIcon(std::string alias, vec2 position, float scale, bool drag, bool change_pos, bool interaction, bool draw, bool moving)
 {
 	auto it = icon_list.find(alias);
 	if (it != icon_list.end()) {
@@ -52,8 +56,8 @@ void IconManager::AddIcon(std::string alias, vec2 position, float scale, bool dr
 				return;
 			}
 		}
-		Icon* newIcon = new Icon(it->first, it->second, position, scale, drag, change_pos, interaction);
-		icons.push_back(newIcon);
+		icons.push_back(new Icon(it->first, it->second, position, scale, drag, change_pos, interaction, draw, moving));
+		//Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new Icon(it->first, it->second, position, scale, drag, change_pos, interaction));
 	}
 	else
 	{
@@ -105,13 +109,24 @@ bool IconManager::IsCollidingWith(std::string obj1, std::string obj2)
 	return false;
 }
 
-void IconManager::RemoveIcon(std::string alias)
+void IconManager::HideIcon(std::string alias)
 {
 	for (auto icon : icons)
 	{
 		if (icon->GetAlias() == alias)
 		{
 			icon->SetDraw(false);
+		}
+	}
+}
+
+void IconManager::ShowIcon(std::string alias)
+{
+	for (auto icon : icons)
+	{
+		if (icon->GetAlias() == alias)
+		{
+			icon->SetDraw(true);
 		}
 	}
 }

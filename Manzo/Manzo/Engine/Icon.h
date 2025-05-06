@@ -8,7 +8,7 @@
 class Icon : public GameObject
 {
 public:
-	Icon(const std::string& alias, const std::filesystem::path& filename, vec2 position, float scale, bool drag, bool change_pos, bool interactiveWithMouse);
+	Icon(const std::string& alias, const std::filesystem::path& filename, vec2 position, float scale, bool drag, bool change_pos, bool interactiveWithMouse, bool draw, bool moving);
 	~Icon();
 	GameObjectTypes Type() override { return GameObjectTypes::Icon; }
 	std::string TypeName() override { return "Icon"; }

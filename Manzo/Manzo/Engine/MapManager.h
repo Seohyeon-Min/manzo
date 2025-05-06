@@ -30,7 +30,8 @@ public:
 	void LoadFirstMap();
 	void LoadNextMap();
 	void UpdateMaps(const Math::rect& camera_boundary);
-	
+	Map* GetMap(int index) { return maps[index]; }
+
 private:
 	std::vector<Map*> maps;
 	std::vector<std::string> mapFiles;
@@ -40,10 +41,19 @@ private:
 
 class Map : public Component {
 public:
+	Map()
+	{
+		std::random_device rd;
+		gen = std::mt19937(rd());
+	}
+
 	~Map() {
 		rocks.clear();
 		rock_groups.clear();
+		valid_spawn_positions.clear();
+		mask.clear();
 	}
+
 	void ParseSVG(const std::string& filename);
 	std::vector<vec2> parsePathData(const std::string& pathData);	// path parsing
 	void LoadMapInBoundary(const Math::rect& camera_boundary);
@@ -52,10 +62,23 @@ public:
 	void Translate(const vec2& offset);
 	void UnloadAll();
 
+	void LoadPNG();
+	vec2 MaskToWorld(int maskX, int maskY);
+	ivec2 WorldToMask(vec2 worldPos);
+	bool IsMaskTrue(vec2 worldPos);
+	vec2 Spawn();
+	int GetWorldWidth() { return width; }
+	int GetWorldHeight() { return height; }
+	std::vector<std::vector<bool>> GetMask() { return mask; }
 
 private:
+	std::mt19937 gen;
+
 	char currentCommand = '\0';
 	float margin = 2000.f;
+
+	int width, height, channels;
+	std::vector<std::vector<bool>> mask;
 
 	std::vector<Polygon> original_polygons;
 	std::vector<Polygon> modified_polygons;
@@ -63,6 +86,7 @@ private:
 	std::vector<RockGroup*> rock_groups;
 	vec2 circle_position{ 0,0 };
 	float EndY = 100.0f;
+	std::vector<ivec2> valid_spawn_positions;
 
 
 };
