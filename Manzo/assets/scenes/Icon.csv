@@ -24,3 +24,6 @@ ModuleTab,assets/images/ModuleTab.spt
 SpecialTab,assets/images/SpecialTab.spt
 FishTab,assets/images/FishTab.spt
 close_icon,assets/images/close_icon.spt
+module1_info,assets/images/module1_info.spt
+module2_info,assets/images/module2_info.spt
+module_info,assets/images/module_info.spt

@@ -31,6 +31,7 @@ public:
 	float GetX2Pos() { return m2x; }
 
 	int HowManyFishes(int index) { return fishCollection[index]; }
+	int TodayFishPrice() { return todays_price; }
 	int HowMuchSold() { return how_much_sold; }
 
 

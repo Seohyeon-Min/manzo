@@ -75,7 +75,7 @@ void Mode2::Load() {
 	module_ptr = new Module({ 0, 0 });
 	GetGSComponent<GameObjectManager>()->Add(module_ptr);
 
-	today_fish_popup = new PopUp({ -500,300 }, "assets/images/special_fish_popup.spt", true);
+	today_fish_popup = new PopUp({ -420,295 }, "assets/images/special_fish_popup.spt", true);
 	GetGSComponent<GameObjectManager>()->Add(today_fish_popup);
 
 	// Inven
@@ -180,10 +180,13 @@ void Mode2::Draw() {
 
 	today_fish_popup->SetPop(true);
 
+	Engine::GetFontManager().PrintText(FontType::VeryThin, FontAlignment::LEFT, "Trade your fish for " + std::to_string(inven_ptr->TodayFishPrice()) + " shiny coins!", {-262.f,142.f}, 0.032f, {0.f,0.f,0.f}, 1.0f);
+
 	if (inven_ptr->GetIsOpened())
 	{
 		Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, std::to_string(inven_ptr->GetMoney()), { 285.f,157.f }, 0.05f, { 0.f,0.f,0.f }, 1.0f);
-
+		Engine::GetFontManager().PrintText(FontType::VeryThin, FontAlignment::LEFT, "Show the maximum dash distance", { -230.f,68.f }, 0.032f, { 1.f,1.f,1.f }, 1.0f);
+		Engine::GetFontManager().PrintText(FontType::VeryThin, FontAlignment::LEFT, "Show the amount of fuel left", { -230.f,27.f }, 0.032f, { 1.f,1.f,1.f }, 1.0f);
 		if (inven_ptr->GetFishState())
 		{
 
@@ -222,9 +225,9 @@ void Mode2::Draw() {
 				Engine::GetIconManager().ShowIcon("minus1");
 				Engine::GetIconManager().ShowIcon("minus10");
 
-				Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, std::to_string(inven_ptr->HowMuchSold()), { -5.f,-40.f }, 0.05f, { 1.f,1.f,1.f }, 1.0f);
 
 			}
+			if(sell_popup->GetPop())	Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, std::to_string(inven_ptr->HowMuchSold()), { -5.f,-40.f }, 0.05f, { 1.f,1.f,1.f }, 1.0f);
 		}
 		else
 		{

@@ -60,7 +60,7 @@ Inven::Inven(vec2 position) : GameObject(position), dre_todayFish(rd()), dre_pri
 		is_picked = true;
 	}
 	todays_fish_icon = "fish" + std::to_string(todays_fish_index + 1);
-	Engine::GetIconManager().AddIcon(todays_fish_icon, { -575,305 }, 1.0f, false, false, false, true, true);
+	Engine::GetIconManager().AddIcon(todays_fish_icon, { -575,300 }, 1.0f, false, false, false, true, true);
 
 
 	for (auto& fish : originCollection)
