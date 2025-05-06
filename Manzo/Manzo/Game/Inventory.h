@@ -62,6 +62,7 @@ private:
 	int how_much_sold = 0;
 
 	float m1x, m2x;
+	int p = 100;
 
 	std::string todays_fish_icon;
 
@@ -112,5 +113,4 @@ private:
 	State_SC state_sc;
 
 	Module* module_ptr;
-
 };

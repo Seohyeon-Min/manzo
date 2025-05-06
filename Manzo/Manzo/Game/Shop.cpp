@@ -44,11 +44,11 @@ void Shop::Update(double dt)
 
 		for (auto& info : shop_infos)
 		{
-			Engine::GetIconManager().AddIcon(
+			/*Engine::GetIconManager().AddIcon(
 				info.icon,
 				{ -575.0f + (120.0f * column), 200.0f - (120.0f * row) },
 				0.7f
-			);
+			);*/
 
 			if (column == 3)
 			{
@@ -72,7 +72,7 @@ void Shop::Update(double dt)
 					inven->BuySecondModule(true);
 				}
 
-				Engine::GetIconManager().RemoveIcon(icon_name);
+				//Engine::GetIconManager().RemoveIcon(icon_name);
 
 				if (!already_buy)
 				{
@@ -82,7 +82,7 @@ void Shop::Update(double dt)
 			}
 		}
 
-		Engine::GetIconManager().AddIcon("rect1",{-270.f, -170.f},0.5f,false);
+		//Engine::GetIconManager().AddIcon("rect1",{-270.f, -170.f},0.5f,false);
 
 	}
 }

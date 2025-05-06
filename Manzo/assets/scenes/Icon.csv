@@ -20,3 +20,7 @@ temp3,assets/images/Temp_shop1.spt
 temp4,assets/images/Temp_shop1.spt
 temp5,assets/images/Temp_shop1.spt
 rect1,assets/images/rect1.spt
+ModuleTab,assets/images/ModuleTab.spt
+SpecialTab,assets/images/SpecialTab.spt
+FishTab,assets/images/FishTab.spt
+close_icon,assets/images/close_icon.spt

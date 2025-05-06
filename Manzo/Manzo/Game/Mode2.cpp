@@ -33,175 +33,225 @@ int dialog_test_int = 0;
 void Mode2::Load() {
 
 #ifdef _DEBUG
-    AddGSComponent(new ShowCollision());
+	AddGSComponent(new ShowCollision());
 #else
 #endif
-    //shader
-    Engine::GetShaderManager().LoadShader("water_ripple", "assets/shaders/default.vert", "assets/shaders/water_ripple.frag");    
-    Engine::GetShaderManager().LoadShader("icon", "assets/shaders/default.vert", "assets/shaders/edge_detection.frag");
+	//shader
+	Engine::GetShaderManager().LoadShader("water_ripple", "assets/shaders/default.vert", "assets/shaders/water_ripple.frag");
+	Engine::GetShaderManager().LoadShader("icon", "assets/shaders/default.vert", "assets/shaders/edge_detection.frag");
 
-    // audio
-    Engine::GetAudioManager().LoadMusic("assets/audios/bgm_original.wav", "Home_bgm", false);
+	// audio
+	Engine::GetAudioManager().LoadMusic("assets/audios/bgm_original.wav", "Home_bgm", false);
 
-    // compenent
-    AddGSComponent(new GameObjectManager());
+	// compenent
+	AddGSComponent(new GameObjectManager());
 
-    // player
-    player_ptr = new Player({ 0, -115 });
-    GetGSComponent<GameObjectManager>()->Add(player_ptr);
+	// player
+	player_ptr = new Player({ 0, -115 });
+	GetGSComponent<GameObjectManager>()->Add(player_ptr);
 
-    // water ripple
-    GetGSComponent<GameObjectManager>()->Add(new WaterRipple);
+	// water ripple
+	GetGSComponent<GameObjectManager>()->Add(new WaterRipple);
 
-    // camera
-    AddGSComponent(new Cam());
-    GetGSComponent<Cam>()->SetPosition({ 0, 0 });
+	// camera
+	AddGSComponent(new Cam());
+	GetGSComponent<Cam>()->SetPosition({ 0, 0 });
 
-    // background
-    background = new Background();
-    AddGSComponent(background);
-    background->Add("assets/images/background/house.png", 0.25f);
+	// background
+	background = new Background();
+	AddGSComponent(background);
+	background->Add("assets/images/background/house.png", 0.25f);
 
-    // Icon
-    Engine::GetIconManager().LoadIconList();
+	// Icon
+	Engine::GetIconManager().LoadIconList();
 
-    // Dialog
-    dialog_ptr = new Dialog({0,0});
-    GetGSComponent<GameObjectManager>()->Add(dialog_ptr);
-    
-    Engine::GetLogger().LoadSaveFile();
+	// Dialog
+	dialog_ptr = new Dialog({ 0,0 });
+	GetGSComponent<GameObjectManager>()->Add(dialog_ptr);
 
-    // Module
-   module_ptr = new Module({ 0, 0 });
-    GetGSComponent<GameObjectManager>()->Add(module_ptr);
+	Engine::GetLogger().LoadSaveFile();
 
-    // Inven
-    inven_ptr = new Inven({350,0});
-    GetGSComponent<GameObjectManager>()->Add(inven_ptr);
+	// Module
+	module_ptr = new Module({ 0, 0 });
+	GetGSComponent<GameObjectManager>()->Add(module_ptr);
 
-    shop_ptr = new Shop({ -350, 0 });
-    GetGSComponent<GameObjectManager>()->Add(shop_ptr);
+	today_fish_popup = new PopUp({ -500,300 }, "assets/images/special_fish_popup.spt", true);
+	GetGSComponent<GameObjectManager>()->Add(today_fish_popup);
 
-    // Mouse
-    GetGSComponent<GameObjectManager>()->Add(new Mouse);
+	// Inven
+	inven_ptr = new Inven({ 350,0 });
+	GetGSComponent<GameObjectManager>()->Add(inven_ptr);
 
-    std::cout << "Left money : " << Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() << std::endl;
+	shop_ptr = new Shop({ -350, 0 });
+	GetGSComponent<GameObjectManager>()->Add(shop_ptr);
+
+	// Mouse
+	GetGSComponent<GameObjectManager>()->Add(new Mouse);
+
+
+	sell_popup = new PopUp({ 0,0 }, "assets/images/sell_popup.spt");
+	GetGSComponent<GameObjectManager>()->Add(sell_popup);
+
+
+	Engine::GetIconManager().AddIcon("go_shop", { 276,4.5 }, 2.0f, false, false, true, true);
+	Engine::GetIconManager().AddIcon("ship", { 0,-250 }, 1.0f, false, false, true, true);
+	Engine::GetIconManager().AddIcon("close_icon", { 78,105 }, 1.f, false, false, true, false);
+
+	for (auto icon : Engine::GetIconManager().GetIconList())
+	{
+		GetGSComponent<GameObjectManager>()->Add(icon);
+	}
+
+	std::cout << "Left money : " << Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() << std::endl;
 }
 
 void Mode2::Update(double dt) {
-    //audio play
-    if (!playing)
-    {
-        Engine::GetAudioManager().PlayMusics("Home_bgm");
-        playing = true;
-    }
+	//audio play
+	if (!playing)
+	{
+		Engine::GetAudioManager().PlayMusics("Home_bgm");
+		playing = true;
+	}
 
-    UpdateGSComponents(dt);
-    GetGSComponent<GameObjectManager>()->UpdateAll(dt);
-    GetGSComponent<Cam>()->Update(dt, {}, false);
-    
-    ////float moving~
-    time += float(dt);
-    //ship_ptr->SetVelocity({ 0, -(y_limit * frequency * std::cos(frequency * float(time))) });
+	UpdateGSComponents(dt);
+	GetGSComponent<GameObjectManager>()->UpdateAll(dt);
+	GetGSComponent<Cam>()->Update(dt, {}, false);
+
+	////float moving~
+	time += float(dt);
+	//ship_ptr->SetVelocity({ 0, -(y_limit * frequency * std::cos(frequency * float(time))) });
 
 #ifdef _DEBUG
-    if (Engine::GetInput().KeyJustPressed(Input::Keys::Q)) {
-        Engine::GetGameStateManager().ClearNextGameState();
-        Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode1));
-    }
-    if (Engine::GetInput().KeyJustPressed(Input::Keys::W)) {
-        Engine::GetGameStateManager().ReloadState();
-    }
-    if (Engine::GetInput().KeyJustPressed(Input::Keys::Space) && !isLoaded) {
-        dialog_ptr->LoadDialog(1, 0.05);
-        isLoaded = true;
-    }
+	if (Engine::GetInput().KeyJustPressed(Input::Keys::Q)) {
+		Engine::GetGameStateManager().ClearNextGameState();
+		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode1));
+	}
+	if (Engine::GetInput().KeyJustPressed(Input::Keys::W)) {
+		Engine::GetGameStateManager().ReloadState();
+	}
+	if (Engine::GetInput().KeyJustPressed(Input::Keys::Space) && !isLoaded) {
+		dialog_ptr->LoadDialog(1, 0.05);
+		isLoaded = true;
+	}
 #else
 #endif
 
-    Engine::GetIconManager().AddIcon("go_shop", { 276,4.5 }, 2.0f, false, false, true);
-    Engine::GetIconManager().AddIcon("ship", { 0,-250 }, 1.0f, false, false, true);
+	Icon* icon = Engine::GetIconManager().GetCollidingIconWithMouse({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY });
+	bool clicked = Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT);
 
-    Icon* icon = Engine::GetIconManager().GetCollidingIconWithMouse({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY });
-    bool clicked = Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT);
+	if (icon != nullptr) {
+		if ((icon->GetAlias() == "ship") && clicked && !inven_ptr->GetIsOpened()) {
+			Engine::GetGameStateManager().ClearNextGameState();
+			Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode1));
+		}
+	}
 
-    if (icon != nullptr) {
-        if ((icon->GetAlias() == "ship") && clicked && !inven_ptr->GetIsOpened()) {
-            Engine::GetGameStateManager().ClearNextGameState();
-            Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode1));
-        }
-    }
+	// Open Inven
+	if (inven_ptr->Open())
+	{
+		inven_ptr->SetIsOpened(true);
+		Engine::GetIconManager().HideIcon("go_shop");
 
-    // Open Inven
-    if (inven_ptr->Open())
-    {
-        inven_ptr->SetIsOpened(true);
-    }
+		Engine::GetIconManager().ShowIcon("money");
+		Engine::GetIconManager().ShowIcon("ModuleTab");
+		Engine::GetIconManager().ShowIcon("FishTab");
+		Engine::GetIconManager().ShowIcon("SpecialTab");
+	}
 
-    if(inven_ptr->GetIsOpened() && Engine::GetInput().KeyJustReleased(Input::Keys::Esc))
-    {
-        inven_ptr->SetIsOpened(false);
-    }
+	if (inven_ptr->GetIsOpened() && Engine::GetInput().KeyJustReleased(Input::Keys::Esc) || !inven_ptr->GetIsOpened())
+	{
+		inven_ptr->SetIsOpened(false);
+		Engine::GetIconManager().ShowIcon("go_shop");
+
+		Engine::GetIconManager().HideIcon("money");
+		Engine::GetIconManager().HideIcon("ModuleTab");
+		Engine::GetIconManager().HideIcon("FishTab");
+		Engine::GetIconManager().HideIcon("SpecialTab");
+	}
 }
 
 void Mode2::FixedUpdate(double dt)
 {}
 
 void Mode2::Draw() {
-    GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
-    GetGSComponent<GameObjectManager>()->DrawAll();
-    dialog_ptr->Draw();
+	GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
+	GetGSComponent<GameObjectManager>()->DrawAll();
+	dialog_ptr->Draw();
 
-    if (inven_ptr->GetIsOpened())
-    {
-        Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, std::to_string(inven_ptr->GetMoney()), { 285.f,157.f }, 0.05f, { 0.f,0.f,0.f }, 1.0f);
+	today_fish_popup->SetPop(true);
 
-        if (inven_ptr->GetFishState())
-        {
-            Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, std::to_string(inven_ptr->HowMuchSold()), { -5.f,75.f }, 0.05f, { 1.f,1.f,1.f }, 1.0f);
+	if (inven_ptr->GetIsOpened())
+	{
+		Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, std::to_string(inven_ptr->GetMoney()), { 285.f,157.f }, 0.05f, { 0.f,0.f,0.f }, 1.0f);
 
-            float currentY = 5.5f;
-            int printed = 0;
+		if (inven_ptr->GetFishState())
+		{
 
-            // 총 몇 개 출력할 건지 먼저 계산
-            int totalCaptured = 0;
-            for (int i = 0; i < 3; ++i)
-                if (fishCaptureCount[i] != 0)
-                    totalCaptured++;
+			float currentY = 5.5f;
+			int printed = 0;
 
-            for (int i = 0; i < 3; ++i) {
-                if (fishCaptureCount[i] != 0) {
-                    Engine::GetFontManager().PrintText(
-                        FontType::Bold, FontAlignment::LEFT,
-                        std::to_string(inven_ptr->HowManyFishes(i)),
-                        { 190.f, currentY },
-                        0.05f,
-                        { 1.f, 1.f, 1.f },
-                        1.0f
-                    );
+			// 총 몇 개 출력할 건지 먼저 계산
+			int totalCaptured = 0;
+			for (int i = 0; i < 3; ++i)
+				if (fishCaptureCount[i] != 0)
+					totalCaptured++;
 
-                    printed++;
-                    if (printed < totalCaptured - 1) currentY -= 36.f; // 첫~중간 항목은 -36
-                    else if (printed < totalCaptured) currentY -= 43.f; // 마지막 바로 전 항목은 -43
-                }
-            }
-        }
-    }
-    else
-    {
-        Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, "Click Ship to Start the Game", { -100.f,-150.f }, 0.05f, { 0.f,0.f,0.f }, 0.5f);
-        Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, "Click Computer to Equip Module", { 30.f,30.f }, 0.05f, { 1.f,1.f,1.f }, 0.5f);
-    }
+			for (int i = 0; i < 3; ++i) {
+				if (fishCaptureCount[i] != 0) {
+					Engine::GetFontManager().PrintText(
+						FontType::Bold, FontAlignment::LEFT,
+						std::to_string(inven_ptr->HowManyFishes(i)),
+						{ 190.f, currentY },
+						0.05f,
+						{ 1.f, 1.f, 1.f },
+						1.0f
+					);
+
+					printed++;
+					if (printed < totalCaptured - 1) currentY -= 36.f; // 첫~중간 항목은 -36
+					else if (printed < totalCaptured) currentY -= 43.f; // 마지막 바로 전 항목은 -43
+				}
+			}
+
+			if (!sell_popup->GetPop() && Engine::GetInput().MouseButtonJustReleased(SDL_BUTTON_LEFT))
+			{
+				sell_popup->SetPop(true);
+				Engine::GetIconManager().ShowIcon("close_icon");
+				Engine::GetIconManager().ShowIcon("plus1");
+				Engine::GetIconManager().ShowIcon("plus10");
+				Engine::GetIconManager().ShowIcon("minus1");
+				Engine::GetIconManager().ShowIcon("minus10");
+
+				Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, std::to_string(inven_ptr->HowMuchSold()), { -5.f,-40.f }, 0.05f, { 1.f,1.f,1.f }, 1.0f);
+
+			}
+		}
+		else
+		{
+			sell_popup->SetPop(false);
+			Engine::GetIconManager().HideIcon("close_icon");
+			Engine::GetIconManager().HideIcon("plus1");
+			Engine::GetIconManager().HideIcon("plus10");
+			Engine::GetIconManager().HideIcon("minus1");
+			Engine::GetIconManager().HideIcon("minus10");
+		}
+	}
+	else
+	{
+		Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, "Click Ship to Start the Game", { -100.f,-150.f }, 0.05f, { 0.f,0.f,0.f }, 0.5f);
+		Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, "Click Computer to Equip Module", { 30.f,30.f }, 0.05f, { 1.f,1.f,1.f }, 0.5f);
+		sell_popup->SetPop(false);
+	}
 }
 
 void Mode2::Unload() {
-    Engine::GetLogger().WriteSaveFile(inven_ptr->fishCollection, inven_ptr->GetMoney(), inven_ptr->FirstModuleBought(), module_ptr->IsFirstSetted(), inven_ptr->GetX1Pos(), inven_ptr->SecondModuleBought(), module_ptr->IsSecondSetted(), inven_ptr->GetX2Pos());
-
-    GetGSComponent<GameObjectManager>()->Unload();
-    Engine::GetAudioManager().StopAllChannels();
-    GetGSComponent<Background>()->Unload();
-    ClearGSComponents();
-    background = nullptr;
-    dialog_ptr->Unload();
-    playing = false;
+	Engine::GetLogger().WriteSaveFile(inven_ptr->fishCollection, inven_ptr->GetMoney(), inven_ptr->FirstModuleBought(), module_ptr->IsFirstSetted(), inven_ptr->GetX1Pos(), inven_ptr->SecondModuleBought(), module_ptr->IsSecondSetted(), inven_ptr->GetX2Pos());
+	Engine::GetIconManager().Unload();
+	GetGSComponent<GameObjectManager>()->Unload();
+	Engine::GetAudioManager().StopAllChannels();
+	GetGSComponent<Background>()->Unload();
+	ClearGSComponents();
+	background = nullptr;
+	dialog_ptr->Unload();
+	playing = false;
 }

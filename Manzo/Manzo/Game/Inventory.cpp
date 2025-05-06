@@ -6,7 +6,7 @@
 #include "../Engine/Icon.h"
 #include "Dragging.h"
 
-Inven::Inven(vec2 position) : GameObject(position), page(0), dre_todayFish(rd()), dre_price(rd())
+Inven::Inven(vec2 position) : GameObject(position), dre_todayFish(rd()), dre_price(rd())
 {
 	AddGOComponent(new Sprite("assets/images/window.spt", this));
 	change_state(&state_none);
@@ -25,41 +25,122 @@ Inven::Inven(vec2 position) : GameObject(position), page(0), dre_todayFish(rd())
 	money = Engine::GetLogger().GetMoney();
 	m1x = Engine::GetLogger().GetModule1XPos();
 	m2x = Engine::GetLogger().GetModule2XPos();
+
+	Engine::GetIconManager().AddIcon("money", { 540,320 }, 1.0f, false);
+
+	Engine::GetIconManager().AddIcon("ModuleTab", { 560,220 }, 1.0f, false, false, true);
+	Engine::GetIconManager().AddIcon("FishTab", { 560,150 }, 1.0f, false, false, true);
+	Engine::GetIconManager().AddIcon("SpecialTab", { 560,80 }, 1.0f, false, false, true);
+
+	///////////////////////////// Module State //////////////////////////////////////
+	Engine::GetIconManager().AddIcon("module_set", { GetPosition().x + savePos[0].x, savePos[0].y }, 0.7f, false);
+	Engine::GetIconManager().AddIcon("module_set", { GetPosition().x + savePos[1].x, savePos[1].y }, 0.7f, false);
+
+	Engine::GetIconManager().AddIcon("module_have", { GetPosition().x + savePos[0].x, -savePos[0].y }, 0.7f, false);
+	Engine::GetIconManager().AddIcon("module_have", { GetPosition().x + savePos[1].x, -savePos[1].y }, 0.7f, false);
+
+	Engine::GetIconManager().AddIcon("module1", vec2(m1x, module_ptr->IsFirstSetted() ? savePos[0].y : -savePos[0].y), 0.7f, true, true, true);
+	Engine::GetIconManager().AddIcon("module2", vec2(m2x, module_ptr->IsSecondSetted() ? savePos[1].y : -savePos[1].y), 0.7f, true, true, true);
+	
+	///////////////////////////// Fish Collection State //////////////////////////////////////
+	Engine::GetIconManager().AddIcon("plus1", { 80,-75 }, 1.f, false, false, true);
+	Engine::GetIconManager().AddIcon("plus10", { 50,-75 }, 1.f, false, false, true);
+
+	Engine::GetIconManager().AddIcon("minus1", { -80,-75 }, 1.f, false, false, true);
+	Engine::GetIconManager().AddIcon("minus10", { -50,-75 }, 1.f, false, false, true);
+
+	if (!is_picked)  //pick today's special fish
+	{
+		std::uniform_int_distribution<> todays_fish(0, total_fishNum - 1);
+		std::uniform_int_distribution<> fish_price(1, 4);
+		todays_fish_index = todays_fish(dre_todayFish);
+		todays_price = fish_price(dre_price);
+
+		std::cout << "Today's fish is : " << todays_fish_index << ",   price : " << todays_price << "\n";
+		is_picked = true;
+	}
+	todays_fish_icon = "fish" + std::to_string(todays_fish_index + 1);
+	Engine::GetIconManager().AddIcon(todays_fish_icon, { -575,305 }, 1.0f, false, false, false, true, true);
+
+
+	for (auto& fish : originCollection)
+	{
+		if (fish.second != 0)
+		{
+			std::string file_name = "fish" + std::to_string(fish.first + 1);
+
+			//0일땐 드래그 못하게 할지? 그리고 약간 몇 마리 남아있는지 짜치지 않나...좀 얘기해봐야할듯
+			Engine::GetIconManager().AddIcon(file_name, { GetPosition().x + 100,float(p -= 80) }, 1.0f, true, false, true);
+		}
+	}
 }
 
 void Inven::Update(double dt)
 {
 	GameObject::Update(dt);
-	Engine::GetIconManager().AddIcon("money", { 540,320 }, 1.0f, false);
 
-	if (Engine::GetInput().KeyJustPressed(Input::Keys::Left) && is_opened)
-	{
-		page--;
-	}
-	else if (Engine::GetInput().KeyJustPressed(Input::Keys::Right) && is_opened)
-	{
-		page++;
-	}
+	Icon* selectedIcon = Engine::GetIconManager().GetCollidingIconWithMouse({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY });
+	bool clicked = Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT);
 
-	if (is_opened && (current_state == &state_fc))
+	if (selectedIcon != nullptr && clicked)
 	{
-		if (!is_picked)
+		std::string alias = selectedIcon->GetAlias();
+
+		if (alias == "ModuleTab")
 		{
-			std::uniform_int_distribution<> todays_fish(0, total_fishNum - 1);
-			std::uniform_int_distribution<> fish_price(1, 4);
-			todays_fish_index = todays_fish(dre_todayFish);
-			todays_price = fish_price(dre_price);
-
-			std::cout << "Today's fish is : " << todays_fish_index << ",   price : " << todays_price << "\n";
-			is_picked = true;
+			page = 1;
+			change_state(&state_module);
 		}
-		todays_fish_icon = "fish" + std::to_string(todays_fish_index + 1);
-		Engine::GetIconManager().AddIcon(todays_fish_icon, { 0,250 }, 1.0f, false);
+		else if (alias == "FishTab")
+		{
+			page = 2;
+			change_state(&state_fc);
+		}
+		else if (alias == "SpecialTab")
+		{
+			page = 3;
+			change_state(&state_sc);
+		}
+		else if (alias == "close_icon")
+		{
+			page = 0;
+			change_state(&state_none);
+			is_opened = false;
+		}
+	}
+
+	if (current_state != &state_module)
+	{
+		Engine::GetIconManager().HideIcon("module1");
+		Engine::GetIconManager().HideIcon("module2");
+		Engine::GetIconManager().HideIcon("module_set");
+		Engine::GetIconManager().HideIcon("module_have");
+	}
+
+	if (current_state != &state_fc)
+	{
+		Engine::GetIconManager().HideIcon("plus1");
+		Engine::GetIconManager().HideIcon("plus10");
+		Engine::GetIconManager().HideIcon("minus1");
+		Engine::GetIconManager().HideIcon("minus10");
+		Engine::GetIconManager().HideIcon("close_icon");
+		//Engine::GetIconManager().HideIcon(todays_fish_icon);
+
+		for (auto& fish : originCollection)
+		{
+			if (fish.second != 0)
+			{
+				std::string file_name = "fish" + std::to_string(fish.first + 1);
+
+				Engine::GetIconManager().HideIcon(file_name);
+			}
+		}
 	}
 
 	if (!is_opened)
 	{
-		Engine::GetIconManager().RemoveAllIcon();
+		change_state(&state_none);
+		//Engine::GetIconManager().RemoveAllIcon();
 	}
 }
 
@@ -67,7 +148,6 @@ void Inven::Draw(DrawLayer drawlayer)
 {
 	if (is_opened)
 	{
-		Engine::GetIconManager().RemoveIcon("go_shop");
 		GameObject::Draw();
 	}
 }
@@ -115,11 +195,8 @@ void Inven::State_Module::Enter(GameObject* object)
 	inven->GetGOComponent<Sprite>()->PlayAnimation(static_cast<int>(Animations::Module));
 	inven->page = 1;
 
-	Engine::GetIconManager().AddIcon("module_set", { inven->GetPosition().x + inven->savePos[0].x, inven->savePos[0].y }, 0.7f, false);
-	Engine::GetIconManager().AddIcon("module_set", { inven->GetPosition().x + inven->savePos[1].x, inven->savePos[1].y }, 0.7f, false);
-
-	Engine::GetIconManager().AddIcon("module_have", { inven->GetPosition().x + inven->savePos[0].x, -inven->savePos[0].y }, 0.7f, false);
-	Engine::GetIconManager().AddIcon("module_have", { inven->GetPosition().x + inven->savePos[1].x, -inven->savePos[1].y }, 0.7f, false);
+	Engine::GetIconManager().ShowIcon("module_set");
+	Engine::GetIconManager().ShowIcon("module_have");
 }
 
 void Inven::State_Module::Update(GameObject* object, double dt)
@@ -130,12 +207,12 @@ void Inven::State_Module::Update(GameObject* object, double dt)
 	/////////////////////////////////////////////////// Check Buy ///////////////////////////////////////////////////
 	if (inven->buy_first_module)
 	{
-		Engine::GetIconManager().AddIcon("module1", vec2(inven->m1x, inven->module_ptr->IsFirstSetted() ? inven->savePos[0].y : -inven->savePos[0].y), 0.7f, true, true, true);
+		Engine::GetIconManager().ShowIcon("module1");
 	}
 
 	if (inven->buy_second_module)
 	{
-		Engine::GetIconManager().AddIcon("module2", vec2(inven->m2x, inven->module_ptr->IsSecondSetted() ? inven->savePos[1].y : -inven->savePos[1].y), 0.7f, true, true, true);
+		Engine::GetIconManager().ShowIcon("module2");
 	}
 
 	/////////////////////////////////////////////////// Check Set ///////////////////////////////////////////////////
@@ -176,27 +253,14 @@ void Inven::State_Module::Update(GameObject* object, double dt)
 	}
 }
 
-void Inven::State_Module::CheckExit(GameObject* object)
-{
-	Inven* inven = static_cast<Inven*>(object);
-	if (inven->page == 2)
-	{
-		Engine::GetIconManager().RemoveAllIcon();
-		inven->change_state(&inven->state_fc);
-	}
-
-	if (!inven->is_opened)
-	{
-		inven->change_state(&inven->state_none);
-	}
-}
+void Inven::State_Module::CheckExit(GameObject* object){}
 
 void Inven::State_FC::Enter(GameObject* object)
 {
-	int position = 100;
 	Inven* inven = static_cast<Inven*>(object);
 	inven->GetGOComponent<Sprite>()->PlayAnimation(static_cast<int>(Animations::FishCollection));
-	inven->in_fish_state = true;
+
+	inven->page = 2;
 
 	for (auto& fish : inven->originCollection)
 	{
@@ -204,16 +268,11 @@ void Inven::State_FC::Enter(GameObject* object)
 		{
 			std::string file_name = "fish" + std::to_string(fish.first + 1);
 
-			//0일땐 드래그 못하게 할지? 그리고 약간 몇 마리 남아있는지 짜치지 않나...좀 얘기해봐야할듯
-			Engine::GetIconManager().AddIcon(file_name, { inven->GetPosition().x + 100,float(position -= 80) }, 1.0f, true, false, true);
+			Engine::GetIconManager().ShowIcon(file_name);
 		}
 	}
 
-	Engine::GetIconManager().AddIcon("plus1", { 80,180 }, 1.f, false, false, true);
-	Engine::GetIconManager().AddIcon("plus10", { 50,180 }, 1.f, false, false, true);
-
-	Engine::GetIconManager().AddIcon("minus1", { -80,180 }, 1.f, false, false, true);
-	Engine::GetIconManager().AddIcon("minus10", { -50,180 }, 1.f, false, false, true);
+	//Engine::GetIconManager().ShowIcon(inven->todays_fish_icon);
 }
 
 void Inven::State_FC::Update(GameObject* object, double dt)
@@ -294,29 +353,14 @@ void Inven::State_FC::Update(GameObject* object, double dt)
 void Inven::State_FC::CheckExit(GameObject* object)
 {
 	Inven* inven = static_cast<Inven*>(object);
-	if (inven->page == 1)
-	{
-		Engine::GetIconManager().RemoveAllIcon();
-		inven->change_state(&inven->state_module);
-		inven->in_fish_state = false;
-	}
-	else if (inven->page == 3)
-	{
-		Engine::GetIconManager().RemoveAllIcon();
-		inven->change_state(&inven->state_sc);
-		inven->in_fish_state = false;
-	}
-
-	if (!inven->is_opened)
-	{
-		inven->change_state(&inven->state_none);
-	}
+	inven->how_much_sold = 0;
 }
 
 void Inven::State_SC::Enter(GameObject* object)
 {
 	Inven* inven = static_cast<Inven*>(object);
 	inven->GetGOComponent<Sprite>()->PlayAnimation(static_cast<int>(Animations::SpecialCollection));
+	inven->page = 3;
 }
 
 void Inven::State_SC::Update(GameObject* object, double dt)
@@ -327,16 +371,4 @@ void Inven::State_SC::Update(GameObject* object, double dt)
 
 void Inven::State_SC::CheckExit(GameObject* object)
 {
-	Inven* inven = static_cast<Inven*>(object);
-	if (inven->page == 2)
-	{
-		Engine::GetIconManager().RemoveAllIcon();
-		inven->change_state(&inven->state_fc);
-	}
-
-	if (!inven->is_opened)
-	{
-		Engine::GetIconManager().RemoveAllIcon();
-		inven->change_state(&inven->state_none);
-	}
 }
