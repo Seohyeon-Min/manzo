@@ -11,9 +11,10 @@ public:
     void Update(double dt) override;
     void FixedUpdate(double fixed_dt) override;
     void Walk();
+    bool IsWalking() { return is_walking; }
     void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
 private:
     bool is_walking = false;
-    Timer* walk_timer;
-    float walking_speed = 60.f;
+    RealTimeTimer* walk_timer;
+    float walking_speed = 90.f;
 };

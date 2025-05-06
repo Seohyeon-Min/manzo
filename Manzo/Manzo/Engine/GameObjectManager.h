@@ -30,6 +30,7 @@ public:
     vec2 FindNearestRockPoint(GameObject* object);
     Rock* FindNearestRock(GameObject* object);
     void Remove(GameObject* object);
+    void SetCollisionON(bool on) { collision_on = on; }
 
     template<typename T>
     T* GetGOComponent() {
@@ -44,4 +45,5 @@ public:
 
 private:
     std::list<GameObject*> objects;
+    bool collision_on = true;
 };

@@ -68,6 +68,9 @@ void GameObjectManager::DrawAll()
 
 void GameObjectManager::CollisionTest() 
 {
+	if (!collision_on) {
+		return;
+	}
 	for (auto object_1 : objects) {
 		//if (!object_1->isActive(camera_bounds)) continue; <--- it is needfull
 		for (auto object_2 : objects) {

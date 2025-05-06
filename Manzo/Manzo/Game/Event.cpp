@@ -32,3 +32,29 @@ void Event::Update() {
 void Event::Reset() {
     triggered = false;
 }
+
+StepEvent::StepEvent(const std::string& id) : id(id) {}
+
+void StepEvent::AddStep(const std::function<bool()>& trigger, const std::function<void()>& action) {
+    steps.emplace_back("step_" + std::to_string(steps.size()), trigger, action);
+}
+
+void StepEvent::Update() {
+    if (IsFinished()) return;
+
+    Event& step = steps[current_step];
+    if (!step.HasRun()) {
+        step.Update();
+    }
+    if (step.HasRun()) {
+        ++current_step;
+    }
+}
+
+bool StepEvent::IsFinished() const {
+    return current_step >= steps.size();
+}
+
+const std::string& StepEvent::GetID() const {
+    return id;
+}

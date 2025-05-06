@@ -5,7 +5,7 @@ NPC::NPC(vec2 start_position) :
 	GameObject({ -650,-115 })
 {
 	AddGOComponent(new Sprite("assets/images/ship.spt", this));
-	walk_timer = new Timer(0.0);
+	walk_timer = new RealTimeTimer(0.0);
 	AddGOComponent(walk_timer);
 }
 
@@ -37,7 +37,8 @@ void NPC::Walk()
 {
     if (!is_walking) {
         is_walking = true;
-        walk_timer->Set(3.);
+        walk_timer->Set(2.);
+        walk_timer->Start();
     }
 }
 void NPC::Draw(DrawLayer drawlayer)
