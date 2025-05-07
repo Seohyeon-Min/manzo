@@ -23,7 +23,7 @@ public:
     void Draw();
     void Hide();
     void Unload();
-    bool GetDialogFinish() { return is_finish; }
+    bool IsFinished() const;
 
     GameObjectTypes Type() override { return GameObjectTypes::Dialog; }
     std::string TypeName() override { return "Dialog"; }

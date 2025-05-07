@@ -39,10 +39,7 @@ private:
 
     enum class TutorialPhase {
         Init,
-        Centering,
-        Propulsion,
         Dash,
-        Collision,
         Done
     };
 

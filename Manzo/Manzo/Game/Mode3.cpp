@@ -82,46 +82,19 @@ void Mode3::Update(double dt) {
 
         if (!textDisplay ) {
 
-            dialog_ptr->LoadDialogGroup("tutorial", 0.05);
+            dialog_ptr->LoadDialogGroup("tutorial-1", 0.05);
             textDisplay = true;
             phaseTimer = 0;
         }
         if (Engine::GetInput().KeyJustPressed(Input::Keys::Space)) {
             dialog_ptr->NextLine();
-            count++;
-            if (count == 4) {
-                currentPhase = TutorialPhase::Centering;
+            if (dialog_ptr->IsFinished()) {
+                currentPhase = TutorialPhase::Dash;
             }
         }
         break;
-
-    case TutorialPhase::Centering:
-        if (!textDisplay) {
-            //Engine::GetFontManager().PrintText(FontType::Thin, FontAlignment::CENTER, "", { 0,0 }, 0.05f, { 1.0f, 1.0f, 1.0f }, 1.f);
-            textDisplay = true;
-            phaseTimer = 0;
-        }
-        if (phaseTimer > 2.5) {
-            currentPhase = TutorialPhase::Propulsion;
-            textDisplay = false;
-        }
-        break;
-
-    case TutorialPhase::Propulsion:
-        if (!textDisplay) {
-            //ngine::GetFontManager().PrintText(FontType::Thin, FontAlignment::CENTER, " ", { 0,0 }, 0.05f, { 1.0f, 1.0f, 1.0f }, 1.f);
-
-            textDisplay = true;
-        }
-        // ship이동델타 계산
-        break;
-
     case TutorialPhase::Dash:
-        // 대쉬 4번 연속 인식
-        break;
-
-    case TutorialPhase::Collision:
-        //콜리전
+        std::cout << "yes" << std::endl;
         break;
 
     case TutorialPhase::Done:

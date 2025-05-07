@@ -76,6 +76,13 @@ void Dialog::StartLine(int index) {
     IsTyping = true;
 }
 
+bool Dialog::IsFinished() const {
+    return !IsTyping &&
+        currentLineIndex == static_cast<int>(currentDialogGroup.size()) - 1 &&
+        currentIndex >= static_cast<int>(fullText.size());
+}
+
+
 void Dialog::NextLine() {
     if (IsTyping) {
         displayedText = fullText;
@@ -93,6 +100,11 @@ void Dialog::NextLine() {
 
 
 void Dialog::Update(double dt) {
+    if (!IsTyping && IsFinished()) {
+        Hide();  
+        return;
+    }
+
     if (!IsTyping) return;
 
     elapsedTime += dt;
@@ -108,15 +120,17 @@ void Dialog::Update(double dt) {
     }
 }
 
+
+
 void Dialog::Hide() {
     isVisible = false;
     IsTyping = false;
     displayedText = "";
     fullText = "";
     currentIndex = 0;
-
-    is_finish = true;
 }
+
+
 
 void Dialog::Draw() {
     if (!isVisible) return;

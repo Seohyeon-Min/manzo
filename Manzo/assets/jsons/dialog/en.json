@@ -31,17 +31,18 @@
       { "character": "Me", "text": "…Alright." },
       { "character": "Narration", "text": "…I’m tired today. Let’s call it a night." }
     ],
-    "tutorial": [
-      { "character": "Me", "text": "Section 01 Coordinate Synchronization Procedure" },
-      { "character": "Me", "text": "Reference Point: Anchor the center axis at the launch position" },
-      { "character": "Me", "text": " Note: Buoyancy balance system activates automatically" },
-      { "character": "Me", "text": " [Section 02] [Basic Propulsion System Test]" },
-      { "character": "Me", "text": "  Control Method: Change direction by moving the mouse" },
-      { "character": "Me", "text": " [Section 03][Rhythm-Based Dash Maneuver Test]" },
-      { "character": "Me", "text": " Condition: Left-click in rhythm → Instant propulsion" },
-      { "character": "Me", "text": " [Section 04][Collision Response Simulation]" },
-      { "character": "Me", "text": " Effect: Impact recoil and fuel loss upon hitting walls" },
-      { "character": "Me", "text": " Warning: Repeated collisions may cause system overload" },
-      { "character": "Me", "text": " [Final Note] - Test complete. Response nominal." }
+    "tutorial-1": [
+      { "character": "system", "text": "Section 01 Coordinate Synchronization Procedure" },
+      { "character": "system", "text": "Reference Point: Anchor the center axis at the launch position" },
+      { "character": "system", "text": " Note: Buoyancy balance system activates automatically" },
+      { "character": "system", "text": " [Section 02] [Basic Propulsion System Test]" },
+      { "character": "system", "text": "  Control Method: Change direction by moving the mouse" }
+    ],
+    "tutorial-2":[
+      { "character": "system", "text": " [Section 03][Rhythm-Based Dash Maneuver Test]" },
+      { "character": "system", "text": " Condition: Left-click in rhythm → Instant propulsion" }
+    ],
+    "tutorial-3":[
+      { "character": "system", "text": " [Final Note] - Test complete. Response nominal." }
     ]
   }
