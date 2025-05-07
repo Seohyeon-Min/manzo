@@ -54,4 +54,11 @@ private:
     Dialog* dialog_ptr;
     double phaseTimer = 0.0;
     bool textDisplay = false;
+
+    int dash_count = 0;
+    int beat_count = 0;
+    int success_count = 0;
+    bool hasCheckedThisBeat = false;
+    bool hasSucceededThisBeat = false;
+    bool hasLoadedDialog = false;
 };
