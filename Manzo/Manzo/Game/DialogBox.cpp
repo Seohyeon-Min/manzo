@@ -76,7 +76,12 @@ void Dialog::StartLine(int index) {
 }
 
 void Dialog::NextLine() {
-    if (!IsTyping && currentLineIndex + 1 < static_cast<int>(currentDialogGroup.size())) {
+    if (IsTyping) {
+        displayedText = fullText;
+        currentIndex = static_cast<int>(fullText.size());
+        IsTyping = false;
+    }
+    else if (currentLineIndex + 1 < static_cast<int>(currentDialogGroup.size())) {
         currentLineIndex++;
         StartLine(currentLineIndex);
     }
