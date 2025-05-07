@@ -1,29 +1,17 @@
 #pragma once
+
 #include "../Game/Event.h"
-#include "logger.h"
 #include <vector>
+#include <string>
+#include <memory>
 
 class EventManager {
 public:
-    void AddEvent(const Event& e) { one_shot_events.push_back(e); }
-    void AddStepEvent(std::shared_ptr<StepEvent> s) {
-
-        step_events.push_back(std::move(s));
-    }
-
-    void Update() {
-        for (auto& e : one_shot_events)
-            if (!e.HasRun()) e.Update();
-
-        for (auto& s : step_events)
-            s->Update();
-    }
-
-    void ResetAll() {
-        for (auto& event : one_shot_events) {
-            event.Reset();
-        }
-    }
+    void AddEvent(const Event& e);
+    void AddStepEvent(std::shared_ptr<StepEvent> s);
+    void Update();
+    void ResetAll();
+    bool HasEventDone(const std::string& id);
 
 private:
     std::vector<Event> one_shot_events;

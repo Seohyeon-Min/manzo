@@ -20,7 +20,10 @@
       { "character": "Me", "text": "Before that, Let's try a test drive." },
       { "character": "Me", "text": "." }
     ],
-    "day-1_2": [
+    "after_tutorial_end": [
+      { "character": "Me", "text": ["Let's go to catch some fish."] }
+    ],
+    "day-1_3": [
       { "character": "Sellerkeeper", "text": "Oh, you really brought one back!" },
       { "character": "Sellerkeeper", "text": "That should be enough for tonight’s dinner. Here, this is the money I promised." },
       { "character": "Sellerkeeper", "text": "I hope… it helps you out, even just a little." },

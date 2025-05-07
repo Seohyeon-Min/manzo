@@ -125,10 +125,15 @@ void Mode3::Update(double dt) {
         if (Engine::GetInput().KeyJustPressed(Input::Keys::Space)) {
             dialog_ptr->NextLine();
             if (dialog_ptr->IsFinished()) {
+                auto& save = Engine::GetSaveDataManager().GetSaveData();
+                save.eventsDone.push_back("tutorial_end");
+                Engine::GetSaveDataManager().UpdateSaveData(save);
+
                 Engine::GetGameStateManager().ClearNextGameState();
                 Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
             }
         }
+
         break;
     }
 }

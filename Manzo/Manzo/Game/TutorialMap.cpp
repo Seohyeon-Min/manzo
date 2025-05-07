@@ -20,7 +20,7 @@ void Tutorial::Load()
 	// background
 	background = new Background();
 	AddGSComponent(background);
-	background->Add("assets/images/background/house.png", 0.25f);
+	background->Add("assets/images/background/cali_back.png", 0.25f);
 
 	// camera
 	AddGSComponent(new Cam());
@@ -61,10 +61,10 @@ void Tutorial::Update(double dt)
 	GetGSComponent<Cam>()->Update(dt, {}, false);
 	beat_system->Update(dt);
 
-	if (Engine::GetInput().KeyJustPressed(Input::Keys::Q)) {
+	if (Engine::GetInput().KeyJustPressed(Input::Keys::Enter)) {
 		//if (ship_ptr->IsShipUnder() && Engine::GetInput().KeyJustPressed(Input::Keys::Q)) {
 		Engine::GetGameStateManager().ClearNextGameState();
-		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
+		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode3));
 	}
 
 	if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT))

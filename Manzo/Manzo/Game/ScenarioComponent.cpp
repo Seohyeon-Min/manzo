@@ -43,13 +43,25 @@ void ScenarioComponent::Load()
         []() {
             Engine::GetInput().SetMouseInputOn(true);
             Engine::GetGameStateManager().ClearNextGameState();
-            Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode3));
+            Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Tutorial));
             //auto* quest = new PopUp({ -420,195 }, "assets/images/quest_popup.spt", true);
             //Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(quest);
             //quest->SetPop(true);
         }
     );
 
+    Engine::GetEventManager().AddEvent(Event("after_tutorial_end",
+        []() {
+            return Engine::GetEventManager().HasEventDone("tutorial_end") &&
+                (Engine::GetGameStateManager().GetStateName() == "Mode2");
+        },
+        [this]() {
+            dialog->LoadDialogGroup("after_tutorial_end"); /////////////////////////////////////////////////////////////////
+            auto* quest = new PopUp({ -420,195 }, "assets/images/quest_popup.spt", true);
+            Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(quest);
+            quest->SetPop(true);
+        }
+    ));
 
 
     Engine::GetEventManager().AddStepEvent(intro);
@@ -60,12 +72,12 @@ void ScenarioComponent::Load()
     //    }
     //);
 
-    Engine::GetEventManager().AddEvent(Event("day2",
-        [&]() { return Engine::GetSaveDataManager().GetSaveData().day == 2; },
-        [&]() {
-            dialog->LoadDialogGroup("day-2");
-        }
-    ));
+    //Engine::GetEventManager().AddEvent(Event("day2",
+    //    [&]() { return Engine::GetSaveDataManager().GetSaveData().day == 2; },
+    //    [&]() {
+    //        dialog->LoadDialogGroup("day-1_2");
+    //    }
+    //));
 
     has_initialized = true;
 }

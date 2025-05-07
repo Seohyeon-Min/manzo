@@ -308,10 +308,10 @@ void Mode1::Draw()
 		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "CLICK TO RESTART", {ship_ptr->GetPosition().x, ship_ptr->GetPosition().y - 60.f}, 88.098f, {1.f, 1.f, 1.f}, 1.0f);
 		// Draw Font
 	}
-	Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, "E", {750, 500}, 0.5f, {1.f, 1.f, 1.f}, 0.5f);
+	Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "E", {750, 500}, 0.5f, {1.f, 1.f, 1.f}, 0.5f);
 	if (module->IsSecondSetted())
 	{
-		Engine::GetFontManager().PrintText(FontType::VeryThin, FontAlignment::LEFT, std::to_string(static_cast<int>(ship_ptr->GetFuel())), {-0.001f, 0.75f}, 0.05f, {1.f, 1.f, 1.f}, 1.f, false);
+		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, std::to_string(static_cast<int>(ship_ptr->GetFuel())), {-0.001f, 0.75f}, 0.05f, {1.f, 1.f, 1.f}, 1.f, false);
 	}
 }
 void Mode1::Unload()

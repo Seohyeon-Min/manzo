@@ -161,9 +161,9 @@ void Dialog::Draw() {
         GameObject::Draw(draw_perry);
     }
     if (!displayedText.empty()) {
-        Engine::GetFontManager().PrintText(FontType::Thin, FontAlignment::LEFT,
+        Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT,
             displayedText.c_str(), { -175.f,-120.f }, 0.05f, { 1.0f, 1.0f, 1.0f }, 1.f);
-        Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT,
+        Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT,
             character.c_str(), { -175.f, -100.f }, 0.08f, { 1.0f, 1.0f, 1.0f }, 1.f);
     }
 }

@@ -151,7 +151,7 @@ void Mode2::Update(double dt) {
 		dialog_ptr->LoadDialogGroup("dialog-1", 0.05);
 		isLoaded = true;
 	}
-	if (Engine::GetInput().KeyJustPressed(Input::Keys::Enter)) {
+	if (Engine::GetInput().KeyJustPressed(Input::Keys::Space)) {
 		//묶음으로 출력된 다이얼로그 다음 으로 넘겨주기
 		dialog_ptr->NextLine();
 	}
@@ -233,13 +233,13 @@ void Mode2::Draw() {
 
 	today_fish_popup->SetPop(true);
 
-	Engine::GetFontManager().PrintText(FontType::VeryThin, FontAlignment::LEFT, "Trade your fish for " + std::to_string(inven_ptr->TodayFishPrice()) + " shiny coins!", { -262.f,142.f }, 0.032f, { 0.f,0.f,0.f }, 1.0f);
+	Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "Trade your fish for " + std::to_string(inven_ptr->TodayFishPrice()) + " shiny coins!", { -262.f,142.f }, 0.032f, { 0.f,0.f,0.f }, 1.0f);
 
 	if (inven_ptr->GetIsOpened())
 	{
-		Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, std::to_string(inven_ptr->GetMoney()), { 285.f,157.f }, 0.05f, { 0.f,0.f,0.f }, 1.0f);
-		Engine::GetFontManager().PrintText(FontType::VeryThin, FontAlignment::LEFT, "Show the maximum dash distance", { -230.f,68.f }, 0.032f, { 1.f,1.f,1.f }, 1.0f);
-		Engine::GetFontManager().PrintText(FontType::VeryThin, FontAlignment::LEFT, "Show the amount of fuel left", { -230.f,27.f }, 0.032f, { 1.f,1.f,1.f }, 1.0f);
+		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, std::to_string(inven_ptr->GetMoney()), { 285.f,157.f }, 0.05f, { 0.f,0.f,0.f }, 1.0f);
+		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "Show the maximum dash distance", { -230.f,68.f }, 0.032f, { 1.f,1.f,1.f }, 1.0f);
+		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "Show the amount of fuel left", { -230.f,27.f }, 0.032f, { 1.f,1.f,1.f }, 1.0f);
 		if (inven_ptr->GetFishState())
 		{
 
@@ -254,7 +254,7 @@ void Mode2::Draw() {
 			for (int i = 0; i < 7; ++i) {
 				if (fishCollection[i] != 0) {
 					Engine::GetFontManager().PrintText(
-						FontType::Bold, FontAlignment::LEFT,
+						FontType::AlumniSans_Medium, FontAlignment::LEFT,
 						std::to_string(inven_ptr->HowManyFishes(i)),
 						{ 190.f, currentY + 50 },
 						0.05f,
@@ -282,8 +282,8 @@ void Mode2::Draw() {
 			}
 			if (sell_popup->GetPop())
 			{
-				Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, std::to_string(inven_ptr->HowMuchSold()), { -5.f,-40.f }, 0.05f, { 1.f,1.f,1.f }, 1.0f);
-				Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, std::to_string(Engine::GetGameStateManager().GetGSComponent<Fish>()->ReturnFishMoney(1)), {-8.f,-18.f}, 0.03f, {0.f,0.f,0.f}, 1.0f);
+				Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, std::to_string(inven_ptr->HowMuchSold()), { -5.f,-40.f }, 0.05f, { 1.f,1.f,1.f }, 1.0f);
+				Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, std::to_string(Engine::GetGameStateManager().GetGSComponent<Fish>()->ReturnFishMoney(1)), {-8.f,-18.f}, 0.03f, {0.f,0.f,0.f}, 1.0f);
 				std::cout << Engine::GetGameStateManager().GetGSComponent<Fish>()->ReturnFishMoney(1);
 			}
 		}
@@ -300,8 +300,8 @@ void Mode2::Draw() {
 	}
 	else
 	{
-		Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, "Click Ship to Start the Game", { -100.f,-150.f }, 0.05f, { 0.f,0.f,0.f }, 0.5f);
-		Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, "Click Computer to Equip Module", { 30.f,30.f }, 0.05f, { 1.f,1.f,1.f }, 0.5f);
+		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "Click Ship to Start the Game", { -100.f,-150.f }, 0.05f, { 0.f,0.f,0.f }, 0.5f);
+		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "Click Computer to Equip Module", { 30.f,30.f }, 0.05f, { 1.f,1.f,1.f }, 0.5f);
 		sell_popup->SetPop(false);
 		Engine::GetIconManager().HideIcon("fish_pop" + std::to_string(n));
 	}
