@@ -22,6 +22,7 @@ Created:    March 8, 2023
 #include "Mouse.h"
 #include "DialogBox.h"
 #include "WaterRippleEffect.h"
+#include "Mode3.h"
 
 #include <iostream>     // for debug
 #include "Module.h"
@@ -135,8 +136,8 @@ void Mode2::Update(double dt) {
 		Engine::GetGameStateManager().ReloadState();
 	}
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::Space) && !isLoaded) {
-		//dialog_ptr->LoadDialog(1, 0.05);
-		isLoaded = true;
+		Engine::GetGameStateManager().ClearNextGameState();
+		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode3));
 	}
 #else
 #endif
@@ -147,7 +148,7 @@ void Mode2::Update(double dt) {
 	if (icon != nullptr) {
 		if ((icon->GetAlias() == "ship") && clicked && !inven_ptr->GetIsOpened()) {
 			Engine::GetGameStateManager().ClearNextGameState();
-			Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode1));
+			Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode3));
 		}
 	}
 
@@ -173,6 +174,8 @@ void Mode2::Update(double dt) {
 		Engine::GetIconManager().HideIcon("FishTab");
 		Engine::GetIconManager().HideIcon("SpecialTab");
 	}
+
+
 }
 
 void Mode2::FixedUpdate(double dt)
