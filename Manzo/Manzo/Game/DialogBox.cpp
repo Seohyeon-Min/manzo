@@ -112,23 +112,35 @@ void Dialog::Hide() {
 
 void Dialog::Draw() {
     if (!isVisible) return;
-    DrawCall draw_call_box = { DialogBox, &back_matrix, Engine::GetShaderManager().GetDefaultShader()};
+
+    DrawCall draw_call_box = { DialogBox, &back_matrix, Engine::GetShaderManager().GetDefaultShader() };
     DrawCall draw_call_effect = { Box_effect, &effect_matrix, Engine::GetShaderManager().GetDefaultShader() };
-    DrawCall draw_call_Me = { Me, &me_matrix, Engine::GetShaderManager().GetDefaultShader() };
 
     SetDrawSetting(draw_call_box);
     SetDrawSetting(draw_call_effect);
-    SetDrawSetting(draw_call_Me);
+    GameObject::Draw(draw_call_effect);
+    GameObject::Draw(draw_call_box);
 
-
-    if (displayedText != "") {
-        GameObject::Draw(draw_call_Me);
-        GameObject::Draw(draw_call_effect);
-        GameObject::Draw(draw_call_box);
-
-
-        Engine::GetFontManager().PrintText(FontType::Thin, FontAlignment::LEFT, displayedText.c_str(), { -175.f,-120.f },  0.05f, { 1.0f, 1.0f, 1.0f }, 1.f);
-        Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, character.c_str(), { -175.f, -100.f }, 0.08f, { 1.0f, 1.0f, 1.0f }, 1.f);
+    if (character == "Me") {
+        DrawCall draw_me = { Me, &me_matrix, Engine::GetShaderManager().GetDefaultShader() };
+        SetDrawSetting(draw_me);
+        GameObject::Draw(draw_me);
+    }
+    else if (character == "Sellerkeeper") {
+        DrawCall draw_seller = { Sellerkeeper_1, &seller_martix, Engine::GetShaderManager().GetDefaultShader() };
+        SetDrawSetting(draw_seller);
+        GameObject::Draw(draw_seller);
+    }
+    else if (character == "Perry") {
+        DrawCall draw_perry = { Perry, &perry_martix, Engine::GetShaderManager().GetDefaultShader() };
+        SetDrawSetting(draw_perry);
+        GameObject::Draw(draw_perry);
+    }
+    if (!displayedText.empty()) {
+        Engine::GetFontManager().PrintText(FontType::Thin, FontAlignment::LEFT,
+            displayedText.c_str(), { -175.f,-120.f }, 0.05f, { 1.0f, 1.0f, 1.0f }, 1.f);
+        Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT,
+            character.c_str(), { -175.f, -100.f }, 0.08f, { 1.0f, 1.0f, 1.0f }, 1.f);
     }
 }
 
