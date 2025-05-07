@@ -22,6 +22,7 @@ bool SaveDataManager::Load() {
         const std::string jsonfile = json_reader->LoadFromFile(saveFilePath);
         currentSaveData = json_reader->Deserialize(jsonfile);
         std::cout << "Save data loaded successfully." << std::endl;
+        Engine::GetEventManager().LoadSavedEvents(currentSaveData.eventsDone);
         return true;
     }
     else {

@@ -19,11 +19,20 @@ void EventManager::Update() {
 }
 
 void EventManager::ResetAll() {
-    for (auto& event : one_shot_events)
-        event.Reset();
+    for (auto& e : one_shot_events)
+        e.Reset();
 }
 
-bool EventManager::HasEventDone(const std::string& id) {
-    const auto& done = Engine::GetSaveDataManager().GetSaveData().eventsDone;
-    return std::find(done.begin(), done.end(), id) != done.end();
+bool EventManager::HasEventDone(const std::string& id) const {
+    return std::find(done_events.begin(), done_events.end(), id) != done_events.end();
+}
+
+void EventManager::MarkEventDone(const std::string& id) {
+    if (!HasEventDone(id)) {
+        done_events.push_back(id);
+    }
+}
+
+void EventManager::LoadSavedEvents(const std::vector<std::string>& saved) {
+    done_events = saved;
 }

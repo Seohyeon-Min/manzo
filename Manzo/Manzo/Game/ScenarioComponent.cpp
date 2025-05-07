@@ -53,30 +53,22 @@ void ScenarioComponent::Load()
 
     auto tuto_end = std::make_shared<StepEvent>("after_tutorial_end");
 
-    tuto_end->AddStep(
-        []() {
-            return Engine::GetEventManager().HasEventDone("tutorial_end") &&
-                (Engine::GetGameStateManager().GetStateName() == "Mode2");
-        },
-        [this]() {
-            dialog->LoadDialogGroup("after_tutorial_end"); /////////////////////////////////////////////////////////////////
-            //auto* quest = new PopUp({ -420,195 }, "assets/images/quest_popup.spt", true);
-            //Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(quest);
-            //quest->SetPop(true);
-        }
-    );
+    //tuto_end->AddStep(
+    //    []() {
+    //        return Engine::GetEventManager().HasEventDone("tutorial_end") &&
+    //            (Engine::GetGameStateManager().GetStateName() == "Mode2");
+    //    },
+    //    [this]() {
+    //        dialog->LoadDialogGroup("after_tutorial_end"); /////////////////////////////////////////////////////////////////
+    //        //auto* quest = new PopUp({ -420,195 }, "assets/images/quest_popup.spt", true);
+    //        //Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(quest);
+    //        //quest->SetPop(true);
+    //    }
+    //);
 
-    tuto_end->AddStep(
-        [this]() {
-            return dialog->IsFinished();
-        },
-        [this]() {
-            //dialog->LoadDialogGroup("after_tutorial_end"); /////////////////////////////////////////////////////////////////
-            auto* quest = new PopUp({ -420,195 }, "assets/images/quest_popup.spt", true);
-            Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(quest);
-            quest->SetPop(true);
-        }
-    );
+    //tuto_end->AddStep(
+
+    //);
 
     //tuto_end->AddStep(
     //    [this, npc]() { return dialog->IsFinished(); },
@@ -90,9 +82,18 @@ void ScenarioComponent::Load()
     //    }
     //);
 
-    //Engine::GetEventManager().AddEvent(Event("after_tutorial_end",
-
-    //));
+    Engine::GetEventManager().AddEvent(Event("after_tutorial_end",
+        [this]() {
+            return Engine::GetEventManager().HasEventDone("tutorial_end") &&
+                (Engine::GetGameStateManager().GetStateName() == "Mode2");
+        },
+        [this]() {
+            //dialog->LoadDialogGroup("after_tutorial_end"); /////////////////////////////////////////////////////////////////
+            auto* quest = new PopUp({ -420,195 }, "assets/images/quest_popup.spt", true);
+            Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(quest);
+            quest->SetPop(true);
+        }
+    ));
 
 
     Engine::GetEventManager().AddStepEvent(intro);

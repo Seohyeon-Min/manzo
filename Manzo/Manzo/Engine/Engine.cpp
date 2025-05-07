@@ -38,6 +38,7 @@ Engine::Engine() :
 
 void Engine::Start(std::string window_title)
 {
+
 }
 
 void Engine::Stop() {
