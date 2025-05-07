@@ -36,7 +36,7 @@ Dialog::Dialog(vec2 start_position)
 }
 
 void Dialog::LoadDialogGroup(const std::string& group_id, double Speed) {
-    is_finish = true;
+    is_Finished = false;
     currentDialogGroup = dialog->GetDialogGroup(group_id);
     currentLineIndex = 0;
     typingSpeed = Speed;
@@ -76,11 +76,11 @@ void Dialog::StartLine(int index) {
     IsTyping = true;
 }
 
-bool Dialog::IsFinished() const {
-    return !IsTyping &&
-        currentLineIndex == static_cast<int>(currentDialogGroup.size()) - 1 &&
-        currentIndex >= static_cast<int>(fullText.size());
-}
+//bool Dialog::IsFinished() const {
+//    return !IsTyping &&
+//        currentLineIndex == static_cast<int>(currentDialogGroup.size()) - 1 &&
+//        currentIndex >= static_cast<int>(fullText.size());
+//}
 
 
 void Dialog::NextLine() {
@@ -127,9 +127,11 @@ void Dialog::Hide() {
     IsTyping = false;
     displayedText = "";
     fullText = "";
+    currentDialogGroup.clear(); 
+    is_Finished = true;
+    character = "";
     currentIndex = 0;
 }
-
 
 
 void Dialog::Draw() {

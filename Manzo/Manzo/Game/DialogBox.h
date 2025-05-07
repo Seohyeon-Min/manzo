@@ -23,7 +23,7 @@ public:
     void Draw();
     void Hide();
     void Unload();
-    bool IsFinished() const;
+    bool IsFinished() { return is_Finished; }
 
     GameObjectTypes Type() override { return GameObjectTypes::Dialog; }
     std::string TypeName() override { return "Dialog"; }
@@ -62,7 +62,7 @@ private:
 
     vec2 boxposition;
 
-    bool is_finish = false;
+    bool is_Finished = false;
 };
 
 #endif

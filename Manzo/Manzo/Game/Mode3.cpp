@@ -75,8 +75,7 @@ void Mode3::Update(double dt) {
     GetGSComponent<Cam>()->Update(dt, {}, false);
     beat_system->Update(dt);
     phaseTimer += dt;
-    std::cout << "Suc: " << ship_ptr->GetDashSuccess() << std::endl;
-    int count = 0;
+
     switch (currentPhase) {
     case TutorialPhase::Init:
 
@@ -84,21 +83,52 @@ void Mode3::Update(double dt) {
 
             dialog_ptr->LoadDialogGroup("tutorial-1", 0.05);
             textDisplay = true;
-            phaseTimer = 0;
         }
         if (Engine::GetInput().KeyJustPressed(Input::Keys::Space)) {
             dialog_ptr->NextLine();
             if (dialog_ptr->IsFinished()) {
                 currentPhase = TutorialPhase::Dash;
+                textDisplay = false;
             }
         }
         break;
     case TutorialPhase::Dash:
-        std::cout << "yes" << std::endl;
+        if (beat_system->GetIsOnBeat()) {
+            if (ship_ptr->GetDashSuccess() && !hasSucceededThisBeat) {
+                success_count++;
+                hasSucceededThisBeat = true;
+            }
+
+            hasCheckedThisBeat = true;
+        }
+        else {
+            if (hasCheckedThisBeat && !hasSucceededThisBeat) {
+                success_count = 0;
+            }
+
+            hasCheckedThisBeat = false;
+            hasSucceededThisBeat = false;
+        }
+
+        if (success_count >= 4) {
+            currentPhase = TutorialPhase::Done;
+        }
         break;
 
     case TutorialPhase::Done:
-        //Engine::GetFontManager().PrintText(FontType::Thin, FontAlignment::CENTER, "", { 0,0 }, 0.05f, { 1.0f, 1.0f, 1.0f }, 1.f);
+        std::cout << "hello";
+        if (!textDisplay) {
+
+            dialog_ptr->LoadDialogGroup("tutorial-2", 0.05);
+            textDisplay = true;
+        }
+        if (Engine::GetInput().KeyJustPressed(Input::Keys::Space)) {
+            dialog_ptr->NextLine();
+            if (dialog_ptr->IsFinished()) {
+                Engine::GetGameStateManager().ClearNextGameState();
+                Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
+            }
+        }
         break;
     }
 }
