@@ -174,6 +174,15 @@ void Mode1::Load()
 	}
 
 	camera->SetPosition(ship_ptr->GetPosition());
+	
+	// Boss Trigger
+	Engine::GetEventManager().AddEvent(Event("Boss E Trigger",
+		[&]() { return ship_ptr->GetPosition().y <= bossPosition.y - 100; },
+		[&]() {
+			GetGSComponent<GameObjectManager>()->Add(boss_ptr);
+			Isboss = true;
+		}
+	));
 }
 
 void Mode1::Update(double dt)
