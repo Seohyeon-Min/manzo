@@ -177,7 +177,7 @@ void Mode2::Update(double dt) {
 	if (icon != nullptr) {
 		if ((icon->GetAlias() == "ship") && clicked && !inven_ptr->GetIsOpened()) {
 			Engine::GetGameStateManager().ClearNextGameState();
-			Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode3));
+			Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode1));
 		}
 		else if ([&]() {
 			std::string alias = icon->GetAlias();

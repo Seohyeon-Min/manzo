@@ -15,7 +15,10 @@
       { "character": "Me", "text": "What kind of fish do you need?" },
       { "character": "Sellerkeeper", "text": "Just anything you can find! Bring me ten fish." },
       { "character": "Sellerkeeper", "text": "Ah—but nothing too big. Something fit for a dinner table, please." },
-      { "character": "Me", "text": "Got it. Just give me a day." }
+      { "character": "Me", "text": "Got it. Just give me a day." },
+      { "character": "Me", "text": "..." },
+      { "character": "Me", "text": "Before that, Let's try a test drive." },
+      { "character": "Me", "text": "." }
     ],
     "day-1_2": [
       { "character": "Sellerkeeper", "text": "Oh, you really brought one back!" },

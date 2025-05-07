@@ -5,7 +5,7 @@
 
 FishGenerator::FishGenerator()
 {
-	timer = new Timer(2.0);
+	timer = new Timer(0.01);
 
 	//leader fish
 	for (int i = 0; i < 6; i++)
@@ -38,7 +38,7 @@ void FishGenerator::GenerateFish(double dt)
 		fishList.resize(fishCnt);
 		fishList.shrink_to_fit();
 
-		if (fishList.size() < 20) //limit of fish num
+		if (fishList.size() < 80) //limit of fish num
 		{
 
 			Fish* newFish = new Fish();
