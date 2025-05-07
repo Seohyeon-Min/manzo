@@ -126,3 +126,8 @@ void Shop::Read_Shop_Csv(const std::string& filename)
 	file.close();
 	std::cout << "Shop loaded successfully." << std::endl;
 }
+
+bool Shop::CanCollideWith(GameObjectTypes other_object)
+{
+	return (other_object == GameObjectTypes::Icon);
+}

@@ -6,6 +6,13 @@ fish4,assets/images/Fish4.spt
 fish5,assets/images/Fish5.spt
 fish6,assets/images/Fish6.spt
 fish7,assets/images/Fish7.spt
+fish_pop1,assets/images/Fish1.spt
+fish_pop2,assets/images/Fish2.spt
+fish_pop3,assets/images/Fish3.spt
+fish_pop4,assets/images/Fish4.spt
+fish_pop5,assets/images/Fish5.spt
+fish_pop6,assets/images/Fish6.spt
+fish_pop7,assets/images/Fish7.spt
 module_have,assets/images/module_empty.spt
 module_set,assets/images/module_empty.spt
 module1,assets/images/module1_info.spt
