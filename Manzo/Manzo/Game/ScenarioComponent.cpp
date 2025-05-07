@@ -3,6 +3,8 @@
 #include "ScenarioComponent.h"
 #include "NPC.h"
 #include "Mouse.h"
+#include "PopUp.h"
+#include "States.h"
 
 void ScenarioComponent::Load()
 {
@@ -37,9 +39,14 @@ void ScenarioComponent::Load()
     );
 
     intro->AddStep(
-        [this, npc]() { return dialog->GetDialogFinish(); },
+        [this, npc]() { return dialog->IsFinished(); },
         []() {
-            //Engine::GetInput().SetMouseInputOn(true);
+            Engine::GetInput().SetMouseInputOn(true);
+            Engine::GetGameStateManager().ClearNextGameState();
+            Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode3));
+            //auto* quest = new PopUp({ -420,195 }, "assets/images/quest_popup.spt", true);
+            //Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(quest);
+            //quest->SetPop(true);
         }
     );
 

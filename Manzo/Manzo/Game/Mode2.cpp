@@ -118,7 +118,6 @@ void Mode2::Update(double dt) {
 		Engine::GetAudioManager().PlayMusics("Home_bgm");
 		playing = true;
 	}
-	std::cout<< Engine::GetInput().GetMouseInputOn() << std::endl;
 
 	UpdateGSComponents(dt);
 	GetGSComponent<GameObjectManager>()->UpdateAll(dt);
