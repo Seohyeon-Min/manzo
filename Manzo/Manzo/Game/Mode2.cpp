@@ -47,7 +47,7 @@ void Mode2::Load() {
 	AddGSComponent(new GameObjectManager());
 
 	// player
-	player_ptr = new Player({ 0, -115 });
+	player_ptr = new Player({ 0, -70 });
 	GetGSComponent<GameObjectManager>()->Add(player_ptr);
 
 	// water ripple

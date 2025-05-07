@@ -17,6 +17,7 @@ void ScenarioComponent::Load()
             Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(npc.get());
             npc->Walk();
             Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->SetCollisionON(false);
+            //Engine::GetIconManager().SetCollisionON(false);
         }
     );
 

@@ -1,7 +1,7 @@
 #pragma once
 #include "..\Engine\GameObject.h"
 #include "../Engine/Timer.h"
-constexpr vec2 start_pos_NPC = { -600,-115 };
+constexpr vec2 start_pos_NPC = { -600,-70 };
 
 class NPC : public GameObject {
 public:

@@ -3,9 +3,10 @@
 Player::Player(vec2 start_position) :
     GameObject(start_position)
 {
-    AddGOComponent(new Sprite("assets/images/ship.spt", this));
+    AddGOComponent(new Sprite("assets/images/character_sprite/Player.spt", this));
     current_state = &state_idle;
     current_state->Enter(this);
+    SetScale({ 2.0f, 2.0f });
 }
 
 void Player::Update(double dt)
@@ -21,6 +22,7 @@ void Player::Draw(DrawLayer drawlayer)
 void Player::Player_Idle::Enter(GameObject* object)
 {
     Player* player = static_cast<Player*>(object);
+    player->GetGOComponent<Sprite>()->PlayAnimation(static_cast<int>(Animations::Idle));
     player->SetVelocity({});
 }
 
@@ -33,16 +35,18 @@ void Player::Player_Idle::CheckExit(GameObject* object)
     Player* player = static_cast<Player*>(object);
     if (Engine::GetInput().KeyDown(Input::Keys::A)) {
         player->change_state(&player->state_walking);
-        player->SetScale({ 1,1 });
+        player->SetScale({ 2.0f, 2.0f });
     }
     else if (Engine::GetInput().KeyDown(Input::Keys::D)) {
         player->change_state(&player->state_walking);
-        player->SetScale({ -1,1 });
+        player->SetScale({ -2.0f, 2.0f });
     }
 }
 
 void Player::Player_Walking::Enter(GameObject* object)
 {
+    Player* player = static_cast<Player*>(object);
+    player->GetGOComponent<Sprite>()->PlayAnimation(static_cast<int>(Animations::Walking));
 }
 
 void Player::Player_Walking::Update(GameObject* object, double dt)

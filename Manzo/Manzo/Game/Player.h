@@ -11,7 +11,7 @@ public:
     void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
 
 protected:
-    float speed = 400.f;
+    float speed = 150.f;
 
     class Player_Idle : public State {
     public:
