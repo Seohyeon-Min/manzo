@@ -36,6 +36,20 @@ Ship::Ship(vec2 start_position) :
 		AddGOComponent(collide_timer);
 		fuel_bubble_timer->Set(fuel_bubble_time);
 	}
+	if (Engine::GetGameStateManager().GetStateName() == "Tutorial")
+	{
+		bounceBehavior = new DefaultBounceBehavior();
+		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new Pump);
+		current_state = &state_tutorial;
+		current_state->Enter(this);
+		fuel_bubble_timer = new Timer(0.0);
+		AddGOComponent(fuel_bubble_timer);
+		invincibility_timer = new Timer(0.0);
+		AddGOComponent(invincibility_timer);
+		collide_timer = new RealTimeTimer(collide_time);
+		AddGOComponent(collide_timer);
+		fuel_bubble_timer->Set(fuel_bubble_time);
+	}
 }
 
 void Ship::State_Idle::Enter(GameObject* object) {
@@ -223,6 +237,20 @@ void Ship::State_Die::CheckExit(GameObject* object)
 {
 }
 
+void Ship::State_Tutorial::Enter(GameObject* object)
+{
+
+}
+
+void Ship::State_Tutorial::Update(GameObject* object, double dt)
+{
+
+}
+
+void Ship::State_Tutorial::CheckExit(GameObject* object)
+{
+
+}
 
 std::vector<vec2> spline_points;
 
@@ -715,12 +743,13 @@ void Pump::Update(double dt)
 
 		radius = std::max(radius, min_pump_radius);
 	}
+
 }
 
 void Pump::Draw(DrawLayer drawlayer)
 {
 	CircleDrawCall draw_call = {
-	min_pump_radius,                       // Texture to draw
+	min_pump_radius,                      // Texture to draw
 	GetPosition(),                          // Transformation matrix
 	};
 
@@ -737,7 +766,7 @@ void Pump::Draw(DrawLayer drawlayer)
 	draw_call2.SetUniforms = [this](const GLShader* shader) {this->SetUniforms(shader); };
 	draw_call2.sorting_layer = DrawLayer::DrawUI;
 
-	Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call));
+    Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call));
 	Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call2));
 }
 

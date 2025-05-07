@@ -114,9 +114,18 @@ private:
         std::string GetName() override { return "State_Die"; }
     };
 
+    class State_Tutorial : public State {
+    public:
+        virtual void Enter(GameObject* object) override;
+        virtual void Update(GameObject* object, double dt) override;
+        virtual void CheckExit(GameObject* object) override;
+        std::string GetName() override { return "State_Tutorial"; }
+    };
+
     State_Idle state_idle;
     State_Move state_move;
     State_Die state_die;
+    State_Tutorial state_tutorial;
 };
 
 class Pump : public GameObject {
@@ -127,8 +136,12 @@ public:
     void Update(double dt) override;
     void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
     float GetRadius() { return radius; }
+    float GetMinRadius() { return min_pump_radius;}
+    float GetMaxRadius() { return max_pump_radius; }
     void Reset();
     void SetUniforms(const GLShader* shader);
+    void SetMinRadius(float value) { min_pump_radius = value; }
+    void SetMaxRadius(float value) { max_pump_radius = value;}
 
 private:
     Beat* beat;
