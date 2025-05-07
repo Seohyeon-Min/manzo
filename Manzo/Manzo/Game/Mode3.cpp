@@ -75,6 +75,7 @@ void Mode3::Update(double dt) {
     GetGSComponent<Cam>()->Update(dt, {}, false);
     beat_system->Update(dt);
     phaseTimer += dt;
+    std::cout << "Suc: " << ship_ptr->GetDashSuccess() << std::endl;
     int count = 0;
     switch (currentPhase) {
     case TutorialPhase::Init:

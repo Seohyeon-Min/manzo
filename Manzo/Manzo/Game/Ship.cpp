@@ -106,6 +106,8 @@ void Ship::State_Idle::CheckExit(GameObject* object) {
 		ship->force = ship->direction * speed;
 
 		ship->change_state(&ship->state_move);
+
+		ship->dash_success = true;
 	}
 }
 
@@ -113,11 +115,13 @@ void Ship::State_Move::Enter(GameObject* object) {
 	Ship* ship = static_cast<Ship*>(object);
 	ship->move = true;
 	vec2 dir = ship->GetVelocity().Normalize();
+
 	if (skip_enter) return;
 	Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new DashEffect());
 }
 void Ship::State_Move::Update([[maybe_unused]] GameObject* object, [[maybe_unused]] double dt) {
 	Ship* ship = static_cast<Ship*>(object);
+	ship->dash_success = false;
 }
 
 void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_unused]] double fixed_dt) {
