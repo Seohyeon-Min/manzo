@@ -2,10 +2,14 @@ alias,img
 fish1,assets/images/Fish1.spt
 fish2,assets/images/Fish2.spt
 fish3,assets/images/Fish3.spt
+fish4,assets/images/Fish4.spt
+fish5,assets/images/Fish5.spt
+fish6,assets/images/Fish6.spt
+fish7,assets/images/Fish7.spt
 module_have,assets/images/module_empty.spt
 module_set,assets/images/module_empty.spt
-module1,assets/images/module_icon1.spt
-module2,assets/images/module_icon1.spt
+module1,assets/images/module1_info.spt
+module2,assets/images/module2_info.spt
 module3,assets/images/module_icon1.spt
 plus1,assets/images/button_p1.spt
 plus10,assets/images/button_p10.spt

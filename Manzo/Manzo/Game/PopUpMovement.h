@@ -12,10 +12,12 @@ public:
 	PopUpMovement(GameObject* obj, vec2 start, vec2 end) : startPos(start), endPos(end)
 	{
 		object = obj;
-	}
 
-	PopUpMovement(GameObject* popup, GameObject* icon, vec2 start, vec2 end)
-		: object(popup), object_follower(icon), startPos(start), endPos(end) {}
+		if (obj->Type() == GameObjectTypes::Icon)
+		{
+			elapsed = -0.45f;
+		}
+	}
 
 	~PopUpMovement() = default;
 

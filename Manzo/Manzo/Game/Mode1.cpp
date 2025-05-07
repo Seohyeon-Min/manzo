@@ -99,9 +99,9 @@ void Mode1::Load()
 
 	// background
 	background->Add("assets/images/background/temp_background4.png", 0.0f);
-	background->Add("assets/images/background/bg1.png", 0.3f);
+	/*background->Add("assets/images/background/bg1.png", 0.3f);
 	background->Add("assets/images/background/bg2.png", 0.4f);
-	background->Add("assets/images/background/bg3.png", 0.5f);
+	background->Add("assets/images/background/bg3.png", 0.5f);*/
 	// background->Add("assets/images/background/bubble.png", 1.5f, DrawLayer::DrawUI);
 
 	// Map

@@ -57,13 +57,13 @@ private:
 	int page = 0;
 	int money = 0;
 
-	int total_fishNum = 3;
+	int total_fishNum = 7;
 	int todays_fish_index = 0;
 	int todays_price = 0;
 	int how_much_sold = 0;
 
 	float m1x, m2x;
-	int p = 100;
+	int p = 200;
 
 	std::string todays_fish_icon;
 
