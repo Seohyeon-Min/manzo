@@ -71,6 +71,7 @@ void SaveDataManager::SetModuleData(const ModuleData& m1, const ModuleData& m2) 
 }
 void SaveDataManager::UpdateSaveData(const SaveData& newData) {
     currentSaveData = newData;
+    std::cout << "[SaveDataManager] UpdateSaveData called\n";
     Save();
 }
 

@@ -176,13 +176,18 @@ void Mode1::Load()
 	camera->SetPosition(ship_ptr->GetPosition());
 	
 	// Boss Trigger
+	auto bossPosCopy = bossPosition;
+	auto bossCopy = boss_ptr;
+	auto shipCopy = ship_ptr;
+
 	Engine::GetEventManager().AddEvent(Event("Boss E Trigger",
-		[&]() { return ship_ptr->GetPosition().y <= bossPosition.y - 100; },
-		[&]() {
-			GetGSComponent<GameObjectManager>()->Add(boss_ptr);
-			Isboss = true;
+		[shipCopy, bossPosCopy]() {
+			return shipCopy->GetPosition().y <= bossPosCopy.y - 100;
+		},
+		[bossCopy]() {
+			Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bossCopy);
 		}
-	)); 
+	));
 }
 
 void Mode1::Update(double dt)

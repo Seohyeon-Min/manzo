@@ -10,6 +10,10 @@ NPC::NPC(vec2 start_position) :
     SetScale({ 2.0f, 2.0f });
 }
 
+void NPC::ResetPosition() {
+    SetPosition({ -650.f, -115.f });
+}
+
 void NPC::Update(double dt)
 {
     GameObject::Update(dt);

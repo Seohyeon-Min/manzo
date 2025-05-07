@@ -12,6 +12,8 @@ public:
     void Update();
     void ResetAll();
 
+    void ResetEvent(const std::string& id);
+
     bool HasEventDone(const std::string& id) const;
     void MarkEventDone(const std::string& id);
     void LoadSavedEvents(const std::vector<std::string>& saved); // 저장된 이벤트 불러오기

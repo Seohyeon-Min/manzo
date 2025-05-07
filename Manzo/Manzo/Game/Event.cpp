@@ -31,6 +31,19 @@ void Event::Update() {
 
 void Event::Reset() {
     triggered = false;
+
+    auto& saveData = Engine::GetSaveDataManager().GetSaveData();
+    auto& done = saveData.eventsDone;
+
+    auto it = std::find(done.begin(), done.end(), id);
+    if (it != done.end()) {
+        std::cout << "Erasing from eventsDone: " << *it << "\n";
+        done.erase(it);
+        Engine::GetSaveDataManager().UpdateSaveData(saveData);
+    }
+    else {
+        std::cout << "[Reset] NOT FOUND in eventsDone: " << id << "\n";
+    }
 }
 
 StepEvent::StepEvent(const std::string& id) : id(id) {}
@@ -48,6 +61,10 @@ void StepEvent::Update() {
     }
     if (step.HasRun()) {
         ++current_step;
+        if (IsFinished()) {
+            Engine::GetEventManager().MarkEventDone(id);
+            std::cout << "[StepEvent] Finished: " << id << std::endl;
+        }
     }
 }
 
