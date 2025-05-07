@@ -209,12 +209,12 @@ void Mode2::Draw() {
 				if (fishCollection[i] != 0)
 					totalCaptured++;
 
-			for (int i = 0; i < 3; ++i) {
+			for (int i = 0; i < 7; ++i) {
 				if (fishCollection[i] != 0) {
 					Engine::GetFontManager().PrintText(
 						FontType::Bold, FontAlignment::LEFT,
 						std::to_string(inven_ptr->HowManyFishes(i)),
-						{ 190.f, currentY },
+						{ 190.f, currentY + 50 },
 						0.05f,
 						{ 1.f, 1.f, 1.f },
 						1.0f
