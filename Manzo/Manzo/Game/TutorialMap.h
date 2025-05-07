@@ -34,7 +34,9 @@ private:
     Background* background;
     Ship* ship_ptr;
 
-    float default_radius = 0.0f;
-    float variable_radius = 0.0f;
+    float default_min_radius = 0.0f;
+    float default_max_radius = 0.0f;
+    float variable_min_radius = 0.0f;
+    float variable_max_radius = 0.0f;
     bool playing = false;
 };

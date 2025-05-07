@@ -23,10 +23,24 @@ Ship::Ship(vec2 start_position) :
 	FuelFlag = false;
 	SetVelocity({ 0,0 });
 
-	if (Engine::GetGameStateManager().GetStateName() == "Mode1" || Engine::GetGameStateManager().GetStateName() == "Tutorial") {
+	if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
 		bounceBehavior = new DefaultBounceBehavior();
 		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new Pump);
 		current_state = &state_idle;
+		current_state->Enter(this);
+		fuel_bubble_timer = new Timer(0.0);
+		AddGOComponent(fuel_bubble_timer);
+		invincibility_timer = new Timer(0.0);
+		AddGOComponent(invincibility_timer);
+		collide_timer = new RealTimeTimer(collide_time);
+		AddGOComponent(collide_timer);
+		fuel_bubble_timer->Set(fuel_bubble_time);
+	}
+	if (Engine::GetGameStateManager().GetStateName() == "Tutorial")
+	{
+		bounceBehavior = new DefaultBounceBehavior();
+		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new Pump);
+		current_state = &state_tutorial;
 		current_state->Enter(this);
 		fuel_bubble_timer = new Timer(0.0);
 		AddGOComponent(fuel_bubble_timer);
@@ -219,6 +233,20 @@ void Ship::State_Die::CheckExit(GameObject* object)
 {
 }
 
+void Ship::State_Tutorial::Enter(GameObject* object)
+{
+
+}
+
+void Ship::State_Tutorial::Update(GameObject* object, double dt)
+{
+
+}
+
+void Ship::State_Tutorial::CheckExit(GameObject* object)
+{
+
+}
 
 std::vector<vec2> spline_points;
 
