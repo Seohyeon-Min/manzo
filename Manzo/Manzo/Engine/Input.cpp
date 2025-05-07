@@ -27,7 +27,6 @@ void Input::Update() {
         previous_keys_down[i] = current_key_state[i];
     }
 
-    if (!mouse_on) return;
     previous_mouse_position = mouse_position;
 
     int x, y;
@@ -87,14 +86,17 @@ void Input::SetMouseButtonDown(Uint8 button, bool value) {
 }
 
 bool Input::MouseButtonDown(Uint8 button) {
+    if (!mouse_on) return false;
     return (button >= 1 && button <= 5) ? current_mouse_state[button - 1] : false;
 }
 
 bool Input::MouseButtonJustPressed(Uint8 button) {
+    if (!mouse_on) return false;
     return MouseButtonDown(button) && !previous_mouse_state[button - 1];
 }
 
 bool Input::MouseButtonJustReleased(Uint8 button) {
+    if (!mouse_on) return false;
     return !MouseButtonDown(button) && previous_mouse_state[button - 1];
 }
 
