@@ -100,9 +100,10 @@ struct CircleDrawCall : public BaseDrawCall {
     float radius = 0.0f;
     vec2 pos;
     DrawType draw_type = DrawType::Circle;
+    color3 color;
 
     CircleDrawCall() = default;
-    CircleDrawCall(float radius, vec2 pos) : radius(radius), pos(pos) {}
+    CircleDrawCall(float radius, vec2 pos, color3 color = { 255,255,255 }) : radius(radius), pos(pos), color(color) {}
 
     DrawType GetDrawType() const override {
         return DrawType::Circle;

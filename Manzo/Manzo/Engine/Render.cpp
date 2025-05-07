@@ -564,7 +564,7 @@ void Render::DrawLinePro(LineDrawCallPro drawcall)
 void Render::DrawCircleLine(CircleDrawCall draw_call) {
     float radius = draw_call.radius;
     const GLShader* shader = draw_call.shader;
-    color3 color = {255,255,255};
+    color3 color = draw_call.color;
     vec2 position = draw_call.pos;
     auto settings = draw_call.settings;
 

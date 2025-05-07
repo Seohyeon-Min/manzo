@@ -78,10 +78,12 @@ void Tutorial::Draw()
 
 	CircleDrawCall draw_call = {
 		variable_radius,
-		ship_ptr->GetPosition()
+		ship_ptr->GetPosition(),
+		{255,0,0}
 	};
 	draw_call.settings.do_blending = true;
 	draw_call.sorting_layer = DrawLayer::DrawUI;
+	draw_call.order_in_layer = 9;
 	Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call));
 }
 
