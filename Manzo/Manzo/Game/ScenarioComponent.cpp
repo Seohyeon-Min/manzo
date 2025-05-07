@@ -50,21 +50,53 @@ void ScenarioComponent::Load()
         }
     );
 
-    Engine::GetEventManager().AddEvent(Event("after_tutorial_end",
+
+    auto tuto_end = std::make_shared<StepEvent>("after_tutorial_end");
+
+    tuto_end->AddStep(
         []() {
             return Engine::GetEventManager().HasEventDone("tutorial_end") &&
                 (Engine::GetGameStateManager().GetStateName() == "Mode2");
         },
         [this]() {
             dialog->LoadDialogGroup("after_tutorial_end"); /////////////////////////////////////////////////////////////////
+            //auto* quest = new PopUp({ -420,195 }, "assets/images/quest_popup.spt", true);
+            //Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(quest);
+            //quest->SetPop(true);
+        }
+    );
+
+    tuto_end->AddStep(
+        [this]() {
+            return dialog->IsFinished();
+        },
+        [this]() {
+            //dialog->LoadDialogGroup("after_tutorial_end"); /////////////////////////////////////////////////////////////////
             auto* quest = new PopUp({ -420,195 }, "assets/images/quest_popup.spt", true);
             Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(quest);
             quest->SetPop(true);
         }
-    ));
+    );
+
+    //tuto_end->AddStep(
+    //    [this, npc]() { return dialog->IsFinished(); },
+    //    []() {
+    //        Engine::GetInput().SetMouseInputOn(true);
+    //        Engine::GetGameStateManager().ClearNextGameState();
+    //        Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Tutorial));
+    //        //auto* quest = new PopUp({ -420,195 }, "assets/images/quest_popup.spt", true);
+    //        //Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(quest);
+    //        //quest->SetPop(true);
+    //    }
+    //);
+
+    //Engine::GetEventManager().AddEvent(Event("after_tutorial_end",
+
+    //));
 
 
     Engine::GetEventManager().AddStepEvent(intro);
+    Engine::GetEventManager().AddStepEvent(tuto_end);
     //intro.AddStep(
     //    []() { return dialog->IsFinished(); },
     //    []() {
