@@ -1,4 +1,4 @@
-
+ 
 #include "Mode3.h"
 #include "../Engine/Engine.h"
 #include "../Engine/Timer.h"
@@ -41,6 +41,14 @@ void Mode3::Load() {
     AddGSComponent(new Cam());
     GetGSComponent<Cam>()->SetPosition({ 0, 0 });
 
+    // Particle
+    AddGSComponent(new ParticleManager<Particles::Plankton>());
+    AddGSComponent(new ParticleManager<Particles::FuelBubble>());
+    AddGSComponent(new ParticleManager<Particles::BubblePop>());
+    AddGSComponent(new ParticleManager<Particles::HitPraticle>());
+    AddGSComponent(new ParticleManager<Particles::HitPraticle2>());
+    AddGSComponent(new ParticleManager<Particles::CaptureEffect>());
+    AddGSComponent(new ParticleManager<Particles::BulletParticle>());
 
     // background
     background = new Background();
@@ -62,17 +70,17 @@ void Mode3::Load() {
 }
 
 void Mode3::Update(double dt) {
-   
+    UpdateGSComponents(dt);
+    GetGSComponent<GameObjectManager>()->UpdateAll(dt);
+    GetGSComponent<Cam>()->Update(dt, {}, false);
+    beat_system->Update(dt);
+    phaseTimer += dt;
     int count = 0;
     switch (currentPhase) {
     case TutorialPhase::Init:
 
         if (!textDisplay ) {
-            UpdateGSComponents(dt);
-            GetGSComponent<GameObjectManager>()->UpdateAll(dt);
-            GetGSComponent<Cam>()->Update(dt, {}, false);
-            beat_system->Update(dt);
-            phaseTimer += dt;
+
             dialog_ptr->LoadDialogGroup("tutorial", 0.05);
             textDisplay = true;
             phaseTimer = 0;
