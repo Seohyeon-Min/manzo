@@ -106,6 +106,7 @@ public:
     bool KeyJustPressed(Keys key);
     bool KeyJustReleased(Keys key);
     void SetMouseInputOn(bool sw) { mouse_on = sw; }
+    bool GetMouseInputOn() { return mouse_on; }
 
     void SetMouseButtonDown(Uint8 button, bool value);
     bool MouseButtonDown(Uint8 button);
