@@ -21,6 +21,8 @@ public:
 	void ClearMoney() { money = 0; }
 	void SetMoney(int count) { money = count; }
 
+	int ReturnFishMoney(int index);
+
 	vec2 start_position = { 0,0 };
 
 	enum FishType

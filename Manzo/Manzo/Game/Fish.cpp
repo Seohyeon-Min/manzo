@@ -184,3 +184,8 @@ void Fish::ReadFishCSV(const std::string& filename) {
     }
     file.close();
 }
+
+int Fish::ReturnFishMoney(int index)
+{
+    return fishBook[index-1].money;
+}

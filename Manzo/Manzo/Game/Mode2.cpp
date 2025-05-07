@@ -47,6 +47,8 @@ void Mode2::Load() {
 	// compenent
 	AddGSComponent(new GameObjectManager());
 
+	Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
+
 	// player
 	player_ptr = new Player({ 0, -70 });
 	GetGSComponent<GameObjectManager>()->Add(player_ptr);
@@ -66,17 +68,17 @@ void Mode2::Load() {
 	// Icon
 	Engine::GetIconManager().LoadIconList();
 
-    // Dialog
-    dialog_ptr = new Dialog({0,0});
-    GetGSComponent<GameObjectManager>()->Add(dialog_ptr);
+	// Dialog
+	dialog_ptr = new Dialog({ 0,0 });
+	GetGSComponent<GameObjectManager>()->Add(dialog_ptr);
 
-    //Engine::GetLogger().LoadSaveFile();
+	//Engine::GetLogger().LoadSaveFile();
 
-    //ScenarioComponent
-    scenario = new ScenarioComponent(dialog_ptr);
-    AddGSComponent(scenario);
-    scenario->Load();
-    
+	//ScenarioComponent
+	scenario = new ScenarioComponent(dialog_ptr);
+	AddGSComponent(scenario);
+	scenario->Load();
+
 	// Module
 	module_ptr = new Module({ 0, 0 });
 	GetGSComponent<GameObjectManager>()->Add(module_ptr);
@@ -177,6 +179,16 @@ void Mode2::Update(double dt) {
 			Engine::GetGameStateManager().ClearNextGameState();
 			Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode3));
 		}
+		else if ([&]() {
+			std::string alias = icon->GetAlias();
+			if (alias.size() < 5) return false;
+			if (alias.substr(0, 4) != "fish") return false;
+			char num = alias[4];
+			n = num - '0';
+			return (num >= '1' && num <= '7' && icon->IsCollidingWith(shop_ptr));
+			}()) {
+			flag = true;
+		}
 	}
 
 	// Open Inven
@@ -207,21 +219,21 @@ void Mode2::Update(double dt) {
 
 void Mode2::FixedUpdate(double dt)
 {
-    if (GetGSComponent<GameObjectManager>()) {
-        GetGSComponent<GameObjectManager>()->FixedUpdateAll(dt);
-    }
+	if (GetGSComponent<GameObjectManager>()) {
+		GetGSComponent<GameObjectManager>()->FixedUpdateAll(dt);
+	}
 }
 
 void Mode2::Draw() {
-    if (GetGSComponent<Background>() && GetGSComponent<Cam>()) {
-        GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
-    }
-    GetGSComponent<GameObjectManager>()->DrawAll();
-    dialog_ptr->Draw();
+	if (GetGSComponent<Background>() && GetGSComponent<Cam>()) {
+		GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
+	}
+	GetGSComponent<GameObjectManager>()->DrawAll();
+	dialog_ptr->Draw();
 
 	today_fish_popup->SetPop(true);
 
-	Engine::GetFontManager().PrintText(FontType::VeryThin, FontAlignment::LEFT, "Trade your fish for " + std::to_string(inven_ptr->TodayFishPrice()) + " shiny coins!", {-262.f,142.f}, 0.032f, {0.f,0.f,0.f}, 1.0f);
+	Engine::GetFontManager().PrintText(FontType::VeryThin, FontAlignment::LEFT, "Trade your fish for " + std::to_string(inven_ptr->TodayFishPrice()) + " shiny coins!", { -262.f,142.f }, 0.032f, { 0.f,0.f,0.f }, 1.0f);
 
 	if (inven_ptr->GetIsOpened())
 	{
@@ -235,16 +247,16 @@ void Mode2::Draw() {
 			int printed = 0;
 
 			int totalCaptured = 0;
-			for (int i = 0; i < 3; ++i)
+			for (int i = 0; i < 7; ++i)
 				if (fishCollection[i] != 0)
 					totalCaptured++;
 
-			for (int i = 0; i < 3; ++i) {
+			for (int i = 0; i < 7; ++i) {
 				if (fishCollection[i] != 0) {
 					Engine::GetFontManager().PrintText(
 						FontType::Bold, FontAlignment::LEFT,
 						std::to_string(inven_ptr->HowManyFishes(i)),
-						{ 190.f, currentY },
+						{ 190.f, currentY + 50 },
 						0.05f,
 						{ 1.f, 1.f, 1.f },
 						1.0f
@@ -256,7 +268,7 @@ void Mode2::Draw() {
 				}
 			}
 
-			if (!sell_popup->GetPop() && Engine::GetInput().MouseButtonJustReleased(SDL_BUTTON_LEFT))
+			if (!sell_popup->GetPop() && Engine::GetInput().MouseButtonJustReleased(SDL_BUTTON_LEFT) && flag)
 			{
 				sell_popup->SetPop(true);
 				Engine::GetIconManager().ShowIcon("close_icon");
@@ -264,10 +276,16 @@ void Mode2::Draw() {
 				Engine::GetIconManager().ShowIcon("plus10");
 				Engine::GetIconManager().ShowIcon("minus1");
 				Engine::GetIconManager().ShowIcon("minus10");
-
+				Engine::GetIconManager().ShowIcon("fish_pop" + std::to_string(n));
+				flag = false;
 
 			}
-			if(sell_popup->GetPop())	Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, std::to_string(inven_ptr->HowMuchSold()), { -5.f,-40.f }, 0.05f, { 1.f,1.f,1.f }, 1.0f);
+			if (sell_popup->GetPop())
+			{
+				Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, std::to_string(inven_ptr->HowMuchSold()), { -5.f,-40.f }, 0.05f, { 1.f,1.f,1.f }, 1.0f);
+				Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, std::to_string(Engine::GetGameStateManager().GetGSComponent<Fish>()->ReturnFishMoney(1)), {-8.f,-18.f}, 0.03f, {0.f,0.f,0.f}, 1.0f);
+				std::cout << Engine::GetGameStateManager().GetGSComponent<Fish>()->ReturnFishMoney(1);
+			}
 		}
 		else
 		{
@@ -277,6 +295,7 @@ void Mode2::Draw() {
 			Engine::GetIconManager().HideIcon("plus10");
 			Engine::GetIconManager().HideIcon("minus1");
 			Engine::GetIconManager().HideIcon("minus10");
+			Engine::GetIconManager().HideIcon("fish_pop" + std::to_string(n));
 		}
 	}
 	else
@@ -284,39 +303,40 @@ void Mode2::Draw() {
 		Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, "Click Ship to Start the Game", { -100.f,-150.f }, 0.05f, { 0.f,0.f,0.f }, 0.5f);
 		Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, "Click Computer to Equip Module", { 30.f,30.f }, 0.05f, { 1.f,1.f,1.f }, 0.5f);
 		sell_popup->SetPop(false);
+		Engine::GetIconManager().HideIcon("fish_pop" + std::to_string(n));
 	}
 }
 
 void Mode2::Unload() {
 
-    Engine::GetSaveDataManager().SetFishData(
-        inven_ptr->GetMoney(),
-        inven_ptr->fishCollection
-    );
+	Engine::GetSaveDataManager().SetFishData(
+		inven_ptr->GetMoney(),
+		inven_ptr->fishCollection
+	);
 
-    ModuleData m1{
-        inven_ptr->FirstModuleBought(),
-        module_ptr->IsFirstSetted(),
-        inven_ptr->GetX1Pos()
-    };
+	ModuleData m1{
+		inven_ptr->FirstModuleBought(),
+		module_ptr->IsFirstSetted(),
+		inven_ptr->GetX1Pos()
+	};
 
-    ModuleData m2{
-        inven_ptr->SecondModuleBought(),
-        module_ptr->IsSecondSetted(),
-        inven_ptr->GetX2Pos()
-    };
+	ModuleData m2{
+		inven_ptr->SecondModuleBought(),
+		module_ptr->IsSecondSetted(),
+		inven_ptr->GetX2Pos()
+	};
 
-    Engine::GetSaveDataManager().SetModuleData(m1, m2);
-    Engine::GetSaveDataManager().Save();
+	Engine::GetSaveDataManager().SetModuleData(m1, m2);
+	Engine::GetSaveDataManager().Save();
 
-    Engine::GetAudioManager().StopAllChannels();
-    GetGSComponent<GameObjectManager>()->Unload();
-    GetGSComponent<Background>()->Unload();
+	Engine::GetAudioManager().StopAllChannels();
+	GetGSComponent<GameObjectManager>()->Unload();
+	GetGSComponent<Background>()->Unload();
 	Engine::GetIconManager().Unload();
-    ClearGSComponents();
-    dialog_ptr->Unload();
-    playing = false;
+	ClearGSComponents();
+	dialog_ptr->Unload();
+	playing = false;
 
-    background = nullptr;
-    scenario = nullptr;
+	background = nullptr;
+	scenario = nullptr;
 }

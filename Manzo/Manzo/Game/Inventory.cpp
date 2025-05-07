@@ -70,8 +70,10 @@ Inven::Inven(vec2 position) : GameObject(position), dre_todayFish(rd()), dre_pri
 		if (fish.second != 0)
 		{
 			std::string file_name = "fish" + std::to_string(fish.first + 1);
+			std::string file_name_pop = "fish_pop" + std::to_string(fish.first + 1);
 
 			Engine::GetIconManager().AddIcon(file_name, { GetPosition().x + 100,float(p -= 80) }, 1.0f, true, false, true);
+			Engine::GetIconManager().AddIcon(file_name_pop, { 0,40 }, 1.0f, false, false, false, false, false);
 		}
 	}
 }

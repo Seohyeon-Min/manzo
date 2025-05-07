@@ -39,6 +39,8 @@ public:
 	void					Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
 	void					Read_Shop_Csv(const std::string& filename);
 
+	bool CanCollideWith(GameObjectTypes other_object) override;
+	//void ResolveCollision(GameObject* other_object) override;
 
 private:
 
