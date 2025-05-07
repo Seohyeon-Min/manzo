@@ -9,12 +9,12 @@ Created:    November 25, 2024
 */
 #pragma once
 
-#include "vec2.h"
+#include "..\Engine\MapManager.h"
 #include "..\Engine\Component.h"
 #include "..\Engine\GameObject.h"
 #include "..\Engine\Polygon.h"
-#include "..\Engine\MapManager.h"
 #include "..\Engine\Polygon.h"
+#include "vec2.h"
 #include "GameObjectTypes.h"
 #include "Rock.h"
 #include "RockPoint.h"
