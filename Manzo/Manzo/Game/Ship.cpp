@@ -707,12 +707,13 @@ void Pump::Update(double dt)
 
 		radius = std::max(radius, min_pump_radius);
 	}
+
 }
 
 void Pump::Draw(DrawLayer drawlayer)
 {
 	CircleDrawCall draw_call = {
-	min_pump_radius,                       // Texture to draw
+	min_pump_radius,                      // Texture to draw
 	GetPosition(),                          // Transformation matrix
 	};
 
@@ -729,7 +730,7 @@ void Pump::Draw(DrawLayer drawlayer)
 	draw_call2.SetUniforms = [this](const GLShader* shader) {this->SetUniforms(shader); };
 	draw_call2.sorting_layer = DrawLayer::DrawUI;
 
-	Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call));
+    Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call));
 	Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call2));
 }
 

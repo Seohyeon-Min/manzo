@@ -18,6 +18,8 @@ public:
     void CollectCaliData();
     void CalculateCali();
     void CleartoOriginal();
+    double GetUserCali() { return user_calibration; }
+    const double GetLastCali() {return calibrations.back();}
 
 private:
     int BPM = 100;

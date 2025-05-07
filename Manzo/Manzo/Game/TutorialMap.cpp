@@ -45,6 +45,9 @@ void Tutorial::Load()
 	// mouse
 	GetGSComponent<GameObjectManager>()->Add(new Mouse);
 
+	default_radius = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Pump>()->GetMinRadius();
+	variable_radius = default_radius;
+
 }
 
 void Tutorial::Update(double dt)
@@ -60,13 +63,26 @@ void Tutorial::Update(double dt)
 		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
 	}
 
-
+	if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT))
+	{
+		variable_radius = default_radius;
+		variable_radius += static_cast<float>(variable_radius * beat_system->GetLastCali());
+		//Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Pump>()->SetMinRadius(variable_radius);
+	}
 }
 
 void Tutorial::Draw()
 {
 	GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
 	GetGSComponent<GameObjectManager>()->DrawAll();
+
+	CircleDrawCall draw_call = {
+		variable_radius,
+		ship_ptr->GetPosition()
+	};
+	draw_call.settings.do_blending = true;
+	draw_call.sorting_layer = DrawLayer::DrawUI;
+	Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call));
 }
 
 void Tutorial::FixedUpdate(double dt)

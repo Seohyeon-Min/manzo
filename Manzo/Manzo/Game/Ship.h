@@ -125,8 +125,10 @@ public:
     void Update(double dt) override;
     void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
     float GetRadius() { return radius; }
+    float GetMinRadius() {  return min_pump_radius;}
     void Reset();
     void SetUniforms(const GLShader* shader);
+    void SetMinRadius(float value) { min_pump_radius = value; }
 
 private:
     Beat* beat;

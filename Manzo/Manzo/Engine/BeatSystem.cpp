@@ -92,6 +92,7 @@ void Beat::CollectCaliData()
         calibrations.push_back(interval);
         std::cout << interval << std::endl;
         calibrations_cnt++;
+        //CalculateCali();
     }
 }
 
