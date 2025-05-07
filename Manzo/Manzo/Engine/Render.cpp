@@ -486,10 +486,17 @@ void Render::DrawBackground(const DrawCall& draw_call) {
     }
 
     shader->SendUniform("uModelToNDC", util::to_span(model_to_ndc));
+    //if there is a uniform, add
+    if (draw_call.SetUniforms) {
+        draw_call.SetUniforms(shader);
+        RenderQuad();
+    }
+    else {
+        // ¸ðµ¨ ·»´õ¸µ
+        model.Use();
+        GLDrawIndexed(model);
+    }
 
-    // ¸ðµ¨ ·»´õ¸µ
-    model.Use();
-    GLDrawIndexed(model);
 
     model.Use(false);
     shader->Use(false);

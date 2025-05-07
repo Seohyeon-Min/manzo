@@ -26,7 +26,7 @@ void ScenarioComponent::Load()
             if (!dialog) {
                 std::cout << "dialog is null!" << std::endl;
             }
-            dialog->LoadDialogGroup("day-1");
+            dialog->LoadDialogGroup("day-1_1");
         }
     );
 

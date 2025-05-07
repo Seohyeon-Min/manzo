@@ -7,14 +7,28 @@
     "dialog-2": [
       { "character": "Perry", "text": ["Beep", "Boop", "I am Perry"] }
     ],
-    "day-1": [
-      { "character": "Me", "text": ["Day One"] },
-      { "character": "Man", "text": "This is fun." },
-      { "character": "Man", "text": "what the hell." }
+    "day-1_1": [
+      { "character": "Man", "text": ["Hey there! How have you been feeling lately?"] },
+      { "character": "Me", "text": "So-so... The ocean seems calm." },
+      { "character": "Man", "text": "Hmm, that’s exactly when the fish let their guard down." },
+      { "character": "Man", "text": "I’ve been waiting on a fish delivery, but it hasn’t come in yet." },
+      { "character": "Me", "text": "What kind of fish do you need?" },
+      { "character": "Man", "text": "Just anything you can find! Bring me ten fish." },
+      { "character": "Man", "text": "Ah—but nothing too big. Something fit for a dinner table, please." },
+      { "character": "Me", "text": "Got it. Just give me a day." }
     ],
-    "day-2": [
-      { "character": "Me", "text": ["Day two"] },
-      { "character": "Man", "text": "This is day two." },
-      { "character": "Man", "text": "what the hell." }
+    "day-1_2": [
+      { "character": "Man", "text": "Oh, you really brought one back!" },
+      { "character": "Man", "text": "That should be enough for tonight’s dinner. Here, this is the money I promised." },
+      { "character": "Man", "text": "I hope… it helps you out, even just a little." },
+      { "character": "Man", "text": "...You haven’t seemed yourself lately. Are you doing okay?" },
+      { "character": "Me", "text": "……Yeah." },
+      { "character": "Man", "text": "...After your grandmother passed… I know I can’t fully understand how you feel." },
+      { "character": "Man", "text": "But this ocean—it’s still here for you. It remembers you." },
+      { "character": "Me", "text": "..." },
+      { "character": "Man", "text": "If you’ve got time tomorrow, could you bring me one more like today?" },
+      { "character": "Man", "text": "Don’t push yourself though." },
+      { "character": "Me", "text": "…Alright." },
+      { "character": "Narration", "text": "…I’m tired today. Let’s call it a night." }
     ]
   }
