@@ -41,8 +41,8 @@ Inven::Inven(vec2 position) : GameObject(position), dre_todayFish(rd()), dre_pri
 	Engine::GetIconManager().AddIcon("module_have", { GetPosition().x + savePos[0].x, -savePos[0].y }, 0.7f, false);
 	Engine::GetIconManager().AddIcon("module_have", { GetPosition().x + savePos[1].x, -savePos[1].y }, 0.7f, false);
 
-	Engine::GetIconManager().AddIcon("module1", vec2(m1x, module_ptr->IsFirstSetted() ? savePos[0].y : -savePos[0].y), 0.7f, true, true, true);
-	Engine::GetIconManager().AddIcon("module2", vec2(m2x, module_ptr->IsSecondSetted() ? savePos[1].y : -savePos[1].y), 0.7f, true, true, true);
+	Engine::GetIconManager().AddIcon("module1", vec2(m1x, module_ptr->IsFirstSetted() ? savePos[0].y : -savePos[0].y), 1.f, true, true, true);
+	Engine::GetIconManager().AddIcon("module2", vec2(m2x, module_ptr->IsSecondSetted() ? savePos[1].y : -savePos[1].y), 1.f, true, true, true);
 	
 	///////////////////////////// Fish Collection State //////////////////////////////////////
 	Engine::GetIconManager().AddIcon("plus1", { 80,-75 }, 1.f, false, false, true);

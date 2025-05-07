@@ -8,6 +8,7 @@
 #include "Game/Mode2.h"
 #include "Game/TutorialMap.h"
 #include "Game/Title.h"
+#include "Game/Mode3.h"
 
 util::owner<IProgram*> create_program(int viewport_width, int viewport_height)
 {
@@ -37,6 +38,9 @@ int main() {
 
         Mode2 mode2;
         engine->GetGameStateManager().AddGameState(mode2);
+
+        Mode3 mode3;
+        engine->GetGameStateManager().AddGameState(mode3);
 
         Tutorial tutorial;
         engine->GetGameStateManager().AddGameState(tutorial);

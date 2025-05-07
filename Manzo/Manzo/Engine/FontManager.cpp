@@ -64,8 +64,8 @@ void FontManager::PrintText(FontType font, FontAlignment align, std::string txt,
 		float totalWidth = font_list[font]->CalculateTextWidth(txt) * Engine::window_width * 0.25f;
 		position.x -= (totalWidth * 0.5f);
 
-		std::cout << "Position.x : " << position.x << std::endl;
-		std::cout << "Total Width : " << totalWidth << std::endl;
+		//std::cout << "Position.x : " << position.x << std::endl;
+		//std::cout << "Total Width : " << totalWidth << std::endl;
 	}
 	else if (align == FontAlignment::RIGHT)
 	{
