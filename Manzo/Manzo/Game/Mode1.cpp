@@ -182,7 +182,7 @@ void Mode1::Load()
 			GetGSComponent<GameObjectManager>()->Add(boss_ptr);
 			Isboss = true;
 		}
-	));
+	)); 
 }
 
 void Mode1::Update(double dt)
