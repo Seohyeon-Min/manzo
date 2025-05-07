@@ -23,6 +23,7 @@ public:
     void Draw();
     void Hide();
     void Unload();
+    bool GetDialogFinish() { return is_finish; }
 
     GameObjectTypes Type() override { return GameObjectTypes::Dialog; }
     std::string TypeName() override { return "Dialog"; }
@@ -60,6 +61,8 @@ private:
     mat3 perry_martix;
 
     vec2 boxposition;
+
+    bool is_finish = false;
 };
 
 #endif

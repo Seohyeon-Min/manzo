@@ -2,6 +2,7 @@
 #include "../Engine/GameState.h"
 #include "ScenarioComponent.h"
 #include "NPC.h"
+#include "Mouse.h"
 
 void ScenarioComponent::Load()
 {
@@ -17,6 +18,7 @@ void ScenarioComponent::Load()
             Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(npc.get());
             npc->Walk();
             Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->SetCollisionON(false);
+            Engine::GetInput().SetMouseInputOn(false);
             //Engine::GetIconManager().SetCollisionON(false);
         }
     );
@@ -28,8 +30,20 @@ void ScenarioComponent::Load()
                 std::cout << "dialog is null!" << std::endl;
             }
             dialog->LoadDialogGroup("day-1_1");
+            //Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Mouse>()->SetMouseOn(true);
+            Engine::GetInput().SetMouseInputOn(false);
+            
         }
     );
+
+    intro->AddStep(
+        [this, npc]() { return dialog->GetDialogFinish(); },
+        []() {
+            Engine::GetInput().SetMouseInputOn(true);
+        }
+    );
+
+
 
     Engine::GetEventManager().AddStepEvent(intro);
     //intro.AddStep(

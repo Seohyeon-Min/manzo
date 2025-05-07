@@ -16,6 +16,7 @@ public:
     std::string TypeName() override { return "Mouse"; }
     void Update([[maybe_unused]] double dt) override;
     void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
+    void SetMouseOn(bool sw) { mouse_on = sw; }
 private:
     void FollowMouse(const vec2& mouse_position);
     void ExplodeOnClick(const vec2& click_position);
@@ -34,4 +35,6 @@ private:
     const float scale_big = 1.2f;
     const float scale_decrease_factor = 3.f;
     const float decrease_factor = 0.75f;
+    
+    bool mouse_on = true;
 };

@@ -105,6 +105,7 @@ public:
     bool KeyDown(Keys key);
     bool KeyJustPressed(Keys key);
     bool KeyJustReleased(Keys key);
+    void SetMouseInputOn(bool sw) { mouse_on = sw; }
 
     void SetMouseButtonDown(Uint8 button, bool value);
     bool MouseButtonDown(Uint8 button);
@@ -126,6 +127,7 @@ private:
     vec2 previous_mouse_position;
     static constexpr int move_factor = 8;
     bool quit = false;
+    bool mouse_on = true;
 };
 
 constexpr Input::Keys& operator++(Input::Keys& key) noexcept;

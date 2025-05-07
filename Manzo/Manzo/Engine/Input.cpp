@@ -21,10 +21,13 @@ void Input::SetKeyDown(Keys key, bool value) {
 }
 
 void Input::Update() {
+
     memcpy(previous_mouse_state.data(), current_mouse_state.data(), current_mouse_state.size() * sizeof(bool));
     for (int i = 0; i < SDL_NUM_SCANCODES; ++i) {
         previous_keys_down[i] = current_key_state[i];
     }
+
+    if (!mouse_on) return;
     previous_mouse_position = mouse_position;
 
     int x, y;
