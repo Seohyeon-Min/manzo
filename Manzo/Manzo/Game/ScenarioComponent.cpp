@@ -31,7 +31,7 @@ void ScenarioComponent::Load()
             }
             dialog->LoadDialogGroup("day-1_1");
             //Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Mouse>()->SetMouseOn(true);
-            Engine::GetInput().SetMouseInputOn(false);
+            //Engine::GetInput().SetMouseInputOn(false);
             
         }
     );
@@ -39,7 +39,7 @@ void ScenarioComponent::Load()
     intro->AddStep(
         [this, npc]() { return dialog->GetDialogFinish(); },
         []() {
-            Engine::GetInput().SetMouseInputOn(true);
+            //Engine::GetInput().SetMouseInputOn(true);
         }
     );
 
