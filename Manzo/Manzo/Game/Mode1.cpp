@@ -181,11 +181,12 @@ void Mode1::Load()
 	auto shipCopy = ship_ptr;
 
 	Engine::GetEventManager().AddEvent(Event("Boss E Trigger",
-		[shipCopy, bossPosCopy]() {
-			return shipCopy->GetPosition().y <= bossPosCopy.y - 100;
+		[&]() {
+			return ship_ptr != nullptr && ship_ptr->GetPosition().y <= bossPosition.y - 100;
 		},
-		[bossCopy]() {
-			Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bossCopy);
+		[&]() {
+			GetGSComponent<GameObjectManager>()->Add(boss_ptr);
+			Isboss = true;
 		}
 	));
 }
