@@ -10,14 +10,14 @@ Created:    November 25, 2024
 
 #pragma once
 
-#include "..\Engine\MapManager.h"
+#include "vec2.h"
 #include "..\Engine\Component.h"
 #include "..\Engine\GameObject.h"
 #include "..\Engine\Polygon.h"
+#include "..\Engine\MapManager.h"
 #include "..\Engine\Polygon.h"
 #include "GameObjectTypes.h"
 #include "RockGroup.h"
-#include "vec2.h"
 
 #include <vector>
 

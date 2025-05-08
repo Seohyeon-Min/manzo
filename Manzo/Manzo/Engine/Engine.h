@@ -22,7 +22,6 @@ Created:    March 8, 2023
 #include "FontManager.h"
 #include "WindowState.h"
 #include "IconManager.h"
-#include "MapManager.h"
 #include "BeatSystem.h"
 
 #include <chrono>
@@ -74,10 +73,6 @@ public:
         return Instance()->iconmanager;
     }
 
-    static MapManager& GetMapManager() {
-        return Instance()->mapmanager;
-    }
-
     static Beat& GetBeat() {
         return Instance()->beat;
     }
@@ -123,6 +118,5 @@ private:
     Render render;
     FontManager fontmanager;
     IconManager iconmanager;
-    MapManager mapmanager;
     Beat beat;
 };

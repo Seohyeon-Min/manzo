@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Engine/MapManager.h"
 #include "../Engine/GameObject.h"
 #include "GameObjectTypes.h"
+#include "../Engine/MapManager.h"
 
 
 class Box : public GameObject

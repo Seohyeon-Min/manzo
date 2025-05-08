@@ -20,13 +20,14 @@ Loading::Loading() {}
 void Loading::Load()
 {
 	//Load First Map
-	Engine::GetMapManager().AddMapFile("assets/maps/fixing2.svg");
-    Engine::GetMapManager().LoadFirstMap();
+	AddGSComponent(new MapManager());
+	GetGSComponent<MapManager>()->AddMapFile("assets/maps/fixing.svg");
+	GetGSComponent<MapManager>()->LoadFirstMap();
 }
 
 void Loading::Update(double dt) {
-    if (!Engine::GetMapManager().GetCurrentMap()->IsLevelLoaded()) {
-        Engine::GetMapManager().GetCurrentMap()->ParseSVG();
+    if (!GetGSComponent<MapManager>()->GetCurrentMap()->IsLevelLoaded()) {
+        GetGSComponent<MapManager>()->GetCurrentMap()->ParseSVG();
     }
     else {
         Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode1));
