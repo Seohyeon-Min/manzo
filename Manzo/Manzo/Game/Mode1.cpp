@@ -103,8 +103,8 @@ void Mode1::Load()
 	// background->Add("assets/images/background/bubble.png", 1.5f, DrawLayer::DrawUI);
 
 	// Map
-	// GetGSComponent<MapManager>()->AddMapFile("assets/maps/TemporaryMap.svg");
-	GetGSComponent<MapManager>()->AddMapFile("assets/maps/output.svg");
+	//GetGSComponent<MapManager>()->AddMapFile("assets/maps/TemporaryMap.svg");
+	//GetGSComponent<MapManager>()->AddMapFile("assets/maps/output.svg");
 
 	// Boss
 	Boss::LoadBossfile();

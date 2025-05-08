@@ -93,8 +93,11 @@ void Map::OpenSVG(const std::string& filename) {
         return;
     }
 }
-
+int i = 0;
 void Map::ParseSVG() {
+    i++;
+    std::cout << "Map is Parsing " << i << "st sentence."<< std::endl;
+    
     if (level_loaded) {
         std::cerr << "Level is already loaded." << std::endl;
         return;
@@ -107,6 +110,7 @@ void Map::ParseSVG() {
         std::cout << "SVG parsing completed (EOF)." << std::endl;
         return;
     }
+
     // </svg>
     if (std::regex_search(currentTag, svgCloseRegex)) {
         //set points
