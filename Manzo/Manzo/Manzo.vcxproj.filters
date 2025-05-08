@@ -158,9 +158,6 @@
     <ClCompile Include="Game\Shop.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Skill.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Splash.cpp">
       <Filter>Game</Filter>
     </ClCompile>
@@ -264,9 +261,6 @@
     <ClInclude Include="Engine\Polygon.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\AABB.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Rapidjson.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -364,9 +358,6 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Game\Shop.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Skill.h">
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Game\Splash.h">

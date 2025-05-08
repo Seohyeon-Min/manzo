@@ -3,6 +3,8 @@
 #include "FishEcosystem.h"
 #include "AI.h"
 
+std::mt19937 dre_fishIndex(rd());
+
 FishGenerator::FishGenerator()
 {
 	timer = new Timer(2.0);
@@ -29,6 +31,49 @@ FishGenerator::FishGenerator()
 	}
 }
 
+void FishGenerator::ReadFishCSV(const std::string& filename)
+{
+	std::ifstream file(filename);
+	if (!file.is_open()) {
+		std::cerr << "Failed to open file: " << filename << std::endl;
+		return;
+	}
+
+	std::string line, cell;
+	std::getline(file, line);
+
+	while (std::getline(file, line)) {
+		std::stringstream linestream(line);
+		FishDex f;
+		float scaleSize, velocitySize;
+
+		std::getline(linestream, cell, ',');
+		f.type = static_cast<FishType>(std::stoi(cell));
+
+		std::getline(linestream, cell, ',');
+		scaleSize = std::stof(cell);
+		f.scale = { scaleSize, scaleSize };
+
+		std::getline(linestream, cell, ',');
+		velocitySize = std::stof(cell);
+		f.velocity = { velocitySize, 0 };
+
+		std::getline(linestream, cell, ',');
+		f.filePath = cell;
+
+		std::getline(linestream, cell, ',');
+		f.possibility = std::stof(cell);
+		weights.push_back(f.possibility);
+
+		std::getline(linestream, cell, ',');
+		f.money = std::stoi(cell);
+		moneys.push_back(f.money);
+
+		fishBook.push_back(f);
+	}
+	file.close();
+}
+
 void FishGenerator::GenerateFish(double dt)
 {
 	timer->Update(dt);
@@ -40,22 +85,23 @@ void FishGenerator::GenerateFish(double dt)
 
 		if (fishList.size() < 20) //limit of fish num
 		{
+			std::discrete_distribution<> fishIndex(weights.begin(), weights.end());
 
-			Fish* newFish = new Fish();
+			Fish* newFish = new Fish(fishIndex(dre_fishIndex));
 			fishList.push_back(newFish);
 			Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(newFish);
 
 			timer->Reset();
 
 			//generate object fishes
-			if (newFish->type == Fish::FishType::Fish3)
+			if (newFish->type == FishType::Fish3)
 			{
 				int shape_index = rand() % formations.size();
 				const auto& selectedFormation = formations[shape_index];
 
 				for (const auto& offset : selectedFormation.offsets)
 				{
-					Fish* additionalFish = new Fish(newFish);
+					Fish* additionalFish = new Fish(newFish->type, newFish);
 
 					float randomX = rand() % (int)(selectedFormation.randomOffsetMaxX - selectedFormation.randomOffsetMinX)
 						+ selectedFormation.randomOffsetMinX;
@@ -73,11 +119,11 @@ void FishGenerator::GenerateFish(double dt)
 			}
 		}
 	}
+}
 
-	quadtree.clear();
-	for (auto& fish : backgroundFishList) {
-		quadtree.insert(fish);
-	}
+int FishGenerator::ReturnFishMoney(int index)
+{
+	return fishBook[index - 1].money;
 }
 
 FishGenerator::~FishGenerator()
@@ -85,5 +131,5 @@ FishGenerator::~FishGenerator()
 	delete timer;
 	timer = nullptr;
 	fishList.clear();
-	backgroundFishList.clear();
+	//backgroundFishList.clear();
 }

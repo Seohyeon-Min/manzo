@@ -5,6 +5,7 @@
 #include "../Engine/Engine.h"
 #include "../Engine/Icon.h"
 #include "Dragging.h"
+#include "../Engine/GameObjectManager.h"
 
 Inven::Inven(vec2 position) : GameObject(position), dre_todayFish(rd()), dre_price(rd())
 {

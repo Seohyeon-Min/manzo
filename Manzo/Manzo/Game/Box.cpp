@@ -3,7 +3,6 @@
 #include "ScreenWrap.h"
 
 #include "../Engine/GameObjectManager.h"
-#include "../Engine/AABB.h"
 #include "../Engine/Camera.h"
 #include "../Engine/Engine.h"
 
@@ -15,6 +14,7 @@
 #include <cmath>
 #include <algorithm>
 #include <map>
+#include "FishEcosystem.h"
 
 
 Box::Box(vec2 position) : GameObject(position) 
@@ -36,7 +36,7 @@ void Box::ResolveCollision(GameObject* other_object) {
     switch (other_object->Type()) {
     case GameObjectTypes::Ship:
         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new CaptureEffect(GetPosition()));
-        Engine::GetGameStateManager().GetGSComponent<Fish>()->SetMoney(Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney()+1);
+        Engine::GetGameStateManager().GetGSComponent<FishGenerator>()->SetMoney(Engine::GetGameStateManager().GetGSComponent<FishGenerator>()->GetMoney()+1);
         this->Destroy();
         //std::cout<<"Money: "<<Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney()<<"\n";
         
@@ -44,7 +44,7 @@ void Box::ResolveCollision(GameObject* other_object) {
 
     case GameObjectTypes::Net:
         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new CaptureEffect(GetPosition()));
-        Engine::GetGameStateManager().GetGSComponent<Fish>()->SetMoney(Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() + 1);
+        Engine::GetGameStateManager().GetGSComponent<FishGenerator>()->SetMoney(Engine::GetGameStateManager().GetGSComponent<FishGenerator>()->GetMoney() + 1);
         this->Destroy();
         break;
 

@@ -2,14 +2,11 @@
 #include "..\Engine\GameObject.h"
 #include "GameObjectTypes.h"
 #include "..\Engine\Timer.h"
-#include "..\Game\Skill.h"
 #include "../Engine/Rect.h"
 #include "Rock.h"
 #include "BounceBehavior.h"
 
 class Beat;
-class Skillsys;
-
 class Ship : public GameObject {
 public:
     Ship(vec2 start_position);
@@ -53,7 +50,6 @@ private:
     vec2 normal;
     vec2 collisionPos;
     Beat* beat;
-    Skillsys* skill;
     Math::rect limit;
     const double fuel_bubble_time = 0.03;
     const double collide_time = 1.1;
