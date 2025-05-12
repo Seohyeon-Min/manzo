@@ -11,6 +11,7 @@ public:
     void Update();
     void Reset();
     bool HasRun() { return triggered; }
+    const std::string& GetID() const { return id; }
 
 private:
     std::string            id;

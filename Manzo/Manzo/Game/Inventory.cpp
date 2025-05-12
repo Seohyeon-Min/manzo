@@ -83,8 +83,17 @@ void Inven::Update(double dt)
 {
 	GameObject::Update(dt);
 
-	Icon* selectedIcon = Engine::GetIconManager().GetCollidingIconWithMouse({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY });
+	Icon* selectedIcon = nullptr;
 	bool clicked = Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT);
+	
+	std::cout << holding << std::endl;
+
+	if (!holding && Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT)) {
+		selectedIcon = Engine::GetIconManager().GetCollidingIconWithMouse({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY });
+		if (selectedIcon) {
+			holding = true;
+		}
+	}
 
 	if (selectedIcon != nullptr && clicked)
 	{
@@ -111,6 +120,8 @@ void Inven::Update(double dt)
 			change_state(&state_none);
 			is_opened = false;
 		}
+
+		holding = false;
 	}
 
 	if (current_state != &state_module)

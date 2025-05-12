@@ -22,6 +22,7 @@ bool SaveDataManager::Load() {
         const std::string jsonfile = json_reader->LoadFromFile(saveFilePath);
         currentSaveData = json_reader->Deserialize(jsonfile);
         std::cout << "Save data loaded successfully." << std::endl;
+        Engine::GetEventManager().LoadSavedEvents(currentSaveData.eventsDone);
         return true;
     }
     else {
@@ -70,6 +71,7 @@ void SaveDataManager::SetModuleData(const ModuleData& m1, const ModuleData& m2) 
 }
 void SaveDataManager::UpdateSaveData(const SaveData& newData) {
     currentSaveData = newData;
+    std::cout << "[SaveDataManager] UpdateSaveData called\n";
     Save();
 }
 

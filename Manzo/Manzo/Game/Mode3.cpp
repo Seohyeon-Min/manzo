@@ -125,6 +125,8 @@ void Mode3::Update(double dt) {
                 auto& save = Engine::GetSaveDataManager().GetSaveData();
                 save.eventsDone.push_back("tutorial_end");
                 Engine::GetSaveDataManager().UpdateSaveData(save);
+                std::cout << &Engine::GetEventManager() << std::endl;
+                Engine::GetEventManager().MarkEventDone("tutorial_end");
 
                 Engine::GetGameStateManager().ClearNextGameState();
                 Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));

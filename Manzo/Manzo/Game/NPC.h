@@ -6,6 +6,7 @@ constexpr vec2 start_pos_NPC = { -600,-70 };
 class NPC : public GameObject {
 public:
     NPC(vec2 start_position = start_pos_NPC);
+    void ResetPosition();
     GameObjectTypes Type() override { return GameObjectTypes::Player; }
     std::string TypeName() override { return "NPC"; }
     void Update(double dt) override;

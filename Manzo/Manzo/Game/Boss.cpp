@@ -142,7 +142,7 @@ void Boss::State_CutScene::Update(GameObject* object, double dt) {
 void Boss::State_CutScene::CheckExit(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
 
-	if (Engine::GetInput().KeyDown(Input::Keys::R) && boss->beat->GetBeat()) {
+	if (boss->beat->GetBeat()) {
 		Engine::GetAudioManager().SetMute("Level1_bgm", true);
 		Engine::GetAudioManager().StopChannel("e morse");
 		//Engine::GetAudioManager().PlayMusics("e boss");

@@ -65,6 +65,7 @@ private:
 	float m1x, m2x;
 	int p = 200;
 
+	bool holding = false;
 	std::string todays_fish_icon;
 
 	std::mt19937 dre_todayFish;

@@ -163,6 +163,10 @@ void Mode1::Load()
 	camera->SetPosition(ship_ptr->GetPosition());
 	
 	// Boss Trigger
+	auto bossPosCopy = bossPosition;
+	auto bossCopy = boss_ptr;
+	auto shipCopy = ship_ptr;
+
 	Engine::GetEventManager().AddEvent(Event("Boss E Trigger",
 		[&]() { if(ship_ptr) return ship_ptr->GetPosition().y <= bossPosition.y - 100;
 	return false;

@@ -116,6 +116,7 @@ void IconManager::HideIcon(std::string alias)
 		if (icon->GetAlias() == alias)
 		{
 			icon->SetDraw(false);
+			icon->SetHide(true);
 		}
 	}
 }
@@ -127,6 +128,7 @@ void IconManager::ShowIcon(std::string alias)
 		if (icon->GetAlias() == alias)
 		{
 			icon->SetDraw(true);
+			icon->SetHide(false);
 		}
 	}
 }
