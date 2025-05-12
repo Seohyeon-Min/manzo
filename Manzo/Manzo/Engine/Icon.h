@@ -14,6 +14,7 @@ public:
 	std::string TypeName() override { return "Icon"; }
 
 	void Update(double dt) override;
+	void FixedUpdate(double fixed_dt);
 	void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
 
 	bool CanCollideWith(GameObjectTypes) override;
@@ -29,6 +30,7 @@ public:
 	bool CanChangePosition() { return can_change_pos; }
 	bool CanDrag() {	return can_drag;	}
 	void SetSelected(bool select) { selected = select; }
+	void SetHide(bool set) { hide = set; }
 
 	vec2 position;
 
@@ -42,4 +44,5 @@ private:
 	bool can_change_pos = false;
 	bool interaction = false;
 	bool draw = true;
+	bool hide = true;
 };

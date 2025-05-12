@@ -28,7 +28,12 @@ Icon::~Icon()
 
 void Icon::Update(double dt)
 {
+	if (hide) return;
 	GameObject::Update(dt); 
+}
+
+	if (hide) return;
+	GameObject::FixedUpdate(fixed_dt);
 }
 
 void Icon::Draw(DrawLayer drawlayer)
@@ -58,6 +63,10 @@ void Icon::Draw(DrawLayer drawlayer)
 
 bool Icon::CanCollideWith(GameObjectTypes other_object)
 {
+	if (hide) return false;
+	if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT) || (Engine::GetInput().MouseButtonDown(SDL_BUTTON_LEFT))) {}
+	else return false;
+
 	switch (other_object)
 	{
 	case GameObjectTypes::Mouse:
@@ -72,6 +81,10 @@ bool Icon::CanCollideWith(GameObjectTypes other_object)
 
 void Icon::ResolveCollision(GameObject* other_object)
 {
+	if (hide) return;
+	if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT) || (Engine::GetInput().MouseButtonDown(SDL_BUTTON_LEFT))) {}
+	else return;
+
 	switch (other_object->Type())
 	{
 	case GameObjectTypes::Mouse:
