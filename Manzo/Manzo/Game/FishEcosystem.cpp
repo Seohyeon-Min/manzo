@@ -7,27 +7,30 @@ std::mt19937 dre_fishIndex(rd());
 
 FishGenerator::FishGenerator()
 {
-	timer = new Timer(2.0);
-
-	//leader fish
-	for (int i = 0; i < 6; i++)
+	if (Engine::GetGameStateManager().GetStateName() == "Mode1")
 	{
-		BackgroundFish* bg_fish = new BackgroundFish();
-		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bg_fish);
-		//bg_fish->change_state(&bg_fish->state_leader);
-		bg_fish->current_state = &bg_fish->state_leader;
-		bg_fish->current_state->Enter(bg_fish);
-	}
+		timer = new Timer(2.0);
 
-	//non leader fish
-	for (int i = 0; i < 60; i++)
-	{
-		BackgroundFish* bg_fish = new BackgroundFish();
-		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bg_fish);
-		//bg_fish->change_state(&bg_fish->state_nonleader);
+		//leader fish
+		for (int i = 0; i < 6; i++)
+		{
+			BackgroundFish* bg_fish = new BackgroundFish();
+			Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bg_fish);
+			//bg_fish->change_state(&bg_fish->state_leader);
+			bg_fish->current_state = &bg_fish->state_leader;
+			bg_fish->current_state->Enter(bg_fish);
+		}
 
-		bg_fish->current_state = &bg_fish->state_nonleader;
-		bg_fish->current_state->Enter(bg_fish);
+		//non leader fish
+		for (int i = 0; i < 60; i++)
+		{
+			BackgroundFish* bg_fish = new BackgroundFish();
+			Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bg_fish);
+			//bg_fish->change_state(&bg_fish->state_nonleader);
+
+			bg_fish->current_state = &bg_fish->state_nonleader;
+			bg_fish->current_state->Enter(bg_fish);
+		}
 	}
 }
 
@@ -80,9 +83,6 @@ void FishGenerator::GenerateFish(double dt)
 
 	if (timer->Remaining() == 0)
 	{
-		fishList.resize(fishCnt);
-		fishList.shrink_to_fit();
-
 		if (fishList.size() < 20) //limit of fish num
 		{
 			std::discrete_distribution<> fishIndex(weights.begin(), weights.end());
@@ -90,10 +90,8 @@ void FishGenerator::GenerateFish(double dt)
 			Fish* newFish = new Fish(fishIndex(dre_fishIndex));
 			fishList.push_back(newFish);
 			Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(newFish);
-
 			timer->Reset();
 
-			//generate object fishes
 			if (newFish->type == FishType::Fish3)
 			{
 				int shape_index = rand() % formations.size();
@@ -103,9 +101,9 @@ void FishGenerator::GenerateFish(double dt)
 				{
 					Fish* additionalFish = new Fish(newFish->type, newFish);
 
-					float randomX = rand() % (int)(selectedFormation.randomOffsetMaxX - selectedFormation.randomOffsetMinX)
+					float randomX = rand() % static_cast<int>(selectedFormation.randomOffsetMaxX - selectedFormation.randomOffsetMinX)
 						+ selectedFormation.randomOffsetMinX;
-					float randomY = rand() % (int)(selectedFormation.randomOffsetMaxY - selectedFormation.randomOffsetMinY)
+					float randomY = rand() % static_cast<int>(selectedFormation.randomOffsetMaxY - selectedFormation.randomOffsetMinY)
 						+ selectedFormation.randomOffsetMinY;
 
 					vec2 randomOffset = { randomX, randomY };
@@ -119,6 +117,17 @@ void FishGenerator::GenerateFish(double dt)
 			}
 		}
 	}
+
+	fishList.erase(
+		std::remove_if(fishList.begin(), fishList.end(),
+			[](Fish* fish) {
+				if (fish->Destroyed()) {
+					delete fish;  
+					return true;
+				}
+				return false;
+			}),
+		fishList.end());
 }
 
 int FishGenerator::ReturnFishMoney(int index)
@@ -131,5 +140,5 @@ FishGenerator::~FishGenerator()
 	delete timer;
 	timer = nullptr;
 	fishList.clear();
-	//backgroundFishList.clear();
+	backgroundFishList.clear();
 }

@@ -309,12 +309,9 @@ void Mode1::Unload()
 	//Engine::GetSaveDataManager().UpdateSaveData(save);
 
 	ship_ptr = nullptr;
-	delete fishGenerator;
-	fishGenerator = nullptr;
 	playing = false;
 	soundPlaying = false;
 	replay = false;
-	fishGenerator = nullptr;
 	Isboss = false;
 	beat_system->CleartoOriginal();
 

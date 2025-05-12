@@ -48,7 +48,6 @@ Fish::Fish(int index, Fish* parent) : GameObject({ 0, 0 }) {
 bool Fish::CanCollideWith(GameObjectTypes other_object) {
     switch (other_object) {
     case GameObjectTypes::Ship:
-    case GameObjectTypes::Net:
         return true;
     default:
         return false;
@@ -57,7 +56,6 @@ bool Fish::CanCollideWith(GameObjectTypes other_object) {
 
 void Fish::ResolveCollision(GameObject* other_object) {
     switch (other_object->Type()) {
-    case GameObjectTypes::Net:
     case GameObjectTypes::Ship:
         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new CaptureEffect(GetPosition()));
         if (!collided)
@@ -89,10 +87,10 @@ void Fish::Update(double dt) {
     }
 
     //temp destroy range
-    //if (GetPosition().x < 0.f || GetPosition().x > 3520.f)
-    //{
-    //    this->Destroy();
-    //}
+    if (GetPosition().x < 0.f || GetPosition().x > 5800.f)
+    {
+        this->Destroy();
+    }
 
     if(!map->IsMaskTrue(GetPosition()))
     {
