@@ -14,7 +14,7 @@ public:
 	std::string TypeName() override { return "Icon"; }
 
 	void Update(double dt) override;
-	void FixedUpdate(double fixed_dt);
+	//void FixedUpdate(double fixed_dt);
 	void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
 
 	bool CanCollideWith(GameObjectTypes) override;

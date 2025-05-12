@@ -766,8 +766,8 @@ void Pump::Draw(DrawLayer drawlayer)
 	draw_call2.SetUniforms = [this](const GLShader* shader) {this->SetUniforms(shader); };
 	draw_call2.sorting_layer = DrawLayer::DrawUI;
 
-    Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call));
-	Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call2));
+    //Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call));
+	//Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call2));
 }
 
 void Pump::Reset() {
