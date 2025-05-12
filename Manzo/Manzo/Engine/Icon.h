@@ -33,6 +33,7 @@ public:
 	bool IsColliding() { return resolve_collision; }
 	bool CanChangePosition() { return can_change_pos; }
 	bool CanDrag() {	return can_drag;	}
+	bool IsHide() { return hide; }
 	void SetSelected(bool select) { selected = select; }
 
 	void SetHide(bool set) 

@@ -182,7 +182,7 @@ Icon* IconManager::GetCollidingIconWithMouse(vec2 mousePosition)
 {
 	for (auto& [id, icon] : icon_by_id)
 	{
-		if (icon->IsCollidingWith(mousePosition))
+		if (icon->IsCollidingWith(mousePosition) && !icon->IsHide())
 		{
 			return icon;
 		}

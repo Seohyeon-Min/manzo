@@ -43,8 +43,8 @@ Inven::Inven(vec2 position) : GameObject(position), dre_todayFish(rd()), dre_pri
 	Engine::GetIconManager().AddIcon("Module_Tab", "module_have1", "module_empty", { GetPosition().x + savePos[0].x, -savePos[0].y }, 0.7f, false);
 	Engine::GetIconManager().AddIcon("Module_Tab", "module_have2", "module_empty", { GetPosition().x + savePos[1].x, -savePos[1].y }, 0.7f, false);
 
-	//Engine::GetIconManager().AddIcon("Module_Tab_Get", "module1", "module1_info", vec2(m1x, module_ptr->IsFirstSetted() ? savePos[0].y : -savePos[0].y), 1.f, true, true, true);
-	//Engine::GetIconManager().AddIcon("Module_Tab_Get", "module2", "module2_info", vec2(m2x, module_ptr->IsSecondSetted() ? savePos[1].y : -savePos[1].y), 1.f, true, true, true);
+	Engine::GetIconManager().AddIcon("Module_Tab_Get", "module1", "module1_info", vec2(m1x, module_ptr->IsFirstSetted() ? savePos[0].y : -savePos[0].y), 1.f, true, true, true);
+	Engine::GetIconManager().AddIcon("Module_Tab_Get", "module2", "module2_info", vec2(m2x, module_ptr->IsSecondSetted() ? savePos[1].y : -savePos[1].y), 1.f, true, true, true);
 
 	/////////////////////////////// Fish Collection State //////////////////////////////////////
 	Engine::GetIconManager().AddIcon("FishPopUp", "plus1", "plus1", { 80,-75 }, 1.f, false, false, true);
@@ -220,27 +220,27 @@ void Inven::State_Module::Update(GameObject* object, double dt)
 	}
 
 	/////////////////////////////////////////////////// Check Set ///////////////////////////////////////////////////
-	/*if (Engine::GetIconManager().IsCollidingWith("module_set1", "module1"))
-	{
-		inven->module_ptr->SetFirstModule(true);
-		inven->m1x = Engine::GetIconManager().GetIconPositionIfColliding("module_set1", "module1").x;
-	}
-	else
-	{
-		inven->module_ptr->SetFirstModule(false);
-		inven->m1x = inven->GetPosition().x + inven->savePos[0].x;
-	}
+	//if (Engine::GetIconManager().IsCollidingWith("module_set1", "module1"))
+	//{
+	//	inven->module_ptr->SetFirstModule(true);
+	//	inven->m1x = Engine::GetIconManager().GetIconPositionIfColliding("module_set1", "module1").x;
+	//}
+	//else
+	//{
+	//	inven->module_ptr->SetFirstModule(false);
+	//	inven->m1x = inven->GetPosition().x + inven->savePos[0].x;
+	//}
 
-	if (Engine::GetIconManager().IsCollidingWith("module_set2", "module2"))
-	{
-		inven->module_ptr->SetSecondModule(true);
-		inven->m2x = Engine::GetIconManager().GetIconPositionIfColliding("module_set2", "module2").x;
-	}
-	else
-	{
-		inven->module_ptr->SetSecondModule(false);
-		inven->m2x = inven->GetPosition().x + inven->savePos[1].x;
-	}*/
+	//if (Engine::GetIconManager().IsCollidingWith("module_set2", "module2"))
+	//{
+	//	inven->module_ptr->SetSecondModule(true);
+	//	inven->m2x = Engine::GetIconManager().GetIconPositionIfColliding("module_set2", "module2").x;
+	//}
+	//else
+	//{
+	//	inven->module_ptr->SetSecondModule(false);
+	//	inven->m2x = inven->GetPosition().x + inven->savePos[1].x;
+	//}
 
 
 	/////////////////////////////////////////////////// Clear ///////////////////////////////////////////////////
