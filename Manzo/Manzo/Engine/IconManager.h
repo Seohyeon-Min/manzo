@@ -15,22 +15,34 @@ public:
 	void Unload();
 
 	void LoadIconList();
-	void AddIcon(std::string alias, vec2 position, float scale, bool drag = true, bool change_pos = false, bool interaction = false, bool draw = false, bool moving = false);
+
+	void AddIcon(std::string group, std::string id, std::string img_type, vec2 position, float scale, bool drag = true, bool change_pos = false, bool interaction = false, bool draw = false, bool moving = false);
 	void RemoveAllIcon();
-	bool IsCollidingWith(std::string obj1, std::string obj2);
 
-	void HideIcon(std::string alias);
-	void ShowIcon(std::string alias);
+	bool IsCollidingWith(const std::string& id1, const std::string& id2);
 
-	void SetIconPosition(std::string alias, vec2 newPosition);
-	vec2 GetIconPosition(std::string obj1, std::string obj2);
+	void HideIconById(const std::string& id);
+
+	void ShowIconById(const std::string& id);
+
+	void RemoveIconById(const std::string& id);
+
+	void HideIconByGroup(const std::string& group);
+	void ShowIconByGroup(const std::string& group);
+
+	void SetIconPositionById(const std::string& id, vec2 newPosition);
+
+	vec2 GetIconPositionIfColliding(const std::string& id1, const std::string& id2);
 
 	Icon* GetCollidingIcon(Icon& icon);
+
 	Icon* GetCollidingIconWithMouse(vec2 mousePosition);
+
 
 	std::list<Icon*> GetIconList() { return icons;}
 
 private:
 	std::list<Icon*> icons;
 	std::unordered_map<std::string, std::filesystem::path> icon_list;
+	std::unordered_map<std::string, Icon*> icon_by_id;
 };

@@ -2,5 +2,5 @@ alias(name),spt,price,script
 net1,module1_info,5,it's a net1!
 net2,module2_info,5,it's a net2!
 net3,module_info,5,it's a net3!
-net4,module_info,5,it's a net4!
-net5,module_info,5,it's a net5!
+net4,module_info_a,5,it's a net4!
+net5,module_info_b,5,it's a net5!

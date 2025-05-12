@@ -19,11 +19,13 @@ Shop::Shop(vec2 postion) : GameObject(postion)
 		++count;
 		is_on_shop = true;
 
-		/*Engine::GetIconManager().AddIcon(
-				info.icon,
+		std::string img_type = (info.icon.find_first_of("0123456789") != std::string::npos) ? info.icon : "module_info";
+
+		Engine::GetIconManager().AddIcon("Shop",
+				info.icon, img_type,
 				{ -500.0f, 300.0f - (80.0f * count) },
 				1.f
-			);*/
+			);
 	}
 
 	inven = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Inven>();
@@ -40,13 +42,13 @@ void Shop::Update(double dt)
 
 	if (inven->GetIsOpened())
 	{
+		Engine::GetIconManager().ShowIconByGroup("Shop");
 		for (auto& info : shop_infos)
 		{
 			std::string icon_name = info.icon;
 
-			Engine::GetIconManager().ShowIcon(icon_name);
 
-			if (Engine::GetIconManager().IsCollidingWith(icon_name, "module_have") && inven->GetMoney() >= info.price)
+			/*if (Engine::GetIconManager().IsCollidingWith(icon_name, "module_have") && inven->GetMoney() >= info.price)
 			{
 				vec2 drop_pos = Engine::GetIconManager().GetIconPosition("module_have", icon_name);
 
@@ -59,22 +61,17 @@ void Shop::Update(double dt)
 					inven->BuySecondModule(true);
 				}
 
-				//Engine::GetIconManager().RemoveIcon(icon_name);
-
 				if (!already_buy)
 				{
 					already_buy = true;
 					inven->SetMoney(inven->GetMoney() - info.price);
 				}
-			}
+			}*/
 		}
 	}
 	else
 	{
-		for (auto& info : shop_infos)
-		{
-			Engine::GetIconManager().HideIcon(info.icon);
-		}
+		Engine::GetIconManager().HideIconByGroup("Shop");
 	}
 }
 

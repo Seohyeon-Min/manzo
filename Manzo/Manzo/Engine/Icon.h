@@ -8,8 +8,13 @@
 class Icon : public GameObject
 {
 public:
-	Icon(const std::string& alias, const std::filesystem::path& filename, vec2 position, float scale, bool drag, bool change_pos, bool interactiveWithMouse, bool draw, bool moving);
+	Icon(const std::string& id, const std::string& group, const std::filesystem::path& filename,
+		vec2 position, float scale, bool drag, bool change_pos, bool interactiveWithMouse,
+		bool draw, bool moving);
+
 	~Icon();
+
+	std::string GetId() const { return id; }
 	GameObjectTypes Type() override { return GameObjectTypes::Icon; }
 	std::string TypeName() override { return "Icon"; }
 
@@ -22,21 +27,26 @@ public:
 	
 	const vec2 GetPosition() const { return position; }
 	const float GetScale() const { return scale; }
-	const std::string& GetAlias() const { return alias; }
+	const std::string& GetGroup() const { return group; }
 
-	void SetDraw(bool can_draw) { draw = can_draw; }
 	bool IsSelected() { return selected; }
 	bool IsColliding() { return resolve_collision; }
 	bool CanChangePosition() { return can_change_pos; }
 	bool CanDrag() {	return can_drag;	}
 	void SetSelected(bool select) { selected = select; }
-	void SetHide(bool set) { hide = set; }
+
+	void SetHide(bool set) 
+	{ 
+		hide = set; 
+		draw = !hide;
+	}
 
 	vec2 position;
 
 private:
 	GLTexture* texture;
-	std::string alias;
+	std::string id;
+	std::string group;
 	float scale;
 	bool selected = false;
 	bool can_drag = false;

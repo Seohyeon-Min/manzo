@@ -90,6 +90,7 @@ void Mode2::Load() {
 	// Inven
 	inven_ptr = new Inven({ 350,0 });
 	GetGSComponent<GameObjectManager>()->Add(inven_ptr);
+	fishCollection = Engine::GetSaveDataManager().GetFishCollection();
 
 	shop_ptr = new Shop({ -350, 0 });
 	GetGSComponent<GameObjectManager>()->Add(shop_ptr);
@@ -102,9 +103,9 @@ void Mode2::Load() {
 	GetGSComponent<GameObjectManager>()->Add(sell_popup);
 
 
-	//Engine::GetIconManager().AddIcon("go_shop", { 276,4.5 }, 2.0f, false, false, true, true);
-	Engine::GetIconManager().AddIcon("ship", { 0,-250 }, 1.0f, false, false, true, true);
-	//Engine::GetIconManager().AddIcon("close_icon", { 78,105 }, 1.f, false, false, true, false);
+	Engine::GetIconManager().AddIcon("Mode2_None", "can_go_shop", "computer", { 276,4.5 }, 2.0f, false, false, true, true);
+	Engine::GetIconManager().AddIcon("Mode2_None", "can_go_sea", "ship", { 0,-250 }, 1.0f, false, false, true, true);
+	Engine::GetIconManager().AddIcon("FishPopUp", "close_fishPopUp", "close_icon", { 78,105 }, 1.f, false, false, true, false);
 
 	for (auto icon : Engine::GetIconManager().GetIconList())
 	{
@@ -171,12 +172,12 @@ void Mode2::Update(double dt) {
 	bool clicked = Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT);
 
 	if (icon != nullptr) {
-		if ((icon->GetAlias() == "ship") && clicked && !inven_ptr->GetIsOpened()) {
+		if ((icon->GetId() == "can_go_sea") && clicked && !inven_ptr->GetIsOpened()) {
 			Engine::GetGameStateManager().ClearNextGameState();
 			Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode1));
 		}
 		else if ([&]() {
-			std::string alias = icon->GetAlias();
+			std::string alias = icon->GetId();
 			if (alias.size() < 5) return false;
 			if (alias.substr(0, 4) != "fish") return false;
 			char num = alias[4];
@@ -185,31 +186,49 @@ void Mode2::Update(double dt) {
 			}()) {
 			flag = true;
 		}
+		else if ((icon->GetId() == "close_fishPopUp") && clicked)
+		{
+			Engine::GetIconManager().HideIconByGroup("FishPopUp");
+			Engine::GetIconManager().HideIconByGroup("FishPopping");
+			sell_popup->SetPop(false);
+			inven_ptr->SetHowMuchSold(0);
+		}
+		else if ((icon->GetId() == "sell_fish") && fishCollection[n-1] != 0 && clicked)
+		{
+			if (n - 1 != inven_ptr->GetTodayFishIndex())
+			{
+				inven_ptr->SetMoney(inven_ptr->GetMoney() + (fishGenerator->ReturnFishMoney(n - 1) * inven_ptr->HowMuchSold()));
+				inven_ptr->fishCollection[n - 1] -= inven_ptr->HowMuchSold();
+			}
+			else
+			{
+				inven_ptr->SetMoney(inven_ptr->GetMoney() + (inven_ptr->TodayFishPrice() * inven_ptr->HowMuchSold()));
+				inven_ptr->fishCollection[n - 1] -= inven_ptr->HowMuchSold();
+			}
+
+			std::cout << inven_ptr->HowManyFishes(n - 1) << "\n";
+
+			inven_ptr->SetHowMuchSold(0);
+			Engine::GetIconManager().HideIconByGroup("FishPopUp");
+			Engine::GetIconManager().HideIconByGroup("FishPopping");
+			sell_popup->SetPop(false);
+		}
 	}
 
 	// Open Inven
 	if (inven_ptr->Open())
 	{
 		inven_ptr->SetIsOpened(true);
-		Engine::GetIconManager().HideIcon("go_shop");
-
-		Engine::GetIconManager().ShowIcon("money");
-		Engine::GetIconManager().ShowIcon("ModuleTab");
-		Engine::GetIconManager().ShowIcon("FishTab");
-		Engine::GetIconManager().ShowIcon("SpecialTab");
+		Engine::GetIconManager().HideIconByGroup("Mode2_None");
+		Engine::GetIconManager().ShowIconByGroup("OpenInven");
 	}
 
 	if (inven_ptr->GetIsOpened() && Engine::GetInput().KeyJustReleased(Input::Keys::Esc) || !inven_ptr->GetIsOpened())
 	{
 		inven_ptr->SetIsOpened(false);
-		Engine::GetIconManager().ShowIcon("go_shop");
-
-		Engine::GetIconManager().HideIcon("money");
-		Engine::GetIconManager().HideIcon("ModuleTab");
-		Engine::GetIconManager().HideIcon("FishTab");
-		Engine::GetIconManager().HideIcon("SpecialTab");
+		Engine::GetIconManager().ShowIconByGroup("Mode2_None");
+		Engine::GetIconManager().HideIconByGroup("OpenInven");
 	}
-
 
 }
 
@@ -236,9 +255,9 @@ void Mode2::Draw() {
 		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, std::to_string(inven_ptr->GetMoney()), { 285.f,157.f }, 0.05f, { 0.f,0.f,0.f }, 1.0f);
 		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "Show the maximum dash distance", { -230.f,68.f }, 0.032f, { 1.f,1.f,1.f }, 1.0f);
 		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "Show the amount of fuel left", { -230.f,27.f }, 0.032f, { 1.f,1.f,1.f }, 1.0f);
+		
 		if (inven_ptr->GetFishState())
 		{
-
 			float currentY = 5.5f;
 			int printed = 0;
 
@@ -267,31 +286,22 @@ void Mode2::Draw() {
 			if (!sell_popup->GetPop() && Engine::GetInput().MouseButtonJustReleased(SDL_BUTTON_LEFT) && flag)
 			{
 				sell_popup->SetPop(true);
-				Engine::GetIconManager().ShowIcon("close_icon");
-				Engine::GetIconManager().ShowIcon("plus1");
-				Engine::GetIconManager().ShowIcon("plus10");
-				Engine::GetIconManager().ShowIcon("minus1");
-				Engine::GetIconManager().ShowIcon("minus10");
-				Engine::GetIconManager().ShowIcon("fish_pop" + std::to_string(n));
+				Engine::GetIconManager().ShowIconByGroup("FishPopUp");
+				Engine::GetIconManager().ShowIconById("fish" + std::to_string(n) + "_popping");
 				flag = false;
-
+				inven_ptr->which_fish_sellected = n - 1;
 			}
 			if (sell_popup->GetPop())
 			{
 				Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, std::to_string(inven_ptr->HowMuchSold()), { -5.f,-40.f }, 0.05f, { 1.f,1.f,1.f }, 1.0f);
-				Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, std::to_string(fishGenerator->ReturnFishMoney(1)), {-8.f,-18.f}, 0.03f, {0.f,0.f,0.f}, 1.0f);
-				//std::cout << fishGenerator->ReturnFishMoney(1);
+				Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, std::to_string(fishGenerator->ReturnFishMoney(n - 1)), { -8.f,-18.f }, 0.03f, { 0.f,0.f,0.f }, 1.0f);
 			}
 		}
 		else
 		{
 			sell_popup->SetPop(false);
-			Engine::GetIconManager().HideIcon("close_icon");
-			Engine::GetIconManager().HideIcon("plus1");
-			Engine::GetIconManager().HideIcon("plus10");
-			Engine::GetIconManager().HideIcon("minus1");
-			Engine::GetIconManager().HideIcon("minus10");
-			Engine::GetIconManager().HideIcon("fish_pop" + std::to_string(n));
+			Engine::GetIconManager().HideIconByGroup("FishPopUp");
+			Engine::GetIconManager().HideIconByGroup("FishPopping");
 		}
 	}
 	else
@@ -299,7 +309,8 @@ void Mode2::Draw() {
 		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "Click Ship to Start the Game", { -100.f,-150.f }, 0.05f, { 0.f,0.f,0.f }, 0.5f);
 		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "Click Computer to Equip Module", { 30.f,30.f }, 0.05f, { 1.f,1.f,1.f }, 0.5f);
 		sell_popup->SetPop(false);
-		Engine::GetIconManager().HideIcon("fish_pop" + std::to_string(n));
+		Engine::GetIconManager().HideIconByGroup("FishPopUp");
+		Engine::GetIconManager().HideIconByGroup("FishPopping");
 	}
 }
 

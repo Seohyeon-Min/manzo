@@ -322,6 +322,7 @@ void Mode1::Unload()
 	);
 
 	Engine::GetSaveDataManager().SetModuleData(m1, m2);
+	Engine::GetSaveDataManager().Save();
 	//Engine::GetSaveDataManager().UpdateSaveData(save);
 
 	ship_ptr = nullptr;
