@@ -1,0 +1,6 @@
+assets/images/ship/ship.png
+FrameSize 38 31
+HotSpot 19 15
+RectCollision -14 -14 14 14
+NumFrames 2
+Anim assets/images/ship/Ship_hit.anm

@@ -266,7 +266,7 @@ void Boss::AttackCircle(vec2 pos, double radius, double elapsed_time)
 			if (!isattack) {
 				Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()
 					->GetGOComponent<Ship>()->DeclineFuel(100.f);
-				std::cout << "Attack" << std::endl;
+				//std::cout << "Attack" << std::endl;
 				isattack = true;
 			}
 		}

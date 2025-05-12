@@ -1,7 +1,7 @@
 #pragma once
 #include "../Engine/Timer.h"
 #include "Fish.h"
-#include "AI.h"
+#include "FlockingFish.h"
 
 #include <random>
 

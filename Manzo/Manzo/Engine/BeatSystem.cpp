@@ -90,7 +90,7 @@ void Beat::CollectCaliData()
             interval = time_taken - (right_time_for_calibration + fixed_duration);
         }
         calibrations.push_back(interval);
-        std::cout << interval << std::endl;
+        //std::cout << interval << std::endl;
         calibrations_cnt++;
         //CalculateCali();
     }
@@ -119,7 +119,7 @@ void Beat::CalculateCali()
         median = sorted[size / 2];
     }
 
-    std::cout << "Median calibration value: " << median << std::endl;
+    //std::cout << "Median calibration value: " << median << std::endl;
     user_calibration = median;
     // 여기서 median 값을 게임 보정에 사용하면 됩니다.
 }

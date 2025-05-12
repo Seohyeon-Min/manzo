@@ -14,9 +14,9 @@
 Ship::Ship(vec2 start_position) :
 	GameObject(start_position), move(false)
 {
-	AddGOComponent(new Sprite("assets/images/ship.spt", this));
+	AddGOComponent(new Sprite("assets/images/ship/ship.spt", this));
 	beat = &Engine::GetBeat();
-	hit_text = Engine::GetTextureManager().Load("assets/images/ship_hit.png");
+	hit_text = Engine::GetTextureManager().Load("assets/images/ship/ship_hit.png");
 
 	fuel = Maxfuel;
 	FuelFlag = false;
@@ -256,11 +256,6 @@ std::vector<vec2> spline_points;
 
 void Ship::Update(double dt)
 {
-	if (Engine::GetInput().KeyJustPressed(Input::Keys::B))
-	{
-		std::cout << GetPosition().x << ", " << GetPosition().y << std::endl;
-	}
-
 	if (!IsFuelZero()) {
 		can_dash = true;
 		GameObject::Update(dt);
@@ -610,7 +605,7 @@ void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
 	slow_down += 1500.f;
 	if (speed >= 5000.f) {
 		speed = 5000.f - slow_down;
-		std::cout << "ship->slow_down: " << slow_down << std::endl;
+		//std::cout << "ship->slow_down: " << slow_down << std::endl;
 	}
 	else if (speed <= 800.f) {
 		speed = 800.f;
@@ -622,7 +617,7 @@ void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
 	force = direction * speed * 0.8f;
 	force *= 8.0f;
 
-	Engine::GetLogger().LogEvent("velocity.Length(), speed : " + std::to_string(velocity.Length()) + " : " + std::to_string(speed));
+	//Engine::GetLogger().LogEvent("velocity.Length(), speed : " + std::to_string(velocity.Length()) + " : " + std::to_string(speed));
 }
 
 void Ship::ReduceFuel(float value)

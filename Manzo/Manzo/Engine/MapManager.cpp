@@ -144,7 +144,7 @@ void Map::ParseSVG(const std::string& filename) {
             // transform
             if (std::regex_search(currentTag, match, transformRegex)) {
                 std::string transformStr = match[1].str();
-                std::cout << "" << std::endl;
+                //std::cout << "" << std::endl;
                 
                 // scale
                 if (std::regex_search(transformStr, match, matrixRegex)) {
@@ -195,7 +195,7 @@ void Map::ParseSVG(const std::string& filename) {
                 if (std::regex_search(currentTag, match, cyRegex)) {
                     y = std::stof(match[1].str());
                     
-                    std::cout << "Circle position || cx: " << circle_position.x << ", cy: " << circle_position.y << std::endl;
+                    //std::cout << "Circle position || cx: " << circle_position.x << ", cy: " << circle_position.y << std::endl;
                 }
                 else {
                     //std::cerr << "Error: cy not found for circle with cx: " << circle_position.x << std::endl;
@@ -263,12 +263,12 @@ void Map::ParseSVG(const std::string& filename) {
 
                 pathCountInGroup++;
                 currentTag.clear();
-                std::cout << "-----------------------------" << std::endl;
-                std::cout << rotatetranslate.x << rotatetranslate.y << std::endl;
-                std::cout << translate.x << translate.y << std::endl;
-                std::cout << rotateAngle << std::endl;
-                std::cout << "poly index : " << poly.polyindex << std::endl;
-                std::cout << "-----------------------------" << std::endl;
+                //std::cout << "-----------------------------" << std::endl;
+                //std::cout << rotatetranslate.x << rotatetranslate.y << std::endl;
+                //std::cout << translate.x << translate.y << std::endl;
+                //std::cout << rotateAngle << std::endl;
+                //std::cout << "poly index : " << poly.polyindex << std::endl;
+                //std::cout << "-----------------------------" << std::endl;
 
                 Polygon original_poly = poly;
                 Polygon modified_poly = poly;
@@ -324,7 +324,7 @@ void Map::ParseSVG(const std::string& filename) {
             if (circle_position.x != 0.f && circle_position.y != 0.f) {
                 Box* box = new Box(circle_position);
                 Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(box);
-                std::cout << "New Circle! " << "\n";
+                //std::cout << "New Circle! " << "\n";
 
                 //for (auto& group : rock_groups) {
                 //    if (group->GetIndex() == circleIndex) {//if index is equal
@@ -345,8 +345,8 @@ void Map::ParseSVG(const std::string& filename) {
     //debugging & matching index, points
     for (auto& r_group : rock_groups) {
 
-        std::cout << "Group Index : " << r_group->GetIndex() << "\n";
-        std::cout << "Group Rocks Size : " << r_group->GetRocks().size() << "\n";
+        //std::cout << "Group Index : " << r_group->GetIndex() << "\n";
+        //std::cout << "Group Rocks Size : " << r_group->GetRocks().size() << "\n";
         /*std::cout << "Group Position: " << r_group->GetPosition().x << "," << r_group->GetPosition().y << "\n";
         std::cout << "Group Index : " << r_group->GetIndex() << "\n";
         std::cout << "Group Rocks Size : " << r_group->GetRocks().size() << "\n";

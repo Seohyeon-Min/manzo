@@ -110,7 +110,6 @@ void ScenarioComponent::Load()
             std::cout << "물고기 15마리 이벤트 완료!" << std::endl;
             Engine::GetEventManager().MarkEventDone("catch_15_fish");
 
-            // 예: 팝업 띄우기
             auto* popup = new PopUp({ -420,195 }, "assets/images/catch_done_popup.spt", true);
             auto* manager = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>();
             if (manager) {

@@ -3,14 +3,13 @@
 
 Dialog::Dialog(vec2 start_position)
     : GameObject(start_position), currentIndex(0), elapsedTime(0.0), typingSpeed(0.05), IsTyping(false) {
-    AddGOComponent(new Sprite("assets/images/none.spt", this));
 
     dialog = new JsonParser_dialog("en");
     DialogBox = Engine::GetTextureManager().Load("assets/images/temp_dial.png");
     Box_effect = Engine::GetTextureManager().Load("assets/images/box_effect.png");
-    Me = Engine::GetTextureManager().Load("assets/images/Me.png");
-    Sellerkeeper_1 = Engine::GetTextureManager().Load("assets/images/shopkeeper.png");
-    Perry = Engine::GetTextureManager().Load("assets/images/perry.png");
+    Me = Engine::GetTextureManager().Load("assets/images/character/Me.png");
+    Sellerkeeper_1 = Engine::GetTextureManager().Load("assets/images/character/shopkeeper.png");
+    Perry = Engine::GetTextureManager().Load("assets/images/character/perry.png");
 
     back_matrix = mat3::build_translation({ 0, -(Engine::window_height) / 3 })
         * mat3::build_scale(1.f)

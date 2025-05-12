@@ -1,0 +1,8 @@
+type,scale,velocity,img,possibility,money
+1,0.7,40,assets/images/fish/Fish1.spt,70,1
+2,1.5,70,assets/images/fish/Fish2.spt,50,2
+3,1,40,assets/images/fish/Fish3.spt,20,2
+4,1.2,40,assets/images/fish/Fish4.spt,70,1
+5,1.5,50,assets/images/fish/Fish5.spt,5,5
+6,0.7,70,assets/images/fish/Fish6.spt,50,2
+7,1,40,assets/images/fish/Fish7.spt,20,3

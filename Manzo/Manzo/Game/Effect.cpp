@@ -46,7 +46,7 @@ void Effect::SetAlpha(const GLShader* shader) {
 
 DashEffect::DashEffect()
     : Effect({}, 0.5) {
-    AddGOComponent(new Sprite("assets/images/dash_effect.spt", this));
+    AddGOComponent(new Sprite("assets/images/effect/dash_effect.spt", this));
     ship = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>();
     vec2 dir = ship->GetVelocity().Normalize();
     float angle_radians = std::atan2(dir.y, dir.x);
@@ -86,7 +86,7 @@ void DashEffect::Draw(DrawLayer drawlayer) {
 CaptureEffect::CaptureEffect(vec2 pos)
     : Effect(pos, 0.5) {
     SetScale({ 0.6f, 0.6f });
-    AddGOComponent(new Sprite("assets/images/Capture_effect.spt", this));
+    AddGOComponent(new Sprite("assets/images/effect/Capture_effect.spt", this));
     GetGOComponent<Sprite>()->PlayAnimation(0);
 }
 
@@ -121,7 +121,7 @@ CaptureEffect::~CaptureEffect()
 GetFishEffect::GetFishEffect(vec2 pos)
     : Effect(pos, 0.5) {
     //SetScale({ 0.6f, 0.6f });
-    AddGOComponent(new Sprite("assets/images/Get_fish_effect.spt", this));
+    AddGOComponent(new Sprite("assets/images/effect/Get_fish_effect.spt", this));
 }
 
 void GetFishEffect::Update(double dt)
@@ -150,7 +150,7 @@ void GetFishEffect::Draw(DrawLayer drawlayer)
 HitEffect::HitEffect(vec2 pos)
     : Effect(pos, 0.5) {
     SetScale({ 0.6f, 0.6f });
-    AddGOComponent(new Sprite("assets/images/hit_effect.spt", this));
+    AddGOComponent(new Sprite("assets/images/effect/hit_effect.spt", this));
     GetGOComponent<Sprite>()->PlayAnimation(0);
 
     Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::HitPraticle>>()
@@ -184,7 +184,7 @@ void HitEffect::Draw(DrawLayer drawlayer)
 MonsterHitEffect::MonsterHitEffect(vec2 pos)
 : Effect(pos, 0.5) {
         SetScale({ 0.6f, 0.6f });
-        AddGOComponent(new Sprite("assets/images/monster_hit_effect.spt", this));
+        AddGOComponent(new Sprite("assets/images/effect/monster_hit_effect.spt", this));
         GetGOComponent<Sprite>()->PlayAnimation(0);
 
         Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::HitPraticle>>()
@@ -218,7 +218,7 @@ void MonsterHitEffect::Draw(DrawLayer drawlayer)
 
 BlackOutEffect::BlackOutEffect() : Effect({}, 0.5)
 {
-    AddGOComponent(new Sprite("assets/images/full_quad.spt", this));
+    AddGOComponent(new Sprite("assets/images/effect/full_quad.spt", this));
     timer = new RealTimeTimer(time);
     AddGOComponent(timer);
     timer->Set(time);
@@ -256,7 +256,7 @@ void BlackOutEffect::Draw(DrawLayer drawlayer)
 void BlackOutEffect::SetAlpha(const GLShader* shader)
 {
     float alpha = float(1.0 - timer->Remaining());
-    std::cout << timer->Remaining() << std::endl;
+    //std::cout << timer->Remaining() << std::endl;
     //if (alpha >= 0.3f) alpha = 0.3f;
     shader->SendUniform("uAlpha", alpha);
 }

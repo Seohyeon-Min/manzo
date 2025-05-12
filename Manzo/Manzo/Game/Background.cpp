@@ -16,7 +16,7 @@ Updated:    March 29, 2023
 
 Background::Background()
 {
-    full_quad = Engine::GetTextureManager().Load("assets/images/full_quad.png");
+    full_quad = Engine::GetTextureManager().Load("assets/images/effect/full_quad.png");
 }
 
 void Background::Add(const std::filesystem::path& texture_path, float speed, DrawLayer draw_layer)

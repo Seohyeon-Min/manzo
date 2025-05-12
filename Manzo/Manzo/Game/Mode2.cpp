@@ -48,7 +48,7 @@ void Mode2::Load() {
 	AddGSComponent(new GameObjectManager());
 
 	fishGenerator = new FishGenerator();
-	fishGenerator->ReadFishCSV("assets/scenes/Fish.csv");
+	fishGenerator->ReadFishCSV("assets/images/fish/Fish.csv");
 
 	// player
 	player_ptr = new Player({ 0, -70 });
@@ -102,9 +102,9 @@ void Mode2::Load() {
 	GetGSComponent<GameObjectManager>()->Add(sell_popup);
 
 
-	Engine::GetIconManager().AddIcon("go_shop", { 276,4.5 }, 2.0f, false, false, true, true);
+	//Engine::GetIconManager().AddIcon("go_shop", { 276,4.5 }, 2.0f, false, false, true, true);
 	Engine::GetIconManager().AddIcon("ship", { 0,-250 }, 1.0f, false, false, true, true);
-	Engine::GetIconManager().AddIcon("close_icon", { 78,105 }, 1.f, false, false, true, false);
+	//Engine::GetIconManager().AddIcon("close_icon", { 78,105 }, 1.f, false, false, true, false);
 
 	for (auto icon : Engine::GetIconManager().GetIconList())
 	{
@@ -280,7 +280,7 @@ void Mode2::Draw() {
 			{
 				Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, std::to_string(inven_ptr->HowMuchSold()), { -5.f,-40.f }, 0.05f, { 1.f,1.f,1.f }, 1.0f);
 				Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, std::to_string(fishGenerator->ReturnFishMoney(1)), {-8.f,-18.f}, 0.03f, {0.f,0.f,0.f}, 1.0f);
-				std::cout << fishGenerator->ReturnFishMoney(1);
+				//std::cout << fishGenerator->ReturnFishMoney(1);
 			}
 		}
 		else

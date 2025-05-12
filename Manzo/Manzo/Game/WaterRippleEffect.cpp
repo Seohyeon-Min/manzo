@@ -3,7 +3,7 @@
 WaterRipple::WaterRipple():
 	GameObject({0,-340})
 {
-    AddGOComponent(new Sprite("assets/images/ship.spt", this));
+    AddGOComponent(new Sprite("assets/images/ship/ship.spt", this));
     water = Engine::GetTextureManager().Load("assets/images/background/water.png");
 }
 

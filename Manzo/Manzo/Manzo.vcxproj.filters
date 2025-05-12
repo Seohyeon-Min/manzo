@@ -89,7 +89,7 @@
     <ClCompile Include="Engine\BeatSystem.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Game\AI.cpp">
+    <ClCompile Include="Game\FlockingFish.cpp">
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Game\Background.cpp">
@@ -294,7 +294,7 @@
     <ClInclude Include="Engine\UI.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Game\AI.h">
+    <ClInclude Include="Game\FlockingFish.h">
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Game\Background.h">

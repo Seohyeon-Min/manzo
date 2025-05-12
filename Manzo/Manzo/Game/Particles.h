@@ -16,7 +16,7 @@ Created:    March 8, 2023
 namespace Particles {
     class MouseFollow : public Particle {
     public:
-        MouseFollow() : Particle("assets/images/mouse_part.spt") {  };
+        MouseFollow() : Particle("assets/images/particle/mouse_part.spt") {  };
         std::string TypeName() override { return "Mouse Particle"; }
         static constexpr int MaxCount = 30;
         static constexpr double MaxLife = 0.5;
@@ -25,7 +25,7 @@ namespace Particles {
 
     class Plankton : public Particle {
     public:
-        Plankton() : Particle("assets/images/Plankton.spt") { scale = util::random(0.5f, 4.6f); };
+        Plankton() : Particle("assets/images/particle/Plankton.spt") { scale = util::random(0.5f, 4.6f); };
         std::string TypeName() override { return "Plankton Particle"; }
         static constexpr int MaxCount = 40;
         static constexpr double MaxLife = 10.5;
@@ -34,7 +34,7 @@ namespace Particles {
 
     class FuelBubble : public Particle {
     public:
-        FuelBubble() : Particle("assets/images/Plankton.spt") 
+        FuelBubble() : Particle("assets/images/particle/Plankton.spt") 
         {
             scale = util::random(0.5f, 1.f); shader = Engine::GetShaderManager().GetShader("change_alpha");
         };
@@ -46,7 +46,7 @@ namespace Particles {
 
     class BulletParticle : public Particle {
     public:
-        BulletParticle() : Particle("assets/images/Plankton.spt")
+        BulletParticle() : Particle("assets/images/particle/Plankton.spt")
         {
             scale = util::random(0.5f, 1.f); shader = Engine::GetShaderManager().GetShader("change_alpha");
         };
@@ -58,7 +58,7 @@ namespace Particles {
 
     class BubblePop : public Particle {
     public:
-        BubblePop() : Particle("assets/images/Plankton.spt") 
+        BubblePop() : Particle("assets/images/particle/Plankton.spt") 
         { 
             scale = util::random(1.f, 2.2f); shader = Engine::GetShaderManager().GetShader("change_alpha");
         };
@@ -70,7 +70,7 @@ namespace Particles {
 
     class HitPraticle : public Particle {
     public:
-        HitPraticle() : Particle("assets/images/Smoke.spt")
+        HitPraticle() : Particle("assets/images/particle/Smoke.spt")
         {
             scale = util::random(0.26f, 0.36f); shader = Engine::GetShaderManager().GetShader("change_alpha");
             drawlayer = DrawLayer::DrawPlayerTop;
@@ -83,7 +83,7 @@ namespace Particles {
 
     class HitPraticle2 : public Particle {
     public:
-        HitPraticle2() : Particle("assets/images/Particle_black.spt")
+        HitPraticle2() : Particle("assets/images/particle/Particle_black.spt")
         {
             scale = util::random(0.2f, 0.5f); shader = Engine::GetShaderManager().GetShader("change_alpha");
             drawlayer = DrawLayer::DrawLast;
@@ -96,7 +96,7 @@ namespace Particles {
 
     class CaptureEffect : public Particle {
     public:
-        CaptureEffect() : Particle("assets/images/Capture_particle.spt")
+        CaptureEffect() : Particle("assets/images/particle/Capture_particle.spt")
         {
             scale = util::random(.15f, .25f); shader = Engine::GetShaderManager().GetShader("change_alpha");
             drawlayer = DrawLayer::DrawPlayerTop;

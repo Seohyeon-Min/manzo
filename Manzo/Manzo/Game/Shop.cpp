@@ -16,20 +16,14 @@ Shop::Shop(vec2 postion) : GameObject(postion)
 	int count = 1;
 	for (auto& info : shop_infos)
 	{
-		std::cout << count << "th: " << std::endl;
-		std::cout << "name: " << info.name << std::endl;
-		std::cout << "icon name: " << info.icon << std::endl;
-		std::cout << "price : " << info.price << std::endl;
-		std::cout << "script : " << info.script << std::endl;
 		++count;
 		is_on_shop = true;
 
-		std::cout << info.icon << " ";
-		Engine::GetIconManager().AddIcon(
+		/*Engine::GetIconManager().AddIcon(
 				info.icon,
 				{ -500.0f, 300.0f - (80.0f * count) },
 				1.f
-			);
+			);*/
 	}
 
 	inven = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Inven>();

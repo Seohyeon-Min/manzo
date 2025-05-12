@@ -1,7 +1,7 @@
 
 #include "../Engine/GameObjectManager.h"
 #include "FishEcosystem.h"
-#include "AI.h"
+#include "FlockingFish.h"
 
 std::mt19937 dre_fishIndex(rd());
 

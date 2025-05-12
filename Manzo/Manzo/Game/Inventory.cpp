@@ -29,28 +29,28 @@ Inven::Inven(vec2 position) : GameObject(position), dre_todayFish(rd()), dre_pri
 	m1x = saveData.module1.pos;
 	m2x = saveData.module2.pos;
 
-	Engine::GetIconManager().AddIcon("money", { 540,320 }, 1.0f, false);
+	//Engine::GetIconManager().AddIcon("money", { 540,320 }, 1.0f, false);
 
-	Engine::GetIconManager().AddIcon("ModuleTab", { 560,220 }, 1.0f, false, false, true);
-	Engine::GetIconManager().AddIcon("FishTab", { 560,150 }, 1.0f, false, false, true);
-	Engine::GetIconManager().AddIcon("SpecialTab", { 560,80 }, 1.0f, false, false, true);
+	//Engine::GetIconManager().AddIcon("ModuleTab", { 560,220 }, 1.0f, false, false, true);
+	//Engine::GetIconManager().AddIcon("FishTab", { 560,150 }, 1.0f, false, false, true);
+	//Engine::GetIconManager().AddIcon("SpecialTab", { 560,80 }, 1.0f, false, false, true);
 
-	///////////////////////////// Module State //////////////////////////////////////
-	Engine::GetIconManager().AddIcon("module_set", { GetPosition().x + savePos[0].x, savePos[0].y }, 0.7f, false);
-	Engine::GetIconManager().AddIcon("module_set", { GetPosition().x + savePos[1].x, savePos[1].y }, 0.7f, false);
+	/////////////////////////////// Module State //////////////////////////////////////
+	//Engine::GetIconManager().AddIcon("module_set", { GetPosition().x + savePos[0].x, savePos[0].y }, 0.7f, false);
+	//Engine::GetIconManager().AddIcon("module_set", { GetPosition().x + savePos[1].x, savePos[1].y }, 0.7f, false);
 
-	Engine::GetIconManager().AddIcon("module_have", { GetPosition().x + savePos[0].x, -savePos[0].y }, 0.7f, false);
-	Engine::GetIconManager().AddIcon("module_have", { GetPosition().x + savePos[1].x, -savePos[1].y }, 0.7f, false);
+	//Engine::GetIconManager().AddIcon("module_have", { GetPosition().x + savePos[0].x, -savePos[0].y }, 0.7f, false);
+	//Engine::GetIconManager().AddIcon("module_have", { GetPosition().x + savePos[1].x, -savePos[1].y }, 0.7f, false);
 
-	Engine::GetIconManager().AddIcon("module1", vec2(m1x, module_ptr->IsFirstSetted() ? savePos[0].y : -savePos[0].y), 1.f, true, true, true);
-	Engine::GetIconManager().AddIcon("module2", vec2(m2x, module_ptr->IsSecondSetted() ? savePos[1].y : -savePos[1].y), 1.f, true, true, true);
-	
-	///////////////////////////// Fish Collection State //////////////////////////////////////
-	Engine::GetIconManager().AddIcon("plus1", { 80,-75 }, 1.f, false, false, true);
-	Engine::GetIconManager().AddIcon("plus10", { 50,-75 }, 1.f, false, false, true);
+	//Engine::GetIconManager().AddIcon("module1", vec2(m1x, module_ptr->IsFirstSetted() ? savePos[0].y : -savePos[0].y), 1.f, true, true, true);
+	//Engine::GetIconManager().AddIcon("module2", vec2(m2x, module_ptr->IsSecondSetted() ? savePos[1].y : -savePos[1].y), 1.f, true, true, true);
+	//
+	/////////////////////////////// Fish Collection State //////////////////////////////////////
+	//Engine::GetIconManager().AddIcon("plus1", { 80,-75 }, 1.f, false, false, true);
+	//Engine::GetIconManager().AddIcon("plus10", { 50,-75 }, 1.f, false, false, true);
 
-	Engine::GetIconManager().AddIcon("minus1", { -80,-75 }, 1.f, false, false, true);
-	Engine::GetIconManager().AddIcon("minus10", { -50,-75 }, 1.f, false, false, true);
+	//Engine::GetIconManager().AddIcon("minus1", { -80,-75 }, 1.f, false, false, true);
+	//Engine::GetIconManager().AddIcon("minus10", { -50,-75 }, 1.f, false, false, true);
 
 	if (!is_picked)  //pick today's special fish
 	{
@@ -59,11 +59,11 @@ Inven::Inven(vec2 position) : GameObject(position), dre_todayFish(rd()), dre_pri
 		todays_fish_index = todays_fish(dre_todayFish);
 		todays_price = fish_price(dre_price);
 
-		std::cout << "Today's fish is : " << todays_fish_index << ",   price : " << todays_price << "\n";
+		//std::cout << "Today's fish is : " << todays_fish_index << ",   price : " << todays_price << "\n";
 		is_picked = true;
 	}
 	todays_fish_icon = "fish" + std::to_string(todays_fish_index + 1);
-	Engine::GetIconManager().AddIcon(todays_fish_icon, { -575,300 }, 1.0f, false, false, false, true, true);
+	//Engine::GetIconManager().AddIcon(todays_fish_icon, { -575,300 }, 1.0f, false, false, false, true, true);
 
 
 	for (auto& fish : originCollection)
@@ -73,8 +73,8 @@ Inven::Inven(vec2 position) : GameObject(position), dre_todayFish(rd()), dre_pri
 			std::string file_name = "fish" + std::to_string(fish.first + 1);
 			std::string file_name_pop = "fish_pop" + std::to_string(fish.first + 1);
 
-			Engine::GetIconManager().AddIcon(file_name, { GetPosition().x + 100,float(p -= 80) }, 1.0f, true, false, true);
-			Engine::GetIconManager().AddIcon(file_name_pop, { 0,40 }, 1.0f, false, false, false, false, false);
+			/*Engine::GetIconManager().AddIcon(file_name, { GetPosition().x + 100,float(p -= 80) }, 1.0f, true, false, true);
+			Engine::GetIconManager().AddIcon(file_name_pop, { 0,40 }, 1.0f, false, false, false, false, false);*/
 		}
 	}
 }
@@ -86,7 +86,7 @@ void Inven::Update(double dt)
 	Icon* selectedIcon = nullptr;
 	bool clicked = Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT);
 	
-	std::cout << holding << std::endl;
+	//std::cout << holding << std::endl;
 
 	if (!holding && Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT)) {
 		selectedIcon = Engine::GetIconManager().GetCollidingIconWithMouse({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY });

@@ -3,7 +3,7 @@
 Player::Player(vec2 start_position) :
     GameObject(start_position)
 {
-    AddGOComponent(new Sprite("assets/images/character_sprite/Player.spt", this));
+    AddGOComponent(new Sprite("assets/images/character/character_sprite/Player.spt", this));
     current_state = &state_idle;
     current_state->Enter(this);
     SetScale({ 2.0f, 2.0f });

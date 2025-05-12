@@ -95,7 +95,7 @@ void Mode1::Load()
 	//// to generate fish
 	fishGenerator = new FishGenerator();
 	AddGSComponent(fishGenerator);
-	fishGenerator->ReadFishCSV("assets/scenes/Fish.csv");
+	fishGenerator->ReadFishCSV("assets/images/fish/Fish.csv");
 
 	// background
 	//background->Add("assets/images/background/temp_background4.png", 0.0f);
