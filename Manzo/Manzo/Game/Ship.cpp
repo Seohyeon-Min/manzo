@@ -23,7 +23,7 @@ Ship::Ship(vec2 start_position) :
 	FuelFlag = false;
 	SetVelocity({ 0,0 });
 
-	if (Engine::GetGameStateManager().GetStateName() == "Mode3" || Engine::GetGameStateManager().GetStateName() == "Mode1" || Engine::GetGameStateManager().GetStateName() == "Tutorial") {
+	if (Engine::GetGameStateManager().GetStateName() == "Mode3" || Engine::GetGameStateManager().GetStateName() == "Mode1") {
 		bounceBehavior = new DefaultBounceBehavior();
 		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new Pump);
 		current_state = &state_idle;
@@ -766,8 +766,8 @@ void Pump::Draw(DrawLayer drawlayer)
 	draw_call2.SetUniforms = [this](const GLShader* shader) {this->SetUniforms(shader); };
 	draw_call2.sorting_layer = DrawLayer::DrawUI;
 
-    //Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call));
-	//Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call2));
+    Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call));
+	Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call2));
 }
 
 void Pump::Reset() {
