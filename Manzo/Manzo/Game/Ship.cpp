@@ -16,7 +16,6 @@ Ship::Ship(vec2 start_position) :
 {
 	AddGOComponent(new Sprite("assets/images/ship.spt", this));
 	beat = &Engine::GetBeat();
-	skill = Engine::GetGameStateManager().GetGSComponent<Skillsys>();
 	hit_text = Engine::GetTextureManager().Load("assets/images/ship_hit.png");
 
 	fuel = Maxfuel;

@@ -3,18 +3,49 @@
 #include "Fish.h"
 #include "AI.h"
 
-static Quadtree quadtree(AABB{ {-Engine::window_width, -Engine::window_height}, {Engine::window_width, Engine::window_height} });
+#include <random>
 
-class FishGenerator
+class FishGenerator : public Component
 {
 public:
 	FishGenerator();
+    ~FishGenerator();
+
+    void ReadFishCSV(const std::string& filename);
 	void GenerateFish(double dt);
-	~FishGenerator();
+
+    int GetMoney() { return money; }
+    void ClearMoney() { money = 0; }
+    void SetMoney(int count) { money = count; }
+    int ReturnFishMoney(int index);
+
+    void SetFishCnt(int n) { fishCnt = n; }
+    int GetFishCnt() { return fishCnt; }
+
+    enum FishType
+    {
+        Fish1 = 1, Fish2, Fish3
+    };
+
+    struct FishDex
+    {
+        FishType type;
+        vec2 scale;
+        vec2 velocity;
+        std::filesystem::path filePath;
+        float possibility;
+        int money;
+    };
 
 	std::vector<Fish*> fishList;
+    std::vector<int> moneys;
+    std::vector<float> weights;
+    std::vector<FishDex> fishBook;
+
 
 private:
+    int money;
+    int fishCnt;
 	Timer* timer;
 
 	struct Formation {
@@ -37,4 +68,6 @@ private:
             70.f, 80.f, 70.f, 80.f 
         }
     };
+
+    friend class Fish;
 };

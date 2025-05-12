@@ -10,7 +10,7 @@ Icon::Icon(const std::string& alias, const std::filesystem::path& filename, vec2
 	AddGOComponent(new Sprite(filename, this));
 	SetScale({ scale,scale });
 
-	Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(this);
+	//Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(this);
 	AddGOComponent(new Dragging(*this));
 
 	if (moving)

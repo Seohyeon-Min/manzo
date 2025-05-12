@@ -55,9 +55,7 @@ void BackgroundFish::State_Leader::Enter(GameObject* object)
 void BackgroundFish::State_Leader::Update(GameObject* object, double dt)
 {
 	BackgroundFish* bgf = static_cast<BackgroundFish*>(object);
-	AABB searchRange = { bgf->GetPosition(), vec2{50.0f, 50.0f} };
 
-	quadtree.query(searchRange, backgroundFishList);
 
 	bgf->boidForce = bgf->alignment * a + bgf->cohesion * b + bgf->separation * c + bgf->wanderForce * d;
 	vec2 newVelocity = bgf->GetVelocity().Normalize() + bgf->boidForce;

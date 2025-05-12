@@ -3,30 +3,78 @@
 #include "FishEcosystem.h"
 #include "AI.h"
 
+std::mt19937 dre_fishIndex(rd());
+
 FishGenerator::FishGenerator()
 {
-	timer = new Timer(0.01);
-
-	//leader fish
-	for (int i = 0; i < 6; i++)
+	if (Engine::GetGameStateManager().GetStateName() == "Mode1")
 	{
-		BackgroundFish* bg_fish = new BackgroundFish();
-		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bg_fish);
-		//bg_fish->change_state(&bg_fish->state_leader);
-		bg_fish->current_state = &bg_fish->state_leader;
-		bg_fish->current_state->Enter(bg_fish);
+		timer = new Timer(2.0);
+
+		//leader fish
+		for (int i = 0; i < 6; i++)
+		{
+			BackgroundFish* bg_fish = new BackgroundFish();
+			Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bg_fish);
+			//bg_fish->change_state(&bg_fish->state_leader);
+			bg_fish->current_state = &bg_fish->state_leader;
+			bg_fish->current_state->Enter(bg_fish);
+		}
+
+		//non leader fish
+		for (int i = 0; i < 60; i++)
+		{
+			BackgroundFish* bg_fish = new BackgroundFish();
+			Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bg_fish);
+			//bg_fish->change_state(&bg_fish->state_nonleader);
+
+			bg_fish->current_state = &bg_fish->state_nonleader;
+			bg_fish->current_state->Enter(bg_fish);
+		}
+	}
+}
+
+void FishGenerator::ReadFishCSV(const std::string& filename)
+{
+	std::ifstream file(filename);
+	if (!file.is_open()) {
+		std::cerr << "Failed to open file: " << filename << std::endl;
+		return;
 	}
 
-	//non leader fish
-	for (int i = 0; i < 60; i++)
-	{
-		BackgroundFish* bg_fish = new BackgroundFish();
-		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bg_fish);
-		//bg_fish->change_state(&bg_fish->state_nonleader);
+	std::string line, cell;
+	std::getline(file, line);
 
-		bg_fish->current_state = &bg_fish->state_nonleader;
-		bg_fish->current_state->Enter(bg_fish);
+	while (std::getline(file, line)) {
+		std::stringstream linestream(line);
+		FishDex f;
+		float scaleSize, velocitySize;
+
+		std::getline(linestream, cell, ',');
+		f.type = static_cast<FishType>(std::stoi(cell));
+
+		std::getline(linestream, cell, ',');
+		scaleSize = std::stof(cell);
+		f.scale = { scaleSize, scaleSize };
+
+		std::getline(linestream, cell, ',');
+		velocitySize = std::stof(cell);
+		f.velocity = { velocitySize, 0 };
+
+		std::getline(linestream, cell, ',');
+		f.filePath = cell;
+
+		std::getline(linestream, cell, ',');
+		f.possibility = std::stof(cell);
+		weights.push_back(f.possibility);
+
+		std::getline(linestream, cell, ',');
+		f.money = std::stoi(cell);
+		moneys.push_back(f.money);
+
+		fishBook.push_back(f);
 	}
+	file.close();
 }
 
 void FishGenerator::GenerateFish(double dt)
@@ -40,26 +88,25 @@ void FishGenerator::GenerateFish(double dt)
 
 		if (fishList.size() < 80) //limit of fish num
 		{
+			std::discrete_distribution<> fishIndex(weights.begin(), weights.end());
 
-			Fish* newFish = new Fish();
+			Fish* newFish = new Fish(fishIndex(dre_fishIndex));
 			fishList.push_back(newFish);
 			Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(newFish);
-
 			timer->Reset();
 
-			//generate object fishes
-			if (newFish->type == Fish::FishType::Fish3)
+			if (newFish->type == FishType::Fish3)
 			{
 				int shape_index = rand() % formations.size();
 				const auto& selectedFormation = formations[shape_index];
 
 				for (const auto& offset : selectedFormation.offsets)
 				{
-					Fish* additionalFish = new Fish(newFish);
+					Fish* additionalFish = new Fish(newFish->type, newFish);
 
-					float randomX = rand() % (int)(selectedFormation.randomOffsetMaxX - selectedFormation.randomOffsetMinX)
+					float randomX = rand() % static_cast<int>(selectedFormation.randomOffsetMaxX - selectedFormation.randomOffsetMinX)
 						+ selectedFormation.randomOffsetMinX;
-					float randomY = rand() % (int)(selectedFormation.randomOffsetMaxY - selectedFormation.randomOffsetMinY)
+					float randomY = rand() % static_cast<int>(selectedFormation.randomOffsetMaxY - selectedFormation.randomOffsetMinY)
 						+ selectedFormation.randomOffsetMinY;
 
 					vec2 randomOffset = { randomX, randomY };
@@ -74,10 +121,21 @@ void FishGenerator::GenerateFish(double dt)
 		}
 	}
 
-	quadtree.clear();
-	for (auto& fish : backgroundFishList) {
-		quadtree.insert(fish);
-	}
+	fishList.erase(
+		std::remove_if(fishList.begin(), fishList.end(),
+			[](Fish* fish) {
+				if (fish->Destroyed()) {
+					delete fish;  
+					return true;
+				}
+				return false;
+			}),
+		fishList.end());
+}
+
+int FishGenerator::ReturnFishMoney(int index)
+{
+	return fishBook[index - 1].money;
 }
 
 FishGenerator::~FishGenerator()

@@ -70,7 +70,6 @@
     <ClCompile Include="Game\SeaweedMonster.cpp" />
     <ClCompile Include="Game\Ship.cpp" />
     <ClCompile Include="Game\Shop.cpp" />
-    <ClCompile Include="Game\Skill.cpp" />
     <ClCompile Include="Game\Splash.cpp" />
     <ClCompile Include="Game\Title.cpp" />
     <ClCompile Include="Game\TutorialMap.cpp" />
@@ -106,7 +105,6 @@
     <ClInclude Include="Engine\MathUtils.h" />
     <ClInclude Include="Engine\Particle.h" />
     <ClInclude Include="Engine\Polygon.h" />
-    <ClInclude Include="Engine\AABB.h" />
     <ClInclude Include="Engine\Rapidjson.h" />
     <ClInclude Include="Engine\Rect.h" />
     <ClInclude Include="Engine\Render.h" />
@@ -150,7 +148,6 @@
     <ClInclude Include="Game\SeaweedMonster.h" />
     <ClInclude Include="Game\Ship.h" />
     <ClInclude Include="Game\Shop.h" />
-    <ClInclude Include="Game\Skill.h" />
     <ClInclude Include="Game\Splash.h" />
     <ClInclude Include="Game\States.h" />
     <ClInclude Include="Game\Title.h" />

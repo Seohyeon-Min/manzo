@@ -24,7 +24,6 @@ Created:    March 8, 2023
 #include "Background.h"
 #include "Ship.h"
 #include "Fish.h"
-#include "Skill.h"
 #include "Boss.h"
 #include "Monster.h"
 
@@ -94,8 +93,9 @@ void Mode1::Load()
 	AddGSComponent(background);
 
 	//// to generate fish
-	Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
 	fishGenerator = new FishGenerator();
+	AddGSComponent(fishGenerator);
+	fishGenerator->ReadFishCSV("assets/scenes/Fish.csv");
 
 	// background
 	//background->Add("assets/images/background/temp_background4.png", 0.0f);
@@ -132,19 +132,6 @@ void Mode1::Load()
 	// monster
 	GetGSComponent<GameObjectManager>()->Add(new Monster(ship_ptr, {2200, -2000}));
 
-	// // Skill
-	// if (!Engine::Instance()->GetTmpPtr())
-	// {
-	// 	Engine::Instance()->SetTmpPtr(new Skillsys);
-	// 	skill_ptr = static_cast<Skillsys*>(Engine::Instance()->GetTmpPtr());
-	// 	skill_ptr->SetShipPtr(ship_ptr);
-	// }
-	// else
-	// {
-	// 	skill_ptr = static_cast<Skillsys*>(Engine::Instance()->GetTmpPtr());
-	// 	skill_ptr->SetShipPtr(ship_ptr);
-	// }
-
 	// Module
 	auto& saveData = Engine::GetSaveDataManager().GetSaveData();
 	firstBuy = saveData.module1.buy;
@@ -159,7 +146,7 @@ void Mode1::Load()
 	fishCollection = saveData.fishCollection;
 
 	// money
-	fish->SetMoney(saveData.money);
+	fishGenerator->SetMoney(saveData.money);
 
 	// module1
 	if (saveData.module1.set) {
@@ -324,7 +311,7 @@ void Mode1::Unload()
 	ModuleData m2{ secondBuy, module->IsSecondSetted(), save.module1.pos };
 
 	Engine::GetSaveDataManager().SetFishData(
-		GetGSComponent<Fish>()->GetMoney(),
+		fishGenerator->GetMoney(),
 		fishCollection
 	);
 
@@ -332,12 +319,9 @@ void Mode1::Unload()
 	//Engine::GetSaveDataManager().UpdateSaveData(save);
 
 	ship_ptr = nullptr;
-	delete fishGenerator;
-	fishGenerator = nullptr;
 	playing = false;
 	soundPlaying = false;
 	replay = false;
-	fishGenerator = nullptr;
 	Isboss = false;
 	beat_system->CleartoOriginal();
 

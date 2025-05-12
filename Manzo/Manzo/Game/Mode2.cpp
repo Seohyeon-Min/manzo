@@ -47,7 +47,8 @@ void Mode2::Load() {
 	// compenent
 	AddGSComponent(new GameObjectManager());
 
-	Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
+	fishGenerator = new FishGenerator();
+	fishGenerator->ReadFishCSV("assets/scenes/Fish.csv");
 
 	// player
 	player_ptr = new Player({ 0, -70 });
@@ -110,7 +111,7 @@ void Mode2::Load() {
 		GetGSComponent<GameObjectManager>()->Add(icon);
 	}
 
-	std::cout << "Left money : " << Engine::GetGameStateManager().GetGSComponent<Fish>()->GetMoney() << std::endl;
+	std::cout << "Left money : " << fishGenerator->GetMoney() << std::endl;
 }
 
 void Mode2::Update(double dt) {
@@ -145,26 +146,26 @@ void Mode2::Update(double dt) {
 #endif
 
 		//Dialog
-	//¿¡¼Â¿¡ ÀÖ´Â  en ÆÄÀÏÇÏ°í °°ÀÌ º¸¸é ÀÌÇØ°¡ ´õ ½¬¿ï°ÅÀÓ
+	//ï¿½ï¿½ï¿½Â¿ï¿½ ï¿½Ö´ï¿½  en ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ø°ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::Z) && !isLoaded) {
-		//¹­À½À¸·Î µÇ¾îÀÖ´Â°Å Ãâ·Â ÀÔ·Â ¹Þ´Â id´Â ¾Ë¾Æ¼­ ¼³Á¤ÇØµµ µÊ
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¾ï¿½ï¿½Ö´Â°ï¿½ ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ ï¿½Þ´ï¿½ idï¿½ï¿½ ï¿½Ë¾Æ¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½ ï¿½ï¿½
 		dialog_ptr->LoadDialogGroup("dialog-1", 0.05);
 		isLoaded = true;
 	}
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::Space)) {
-		//¹­À½À¸·Î Ãâ·ÂµÈ ´ÙÀÌ¾ó·Î±× ´ÙÀ½ À¸·Î ³Ñ°ÜÁÖ±â
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Âµï¿½ ï¿½ï¿½ï¿½Ì¾ï¿½Î±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½Ö±ï¿½
 		dialog_ptr->NextLine();
 	}
 	if ((Engine::GetInput().KeyJustPressed(Input::Keys::X) && !isLoaded)) {
 
-		//array ¾È¿¡ stringÀÌ ¿©·¯°³ ÀÖÀ¸¸é ·£´ý Ãâ·ÂÇÔ
+		//array ï¿½È¿ï¿½ stringï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
 		dialog_ptr->LoadRandomDialog("dialog-2", 0.05);
 		isLoaded = true;
 	}
 
 
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::C) && isLoaded) {
-		//´ÙÀÌ¾ó·Î±× ¼û±è µÚ¾î unload nullptr Ã³¸®ÇØÁÖ±â´Â ÇÏ´Âµ¥ ±×³É ÀÌ°Ç ¾Èº¸ÀÌ°Ô¸¸ ÇÏ´Â°ÅÀÓ
+		//ï¿½ï¿½ï¿½Ì¾ï¿½Î±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¾ï¿½ unload nullptr Ã³ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ ï¿½Ï´Âµï¿½ ï¿½×³ï¿½ ï¿½Ì°ï¿½ ï¿½Èºï¿½ï¿½Ì°Ô¸ï¿½ ï¿½Ï´Â°ï¿½ï¿½ï¿½
 		dialog_ptr->Hide();
 		isLoaded = false;
 	}
@@ -282,9 +283,9 @@ void Mode2::Draw() {
 			}
 			if (sell_popup->GetPop())
 			{
-				Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, std::to_string(inven_ptr->HowMuchSold()), { -5.f,-40.f }, 0.05f, { 1.f,1.f,1.f }, 1.0f);
-				Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, std::to_string(Engine::GetGameStateManager().GetGSComponent<Fish>()->ReturnFishMoney(1)), {-8.f,-18.f}, 0.03f, {0.f,0.f,0.f}, 1.0f);
-				std::cout << Engine::GetGameStateManager().GetGSComponent<Fish>()->ReturnFishMoney(1);
+				Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, std::to_string(inven_ptr->HowMuchSold()), { -5.f,-40.f }, 0.05f, { 1.f,1.f,1.f }, 1.0f);
+				Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, std::to_string(fishGenerator->ReturnFishMoney(1)), {-8.f,-18.f}, 0.03f, {0.f,0.f,0.f}, 1.0f);
+				std::cout << fishGenerator->ReturnFishMoney(1);
 			}
 		}
 		else
