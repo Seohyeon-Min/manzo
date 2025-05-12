@@ -164,7 +164,9 @@ void Mode1::Load()
 	
 	// Boss Trigger
 	Engine::GetEventManager().AddEvent(Event("Boss E Trigger",
-		[&]() { return ship_ptr->GetPosition().y <= bossPosition.y - 100; },
+		[&]() { if(ship_ptr) return ship_ptr->GetPosition().y <= bossPosition.y - 100;
+	return false;
+		},
 		[&]() {
 			GetGSComponent<GameObjectManager>()->Add(boss_ptr);
 			Isboss = true;

@@ -146,26 +146,21 @@ void Mode2::Update(double dt) {
 #endif
 
 		//Dialog
-	//���¿� �ִ�  en �����ϰ� ���� ���� ���ذ� �� �������
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::Z) && !isLoaded) {
-		//�������� �Ǿ��ִ°� ��� �Է� �޴� id�� �˾Ƽ� �����ص� ��
 		dialog_ptr->LoadDialogGroup("dialog-1", 0.05);
 		isLoaded = true;
 	}
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::Space)) {
-		//�������� ��µ� ���̾�α� ���� ���� �Ѱ��ֱ�
 		dialog_ptr->NextLine();
 	}
 	if ((Engine::GetInput().KeyJustPressed(Input::Keys::X) && !isLoaded)) {
 
-		//array �ȿ� string�� ������ ������ ���� �����
 		dialog_ptr->LoadRandomDialog("dialog-2", 0.05);
 		isLoaded = true;
 	}
 
 
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::C) && isLoaded) {
-		//���̾�α� ���� �ھ� unload nullptr ó�����ֱ�� �ϴµ� �׳� �̰� �Ⱥ��̰Ը� �ϴ°���
 		dialog_ptr->Hide();
 		isLoaded = false;
 	}

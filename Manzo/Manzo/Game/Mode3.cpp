@@ -17,7 +17,6 @@
 #include "Background.h"
 #include "Ship.h"
 #include "Fish.h"
-#include "Skill.h"
 #include "Boss.h"
 #include "Monster.h"
 
@@ -116,9 +115,7 @@ void Mode3::Update(double dt) {
         break;
 
     case TutorialPhase::Done:
-        std::cout << "hello";
         if (!textDisplay) {
-
             dialog_ptr->LoadDialogGroup("tutorial-2", 0.05);
             textDisplay = true;
         }
@@ -158,6 +155,14 @@ void Mode3::Draw() {
 
 
 void Mode3::Unload() {
+
+    beat_system->CleartoOriginal();
+
+    auto pump = Engine::GetGameStateManager().GetGSComponent<Pump>();
+    if (pump) {
+        pump->Reset();
+    }
+
     Engine::GetAudioManager().StopAllChannels();
     GetGSComponent<GameObjectManager>()->Unload();
     GetGSComponent<Background>()->Unload();

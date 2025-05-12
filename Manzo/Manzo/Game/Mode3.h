@@ -8,7 +8,6 @@
 #include "FishEcosystem.h"
 #include "../Engine/Camera.h"
 #include "Background.h"
-#include "Skill.h"
 #include "Fish.h"
 #include "Shop.h"
 #include "Module.h"
