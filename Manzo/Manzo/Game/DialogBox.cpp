@@ -5,6 +5,7 @@ Dialog::Dialog(vec2 start_position)
     : GameObject(start_position), currentIndex(0), elapsedTime(0.0), typingSpeed(0.05), IsTyping(false) {
 
     dialog = new JsonParser_dialog("en");
+    AddGOComponent(new Sprite("assets/images/none.spt", this));
     DialogBox = Engine::GetTextureManager().Load("assets/images/temp_dial.png");
     Box_effect = Engine::GetTextureManager().Load("assets/images/box_effect.png");
     Me = Engine::GetTextureManager().Load("assets/images/character/Me.png");
