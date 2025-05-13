@@ -334,6 +334,9 @@ void Mode2::Unload() {
 		inven_ptr->GetX2Pos()
 	};
 
+
+	std::cout << "In Mode2 Unload: " << m1.pos << " , " << m2.pos << std::endl;
+
 	Engine::GetSaveDataManager().SetModuleData(m1, m2);
 	Engine::GetSaveDataManager().Save();
 
