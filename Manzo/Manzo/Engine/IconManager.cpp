@@ -189,3 +189,14 @@ Icon* IconManager::GetCollidingIconWithMouse(vec2 mousePosition)
 	}
 	return nullptr;
 }
+
+vec2 IconManager::GetIconPosition(const std::string& id1)
+{
+	auto it1 = icon_by_id.find(id1);
+
+	if (it1 != icon_by_id.end()) {
+		return it1->second->GetPosition();
+	}
+
+	return { 0, 0 };
+}

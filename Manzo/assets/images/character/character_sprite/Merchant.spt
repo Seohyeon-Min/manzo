@@ -1,5 +1,5 @@
 assets/images/character/character_sprite/Merchant_sprite.png
-Hotspot 32 0
+HotSpot 32 0
 FrameSize 64 64
 RectCollision -25 -25 25 25
 Frame 0 0

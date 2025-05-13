@@ -37,7 +37,7 @@ public:
 	Icon* GetCollidingIcon(Icon& icon);
 
 	Icon* GetCollidingIconWithMouse(vec2 mousePosition);
-
+	vec2 GetIconPosition(const std::string& id1);
 
 	std::list<Icon*> GetIconList() { return icons;}
 
