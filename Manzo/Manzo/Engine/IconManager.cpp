@@ -149,6 +149,16 @@ void IconManager::SetIconPositionById(const std::string& id, vec2 newPosition)
 	}
 }
 
+void IconManager::SetIconPositionById(const std::string& id, const std::string& target_pos)
+{
+	auto it1 = icon_by_id.find(id);
+	auto it2 = icon_by_id.find(target_pos);
+
+	if (it1 != icon_by_id.end() && it2 != icon_by_id.end()) {
+		it1->second->SetPosition(it2->second->GetPosition());
+	}
+}
+
 vec2 IconManager::GetIconPositionIfColliding(const std::string& id1, const std::string& id2)
 {
 	auto it1 = icon_by_id.find(id1);

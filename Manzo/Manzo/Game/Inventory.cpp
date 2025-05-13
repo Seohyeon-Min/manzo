@@ -31,9 +31,9 @@ Inven::Inven(vec2 position) : GameObject(position), dre_todayFish(rd()), dre_pri
 	m1x = saveData.module1.pos;
 	m2x = saveData.module2.pos;
 
-	Engine::GetIconManager().AddIcon("OpenInven", "money", "money", {540,320}, 1.0f, false);
-	Engine::GetIconManager().AddIcon("OpenInven","ModuleTab", "moduleTab", { 560, 220 }, 1.0f, false, false, true);
-	Engine::GetIconManager().AddIcon("OpenInven", "FishTab", "fishTab", {560,150}, 1.0f, false, false, true);
+	Engine::GetIconManager().AddIcon("OpenInven", "money", "money", { 540,320 }, 1.0f, false);
+	Engine::GetIconManager().AddIcon("OpenInven", "ModuleTab", "moduleTab", { 560, 220 }, 1.0f, false, false, true);
+	Engine::GetIconManager().AddIcon("OpenInven", "FishTab", "fishTab", { 560,150 }, 1.0f, false, false, true);
 	Engine::GetIconManager().AddIcon("OpenInven", "SpecialTab", "specialTab", { 560,80 }, 1.0f, false, false, true);
 
 	/////////////////////////////// Module State //////////////////////////////////////
@@ -65,7 +65,7 @@ Inven::Inven(vec2 position) : GameObject(position), dre_todayFish(rd()), dre_pri
 		is_picked = true;
 	}
 	todays_fish_icon = "fish" + std::to_string(todays_fish_index + 1);
-	Engine::GetIconManager().AddIcon("Mode2_Always", todays_fish_icon + "_today", todays_fish_icon, {-575,300}, 1.0f, false, false, false, true, true);
+	Engine::GetIconManager().AddIcon("Mode2_Always", todays_fish_icon + "_today", todays_fish_icon, { -575,300 }, 1.0f, false, false, false, true, true);
 
 	Engine::GetIconManager().ShowIconByGroup("Mode2_Always");
 
@@ -75,8 +75,8 @@ Inven::Inven(vec2 position) : GameObject(position), dre_todayFish(rd()), dre_pri
 		{
 			std::string file_name = "fish" + std::to_string(fish.first + 1);
 
-			Engine::GetIconManager().AddIcon("Fish_Tab", file_name + "_having", file_name, {GetPosition().x + 100,float(p -= 80)}, 1.0f, true, false, true);
-			Engine::GetIconManager().AddIcon("FishPopping", file_name + "_popping", file_name, {0,40}, 1.0f, false, false, false, false, false);
+			Engine::GetIconManager().AddIcon("Fish_Tab", file_name + "_having", file_name, { GetPosition().x + 100,float(p -= 80) }, 1.0f, true, false, true);
+			Engine::GetIconManager().AddIcon("FishPopping", file_name + "_popping", file_name, { 0,40 }, 1.0f, false, false, false, false, false);
 		}
 	}
 }
@@ -87,7 +87,7 @@ void Inven::Update(double dt)
 
 	Icon* selectedIcon = nullptr;
 	bool clicked = Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT);
-	
+
 	//std::cout << holding << std::endl;
 
 	if (!holding && Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT)) {
@@ -220,44 +220,65 @@ void Inven::State_Module::Update(GameObject* object, double dt)
 	}
 
 	/////////////////////////////////////////////////// Check Set ///////////////////////////////////////////////////
-	//if (Engine::GetIconManager().IsCollidingWith("module_set1", "module1"))
-	//{
-	//	inven->module_ptr->SetFirstModule(true);
-	//	inven->m1x = Engine::GetIconManager().GetIconPositionIfColliding("module_set1", "module1").x;
-	//}
-	//else
-	//{
-	//	inven->module_ptr->SetFirstModule(false);
-	//	inven->m1x = inven->GetPosition().x + inven->savePos[0].x;
-	//}
+	if (Engine::GetIconManager().IsCollidingWith("module_set1", "module1"))
+	{
+		inven->module_ptr->SetFirstModule(true);
+		inven->m1x = Engine::GetIconManager().GetIconPositionIfColliding("module_set1", "module1").x;
+	}
+	else if (Engine::GetIconManager().IsCollidingWith("module_set2", "module1"))
+	{
+		inven->module_ptr->SetFirstModule(true);
+		inven->m1x = Engine::GetIconManager().GetIconPositionIfColliding("module_set2", "module1").x;
+	}
+	else
+	{
+		inven->module_ptr->SetFirstModule(false);
+		//inven->m1x = inven->GetPosition().x + inven->savePos[1].x;
+	}
 
-	//if (Engine::GetIconManager().IsCollidingWith("module_set2", "module2"))
-	//{
-	//	inven->module_ptr->SetSecondModule(true);
-	//	inven->m2x = Engine::GetIconManager().GetIconPositionIfColliding("module_set2", "module2").x;
-	//}
-	//else
-	//{
-	//	inven->module_ptr->SetSecondModule(false);
-	//	inven->m2x = inven->GetPosition().x + inven->savePos[1].x;
-	//}
+
+	if (Engine::GetIconManager().IsCollidingWith("module_set1", "module2"))
+	{
+		inven->module_ptr->SetSecondModule(true);
+		inven->m2x = Engine::GetIconManager().GetIconPositionIfColliding("module_set1", "module2").x;
+	}
+	else if (Engine::GetIconManager().IsCollidingWith("module_set2", "module2"))
+	{
+		inven->module_ptr->SetSecondModule(true);
+		inven->m2x = Engine::GetIconManager().GetIconPositionIfColliding("module_set2", "module2").x;
+	}
+	else
+	{
+		inven->module_ptr->SetSecondModule(false);
+		//inven->m2x = inven->GetPosition().x + inven->savePos[1].x;
+	}
 
 
 	/////////////////////////////////////////////////// Clear ///////////////////////////////////////////////////
-	//if (Engine::GetIconManager().IsCollidingWith("module_have1", "module1"))
-	//{
-	//	inven->module_ptr->SetFirstModule(false);
-	//	inven->m1x = inven->GetPosition().x + inven->savePos[0].x;
-	//}
+	if (Engine::GetIconManager().IsCollidingWith("module_have1", "module1"))
+	{
+		inven->module_ptr->SetFirstModule(false);
+		inven->m1x = Engine::GetIconManager().GetIconPositionIfColliding("module_have1", "module1").x;
+	}
+	else if (Engine::GetIconManager().IsCollidingWith("module_have2", "module1"))
+	{
+		inven->module_ptr->SetFirstModule(false);
+		inven->m1x = Engine::GetIconManager().GetIconPositionIfColliding("module_have2", "module1").x;
+	}
 
-	//if (Engine::GetIconManager().IsCollidingWith("module_have2", "module2"))
-	//{
-	//	inven->module_ptr->SetSecondModule(false);
-	//	inven->m2x = inven->GetPosition().x + inven->savePos[1].x;
-	//}
+	if (Engine::GetIconManager().IsCollidingWith("module_have1", "module2"))
+	{
+		inven->module_ptr->SetSecondModule(false);
+		inven->m2x = Engine::GetIconManager().GetIconPositionIfColliding("module_have1", "module2").x;
+	}
+	else if (Engine::GetIconManager().IsCollidingWith("module_have2", "module2"))
+	{
+		inven->module_ptr->SetSecondModule(false);
+		inven->m2x = Engine::GetIconManager().GetIconPositionIfColliding("module_have2", "module2").x;
+	}
 }
 
-void Inven::State_Module::CheckExit(GameObject* object){}
+void Inven::State_Module::CheckExit(GameObject* object) {}
 
 void Inven::State_FC::Enter(GameObject* object)
 {

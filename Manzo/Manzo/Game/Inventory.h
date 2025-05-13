@@ -21,11 +21,13 @@ public:
 
 	void BuyFirstModule(bool buy) { buy_first_module = buy; }
 	void BuySecondModule(bool buy) { buy_second_module = buy; }
+
 	bool FirstModuleBought() { return buy_first_module; }
 	bool SecondModuleBought() { return buy_second_module; }
 
 	void SetMoney(int new_money) { money = new_money; }
 	int GetMoney() { return money; }
+
 	bool GetFishState() { return current_state == &state_fc;	}
 	float GetX1Pos() { return m1x; }
 	float GetX2Pos() { return m2x; }

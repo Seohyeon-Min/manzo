@@ -197,7 +197,7 @@ void Mode2::Update(double dt) {
 		{
 			if (n - 1 != inven_ptr->GetTodayFishIndex())
 			{
-				inven_ptr->SetMoney(inven_ptr->GetMoney() + (fishGenerator->ReturnFishMoney(n - 1) * inven_ptr->HowMuchSold()));
+				inven_ptr->SetMoney(inven_ptr->GetMoney() + (fishGenerator->ReturnFishMoney(n) * inven_ptr->HowMuchSold()));
 				inven_ptr->fishCollection[n - 1] -= inven_ptr->HowMuchSold();
 			}
 			else
@@ -294,7 +294,7 @@ void Mode2::Draw() {
 			if (sell_popup->GetPop())
 			{
 				Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, std::to_string(inven_ptr->HowMuchSold()), { -5.f,-40.f }, 0.05f, { 1.f,1.f,1.f }, 1.0f);
-				Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, (n-1 != inven_ptr->GetTodayFishIndex()) ? std::to_string(fishGenerator->ReturnFishMoney(n - 1)) : std::to_string(inven_ptr->TodayFishPrice()), { -8.f,-18.f }, 0.03f, { 0.f,0.f,0.f }, 1.0f);
+				Engine::GetFontManager().PrintText(FontType::Bold, FontAlignment::LEFT, (n-1 != inven_ptr->GetTodayFishIndex()) ? std::to_string(fishGenerator->ReturnFishMoney(n)) : std::to_string(inven_ptr->TodayFishPrice()), { -8.f,-18.f }, 0.03f, { 0.f,0.f,0.f }, 1.0f);
 			}
 		}
 		else
@@ -321,6 +321,7 @@ void Mode2::Unload() {
 		inven_ptr->fishCollection
 	);
 
+	std::cout << module_ptr << std::endl;
 	ModuleData m1{
 		inven_ptr->FirstModuleBought(),
 		module_ptr->IsFirstSetted(),

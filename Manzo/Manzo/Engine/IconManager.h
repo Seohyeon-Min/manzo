@@ -31,6 +31,7 @@ public:
 	void ShowIconByGroup(const std::string& group);
 
 	void SetIconPositionById(const std::string& id, vec2 newPosition);
+	void SetIconPositionById(const std::string& id, const std::string& target_pos);
 
 	vec2 GetIconPositionIfColliding(const std::string& id1, const std::string& id2);
 
