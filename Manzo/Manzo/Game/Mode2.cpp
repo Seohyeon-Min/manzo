@@ -321,7 +321,7 @@ void Mode2::Unload() {
 		inven_ptr->fishCollection
 	);
 
-	std::cout << module_ptr << std::endl;
+
 	ModuleData m1{
 		inven_ptr->FirstModuleBought(),
 		module_ptr->IsFirstSetted(),
@@ -335,7 +335,7 @@ void Mode2::Unload() {
 	};
 
 
-	std::cout << "In Mode2 Unload: " << m1.pos << " , " << m2.pos << std::endl;
+	std::cout << "In Mode2 Unload" << inven_ptr->GetX1Pos() << " " << inven_ptr->GetX2Pos() << "\n";
 
 	Engine::GetSaveDataManager().SetModuleData(m1, m2);
 	Engine::GetSaveDataManager().Save();

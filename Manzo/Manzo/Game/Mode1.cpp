@@ -322,7 +322,7 @@ void Mode1::Unload()
 	);
 
 
-	std::cout << "In Mode1 Unload: " << save.module1.pos << " , " << save.module1.pos << std::endl;
+	std::cout << "In Mode1 Unload: " << save.module1.pos << " , " << save.module2.pos << std::endl;
 
 	Engine::GetSaveDataManager().SetModuleData(m1, m2);
 	Engine::GetSaveDataManager().Save();
