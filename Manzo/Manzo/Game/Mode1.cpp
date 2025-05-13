@@ -177,7 +177,6 @@ void Mode1::Load()
 		}
 	));
 
-	std::cout <<  " Mode 1 Load: " << Engine::GetSaveDataManager().GetSaveData().module1.pos << " , " << Engine::GetSaveDataManager().GetSaveData().module2.pos << std::endl;
 }
 
 void Mode1::Update(double dt)
@@ -320,9 +319,6 @@ void Mode1::Unload()
 		fishGenerator->GetMoney(),
 		fishCollection
 	);
-
-
-	std::cout << "In Mode1 Unload: " << save.module1.pos << " , " << save.module2.pos << std::endl;
 
 	Engine::GetSaveDataManager().SetModuleData(m1, m2);
 	Engine::GetSaveDataManager().Save();

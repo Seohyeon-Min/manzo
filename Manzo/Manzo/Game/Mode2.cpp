@@ -206,8 +206,6 @@ void Mode2::Update(double dt) {
 				inven_ptr->fishCollection[n - 1] -= inven_ptr->HowMuchSold();
 			}
 
-			std::cout << inven_ptr->HowManyFishes(n - 1) << "\n";
-
 			inven_ptr->SetHowMuchSold(0);
 			Engine::GetIconManager().HideIconByGroup("FishPopUp");
 			Engine::GetIconManager().HideIconByGroup("FishPopping");
@@ -334,8 +332,6 @@ void Mode2::Unload() {
 		inven_ptr->GetX2Pos()
 	};
 
-
-	std::cout << "In Mode2 Unload" << inven_ptr->GetX1Pos() << " " << inven_ptr->GetX2Pos() << "\n";
 
 	Engine::GetSaveDataManager().SetModuleData(m1, m2);
 	Engine::GetSaveDataManager().Save();

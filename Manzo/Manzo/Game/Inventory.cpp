@@ -31,7 +31,6 @@ Inven::Inven(vec2 position) : GameObject(position), dre_todayFish(rd()), dre_pri
 	m1x = saveData.module1.pos;
 	m2x = saveData.module2.pos;
 
-	std::cout << "In Inven ctor: " << m1x << " , " << m2x << std::endl;
 
 	Engine::GetIconManager().AddIcon("OpenInven", "money", "money", { 540,320 }, 1.0f, false);
 	Engine::GetIconManager().AddIcon("OpenInven", "ModuleTab", "moduleTab", { 560, 220 }, 1.0f, false, false, true);
@@ -70,8 +69,6 @@ Inven::Inven(vec2 position) : GameObject(position), dre_todayFish(rd()), dre_pri
 	Engine::GetIconManager().AddIcon("Mode2_Always", todays_fish_icon + "_today", todays_fish_icon, { -575,300 }, 1.0f, false, false, false, true, true);
 
 	Engine::GetIconManager().ShowIconByGroup("Mode2_Always");
-
-	std::cout << Engine::GetIconManager().GetIconPosition("module_have1").x << " is first module empty x\n";
 
 	for (auto& fish : originCollection)
 	{
@@ -274,8 +271,6 @@ void Inven::State_Module::Update(GameObject* object, double dt)
 		Engine::GetIconManager().SetIconPositionById("module2", "module_have2");
 		inven->m2x = Engine::GetIconManager().GetIconPositionIfColliding("module_have2", "module2").x;
 	}
-
-	std::cout << "In Module State" << inven->m1x << " " << inven->m2x << "\n";
 }
 
 void Inven::State_Module::CheckExit(GameObject* object) {}

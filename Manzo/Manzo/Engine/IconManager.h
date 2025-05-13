@@ -30,7 +30,7 @@ public:
 	void HideIconByGroup(const std::string& group);
 	void ShowIconByGroup(const std::string& group);
 
-	void SetIconPositionById(const std::string& id, vec2 newPosition);
+	void SetPositionById(const std::string& id, vec2 newPosition);
 	void SetIconPositionById(const std::string& id, const std::string& target_pos);
 
 	vec2 GetIconPositionIfColliding(const std::string& id1, const std::string& id2);
@@ -41,9 +41,11 @@ public:
 	vec2 GetIconPosition(const std::string& id1);
 
 	std::list<Icon*> GetIconList() { return icons;}
+	Icon* GetIcon(const std::string& id);
 
 private:
 	std::list<Icon*> icons;
 	std::unordered_map<std::string, std::filesystem::path> icon_list;
 	std::unordered_map<std::string, Icon*> icon_by_id;
+
 };

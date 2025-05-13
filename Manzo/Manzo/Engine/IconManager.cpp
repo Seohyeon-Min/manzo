@@ -140,7 +140,7 @@ void IconManager::ShowIconByGroup(const std::string& group)
 	}
 }
 
-void IconManager::SetIconPositionById(const std::string& id, vec2 newPosition)
+void IconManager::SetPositionById(const std::string& id, vec2 newPosition)
 {
 	auto it = icon_by_id.find(id);
 	if (it != icon_by_id.end()) {
@@ -209,4 +209,15 @@ vec2 IconManager::GetIconPosition(const std::string& id1)
 	}
 
 	return { 0, 0 };
+}
+
+Icon* IconManager::GetIcon(const std::string& id)
+{
+	auto it = icon_by_id.find(id);
+
+	if (it != icon_by_id.end()) {
+		return it->second;
+	}
+
+	return nullptr;
 }
