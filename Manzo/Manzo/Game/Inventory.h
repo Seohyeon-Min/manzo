@@ -65,7 +65,7 @@ private:
 	int total_fishNum = 7;
 	int todays_fish_index = 0;
 	int todays_price = 0;
-	int how_much_sold = 0;
+	int how_much_sold = 1;
 
 
 	float m1x, m2x;

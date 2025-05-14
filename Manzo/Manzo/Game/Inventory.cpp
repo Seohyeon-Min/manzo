@@ -131,7 +131,7 @@ void Inven::Update(double dt)
 	{
 		Engine::GetIconManager().HideIconByGroup("Fish_Tab");
 		Engine::GetIconManager().HideIconByGroup("FishPopUp");
-		how_much_sold = 0;
+		how_much_sold = 1;
 
 		for (auto& fish : originCollection)
 		{
@@ -309,7 +309,7 @@ void Inven::State_FC::Update(GameObject* object, double dt)
 		{
 			inven->how_much_sold += 10;
 		}
-		else if (inven->how_much_sold > 0 && alias == "minus1" && clicked)
+		else if (inven->how_much_sold > 1 && alias == "minus1" && clicked)
 		{
 			inven->how_much_sold--;
 		}

@@ -191,7 +191,7 @@ void Mode2::Update(double dt) {
 			Engine::GetIconManager().HideIconByGroup("FishPopUp");
 			Engine::GetIconManager().HideIconByGroup("FishPopping");
 			sell_popup->SetPop(false);
-			inven_ptr->SetHowMuchSold(0);
+			inven_ptr->SetHowMuchSold(1);
 		}
 		else if ((icon->GetId() == "sell_fish") && fishCollection[n-1] != 0 && clicked)
 		{
@@ -206,7 +206,7 @@ void Mode2::Update(double dt) {
 				inven_ptr->fishCollection[n - 1] -= inven_ptr->HowMuchSold();
 			}
 
-			inven_ptr->SetHowMuchSold(0);
+			inven_ptr->SetHowMuchSold(1);
 			Engine::GetIconManager().HideIconByGroup("FishPopUp");
 			Engine::GetIconManager().HideIconByGroup("FishPopping");
 			sell_popup->SetPop(false);
