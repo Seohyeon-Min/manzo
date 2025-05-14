@@ -38,7 +38,7 @@ void Title::Load()
 	GetGSComponent<Cam>()->SetPosition({ 0, 0 });
 
 	// audio
-	Engine::GetAudioManager().LoadMusic("assets/audios/title_bgm.wav", "title_bgm", false);
+	Engine::GetAudioManager().LoadMusic("assets/audios/title_bgm.mp3", "title_bgm", false);
 
 	// mouse
 	GetGSComponent<GameObjectManager>()->Add(new Mouse);
