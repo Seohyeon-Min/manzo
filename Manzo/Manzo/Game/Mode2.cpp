@@ -154,25 +154,26 @@ void Mode2::Update(double dt) {
 		Engine::GetGameStateManager().ClearNextGameState();
 		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode3));
 	}
-#else
-#endif
 
-		//Dialog
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::Z) && !isLoaded) {
 		dialog_ptr->LoadDialogGroup("dialog-1", 0.05);
 		isLoaded = true;
-	}
-	if (Engine::GetInput().KeyJustPressed(Input::Keys::Space)) {
-		dialog_ptr->NextLine();
 	}
 	if ((Engine::GetInput().KeyJustPressed(Input::Keys::X) && !isLoaded)) {
 
 		dialog_ptr->LoadRandomDialog("dialog-2", 0.05);
 		isLoaded = true;
 	}
+#else
+#endif
+
+	//Dialog
+	if (Engine::GetInput().KeyJustPressed(Input::Keys::Space)) {
+		dialog_ptr->NextLine();
+	}
 
 
-	if (Engine::GetInput().KeyJustPressed(Input::Keys::C) && isLoaded) {
+	if (Engine::GetInput().KeyJustPressed(Input::Keys::C)) {
 		dialog_ptr->Hide();
 		isLoaded = false;
 	}

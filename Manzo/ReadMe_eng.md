@@ -43,9 +43,14 @@ to venture deeper into the sea.
 
 ## 🎮 Controls
 
+[At player's home]
+- **Space Key**: Skip NPC dialogue.
+- **C Key**: End conservation with the NPC.
+
+[At Ocean]
 - **Left Mouse Click**: Dash when you click in rhythm.  
 - **Tab Key**: Return home when near the sea surface.  
-- **Space Key**: Skip NPC dialogue.
+- **V Key** : Restart the tutorial.
 
 ---
 
