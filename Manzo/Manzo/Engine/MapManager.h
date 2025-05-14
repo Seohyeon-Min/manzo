@@ -69,12 +69,10 @@ public:
 	void UnloadAll();
 	bool IsLevelLoaded() { return level_loaded; }
 
-
 private:
 	int read_line_number = -1;
 
 	RockGroup* currentGroup = nullptr;
-	std::string currentTag;
 
 	vec2 translate = { 0, 0 };
 	float rotateAngle = 0;
@@ -93,7 +91,7 @@ private:
 	std::ifstream file;
 
 	char currentCommand = '\0';
-	float margin = 1500.f;
+	float margin = 1500.f;	// padding for map's partial drawing
 
 	std::vector<Polygon> original_polygons;
 	std::vector<Polygon> modified_polygons;
@@ -113,5 +111,5 @@ private:
 	std::regex translateRegex;
 	std::regex rotateRegex;
 	std::regex matrixRegex;
-	std::regex svgCloseRegex;
+	std::regex pathIdRegex;
 };
