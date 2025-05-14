@@ -218,6 +218,9 @@ std::string JsonParser_save::SerializeGameData(const SaveData& data)
     // events_done
     Value events(rapidjson::kArrayType);
     for (const auto& id : data.eventsDone) {
+        if (id == "Boss E Trigger") {
+            continue;
+        }
         Value strVal;
         strVal.SetString(id.c_str(), static_cast<SizeType>(id.length()), alloc);
         events.PushBack(strVal, alloc);
