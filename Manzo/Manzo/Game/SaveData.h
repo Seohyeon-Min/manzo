@@ -16,6 +16,7 @@ struct ModuleData {
 struct SaveData {
     int day;
     int money;
+    double user_calibration;
 
     std::vector<std::string> eventsDone;
 

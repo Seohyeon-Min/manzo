@@ -182,13 +182,13 @@ std::string JsonParser_save::SerializeGameData(const SaveData& data)
     // day
     doc.AddMember("day", data.day, alloc);
 
+    // user_calibration
+    doc.AddMember("user_calibration", data.user_calibration, alloc);
+
     // inventory
     Value inventory(kObjectType);
-
-    // money
     inventory.AddMember("money", data.money, alloc);
 
-    // fishCollection
     Value fishData(kArrayType);
     for (const auto& entry : data.fishCollection) {
         Value obj(kObjectType);
@@ -198,24 +198,20 @@ std::string JsonParser_save::SerializeGameData(const SaveData& data)
     }
     inventory.AddMember("fishCollection", fishData, alloc);
 
-    // module1
     Value module1(kObjectType);
     module1.AddMember("buy", data.module1.buy, alloc);
     module1.AddMember("set", data.module1.set, alloc);
     module1.AddMember("pos", data.module1.pos, alloc);
     inventory.AddMember("module1", module1, alloc);
 
-    // module2
     Value module2(kObjectType);
     module2.AddMember("buy", data.module2.buy, alloc);
     module2.AddMember("set", data.module2.set, alloc);
     module2.AddMember("pos", data.module2.pos, alloc);
     inventory.AddMember("module2", module2, alloc);
 
-    // attach inventory to root
     doc.AddMember("inventory", inventory, alloc);
 
-    // events_done
     Value events(rapidjson::kArrayType);
     for (const auto& id : data.eventsDone) {
         Value strVal;
@@ -241,11 +237,12 @@ SaveData JsonParser_save::Deserialize(const std::string& jsonStr)
         return data;
     }
 
-    // day
     if (doc.HasMember("day") && doc["day"].IsInt())
         data.day = doc["day"].GetInt();
 
-    // inventory
+    if (doc.HasMember("user_calibration") && doc["user_calibration"].IsDouble())
+        data.user_calibration = doc["user_calibration"].GetDouble();
+
     if (doc.HasMember("inventory") && doc["inventory"].IsObject()) {
         const auto& inv = doc["inventory"];
 
@@ -273,7 +270,6 @@ SaveData JsonParser_save::Deserialize(const std::string& jsonStr)
         }
     }
 
-    // events_done
     if (doc.HasMember("events_done") && doc["events_done"].IsArray()) {
         const auto& arr = doc["events_done"].GetArray();
         for (const auto& v : arr) {
@@ -284,6 +280,7 @@ SaveData JsonParser_save::Deserialize(const std::string& jsonStr)
 
     return data;
 }
+
 
 
 const std::string JsonParser_save::LoadFromFile(const std::string& filePath) {
