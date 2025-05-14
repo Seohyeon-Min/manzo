@@ -125,12 +125,14 @@ void Mode2::Update(double dt) {
 		playing = true;
 	}
 
-	if (!Engine::GetAudioManager().IsPlayingMusic("home_intro") && !playing_replay)
+	if (!playing_replay)
 	{
-		playing_replay = true;
-		Engine::GetAudioManager().PlayMusics("home_replay");
+		if (!Engine::GetAudioManager().IsPlayingMusic("home_intro"))
+		{
+			playing_replay = true;
+			Engine::GetAudioManager().PlayMusics("home_replay");
+		}
 	}
-
 
 	UpdateGSComponents(dt);
 	GetGSComponent<GameObjectManager>()->UpdateAll(dt);

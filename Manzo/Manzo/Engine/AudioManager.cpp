@@ -97,7 +97,7 @@ FMOD::Sound* AudioManager::GetMusic(const std::string& alias) {
 		return it->second;
 	}
 	else {
-		std::cerr << "Error: Music with name " << alias << " not found." << std::endl;
+		//std::cerr << "Error: Music with name " << alias << " not found." << std::endl;
 		return nullptr;
 	}
 }
@@ -112,11 +112,11 @@ float AudioManager::GetCurrentMusicTime(const std::string& alias) {
 			return currentPosition / 1000.0f; // 초 단위로 변환
 		}
 		else {
-			std::cerr << "Error: Failed to get current music time." << std::endl;
+			//std::cerr << "Error: Failed to get current music time." << std::endl;
 		}
 	}
 	else {
-		std::cerr << "Error: Channel with ID " << alias << " not found." << std::endl;
+		//std::cerr << "Error: Channel with ID " << alias << " not found." << std::endl;
 	}
 	return 0.0f;
 }
@@ -128,7 +128,7 @@ float AudioManager::GetCurrentPlayingMusicTime() {
 
 		FMOD_RESULT result = channel->isPlaying(&isPlaying);
 		if (ErrorCheck(result) != 0) {
-			std::cerr << "Error: Failed to check playing status for channel: " << it->first << std::endl;
+			//std::cerr << "Error: Failed to check playing status for channel: " << it->first << std::endl;
 			continue;
 		}
 
@@ -139,12 +139,12 @@ float AudioManager::GetCurrentPlayingMusicTime() {
 				return currentPosition / 1000.0f;
 			}
 			else {
-				std::cerr << "Error: Failed to get current music time for channel: " << it->first << std::endl;
+				//std::cerr << "Error: Failed to get current music time for channel: " << it->first << std::endl;
 			}
 		}
 	}
 
-	std::cerr << "Error: No music is currently playing." << std::endl;
+	//std::cerr << "Error: No music is currently playing." << std::endl;
 	return 0.0f;
 }
 
@@ -156,7 +156,7 @@ float AudioManager::GetMusicLength(const std::string& alias)
 		sound->getLength(&length_ms, FMOD_TIMEUNIT_MS);
 		return length_ms / 1000.0f; // Convert to seconds
 	}
-	std::cerr << "Error: Music with name " << alias << " not found." << std::endl;
+	//std::cerr << "Error: Music with name " << alias << " not found." << std::endl;
 	return 0.0f;
 }
 
@@ -172,7 +172,7 @@ std::string AudioManager::GetID(const std::string& alias)
 			}
 		}
 	}
-	std::cerr << "Error: Sound with name " << alias << " not found in any channel." << std::endl;
+	//std::cerr << "Error: Sound with name " << alias << " not found in any channel." << std::endl;
 	return nullptr; // Return -1 if the sound is not found
 }
 
@@ -180,7 +180,7 @@ std::string AudioManager::PlayMusics(const std::string& alias, const vec3& vPosi
 	auto tFoundIt = sgpImplementation->mSounds.find(alias);
 	if (tFoundIt == sgpImplementation->mSounds.end()) {
 		// Load music if it hasn't been loaded yet
-		std::cerr << "Error: Sound with alias " << alias << " not found. Please load it first." << std::endl;
+		//std::cerr << "Error: Sound with alias " << alias << " not found. Please load it first." << std::endl;
 		return "";
 	}
 
@@ -229,7 +229,7 @@ void AudioManager::RestartPlayMusic(const std::string& alias)
 	auto tFoundIt = sgpImplementation->mChannels.find(alias);
 	if (tFoundIt == sgpImplementation->mChannels.end())
 	{
-		std::cerr << "Error: Channel not found!" << std::endl;
+		//std::cerr << "Error: Channel not found!" << std::endl;
 		return;
 	}
 
