@@ -324,7 +324,6 @@ void Ship::Update(double dt)
 			if (!soundPlaying)
 			{
 				Engine::GetAudioManager().PlayMusics("dash");
-				Engine::GetAudioManager().dbToVolume(10);
 				soundPlaying = true;
 			}
 		}
