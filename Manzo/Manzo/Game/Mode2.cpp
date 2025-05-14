@@ -42,7 +42,9 @@ void Mode2::Load() {
 	Engine::GetShaderManager().LoadShader("icon", "assets/shaders/default.vert", "assets/shaders/edge_detection.frag");
 
 	// audio
-	Engine::GetAudioManager().LoadMusic("assets/audios/bgm_original.wav", "Home_bgm", false);
+	Engine::GetAudioManager().LoadMusic("assets/audios/home1.mp3", "home_intro", false, false);
+	Engine::GetAudioManager().LoadMusic("assets/audios/home2.mp3", "home_replay", false);
+	Engine::GetAudioManager().LoadMusic("assets/audios/Walk.mp3", "walk", false);
 
 	// compenent
 	AddGSComponent(new GameObjectManager());
@@ -119,9 +121,16 @@ void Mode2::Update(double dt) {
 	//audio play
 	if (!playing)
 	{
-		Engine::GetAudioManager().PlayMusics("Home_bgm");
+		Engine::GetAudioManager().PlayMusics("home_intro");
 		playing = true;
 	}
+
+	if (!Engine::GetAudioManager().IsPlayingMusic("home_intro") && !playing_replay)
+	{
+		playing_replay = true;
+		Engine::GetAudioManager().PlayMusics("home_replay");
+	}
+
 
 	UpdateGSComponents(dt);
 	GetGSComponent<GameObjectManager>()->UpdateAll(dt);

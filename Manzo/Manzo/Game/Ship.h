@@ -122,6 +122,10 @@ private:
     State_Move state_move;
     State_Die state_die;
     State_Tutorial state_tutorial;
+
+
+    bool soundPlaying = false;
+    bool replay = false;
 };
 
 class Pump : public GameObject {

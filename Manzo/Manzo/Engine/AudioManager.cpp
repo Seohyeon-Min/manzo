@@ -354,24 +354,36 @@ bool AudioManager::IsAnyMusicPlaying() const {
 	return false;
 }
 
-//bool AudioManager::IsMusicFinished(const std::string& alias) {
-//	auto tFoundIt = sgpImplementation->mChannels.find(alias);
-//	if (tFoundIt != sgpImplementation->mChannels.end()) {
-//		bool bIsPlaying = false;
-//		FMOD_RESULT result = tFoundIt->second->isPlaying(&bIsPlaying);
-//		if (ErrorCheck(result) == 0) {
-//			return !bIsPlaying;
-//		}
-//		else {
-//			std::cerr << "Error: Failed to check if music is finished." << std::endl;
-//		}
-//	}
-//	else {
-//		std::cerr << "Error: Channel with alias " << alias << " not found." << std::endl;
-//	}
-//
-//	return false;
-//}
+bool AudioManager::IsMusicFinished(const std::string& alias) {
+	auto it = sgpImplementation->mChannels.find(alias);
+	if (it == sgpImplementation->mChannels.end()) {
+		// 채널이 없다면 아직 PlayMusics로 재생된 적이 없는 것
+		return false; // 음악이 "시작도 안 했음"이니 false 반환
+	}
+
+	FMOD::Channel* pChannel = it->second;
+	if (!pChannel) {
+		// 이상하게 nullptr이면 끝난 걸로 간주
+		return true;
+	}
+
+	bool isPlaying = false;
+	FMOD_RESULT result = pChannel->isPlaying(&isPlaying);
+
+	if (result != FMOD_OK) {
+		ErrorCheck(result);
+		return true; // 오류가 났으면 재생 안 되는 걸로 간주
+	}
+
+	if (!isPlaying) {
+		// 재생이 끝난 경우, mChannels에서도 제거해주면 안전
+		sgpImplementation->mChannels.erase(it);
+		return true;
+	}
+
+	return false; // 아직 재생 중
+}
+
 
 FMOD_VECTOR AudioManager::VectorToFmod(const vec3& vPosition) {
 	FMOD_VECTOR fVec;
@@ -383,7 +395,7 @@ FMOD_VECTOR AudioManager::VectorToFmod(const vec3& vPosition) {
 
 int AudioManager::ErrorCheck(FMOD_RESULT result) {
 	if (result != FMOD_OK) {
-		std::cout << "FMOD ERROR " << result << std::endl;
+		//std::cout << "FMOD ERROR " << result << std::endl;
 		return 1;
 	}
 	return 0;

@@ -60,6 +60,7 @@ void Mode1::Load()
 	// audio
 	Engine::GetAudioManager().LoadMusic("assets/audios/Level1_bgm.mp3", "Level1_bgm", false);
 	Engine::GetAudioManager().LoadMusic("assets/audios/morse/e.wav", "e morse", true);
+	Engine::GetAudioManager().LoadMusic("assets/audios/Dash.mp3", "dash", false, false);
 	Engine::GetAudioManager().Set3DMode(FMOD_3D_LINEARROLLOFF);
 
 	// component

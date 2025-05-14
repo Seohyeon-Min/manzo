@@ -148,6 +148,9 @@ void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_
 	}
 	ship->nearestRock = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRock(ship); // it should be FindNearestRockNextFrame
 
+
+	
+
 #ifdef _DEBUG
 	if (ship->nearestRock) {
 		if (ship->before_nearest_rock && ship->before_nearest_rock != ship->nearestRock) {
@@ -315,11 +318,29 @@ void Ship::Update(double dt)
 		}
 	}
 	//std::cout << Engine::GetInput().GetMousePos().mouseWorldSpaceX - Engine::window_width/ 2 << " " << Engine::GetInput().GetMousePosition().x << std::endl;
+
+		if (current_state == &state_move)
+		{
+			if (!soundPlaying)
+			{
+				Engine::GetAudioManager().PlayMusics("dash");
+				Engine::GetAudioManager().dbToVolume(10);
+				soundPlaying = true;
+			}
+		}
+
+		if (Engine::GetAudioManager().IsMusicFinished("dash"))
+		{
+			soundPlaying = false;
+			Engine::GetAudioManager().StopPlayingMusic("dash");
+		}
 }
 
 void Ship::FixedUpdate(double fixed_dt) {
 	if (!IsFuelZero())
 		GameObject::FixedUpdate(fixed_dt);
+
+
 }
 
 

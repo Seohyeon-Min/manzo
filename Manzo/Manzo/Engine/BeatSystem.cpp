@@ -31,7 +31,7 @@ void Beat::Update(double dt)
 
     if (!playing)
     {
-        audio->PlayMusics(music_name);
+       audio->PlayMusics(music_name);
         playing = true;
         time_taken = 0;
         //std::cout << "Now Music:: " << Engine::GetAudioManager().GetCurrentMusicTime(music_name) << std::endl;

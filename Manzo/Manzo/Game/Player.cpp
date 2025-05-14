@@ -12,6 +12,29 @@ Player::Player(vec2 start_position) :
 void Player::Update(double dt)
 {
     GameObject::Update(dt);
+
+    if (current_state == &state_walking)
+    {
+        if (!soundPlaying)
+        {
+            Engine::GetAudioManager().PlayMusics("walk");
+            soundPlaying = true;
+        }
+        else
+        {
+            if (!replay)
+            {
+                Engine::GetAudioManager().RestartPlayMusic("walk");
+                replay = true;
+            }
+        }
+    }
+    else
+    {
+        Engine::GetAudioManager().StopPlayingMusic("walk");
+        replay = false;
+        soundPlaying = false;
+    }
 }
 
 void Player::Draw(DrawLayer drawlayer)

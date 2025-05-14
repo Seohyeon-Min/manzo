@@ -62,6 +62,7 @@ private:
     float frequency = 0.9f;
     float time = 0.0f;
     bool playing = false;
+    bool playing_replay = false;
     bool flag = false;
     bool isLoaded = false;
     char n;
