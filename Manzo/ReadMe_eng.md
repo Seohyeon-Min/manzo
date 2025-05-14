@@ -28,6 +28,9 @@ to venture deeper into the sea.
 
 1. Unzip the `Manzo` folder.  
 2. Run `Manzo/Release/Manzo.exe`.
+3. `Windows PC Protection > More Info > Run Anyway`
+
+If you see a popup asking to allow access to public and private networks, please click `Allow`.
 
 ---
 
