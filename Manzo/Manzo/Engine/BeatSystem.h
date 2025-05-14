@@ -20,6 +20,7 @@ public:
     void CleartoOriginal();
     double GetUserCali() { return user_calibration; }
     const double GetLastCali() {return calibrations.back();}
+    void SetUserCali(double cali) { user_calibration = cali; }
 
 private:
     int BPM = 100;

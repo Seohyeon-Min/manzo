@@ -121,6 +121,10 @@ void Beat::CalculateCali()
 
     //std::cout << "Median calibration value: " << median << std::endl;
     user_calibration = median;
+    auto& saveData = Engine::GetSaveDataManager().GetSaveData();
+    saveData.user_calibration = user_calibration; // newValue는 double 타입
+
+    Engine::GetSaveDataManager().UpdateSaveData(saveData);
     // 여기서 median 값을 게임 보정에 사용하면 됩니다.
 }
 

@@ -76,6 +76,11 @@ void Mode1::Load()
 	AddGSComponent(new ParticleManager<Particles::CaptureEffect>());
 	AddGSComponent(new ParticleManager<Particles::BulletParticle>());
 
+	// get cali
+	double cali = Engine::GetSaveDataManager().GetSaveData().user_calibration;
+	Engine::GetBeat().SetUserCali(cali);
+	std::cout << cali << std::endl;
+
 	//// camera
 	vec2 start_position = { 600, -500 };
 	Math::rect cam_limit = Math::rect({ 600, -346 }, { 4345, -6000 });
