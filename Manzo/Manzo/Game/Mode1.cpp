@@ -174,7 +174,7 @@ void Mode1::Load()
 	auto shipCopy = ship_ptr;
 
 	Engine::GetEventManager().AddEvent(Event("Boss E Trigger",
-		[&]() { if (ship_ptr) return ship_ptr->GetPosition().y <= bossPosition.y - 100;
+		[&]() { if (ship_ptr) return ship_ptr->GetPosition().y <= bossPosition.y + 300;
 	return false;
 		},
 		[&]() {
