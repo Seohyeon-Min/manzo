@@ -13,4 +13,5 @@ public:
 
 private:
     Dialog* dialog;
+    Dialog* dialog_aftertuto;
 };

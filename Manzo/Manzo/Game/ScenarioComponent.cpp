@@ -8,6 +8,9 @@
 
 void ScenarioComponent::Load()
 {
+
+    Engine::GetEventManager().LoadSavedEvents(Engine::GetSaveDataManager().GetSaveData().eventsDone);
+
     static bool has_initialized = false;
     if (has_initialized) return;
 
@@ -44,6 +47,7 @@ void ScenarioComponent::Load()
             Engine::GetInput().SetMouseInputOn(true);
             Engine::GetGameStateManager().ClearNextGameState();
             Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Tutorial));
+            
             //auto* quest = new PopUp({ -420,195 }, "assets/images/quest_popup.spt", true);
             //Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(quest);
             //quest->SetPop(true);
@@ -53,34 +57,30 @@ void ScenarioComponent::Load()
 
     auto tuto_end = std::make_shared<StepEvent>("after_tutorial_end");
 
-    //tuto_end->AddStep(
-    //    []() {
-    //        return Engine::GetEventManager().HasEventDone("tutorial_end") &&
-    //            (Engine::GetGameStateManager().GetStateName() == "Mode2");
-    //    },
-    //    [this]() {
-    //        dialog->LoadDialogGroup("after_tutorial_end"); /////////////////////////////////////////////////////////////////
-    //        //auto* quest = new PopUp({ -420,195 }, "assets/images/quest_popup.spt", true);
-    //        //Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(quest);
-    //        //quest->SetPop(true);
-    //    }
-    //);
+    tuto_end->AddStep(
+        []() {
+            return Engine::GetEventManager().HasEventDone("tutorial_end") &&
+                Engine::GetGameStateManager().GetStateName() == "Mode2";
+        },
+        []() {
+            Engine::GetEventManager().MarkEventDone("after_tutorial_ready");
+            std::cout << "[StepEvent] Marked: after_tutorial_ready" << std::endl;
+        }
+    );
 
-    //tuto_end->AddStep(
 
-    //);
 
-    //tuto_end->AddStep(
-    //    [this, npc]() { return dialog->IsFinished(); },
-    //    []() {
-    //        Engine::GetInput().SetMouseInputOn(true);
-    //        Engine::GetGameStateManager().ClearNextGameState();
-    //        Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Tutorial));
-    //        //auto* quest = new PopUp({ -420,195 }, "assets/images/quest_popup.spt", true);
-    //        //Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(quest);
-    //        //quest->SetPop(true);
-    //    }
-    //);
+    tuto_end->AddStep(
+        [this, npc]() { return dialog->IsFinished(); },
+        []() {
+            Engine::GetInput().SetMouseInputOn(true);
+            Engine::GetGameStateManager().ClearNextGameState();
+            Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Tutorial));
+            //auto* quest = new PopUp({ -420,195 }, "assets/images/quest_popup.spt", true);
+            //Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(quest);
+            //quest->SetPop(true);
+        }
+    );
 
     Engine::GetEventManager().AddEvent(Event("after_tutorial_end",
         [this]() {
@@ -88,14 +88,31 @@ void ScenarioComponent::Load()
                 (Engine::GetGameStateManager().GetStateName() == "Mode2");
         },
         [this]() {
-            //dialog->LoadDialogGroup("after_tutorial_end"); /////////////////////////////////////////////////////////////////
             auto* quest = new PopUp({ -420,195 }, "assets/images/quest_popup.spt", true);
             Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(quest);
             quest->SetPop(true);
+            dialog_aftertuto = new Dialog({ 0,0 });
+            if (Engine::GetEventManager().HasEventDone("after_tutorial_end")) {
+                Engine::GetEventManager().ResetEvent("after_tutorial_end");
+            }
+            if (dialog_aftertuto != nullptr) {
+                dialog_aftertuto->LoadDialogGroup("after_tutorial_end");
+            }
+            else {
+                std::cout << "[Error] dialog is nullptr!" << std::endl;
+            }
 
-            Engine::GetEventManager().ResetEvent("after_tutorial_end");
         }
     ));
+
+    tuto_end->AddStep(
+        []() {
+            return Engine::GetEventManager().HasEventDone("after_tutorial_end");
+        },
+        [this]() {
+            
+        }
+    );
 
     Engine::GetEventManager().AddEvent(Event("catch_15_fish",
         []() {

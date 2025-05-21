@@ -98,10 +98,16 @@ void Dialog::NextLine() {
     }
 }
 
+void Dialog::AutoUnloadIfFinished() {
+    if (is_Finished && !isVisible && !IsTyping) {
+        Unload();  // 안전하게 내부 리소스 해제
+    }
+}
 
 void Dialog::Update(double dt) {
     if (!IsTyping && IsFinished()) {
-        Hide();  
+        Hide();
+        AutoUnloadIfFinished();  // 추가된 라인
         return;
     }
 
@@ -121,7 +127,6 @@ void Dialog::Update(double dt) {
 }
 
 
-
 void Dialog::Hide() {
     isVisible = false;
     IsTyping = false;
@@ -132,6 +137,7 @@ void Dialog::Hide() {
     character = "";
     currentIndex = 0;
 }
+
 
 
 void Dialog::Draw() {

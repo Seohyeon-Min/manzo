@@ -24,6 +24,7 @@ public:
     void Hide();
     void Unload();
     bool IsFinished() { return is_Finished; }
+    void AutoUnloadIfFinished();
 
     GameObjectTypes Type() override { return GameObjectTypes::Dialog; }
     std::string TypeName() override { return "Dialog"; }

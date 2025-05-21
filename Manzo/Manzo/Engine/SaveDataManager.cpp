@@ -1,28 +1,25 @@
 #include "SaveDataManager.h"
-#include "Rapidjson.h"
+#include "TextSaveParser.h"  // <- 새 파서 사용
+#include "Engine.h"
 
-SaveDataManager::SaveDataManager()
-{
-    json_reader = std::make_unique<JsonParser_save>();
+SaveDataManager::SaveDataManager() {
+    text_parser = std::make_unique<TextSaveParser>();
 }
 
 SaveDataManager::SaveDataManager(const std::string& path)
-    : saveFilePath(path)
-{
-    json_reader = std::make_unique<JsonParser_save>();
+    : saveFilePath(path) {
+    text_parser = std::make_unique<TextSaveParser>();
 }
 
-SaveDataManager::~SaveDataManager()
-{
-    json_reader = nullptr;
+SaveDataManager::~SaveDataManager() {
+    text_parser = nullptr;
 }
 
 bool SaveDataManager::Load() {
     if (FileExists(saveFilePath)) {
-        const std::string jsonfile = json_reader->LoadFromFile(saveFilePath);
-        currentSaveData = json_reader->Deserialize(jsonfile);
+        const std::string encodedText = text_parser->LoadFromFile(saveFilePath);
+        currentSaveData = text_parser->Deserialize(encodedText);
         std::cout << "Save data loaded successfully." << std::endl;
-        Engine::GetEventManager().LoadSavedEvents(currentSaveData.eventsDone);
         return true;
     }
     else {
@@ -34,14 +31,8 @@ bool SaveDataManager::Load() {
 }
 
 bool SaveDataManager::SaveToFile(const std::string& filePath, const SaveData& data) const {
-    std::string jsonStr = json_reader->SerializeGameData(data);
-    std::ofstream ofs(filePath, std::ios::binary);
-    if (!ofs) {
-        std::cerr << "Failed to open file for writing: " << filePath << std::endl;
-        return false;
-    }
-    ofs << jsonStr;
-    return true;
+    std::string encoded = text_parser->Serialize(data);
+    return text_parser->SaveToFile(filePath, encoded);
 }
 
 bool SaveDataManager::Save() {
@@ -54,7 +45,6 @@ bool SaveDataManager::Save() {
         return false;
     }
 }
-
 
 SaveData& SaveDataManager::GetSaveData() {
     return currentSaveData;
@@ -69,6 +59,7 @@ void SaveDataManager::SetModuleData(const ModuleData& m1, const ModuleData& m2) 
     currentSaveData.module1 = m1;
     currentSaveData.module2 = m2;
 }
+
 void SaveDataManager::UpdateSaveData(const SaveData& newData) {
     currentSaveData = newData;
     std::cout << "[SaveDataManager] UpdateSaveData called\n";
@@ -80,7 +71,5 @@ SaveData SaveDataManager::CreateDefaultSaveData() {
     defaultData.day = 1;
     defaultData.money = 0;
     defaultData.eventsDone = {};
-    //defaultData.fish = 0;
-    //defaultData.inventory = {};
     return defaultData;
 }

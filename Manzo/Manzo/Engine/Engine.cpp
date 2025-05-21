@@ -27,7 +27,7 @@ Engine::Engine() :
 #else
     logger(Logger::Severity::Event, false),
 #endif
-    beat(&audiomanager),savedatamanager("assets/jsons/save.json")
+    beat(&audiomanager),savedatamanager("assets/jsons/save.txt")
 {
     unsigned int seed = static_cast<unsigned int>(std::time(NULL));
     std::srand(seed);
