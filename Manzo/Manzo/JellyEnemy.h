@@ -24,12 +24,11 @@ public:
 
 private:
 	BulletType bulletType;
-
 	Ship* ship;
 
 	vec2 position;
 	vec2 velocity;
-	vec2 targetPosition;	
+	vec2 targetPosition;
 
 	vec2 static_bullet;
 
