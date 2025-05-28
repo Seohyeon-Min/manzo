@@ -34,8 +34,10 @@ void GameObjectManager::UpdateAll(double dt)
 		}
 	}
 	for (auto d_object : destroy_objects) {
-		objects.remove(d_object);
-		delete d_object;
+		if (d_object != nullptr) {
+			objects.remove(d_object);
+			delete d_object;
+		}
 	}
 }
 

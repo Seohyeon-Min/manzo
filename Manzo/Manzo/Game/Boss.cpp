@@ -8,6 +8,9 @@
 std::vector<GameObject::State*> stateMap;
 std::vector<std::string> BossJSONfileMap;
 
+#define PI 3.14159265358979f
+#define DEG2RAD (PI / 180.0f)
+
 Boss::Boss(vec2 start_position, BossName name, BossType type)
 	: GameObject(start_position), bossType(type)
 {
@@ -39,7 +42,8 @@ bool IsFirstFrame() {
 
 
 void Boss::Bullet(Boss* boss) {
-		BossBullet* bullet_ptr = new BossBullet(boss->GetPosition(), (float)(boss->beat->GetFixedDuration()) * 2);
+	
+		BossBullet* bullet_ptr = new BossBullet(boss->GetPosition(), (float)(boss->beat->GetFixedDuration()) * 2, BossBullet::BulletType::Wave);
 		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bullet_ptr);
 }
 
@@ -287,7 +291,17 @@ void Boss::DrawShieldRange(vec2 pos, double radius)
 	Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call));
 }
 
-
+//void Boss::Spawn8WayBullets(vec2 position) {
+//	float angleStep = 45.0f;
+//	float speed = 200.0f;
+//
+//	for (int i = 0; i < 8; ++i) {
+//		float angle = angleStep * i * DEG2RAD;
+//		vec2 dir = { cosf(angle), sinf(angle) };
+//		BossBullet* bullet = new BossBullet(position, 4.0f, BossBullet::BulletType::StaticTarget, dir * speed);
+//		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bullet);
+//	}
+//}
 
 
 vec2 Lerp(const vec2& start, const vec2& end, float t) {

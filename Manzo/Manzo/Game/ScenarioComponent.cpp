@@ -88,7 +88,7 @@ void ScenarioComponent::Load()
                 (Engine::GetGameStateManager().GetStateName() == "Mode2");
         },
         [this]() {
-            //dialog->LoadDialogGroup("after_tutorial_end"); /////////////////////////////////////////////////////////////////
+           // dialog->LoadDialogGroup("after_tutorial_end"); /////////////////////////////////////////////////////////////////
             auto* quest = new PopUp({ -420,195 }, "assets/images/quest_popup.spt", true);
             Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(quest);
             quest->SetPop(true);

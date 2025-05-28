@@ -14,8 +14,8 @@ int GetRandomValue(int min, int max) {
     return min + rand() % ((max - min) + 1);
 }
 
-BossBullet::BossBullet(vec2 Boss_position, float lifetime)
-    : GameObject(Boss_position), lifetime(lifetime), timeElapsed(0.0f)
+BossBullet::BossBullet(vec2 Boss_position, float lifetime, BulletType bullet_type)
+    : GameObject(Boss_position), lifetime(lifetime), timeElapsed(0.0f), bulletType(bullet_type)
 {
     AddGOComponent(new Sprite("assets/images/bullet.spt", this));
     float Scalerandom = (float)GetRandomValue(1, 2);
@@ -27,7 +27,7 @@ BossBullet::BossBullet(vec2 Boss_position, float lifetime)
         seedInitialized = true;
     }
 
-    Ship* ship = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>();
+    ship = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>();
     vec2 shipPos = ship->GetPosition();
     vec2 direction = { shipPos.x - Boss_position.x, shipPos.y - Boss_position.y };
     float length = sqrt(direction.x * direction.x + direction.y * direction.y);
@@ -44,10 +44,29 @@ BossBullet::BossBullet(vec2 Boss_position, float lifetime)
                 direction.x * sinA + direction.y * cosA
     };
 
+
     velocity = { -modifiedDirection.x * 300, -modifiedDirection.y * 300 };
     speed = 30;
     position = Boss_position;
+    this->static_bullet = Boss_position;
     timeElapsed = 0.0f;
+
+
+    if (bulletType == BulletType::StaticTarget || bulletType == BulletType::Accelerating || bulletType == BulletType::Wave) {
+        if (ship) {
+            this->targetPosition = ship->GetPosition();
+            vec2 dir = normalize(this->targetPosition - this->position);
+            this->velocity = dir * (float)(speed_for_staticTarget);  
+            float initial_speed = (bulletType == BulletType::Accelerating) ? 10.0f : (float)speed_for_staticTarget;
+            this->velocity = dir * initial_speed;
+        }
+    }
+
+    if (bulletType == BulletType::Wave && ship) {
+        this->targetPosition = ship->GetPosition();
+        this->wave_forward_dir = normalize(this->targetPosition - this->position);
+    }
+
 }
 
 void BossBullet::Update(double dt) {
@@ -56,6 +75,7 @@ void BossBullet::Update(double dt) {
 
     if (lifetime <= -1.0f) {
         this->Destroy();
+        return;
     }
     else {
         lifetime -= dt;
@@ -67,29 +87,61 @@ void BossBullet::Update(double dt) {
 
 
 void BossBullet::Move(double dt) {
-    Ship* ship = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>();
-    if (ship != nullptr) {
-        this->targetPosition = ship->GetPosition();
-    }
-    toPlayer = this->targetPosition - this->position;
-    distanceToPlayer = sqrt(toPlayer.x * toPlayer.x + toPlayer.y * toPlayer.y);
     this->timeElapsed += dt;
 
-    float bulletspeed = (float)speed + (float)(this->distanceToPlayer / this->lifetime) * (float)(this->timeElapsed / this->lifetime);
-    if (bulletspeed > 10000) {
-        bulletspeed = 10000;
+    switch (bulletType)
+    {
+    case BossBullet::BulletType::Homing: {
+        if (ship != nullptr) {
+            this->targetPosition = ship->GetPosition();
+        }
+        toPlayer = this->targetPosition - this->position;
+        distanceToPlayer = sqrt(toPlayer.x * toPlayer.x + toPlayer.y * toPlayer.y);
+
+        float bulletspeed = (float)speed + (float)(this->distanceToPlayer / this->lifetime) * (float)(this->timeElapsed / this->lifetime);
+        if (bulletspeed > 10000) bulletspeed = 10000;
+
+        if (distanceToPlayer > 10.f) {
+            this->velocity += normalize(toPlayer) * bulletspeed * (float)dt;
+        }
+        else {
+            this->velocity += normalize(toPlayer) * bulletspeed * (float)dt;
+        }
+
+        this->position += this->velocity * 0.8f * (float)dt;
+        this->SetVelocity(this->velocity);
+        break;
     }
-    if (distanceToPlayer > 10.f) {
-        this->velocity += (normalize(this->toPlayer) * bulletspeed * (float)dt);
-        
+
+    case BulletType::StaticTarget: {
+        this->static_bullet += this->velocity * (float)(dt);
+        this->position = this->static_bullet;
+        this->SetVelocity(this->velocity);
+        break;
     }
-    else if (distanceToPlayer < 10.f) {
-        this->velocity += (normalize(this->toPlayer) * bulletspeed * (float)dt);
-        
+
+
+    case BossBullet::BulletType::Wave: {
+        vec2 perp = { -wave_forward_dir.y, wave_forward_dir.x }; // 수직 방향
+        float forwardSpeed = 300.f;
+        float waveOffset = sinf((float)timeElapsed * waveFrequency) * waveAmplitude;
+
+        vec2 movement = wave_forward_dir * forwardSpeed * (float)dt + perp * waveOffset * (float)dt;
+        this->position += movement;
+        this->SetVelocity(movement / (float)dt); // 충돌 계산용
+        break;
     }
-    this->position += (this->velocity) * 0.8f * (float)dt;
-    
-    SetVelocity(this->velocity);
+
+    case BossBullet::BulletType::Accelerating: {
+        this->velocity *= 1.05f;
+        this->position += this->velocity * (float)dt;
+        SetVelocity(this->velocity);
+        break;
+    }
+
+    default:
+        break;
+    }
 }
 
 

@@ -42,6 +42,7 @@ public:
 	void AttackCircle(vec2 pos, double radius, double elapsed_time);
 	void DrawShieldRange(vec2 pos, double radius);
 	void UpdateAttackCircles(double dt);
+	void Spawn8WayBullets(vec2 position);
 
 private:
 
