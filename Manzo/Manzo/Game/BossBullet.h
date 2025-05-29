@@ -1,5 +1,6 @@
 #pragma once
 #include "../Engine/GameObject.h"
+#include "../Engine/Procedual.h"
 #include "GameObjectTypes.h"
 #include "Ship.h"
 //heheh
@@ -24,7 +25,7 @@ public:
 
 private:
 	BulletType bulletType;
-
+	ProceduralChain procedual;
 	Ship* ship;
 
 	vec2 position;

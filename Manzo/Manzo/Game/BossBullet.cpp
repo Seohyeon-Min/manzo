@@ -10,7 +10,7 @@
 
 #define PI  3.14159265358979
 #define DEG2RAD (PI/180.0f)
-ProceduralChain procedural;
+
 int GetRandomValue(int min, int max) {
     return min + rand() % ((max - min) + 1);
 }
@@ -36,7 +36,7 @@ BossBullet::BossBullet(vec2 Boss_position, float lifetime, BulletType bullet_typ
     direction.y /= length;
 
     this->velocity = vec2(0.0f, 0.0f);
-    float angleOffset = (float)(GetRandomValue(-10,10) * DEG2RAD); 
+    float angleOffset = (float)(GetRandomValue(-10, 10) * DEG2RAD);
     float cosA = cos(angleOffset);
     float sinA = sin(angleOffset);
 
@@ -52,7 +52,21 @@ BossBullet::BossBullet(vec2 Boss_position, float lifetime, BulletType bullet_typ
     this->static_bullet = Boss_position;
     timeElapsed = 0.0f;
 
-    procedural.Initialize(3, 10, position);
+
+    if (bulletType == BulletType::StaticTarget || bulletType == BulletType::Accelerating || bulletType == BulletType::Wave) {
+        if (ship) {
+            this->targetPosition = ship->GetPosition();
+            vec2 dir = normalize(this->targetPosition - this->position);
+            float initial_speed = (bulletType == BulletType::Accelerating) ? 10.0f : (float)speed_for_staticTarget;
+            this->velocity = dir * initial_speed;
+        }
+    }
+
+    if (bulletType == BulletType::Wave && ship) {
+        this->targetPosition = ship->GetPosition();
+        this->wave_forward_dir = normalize(this->targetPosition - this->position);
+    }
+    procedual.Initialize({ 10,10,10 }, position);
 }
 
 void BossBullet::Update(double dt) {
@@ -68,17 +82,65 @@ void BossBullet::Update(double dt) {
     }
 
     Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::BulletParticle>>()->Emit(1, GetPosition(), { 0,0 }, /*-GetVelocity() * 0.4f*/{}, 1.5);
+
 }
 
 
 void BossBullet::Move(double dt) {
     this->timeElapsed += dt;
 
-    vec2 perp = { -wave_forward_dir.y, wave_forward_dir.x }; // 수직 방향
-    float forwardSpeed = 300.f;
-    float waveOffset = sinf((float)timeElapsed * waveFrequency) * waveAmplitude;
+    switch (bulletType)
+    {
+    case BossBullet::BulletType::Homing: {
+        if (ship != nullptr) {
+            this->targetPosition = ship->GetPosition();
+        }
+        toPlayer = this->targetPosition - this->position;
+        distanceToPlayer = sqrt(toPlayer.x * toPlayer.x + toPlayer.y * toPlayer.y);
 
-    vec2 movement = wave_forward_dir * forwardSpeed * (float)dt + perp * waveOffset * (float)dt;
+        float bulletspeed = (float)speed + (float)(this->distanceToPlayer / this->lifetime) * (float)(this->timeElapsed / this->lifetime);
+        if (bulletspeed > 10000) bulletspeed = 10000;
+
+        if (distanceToPlayer > 10.f) {
+            this->velocity += normalize(toPlayer) * bulletspeed * (float)dt;
+        }
+        else {
+            this->velocity += normalize(toPlayer) * bulletspeed * (float)dt;
+        }
+
+        this->position += this->velocity * 0.8f * (float)dt;
+        this->SetVelocity(this->velocity);
+        break;
+    }
+
+    case BulletType::StaticTarget: {
+        this->static_bullet += this->velocity * (float)(dt);
+        this->position = this->static_bullet;
+        this->SetVelocity(this->velocity);
+        break;
+    }
+
+    case BossBullet::BulletType::Wave: {
+        vec2 perp = { -wave_forward_dir.y, wave_forward_dir.x }; // 수직 방향
+        float forwardSpeed = 300.f;
+        float waveOffset = sinf((float)timeElapsed * waveFrequency) * waveAmplitude;
+
+        vec2 movement = wave_forward_dir * forwardSpeed * (float)dt + perp * waveOffset * (float)dt;
+        this->position += movement;
+        this->SetVelocity(movement / (float)dt); // 충돌 계산용
+        break;
+    }
+
+    case BossBullet::BulletType::Accelerating: {
+        this->velocity *= 1.05f;
+        this->position += this->velocity * (float)dt;
+        SetVelocity(this->velocity);
+        break;
+    }
+
+    default:
+        break;
+    }
 }
 
 
@@ -99,6 +161,7 @@ bool BossBullet::CanCollideWith(GameObjectTypes other_object) {
 
 void BossBullet::ResolveCollision(GameObject* other_object) {
     if (other_object->Type() == GameObjectTypes::Ship) {
+
         this->Destroy();
     }
 }
