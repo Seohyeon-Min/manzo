@@ -25,6 +25,7 @@ Created:    March 8, 2023
 #include "BeatSystem.h"
 #include "SaveDataManager.h"
 #include "EventManager.h"
+#include "ScenarioSystem.h"
 
 #include <chrono>
 #include <time.h>
