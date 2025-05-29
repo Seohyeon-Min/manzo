@@ -66,15 +66,23 @@ BossBullet::BossBullet(vec2 Boss_position, float lifetime, BulletType bullet_typ
         this->targetPosition = ship->GetPosition();
         this->wave_forward_dir = normalize(this->targetPosition - this->position);
     }
-    procedual.Initialize({ 10,10,10 }, position);
+    std::vector<int> circleSizes ={ 30, 20, 10 ,10,10};
+    procedual.Initialize(circleSizes, position);
 }
 
 void BossBullet::Update(double dt) {
     GameObject::Update(dt);
-    Move(dt);
+    Move(dt);   
 
+    if (!std::isnan(position.x) && !std::isnan(position.y)) {
+        procedual.Update(this, 0.2f);
+    }
+
+    
     if (lifetime <= -1.0f) {
         this->Destroy();
+        procedual.Clear();
+
         return;
     }
     else {
@@ -150,6 +158,9 @@ void BossBullet::Draw(DrawLayer drawlayer) {
         &GetMatrix(),
         Engine::GetShaderManager().GetDefaultShader()
     };
+
+    procedual.Draw(GetMatrix(), drawlayer);
+
 
     draw_call.settings.do_blending = 1;
     GameObject::Draw(draw_call);
