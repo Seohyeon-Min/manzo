@@ -150,43 +150,44 @@ void Map::ParseSVG() {
         currentGroup = new RockGroup(group_index, rotateAngle, scale);
         rock_groups.push_back(currentGroup);
         std::cout << "Group created: " << group_index << std::endl;
+        return;
     }
 
-        // transform
-        if (std::regex_search(currentTag, match, transformRegex)) {
-            std::string transformStr = match[1].str();
+    // transform
+    if (std::regex_search(currentTag, match, transformRegex)) {
+        std::string transformStr = match[1].str();
 
-            if (std::regex_search(transformStr, match, matrixRegex)) {
-                IsScale = true;
-                float a = std::stof(match[1].str());
-                float b = std::stof(match[2].str());
-                float c = std::stof(match[3].str());
-                float d = std::stof(match[4].str());
-                float e = std::stof(match[5].str());
-                float f = std::stof(match[6].str());
+        if (std::regex_search(transformStr, match, matrixRegex)) {
+            IsScale = true;
+            float a = std::stof(match[1].str());
+            float b = std::stof(match[2].str());
+            float c = std::stof(match[3].str());
+            float d = std::stof(match[4].str());
+            float e = std::stof(match[5].str());
+            float f = std::stof(match[6].str());
 
-                scale.x = std::sqrt(a * a + c * c);
-                scale.y = std::sqrt(b * b + d * d);
-            }
-            else if (std::regex_search(transformStr, match, rotateRegex)) {
-                translate = { 0, 0 };
-                IsTranslate = false;
-                IsRotate = true;
-                rotateAngle = -std::stof(match[1].str()) * static_cast<float>(M_PI) / 180.0f;
-                rotatetranslate.x = std::stof(match[2].str());
-                rotatetranslate.y = std::stof(match[3].str());
-            }
-            else if (std::regex_search(transformStr, match, translateRegex)) {
-                rotateAngle = 0;
-                rotatetranslate = { 0, 0 };
-                translate.x = std::stof(match[1].str());
-                translate.y = -std::stof(match[2].str());
-                IsTranslate = true;
-                IsRotate = false;
-            }
-
-            return;
+            scale.x = std::sqrt(a * a + c * c);
+            scale.y = std::sqrt(b * b + d * d);
         }
+        else if (std::regex_search(transformStr, match, rotateRegex)) {
+            translate = { 0, 0 };
+            IsTranslate = false;
+            IsRotate = true;
+            rotateAngle = -std::stof(match[1].str()) * static_cast<float>(M_PI) / 180.0f;
+            rotatetranslate.x = std::stof(match[2].str());
+            rotatetranslate.y = std::stof(match[3].str());
+        }
+        else if (std::regex_search(transformStr, match, translateRegex)) {
+            rotateAngle = 0;
+            rotatetranslate = { 0, 0 };
+            translate.x = std::stof(match[1].str());
+            translate.y = -std::stof(match[2].str());
+            IsTranslate = true;
+            IsRotate = false;
+        }
+
+        return;
+    }
 
     // circle
     if (std::regex_search(currentTag, match, circleRegex)) {
@@ -201,17 +202,19 @@ void Map::ParseSVG() {
         }
 
         circle_position = { x, -y };
+        return;
     }
 
 
     //path ID
     if (std::regex_search(currentTag, match, pathIdRegex)) {
         polyIndex = match[1].str();
+        
     }
 
     // path
     if (std::regex_search(currentTag, match, pathRegex)) {
-        std::string pathData = match[1].str();
+        pathData = match[1].str();
         std::replace(pathData.begin(), pathData.end(), ' ', ',');
 
         std::vector<vec2> positions2 = parsePathData(pathData);     //temporary point position
@@ -243,6 +246,9 @@ void Map::ParseSVG() {
 
         Polygon poly;
         poly.vertices = positions;
+        for (vec2& position : positions) {
+            std::cout << "X : " << position.x << " Y : " << position.y<<std::endl;
+        }
         poly.vertexCount = int(positions.size());
         poly.polyindex = polyIndex.empty() ? "NULL" : polyIndex;
 
@@ -270,9 +276,6 @@ void Map::ParseSVG() {
             new_vertices.push_back({ vertice.x - poly_center.x, vertice.y - poly_center.y });
         }
         modified_poly.vertices = new_vertices;
-
-
-
         return;
     }
 
@@ -360,7 +363,8 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
 
             bool overlapping = IsOverlapping(camera_boundary, rockgroup->FindBoundary());
 
-            if (overlapping) {
+            //if (overlapping) {
+            if (true) {
                 //Add Rock in GameState
                 for (auto& rock : rockgroup->GetRocks()) {
 

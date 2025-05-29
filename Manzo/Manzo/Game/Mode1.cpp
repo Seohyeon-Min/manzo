@@ -103,8 +103,11 @@ void Mode1::Load()
 	// background->Add("assets/images/background/bubble.png", 1.5f, DrawLayer::DrawUI);
 
 	// Map
-	//GetGSComponent<MapManager>()->AddMapFile("assets/maps/TemporaryMap.svg");
+	AddGSComponent(new MapManager());
+	GetGSComponent<MapManager>()->AddMapFile("assets/maps/fixing2.svg");
 	//GetGSComponent<MapManager>()->AddMapFile("assets/maps/output.svg");
+	GetGSComponent<MapManager>()->LoadFirstMap();
+
 
 	// Boss
 	Boss::LoadBossfile();
@@ -173,6 +176,12 @@ void Mode1::Update(double dt)
 
 	// beat_system->LoadMusicToSync("Level1_bgm");
 	// audio play
+
+
+	//Map
+	if (!GetGSComponent<MapManager>()->GetCurrentMap()->IsLevelLoaded()) {
+		GetGSComponent<MapManager>()->GetCurrentMap()->ParseSVG();
+	}
 
 	UpdateGSComponents(dt);
 	GetGSComponent<GameObjectManager>()->UpdateAll(dt);

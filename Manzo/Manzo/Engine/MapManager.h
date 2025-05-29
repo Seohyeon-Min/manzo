@@ -84,6 +84,7 @@ private:
 	bool IsRotate = false;
 	bool IsScale = false;
 	bool IsinGroup = false;
+	std::string pathData;
 	std::string polyIndex;
 	std::string circleIndex;
 

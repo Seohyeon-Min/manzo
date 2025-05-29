@@ -20,9 +20,9 @@ Loading::Loading() {}
 void Loading::Load()
 {
 	//Load First Map
-	AddGSComponent(new MapManager());
-	GetGSComponent<MapManager>()->AddMapFile("assets/maps/fixing2.svg");
-	GetGSComponent<MapManager>()->LoadFirstMap();
+	//AddGSComponent(new MapManager());
+	//GetGSComponent<MapManager>()->AddMapFile("assets/maps/fixing2.svg");
+	//GetGSComponent<MapManager>()->LoadFirstMap();
 }
 
 void Loading::Update(double dt) {
