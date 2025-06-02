@@ -150,7 +150,7 @@ void Map::ParseSVG() {
         currentGroup = new RockGroup(group_index, rotateAngle, scale);
         rock_groups.push_back(currentGroup);
         std::cout << "Group created: " << group_index << std::endl;
-        return;
+        
     }
 
     // transform
@@ -181,7 +181,7 @@ void Map::ParseSVG() {
             rotateAngle = 0;
             rotatetranslate = { 0, 0 };
             translate.x = std::stof(match[1].str());
-            translate.y = -std::stof(match[2].str());
+            translate.y = std::stof(match[2].str());
             IsTranslate = true;
             IsRotate = false;
         }
@@ -217,10 +217,10 @@ void Map::ParseSVG() {
         pathData = match[1].str();
         std::replace(pathData.begin(), pathData.end(), ' ', ',');
 
-        std::vector<vec2> positions2 = parsePathData(pathData);     //temporary point position
-        std::vector<vec2> positions;                                // path's final point positions
+        std::vector<vec2> positions_temp = parsePathData(pathData);     //point position before applying group information
+        std::vector<vec2> positions;                                // point position after applying group information
 
-        for (auto& vec : positions2) {
+        for (auto& vec : positions_temp) {
             if (IsinGroup) {
                 if (IsScale) {
                     vec.x *= scale.x;
@@ -239,7 +239,9 @@ void Map::ParseSVG() {
                     vec.x += translate.x;
                     vec.y += translate.y;
                 }
+                vec.y = -vec.y;
                 positions.push_back(vec);
+                std::cout <<"Position: "<< vec.x <<", "<< vec.y << std::endl;
             }
 
         }
@@ -254,21 +256,16 @@ void Map::ParseSVG() {
 
 
         std::cout << "-----------------------------" << std::endl;
-        std::cout << rotatetranslate.x << rotatetranslate.y << std::endl;
-        std::cout << translate.x << translate.y << std::endl;
-        std::cout << rotateAngle << std::endl;
+        std::cout << "Rotate Translate : " << rotatetranslate.x << ", " << rotatetranslate.y << std::endl;
+        std::cout << "Translate : " << translate.x << ", " << translate.y << std::endl;
+        std::cout << "Rotate : " << rotateAngle << std::endl;
         std::cout << "poly index : " << poly.polyindex << std::endl;
         std::cout << "-----------------------------" << std::endl;
 
-        Rock* rock = new Rock(poly, poly, poly.FindCenter(), rotateAngle, scale);
-        if (currentGroup) {
-            currentGroup->AddRock(rock);
-            rock->SetRockGroup(currentGroup);
-        }
-        rocks.push_back(rock);
-
-        Polygon original_poly = poly;
-        Polygon modified_poly = poly;
+        
+        
+        Polygon original_poly = poly;   //for collision
+        Polygon modified_poly = poly;   //for object position
 
         vec2 poly_center = original_poly.FindCenter();
         std::vector<vec2> new_vertices;
@@ -276,6 +273,13 @@ void Map::ParseSVG() {
             new_vertices.push_back({ vertice.x - poly_center.x, vertice.y - poly_center.y });
         }
         modified_poly.vertices = new_vertices;
+
+        Rock* rock = new Rock(original_poly, modified_poly, original_poly.FindCenter(), rotateAngle, scale);
+        if (currentGroup) {
+            currentGroup->AddRock(rock);
+            rock->SetRockGroup(currentGroup);
+        }
+        rocks.push_back(rock);
         return;
     }
 
@@ -312,7 +316,7 @@ std::vector<vec2> Map::parsePathData(const std::string& pathData) {
                 y = std::stof(data);
                 last_x = isRelative ? last_x + x : x;
                 last_y = isRelative ? last_y + y : y;
-                positions.push_back({ last_x, -last_y });
+                positions.push_back({ last_x, last_y });
                 currentCommand = isRelative ? 'l' : 'L';  // Treat as L or l
             }
         }
@@ -323,20 +327,20 @@ std::vector<vec2> Map::parsePathData(const std::string& pathData) {
                 y = std::stof(data);
                 last_x = isRelative ? last_x + x : x;
                 last_y = isRelative ? last_y + y : y;
-                positions.push_back({ last_x, -last_y });
+                positions.push_back({ last_x, last_y });
             }
         }
         else if (currentCommand == 'v' || currentCommand == 'V') { 
             
             y = std::stof(data);
             last_y = isRelative ? last_y + y : y;
-            positions.push_back({ last_x, -last_y });  
+            positions.push_back({ last_x, last_y });  
         }
         else if (currentCommand == 'h' || currentCommand == 'H') {  
             
             x = std::stof(data);
             last_x = isRelative ? last_x + x : x;
-            positions.push_back({ last_x, -last_y });  
+            positions.push_back({ last_x, last_y });  
         }
         else if (currentCommand == 'z' || currentCommand == 'Z') {  
             if (!positions.empty()) {
