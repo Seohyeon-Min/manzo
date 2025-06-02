@@ -367,8 +367,7 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
 
             bool overlapping = IsOverlapping(camera_boundary, rockgroup->FindBoundary());
 
-            //if (overlapping) {
-            if (true) {
+            if (overlapping) {
                 //Add Rock in GameState
                 for (auto& rock : rockgroup->GetRocks()) {
 
@@ -395,7 +394,7 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
                     if (rock->IsActivated()) {
                         rock->Active(false);
                         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Remove(rock);
-                        //std::cout << "Unloaded Rock!!!!!!!!!!!!!!!!!" << "\n";
+                        
                     }
                 }
 

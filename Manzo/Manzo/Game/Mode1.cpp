@@ -104,8 +104,8 @@ void Mode1::Load()
 
 	// Map
 	AddGSComponent(new MapManager());
-	GetGSComponent<MapManager>()->AddMapFile("assets/maps/fixing2.svg");
-	//GetGSComponent<MapManager>()->AddMapFile("assets/maps/output.svg");
+	GetGSComponent<MapManager>()->AddMapFile("assets/maps/level1.svg");
+	GetGSComponent<MapManager>()->AddMapFile("assets/maps/level4.svg");
 	GetGSComponent<MapManager>()->LoadFirstMap();
 
 
@@ -181,6 +181,9 @@ void Mode1::Update(double dt)
 	//Map
 	if (!GetGSComponent<MapManager>()->GetCurrentMap()->IsLevelLoaded()) {
 		GetGSComponent<MapManager>()->GetCurrentMap()->ParseSVG();
+	}
+	else {
+		GetGSComponent<MapManager>()->LoadNextMap();
 	}
 
 	UpdateGSComponents(dt);
