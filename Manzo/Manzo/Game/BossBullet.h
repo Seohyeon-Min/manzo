@@ -28,6 +28,8 @@ private:
 	ProceduralChain procedual;
 	Ship* ship;
 
+
+
 	vec2 position;
 	vec2 velocity;
 	vec2 targetPosition;	

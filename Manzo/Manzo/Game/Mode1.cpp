@@ -207,6 +207,11 @@ void Mode1::Update(double dt)
 		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
 	}
 
+	if (Engine::GetInput().KeyJustPressed(Input::Keys::E) && !Isboss)
+	{
+		GetGSComponent<GameObjectManager>()->Add(boss_ptr);
+		Isboss = true;
+	}
 
 #ifdef _DEBUG
 	AddGSComponent(new ShowCollision());
@@ -217,11 +222,6 @@ void Mode1::Update(double dt)
 	}
 
 
-	if (Engine::GetInput().KeyJustPressed(Input::Keys::E) && !Isboss)
-	{
-		GetGSComponent<GameObjectManager>()->Add(boss_ptr);
-		Isboss = true;
-	}
 #else
 #endif
 	

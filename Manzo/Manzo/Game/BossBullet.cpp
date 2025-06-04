@@ -67,16 +67,16 @@ BossBullet::BossBullet(vec2 Boss_position, float lifetime, BulletType bullet_typ
         this->wave_forward_dir = normalize(this->targetPosition - this->position);
     }
     std::vector<int> circleSizes ={ 30, 20, 10 ,10,10};
-    procedual.Initialize(circleSizes, position);
+    //procedual.Initialize(circleSizes, position);
 }
 
 void BossBullet::Update(double dt) {
     GameObject::Update(dt);
     Move(dt);   
 
-    if (!std::isnan(position.x) && !std::isnan(position.y)) {
-        procedual.Update(this, 0.2f);
-    }
+    //if (!std::isnan(position.x) && !std::isnan(position.y)) {
+    //    procedual.Update(this, 0.2f);
+    //}
 
     
     if (lifetime <= -1.0f) {
@@ -159,7 +159,7 @@ void BossBullet::Draw(DrawLayer drawlayer) {
         Engine::GetShaderManager().GetDefaultShader()
     };
 
-    procedual.Draw(GetMatrix(), drawlayer);
+    //procedual.Draw(GetMatrix(), drawlayer);
 
 
     draw_call.settings.do_blending = 1;

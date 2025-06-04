@@ -26,8 +26,12 @@ public:
 	void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
 
 private:
+	ProceduralChain procedural_jelly;
 	JellyType jelly_type;
 	Ship* ship;
+
+	GLTexture* texture_vector;
+	mat3 test_matrix;
 
 	vec2 position;
 	vec2 velocity;
@@ -36,12 +40,12 @@ private:
 	vec2 static_bullet;
 	double lifetime; //same with bpm 
 	double speed;
-	double speed_for_staticTarget = 500;
+	double speed_for_staticTarget = 300;
 	double timeElapsed;
 	vec2 toPlayer;
 	float hight;
 	float distanceToPlayer;
-	float waveFrequency = 10.0f;   // 초당 몇 번 흔들릴지
+	float waveFrequency = 5.0f;   // 초당 몇 번 흔들릴지
 	float waveAmplitude = 100.0f;
 	vec2 wave_forward_dir = { 0, 0 };
 };
