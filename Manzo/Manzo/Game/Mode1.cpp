@@ -120,12 +120,7 @@ void Mode1::Load()
 
 	// Boss
 	Boss::LoadBossfile();
-	// for (int i = 0; i < 25; i++)
-	// for (int i = 0; i < 25; i++)
-	//{
-	//     GetGSComponent<Boss>()->ReadBossJSON(static_cast<Boss::BossType>(i));
-	//     BossFirstPos.push_back(GetGSComponent<Boss>()->GetFirstPosition());
-	// }
+
 	boss_ptr = new Boss({ 4100, -5300 }, Boss::BossName::e, Boss::BossType::MovingToLocation);
 	boss_ptr->ReadBossJSON(Boss::BossName::e);
 	BossFirstPos.push_back(std::make_pair(boss_ptr->GetFirstPosition()[0], boss_ptr->GetFirstPosition()[1]));
