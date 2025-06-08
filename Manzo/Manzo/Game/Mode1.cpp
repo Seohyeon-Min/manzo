@@ -104,8 +104,8 @@ void Mode1::Load()
 	fishGenerator->ReadFishCSV("assets/images/fish/Fish.csv");
 
 	// background
-	//background->Add("assets/images/background/temp_background4.png", 0.0f);
-	//background->Add("assets/images/background/bg1.png", 0.3f);
+	//background->Add("assets/images/background/rock_pillar/temp_background4.png", 0.0f);
+	background->Add("assets/images/background/rock_pillar/bg1.png", 0.3f);
 	//background->Add("assets/images/background/bg2.png", 0.4f);
 	//background->Add("assets/images/background/bg3.png", 0.5f);
 	// background->Add("assets/images/background/bubble.png", 1.5f, DrawLayer::DrawUI);
@@ -298,9 +298,9 @@ void Mode1::FixedUpdate(double dt)
 
 void Mode1::Draw()
 {
-	GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
 	// GetGSComponent<Map>()->AddDrawCall();
 	background->ShaderBackgroundDraw(Engine::GetShaderManager().GetShader("sea_background"), *GetGSComponent<Cam>(), ship_ptr);
+	GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
 	GetGSComponent<GameObjectManager>()->DrawAll();
 
 	if (ship_ptr->GetFuel() <= 0)
