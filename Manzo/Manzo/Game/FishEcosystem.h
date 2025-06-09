@@ -2,6 +2,7 @@
 #include "../Engine/Timer.h"
 #include "Fish.h"
 #include "FlockingFish.h"
+#include "Ship.h"
 
 #include <random>
 
@@ -70,4 +71,5 @@ private:
     };
 
     friend class Fish;
+    Ship* ship;
 };

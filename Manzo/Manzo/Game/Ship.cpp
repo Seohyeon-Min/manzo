@@ -149,7 +149,7 @@ void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_
 	ship->nearestRock = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRock(ship); // it should be FindNearestRockNextFrame
 
 
-	
+
 
 #ifdef _DEBUG
 	if (ship->nearestRock) {
@@ -259,6 +259,10 @@ std::vector<vec2> spline_points;
 
 void Ship::Update(double dt)
 {
+	vec2 pos = GetPosition();
+	ship_range = Math::rect(vec2{pos.x-200.f,pos.y-200.f}, vec2{ pos.x + 200.f,pos.y + 200.f });
+
+
 	if (!IsFuelZero()) {
 		can_dash = true;
 		GameObject::Update(dt);
@@ -317,22 +321,21 @@ void Ship::Update(double dt)
 			SetVelocity({ GetVelocity().x, 0 });
 		}
 	}
-	//std::cout << Engine::GetInput().GetMousePos().mouseWorldSpaceX - Engine::window_width/ 2 << " " << Engine::GetInput().GetMousePosition().x << std::endl;
 
-		if (current_state == &state_move)
+	if (current_state == &state_move)
+	{
+		if (!soundPlaying)
 		{
-			if (!soundPlaying)
-			{
-				Engine::GetAudioManager().PlayMusics("dash");
-				soundPlaying = true;
-			}
+			Engine::GetAudioManager().PlayMusics("dash");
+			soundPlaying = true;
 		}
+	}
 
-		if (Engine::GetAudioManager().IsMusicFinished("dash"))
-		{
-			soundPlaying = false;
-			Engine::GetAudioManager().StopPlayingMusic("dash");
-		}
+	if (Engine::GetAudioManager().IsMusicFinished("dash"))
+	{
+		soundPlaying = false;
+		Engine::GetAudioManager().StopPlayingMusic("dash");
+	}
 }
 
 void Ship::FixedUpdate(double fixed_dt) {
@@ -581,6 +584,11 @@ void Ship::ResolveCollision(GameObject* other_object) {
 
 }
 
+bool Ship::CatchFish(vec2 pos)
+{
+	return ((pos.x >= ship_range.Left() && pos.x <= ship_range.Right()) && (pos.y >= ship_range.Bottom() && pos.y <= ship_range.Top()));
+}
+
 void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
 
 	if (other_object->Type() == GameObjectTypes::Rock) {
@@ -780,7 +788,7 @@ void Pump::Draw(DrawLayer drawlayer)
 	draw_call2.SetUniforms = [this](const GLShader* shader) {this->SetUniforms(shader); };
 	draw_call2.sorting_layer = DrawLayer::DrawUI;
 
-    Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call));
+	Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call));
 	Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call2));
 }
 

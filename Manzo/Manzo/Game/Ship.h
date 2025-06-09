@@ -32,6 +32,9 @@ public:
 
     const vec2 GetDashPos() { return dash_target; }
 
+    Math::rect GetShipRange() { ship_range; }
+    bool CatchFish(vec2 pos);
+
 private:
     void HitWithBounce(GameObject* other_object, vec2 initial_velocity);
     void ReduceFuel(float value);
@@ -126,6 +129,8 @@ private:
 
     bool soundPlaying = false;
     bool replay = false;
+
+    Math::rect ship_range;
 };
 
 class Pump : public GameObject {

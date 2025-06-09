@@ -31,6 +31,8 @@ FishGenerator::FishGenerator()
 			bg_fish->current_state = &bg_fish->state_nonleader;
 			bg_fish->current_state->Enter(bg_fish);
 		}
+
+		ship = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>();
 	}
 }
 
@@ -121,15 +123,6 @@ void FishGenerator::GenerateFish(double dt)
 		}
 	}
 
-	//fishList.erase(
-	//	std::remove_if(fishList.begin(), fishList.end(),
-	//		[](Fish* fish) {
-	//			if (fish->Destroyed()) {
-	//				return true;
-	//			}
-	//			return false;
-	//		}),
-	//	fishList.end());
 }
 
 int FishGenerator::ReturnFishMoney(int index)

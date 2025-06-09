@@ -9,3 +9,7 @@ vec2 ClosestPoint(vec2 point, vec2 a, vec2 b) {
 
 	return a + ab * t;
 }
+
+vec2 Lerp(const vec2& a, const vec2& b, float t) {
+	return a * (1.0f - t) + b * t;
+}
