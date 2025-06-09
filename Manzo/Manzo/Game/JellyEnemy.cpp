@@ -60,6 +60,10 @@ JellyEnemy::JellyEnemy(vec2 start_position, float hight, float lifetime, JellyTy
     position = start_position;
     static_bullet = start_position;
     timeElapsed = 0.0f;
+    wavePhaseOffset = (float)static_cast<float>(rand()) / (float)RAND_MAX * 2.0f * (float) PI;
+    waveFrequencyOffset = 0.5f + static_cast<float>(rand()) / RAND_MAX * 0.5f; // 0.5~1.0 배
+    waveAmplitudeOffset = 0.8f + static_cast<float>(rand()) / RAND_MAX * 0.4f; // 0.8~1.2 배
+
 
     procedural_jelly.Initialize(3, 15, position);
 }
@@ -70,10 +74,15 @@ void JellyEnemy::Update(double dt) {
 
     if (!std::isnan(position.x) && !std::isnan(position.y)) {
         procedural_jelly.Update(this, 0.07f);
-        test_matrix =(mat3::build_translation(procedural_jelly.GetPositions(0, mat3::build_scale(1.f))) *
-            mat3::build_scale(1.f)); 
-        test_matrix_1 = (mat3::build_translation(procedural_jelly.GetPositions(1, mat3::build_scale(1.f))) *
-            mat3::build_scale(1.f)); 
+        test_matrix =
+            mat3::build_translation(procedural_jelly.GetPositions(0, mat3::build_scale(1.f))) *
+            mat3::build_rotation(procedural_jelly.GetRotation(0, this)) *
+            mat3::build_scale(1.f);
+
+        test_matrix_1 =
+            mat3::build_translation(procedural_jelly.GetPositions(1, mat3::build_scale(1.f))) *
+            mat3::build_rotation(procedural_jelly.GetRotation(1, this)) *
+            mat3::build_scale(1.f);
     }
 
     if (lifetime <= -1.0f) {
@@ -92,8 +101,8 @@ void JellyEnemy::Move(double dt) {
     this->timeElapsed += dt;
 
     vec2 perp = { -wave_forward_dir.y, wave_forward_dir.x }; // 수직 방향
-    float waveOffset = sinf((float)timeElapsed * waveFrequency) * waveAmplitude;
-
+    float waveOffset = sinf((float)timeElapsed * waveFrequency * waveFrequencyOffset + wavePhaseOffset)
+        * waveAmplitude * waveAmplitudeOffset;
     vec2 movement = wave_forward_dir * speed_for_staticTarget * (float)dt + perp * waveOffset * (float)dt;
     this->position += movement;
     this->SetVelocity(movement / (float)dt); 

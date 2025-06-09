@@ -15,6 +15,7 @@ public:
     void Update(GameObject* headObject, float followSpeed);
     void Draw(const mat3& parent_matrix, DrawLayer layer);
     const vec2 GetPositions(int index, const mat3& parent_matrix) const;
+    float GetRotation(int index, GameObject* head) const;
     void SetSizeAt(int index, float size);
     void SetAllSize(float size);
     void Clear();

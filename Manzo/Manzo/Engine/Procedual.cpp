@@ -118,6 +118,25 @@ const vec2 ProceduralChain::GetPositions(int index, const mat3& parent_matrix) c
     return parent_matrix * positions[index];
 }
 
+float ProceduralChain::GetRotation(int index, GameObject* head) const {
+    if (index >= positions.size()) return 0.f;
+
+    vec2 from, to;
+
+    if (index == 0 && head) {
+        from = head->GetPosition(); 
+        to = positions[index];
+    }
+    else {
+        from = positions[index-1];
+        to = positions[index];
+    }
+
+    vec2 dir = to - from;
+    return atan2(dir.y, dir.x) + (float)3.14 / 2;
+}
+
+
 void ProceduralChain::SetSizeAt(int index, float size) {
     if (index >= 0 && index < circle_size.size()) {
         circle_size[index] = size;

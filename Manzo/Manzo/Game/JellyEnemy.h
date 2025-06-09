@@ -48,5 +48,8 @@ private:
 	float distanceToPlayer;
 	float waveFrequency = 6.0f;   // 초당 몇 번 흔들릴지
 	float waveAmplitude = 50.0f;
+	float wavePhaseOffset;
+	float waveFrequencyOffset;
+	float waveAmplitudeOffset;
 	vec2 wave_forward_dir = { 0, 0 };
 };
