@@ -114,6 +114,7 @@ private:
 	std::string boss_name;
 	int index;
 	bool is_boss_fight;
+	bool flipX = false;
 	int bpm;
 	std::string mp3_file_name;
 	std::array<int, 2> position;
@@ -129,7 +130,8 @@ private:
 	bool bulletSpawned = false;
 	int barCount;
 	bool isattack;
-
+	float currentScaleX = 1.0f;
+	float targetScaleX = 1.0f;
 
 	GLTexture* boss_body = nullptr;
 
