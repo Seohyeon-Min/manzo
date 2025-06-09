@@ -10,7 +10,7 @@ Created:    March 8, 2023
 
 #include "Engine.h"
 #include "ShowCollision.h"
-#include "../Game/AI.h"
+#include "../Game/FlockingFish.h"
 
 #include <SDL2/SDL.h>
 #include <iostream>

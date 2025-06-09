@@ -24,7 +24,6 @@ Created:    March 8, 2023
 #include "Background.h"
 #include "Ship.h"
 #include "Fish.h"
-#include "Skill.h"
 #include "Boss.h"
 #include "Monster.h"
 
@@ -60,7 +59,8 @@ void Mode1::Load()
 
 	// audio
 	Engine::GetAudioManager().LoadMusic("assets/audios/Level1_bgm.mp3", "Level1_bgm", false);
-	Engine::GetAudioManager().LoadMusic("assets/audios/morse/e.wav", "e morse", true);
+	Engine::GetAudioManager().LoadMusic("assets/audios/morse/e.mp3", "e morse", true);
+	Engine::GetAudioManager().LoadMusic("assets/audios/Dash.mp3", "dash", false, false);
 	Engine::GetAudioManager().Set3DMode(FMOD_3D_LINEARROLLOFF);
 
 	// component
@@ -77,9 +77,14 @@ void Mode1::Load()
 	AddGSComponent(new ParticleManager<Particles::CaptureEffect>());
 	AddGSComponent(new ParticleManager<Particles::BulletParticle>());
 
+	// get cali
+	double cali = Engine::GetSaveDataManager().GetSaveData().user_calibration;
+	Engine::GetBeat().SetUserCali(cali);
+	std::cout << cali << std::endl;
+
 	//// camera
-	vec2 start_position = {600, -500};
-	Math::rect cam_limit = Math::rect({600, -346}, {4345, -6000});
+	vec2 start_position = { 600, -500 };
+	Math::rect cam_limit = Math::rect({ 600, -346 }, { 4345, -6000 });
 	camera = new Cam();
 	camera->SetPosition(start_position);
 	camera->SetLimit(cam_limit);
@@ -94,8 +99,9 @@ void Mode1::Load()
 	AddGSComponent(background);
 
 	//// to generate fish
-	Engine::GetGameStateManager().GetGSComponent<Fish>()->ReadFishCSV("assets/scenes/Fish.csv");
 	fishGenerator = new FishGenerator();
+	AddGSComponent(fishGenerator);
+	fishGenerator->ReadFishCSV("assets/images/fish/Fish.csv");
 
 	// background
 	//background->Add("assets/images/background/temp_background4.png", 0.0f);
@@ -120,37 +126,24 @@ void Mode1::Load()
 	//     GetGSComponent<Boss>()->ReadBossJSON(static_cast<Boss::BossType>(i));
 	//     BossFirstPos.push_back(GetGSComponent<Boss>()->GetFirstPosition());
 	// }
-	boss_ptr = new Boss({4100, -5300}, Boss::BossName::e, Boss::BossType::MovingToLocation);
+	boss_ptr = new Boss({ 4100, -5300 }, Boss::BossName::e, Boss::BossType::MovingToLocation);
 	boss_ptr->ReadBossJSON(Boss::BossName::e);
 	BossFirstPos.push_back(std::make_pair(boss_ptr->GetFirstPosition()[0], boss_ptr->GetFirstPosition()[1]));
-	bossPosition = {4100, -5300, 0.0f};
+	bossPosition = { 4100, -5300, 0.0f };
 
 	// UI
 	GetGSComponent<GameObjectManager>()->Add(new Mouse);
 	GetGSComponent<GameObjectManager>()->Add(new FuelUI(ship_ptr));
 
 	// monster
-	GetGSComponent<GameObjectManager>()->Add(new Monster(ship_ptr, {2200, -2000}));
-
-	// // Skill
-	// if (!Engine::Instance()->GetTmpPtr())
-	// {
-	// 	Engine::Instance()->SetTmpPtr(new Skillsys);
-	// 	skill_ptr = static_cast<Skillsys*>(Engine::Instance()->GetTmpPtr());
-	// 	skill_ptr->SetShipPtr(ship_ptr);
-	// }
-	// else
-	// {
-	// 	skill_ptr = static_cast<Skillsys*>(Engine::Instance()->GetTmpPtr());
-	// 	skill_ptr->SetShipPtr(ship_ptr);
-	// }
+	GetGSComponent<GameObjectManager>()->Add(new Monster(ship_ptr, { 2200, -2000 }));
 
 	// Module
 	auto& saveData = Engine::GetSaveDataManager().GetSaveData();
 	firstBuy = saveData.module1.buy;
 	secondBuy = saveData.module2.buy;
 
-	module = new Module({0, 0});
+	module = new Module({ 0, 0 });
 	GetGSComponent<GameObjectManager>()->Add(module);
 
 	//Engine::GetLogger().LoadSaveFile();
@@ -159,7 +152,7 @@ void Mode1::Load()
 	fishCollection = saveData.fishCollection;
 
 	// money
-	fish->SetMoney(saveData.money);
+	fishGenerator->SetMoney(saveData.money);
 
 	// module1
 	if (saveData.module1.set) {
@@ -174,21 +167,22 @@ void Mode1::Load()
 	}
 
 	camera->SetPosition(ship_ptr->GetPosition());
-	
+
 	// Boss Trigger
 	auto bossPosCopy = bossPosition;
 	auto bossCopy = boss_ptr;
 	auto shipCopy = ship_ptr;
 
 	Engine::GetEventManager().AddEvent(Event("Boss E Trigger",
-		[&]() {
-			return ship_ptr != nullptr && ship_ptr->GetPosition().y <= bossPosition.y - 100;
+		[&]() { if (ship_ptr) return ship_ptr->GetPosition().y <= bossPosition.y + 300;
+	return false;
 		},
 		[&]() {
 			GetGSComponent<GameObjectManager>()->Add(boss_ptr);
 			Isboss = true;
 		}
 	));
+
 }
 
 void Mode1::Update(double dt)
@@ -207,18 +201,30 @@ void Mode1::Update(double dt)
 	beat_system->Update(dt);
 
 	// Handle Input
-	if (Engine::GetInput().KeyJustPressed(Input::Keys::TAB))
+	if (Engine::GetInput().KeyJustPressed(Input::Keys::TAB) && ship_ptr->GetPosition().y >= -800.f)
 	{
-		// if (ship_ptr->IsShipUnder() && Engine::GetInput().KeyJustPressed(Input::Keys::Q)) {
 		Engine::GetGameStateManager().ClearNextGameState();
 		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
 	}
 
+	if (Engine::GetInput().KeyJustPressed(Input::Keys::E) && !Isboss)
+	{
+		GetGSComponent<GameObjectManager>()->Add(boss_ptr);
+		Isboss = true;
+	}
+
+#ifdef _DEBUG
+	AddGSComponent(new ShowCollision());
 
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::W))
 	{
 		Engine::GetGameStateManager().ReloadState();
 	}
+
+
+#else
+#endif
+	
 
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::V))
 	{
@@ -227,15 +233,10 @@ void Mode1::Update(double dt)
 	}
 
 
-	if (Engine::GetInput().KeyJustPressed(Input::Keys::E) && !Isboss)
-	{
-		GetGSComponent<GameObjectManager>()->Add(boss_ptr);
-		Isboss = true;
-	}
 
 	if (Isboss)
 	{
-		camera->SetPosition(boss_ptr->GetPosition());
+		camera->SetSmoothPosition(boss_ptr->GetPosition());
 	}
 
 	// camera postion update
@@ -257,7 +258,7 @@ void Mode1::Update(double dt)
 	// Check if within the max distance and apply 3D audio accordingly
 	bool isWithinRange = distance < maxDistance;
 
-	Engine::GetAudioManager().Set3dListenerAndOrientation(smoothShipPosition, vec3{0.0f, -1.0f, 0.0f}, vec3{0.0f, 0.0f, 1.0f});
+	Engine::GetAudioManager().Set3dListenerAndOrientation(smoothShipPosition, vec3{ 0.0f, -1.0f, 0.0f }, vec3{ 0.0f, 0.0f, 1.0f });
 
 	// Apply 3D position for the boss and calculate volume based on the distance
 	if (isWithinRange && !Isboss)
@@ -307,17 +308,15 @@ void Mode1::Draw()
 	background->ShaderBackgroundDraw(Engine::GetShaderManager().GetShader("sea_background"), *GetGSComponent<Cam>(), ship_ptr);
 	GetGSComponent<GameObjectManager>()->DrawAll();
 
-	// Draw Font
-	// Engine::GetFontManager().PrintText(FontType::Bold,"E", { 0.f,0.f }, 0.2f,{ 1.f,1.f,1.f }, 0.5f);
 	if (ship_ptr->GetFuel() <= 0)
 	{
-		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "CLICK TO RESTART", {ship_ptr->GetPosition().x, ship_ptr->GetPosition().y - 60.f}, 88.098f, {1.f, 1.f, 1.f}, 1.0f);
+		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "CLICK TO RESTART", { 0, 0 }, 10.098f, { 1.f, 1.f, 1.f }, 1.0f);
 		// Draw Font
 	}
-	Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "E", {750, 500}, 0.5f, {1.f, 1.f, 1.f}, 0.5f);
+
 	if (module->IsSecondSetted())
 	{
-		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, std::to_string(static_cast<int>(ship_ptr->GetFuel())), {-0.001f, 0.75f}, 0.05f, {1.f, 1.f, 1.f}, 1.f, false);
+		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, std::to_string(static_cast<int>(ship_ptr->GetFuel())), { -0.001f, 0.75f }, 0.05f, { 1.f, 1.f, 1.f }, 1.f, false);
 	}
 }
 void Mode1::Unload()
@@ -327,23 +326,21 @@ void Mode1::Unload()
 	SaveData save = Engine::GetSaveDataManager().GetSaveData();
 
 	ModuleData m1{ firstBuy, module->IsFirstSetted(), save.module1.pos };
-	ModuleData m2{ secondBuy, module->IsSecondSetted(), save.module1.pos };
+	ModuleData m2{ secondBuy, module->IsSecondSetted(), save.module2.pos };
 
 	Engine::GetSaveDataManager().SetFishData(
-		GetGSComponent<Fish>()->GetMoney(),
+		fishGenerator->GetMoney(),
 		fishCollection
 	);
 
 	Engine::GetSaveDataManager().SetModuleData(m1, m2);
+	Engine::GetSaveDataManager().Save();
 	//Engine::GetSaveDataManager().UpdateSaveData(save);
 
 	ship_ptr = nullptr;
-	delete fishGenerator;
-	fishGenerator = nullptr;
 	playing = false;
 	soundPlaying = false;
 	replay = false;
-	fishGenerator = nullptr;
 	Isboss = false;
 	beat_system->CleartoOriginal();
 

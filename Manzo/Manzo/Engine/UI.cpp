@@ -7,8 +7,8 @@ void FuelUI::SetFuelBarUniforms(const GLShader* shader) {
 
 FuelUI::FuelUI(Ship* ship) : GameObject({}), ship(ship)
 {
-    background_texture = Engine::GetTextureManager().Load("assets/images/ui_full.png");
-    foreground_texture = Engine::GetTextureManager().Load("assets/images/ui.png");
+    background_texture = Engine::GetTextureManager().Load("assets/images/ship/ui_full.png");
+    foreground_texture = Engine::GetTextureManager().Load("assets/images/ship/ui.png");
     //background_texture->SetFiltering(GLTexture::Linear);
     //foreground_texture->SetFiltering(GLTexture::Linear);
     position = ship->GetPosition();

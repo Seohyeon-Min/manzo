@@ -97,7 +97,7 @@ FMOD::Sound* AudioManager::GetMusic(const std::string& alias) {
 		return it->second;
 	}
 	else {
-		std::cerr << "Error: Music with name " << alias << " not found." << std::endl;
+		//std::cerr << "Error: Music with name " << alias << " not found." << std::endl;
 		return nullptr;
 	}
 }
@@ -112,11 +112,11 @@ float AudioManager::GetCurrentMusicTime(const std::string& alias) {
 			return currentPosition / 1000.0f; // 초 단위로 변환
 		}
 		else {
-			std::cerr << "Error: Failed to get current music time." << std::endl;
+			//std::cerr << "Error: Failed to get current music time." << std::endl;
 		}
 	}
 	else {
-		std::cerr << "Error: Channel with ID " << alias << " not found." << std::endl;
+		//std::cerr << "Error: Channel with ID " << alias << " not found." << std::endl;
 	}
 	return 0.0f;
 }
@@ -128,7 +128,7 @@ float AudioManager::GetCurrentPlayingMusicTime() {
 
 		FMOD_RESULT result = channel->isPlaying(&isPlaying);
 		if (ErrorCheck(result) != 0) {
-			std::cerr << "Error: Failed to check playing status for channel: " << it->first << std::endl;
+			//std::cerr << "Error: Failed to check playing status for channel: " << it->first << std::endl;
 			continue;
 		}
 
@@ -139,12 +139,12 @@ float AudioManager::GetCurrentPlayingMusicTime() {
 				return currentPosition / 1000.0f;
 			}
 			else {
-				std::cerr << "Error: Failed to get current music time for channel: " << it->first << std::endl;
+				//std::cerr << "Error: Failed to get current music time for channel: " << it->first << std::endl;
 			}
 		}
 	}
 
-	std::cerr << "Error: No music is currently playing." << std::endl;
+	//std::cerr << "Error: No music is currently playing." << std::endl;
 	return 0.0f;
 }
 
@@ -156,7 +156,7 @@ float AudioManager::GetMusicLength(const std::string& alias)
 		sound->getLength(&length_ms, FMOD_TIMEUNIT_MS);
 		return length_ms / 1000.0f; // Convert to seconds
 	}
-	std::cerr << "Error: Music with name " << alias << " not found." << std::endl;
+	//std::cerr << "Error: Music with name " << alias << " not found." << std::endl;
 	return 0.0f;
 }
 
@@ -172,7 +172,7 @@ std::string AudioManager::GetID(const std::string& alias)
 			}
 		}
 	}
-	std::cerr << "Error: Sound with name " << alias << " not found in any channel." << std::endl;
+	//std::cerr << "Error: Sound with name " << alias << " not found in any channel." << std::endl;
 	return nullptr; // Return -1 if the sound is not found
 }
 
@@ -180,7 +180,7 @@ std::string AudioManager::PlayMusics(const std::string& alias, const vec3& vPosi
 	auto tFoundIt = sgpImplementation->mSounds.find(alias);
 	if (tFoundIt == sgpImplementation->mSounds.end()) {
 		// Load music if it hasn't been loaded yet
-		std::cerr << "Error: Sound with alias " << alias << " not found. Please load it first." << std::endl;
+		//std::cerr << "Error: Sound with alias " << alias << " not found. Please load it first." << std::endl;
 		return "";
 	}
 
@@ -229,7 +229,7 @@ void AudioManager::RestartPlayMusic(const std::string& alias)
 	auto tFoundIt = sgpImplementation->mChannels.find(alias);
 	if (tFoundIt == sgpImplementation->mChannels.end())
 	{
-		std::cerr << "Error: Channel not found!" << std::endl;
+		//std::cerr << "Error: Channel not found!" << std::endl;
 		return;
 	}
 
@@ -354,24 +354,36 @@ bool AudioManager::IsAnyMusicPlaying() const {
 	return false;
 }
 
-//bool AudioManager::IsMusicFinished(const std::string& alias) {
-//	auto tFoundIt = sgpImplementation->mChannels.find(alias);
-//	if (tFoundIt != sgpImplementation->mChannels.end()) {
-//		bool bIsPlaying = false;
-//		FMOD_RESULT result = tFoundIt->second->isPlaying(&bIsPlaying);
-//		if (ErrorCheck(result) == 0) {
-//			return !bIsPlaying;
-//		}
-//		else {
-//			std::cerr << "Error: Failed to check if music is finished." << std::endl;
-//		}
-//	}
-//	else {
-//		std::cerr << "Error: Channel with alias " << alias << " not found." << std::endl;
-//	}
-//
-//	return false;
-//}
+bool AudioManager::IsMusicFinished(const std::string& alias) {
+	auto it = sgpImplementation->mChannels.find(alias);
+	if (it == sgpImplementation->mChannels.end()) {
+		// 채널이 없다면 아직 PlayMusics로 재생된 적이 없는 것
+		return false; // 음악이 "시작도 안 했음"이니 false 반환
+	}
+
+	FMOD::Channel* pChannel = it->second;
+	if (!pChannel) {
+		// 이상하게 nullptr이면 끝난 걸로 간주
+		return true;
+	}
+
+	bool isPlaying = false;
+	FMOD_RESULT result = pChannel->isPlaying(&isPlaying);
+
+	if (result != FMOD_OK) {
+		ErrorCheck(result);
+		return true; // 오류가 났으면 재생 안 되는 걸로 간주
+	}
+
+	if (!isPlaying) {
+		// 재생이 끝난 경우, mChannels에서도 제거해주면 안전
+		sgpImplementation->mChannels.erase(it);
+		return true;
+	}
+
+	return false; // 아직 재생 중
+}
+
 
 FMOD_VECTOR AudioManager::VectorToFmod(const vec3& vPosition) {
 	FMOD_VECTOR fVec;
@@ -383,7 +395,7 @@ FMOD_VECTOR AudioManager::VectorToFmod(const vec3& vPosition) {
 
 int AudioManager::ErrorCheck(FMOD_RESULT result) {
 	if (result != FMOD_OK) {
-		std::cout << "FMOD ERROR " << result << std::endl;
+		//std::cout << "FMOD ERROR " << result << std::endl;
 		return 1;
 	}
 	return 0;

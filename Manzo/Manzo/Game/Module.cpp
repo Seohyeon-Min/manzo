@@ -1,4 +1,5 @@
 #include "Module.h"
+#include "../Engine/GameObjectManager.h"
 
 Module::Module() : GameObject({ 0,0 }) { }
 

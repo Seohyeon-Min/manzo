@@ -16,20 +16,16 @@ Shop::Shop(vec2 postion) : GameObject(postion)
 	int count = 1;
 	for (auto& info : shop_infos)
 	{
-		std::cout << count << "th: " << std::endl;
-		std::cout << "name: " << info.name << std::endl;
-		std::cout << "icon name: " << info.icon << std::endl;
-		std::cout << "price : " << info.price << std::endl;
-		std::cout << "script : " << info.script << std::endl;
 		++count;
 		is_on_shop = true;
 
-		std::cout << info.icon << " ";
-		Engine::GetIconManager().AddIcon(
-				info.icon,
-				{ -500.0f, 300.0f - (80.0f * count) },
-				1.f
-			);
+		std::string img_type = (info.icon.find_first_of("0123456789") != std::string::npos) ? info.icon : "module_info";
+
+		Engine::GetIconManager().AddIcon("Shop",
+			info.icon, img_type,
+			{ -500.0f, 300.0f - (80.0f * count) },
+			1.f
+		);
 	}
 
 	inven = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Inven>();
@@ -46,47 +42,66 @@ void Shop::Update(double dt)
 
 	if (inven->GetIsOpened())
 	{
+		Engine::GetIconManager().ShowIconByGroup("Shop");
 		for (auto& info : shop_infos)
 		{
 			std::string icon_name = info.icon;
 
-			Engine::GetIconManager().ShowIcon(icon_name);
-
-			if (Engine::GetIconManager().IsCollidingWith(icon_name, "module_have") && inven->GetMoney() >= info.price)
+			if (inven->GetMoney() >= info.price)
 			{
-				vec2 drop_pos = Engine::GetIconManager().GetIconPosition("module_have", icon_name);
-
-				if (drop_pos.x == 350 + inven->savePos[0].x)
+				if (Engine::GetIconManager().IsCollidingWith(icon_name, "module_have1"))
 				{
-					inven->BuyFirstModule(true);
+					if (icon_name == "module1_info")
+					{
+						Engine::GetIconManager().SetIconPositionById("module1", "module_have1");
+						inven->BuyFirstModule(true);
+					}
+					else if (icon_name == "module2_info")
+					{
+						Engine::GetIconManager().SetIconPositionById("module2", "module_have1");
+						inven->BuySecondModule(true);
+					}
+
+
+					if (!already_buy)
+					{
+						already_buy = true;
+						inven->SetMoney(inven->GetMoney() - info.price);
+					}
 				}
-				else if (drop_pos.x == 350 + inven->savePos[1].x)
+				else if (Engine::GetIconManager().IsCollidingWith(icon_name, "module_have2"))
 				{
-					inven->BuySecondModule(true);
+					if (icon_name == "module1_info")
+					{
+						Engine::GetIconManager().SetIconPositionById("module1", "module_have2");
+						inven->BuyFirstModule(true);
+					}
+					else if (icon_name == "module2_info")
+					{
+						Engine::GetIconManager().SetIconPositionById("module2", "module_have2");
+						inven->BuySecondModule(true);
+					}
+
+
+					if (!already_buy)
+					{
+						already_buy = true;
+						inven->SetMoney(inven->GetMoney() - info.price);
+					}
 				}
 
-				//Engine::GetIconManager().RemoveIcon(icon_name);
-
-				if (!already_buy)
-				{
-					already_buy = true;
-					inven->SetMoney(inven->GetMoney() - info.price);
-				}
 			}
 		}
 	}
 	else
 	{
-		for (auto& info : shop_infos)
-		{
-			Engine::GetIconManager().HideIcon(info.icon);
-		}
+		Engine::GetIconManager().HideIconByGroup("Shop");
 	}
 }
 
 void Shop::Draw(DrawLayer drawlayer)
 {
-	if(inven->GetIsOpened())
+	if (inven->GetIsOpened())
 	{
 		GameObject::Draw();
 	}
@@ -95,7 +110,7 @@ void Shop::Draw(DrawLayer drawlayer)
 void Shop::Read_Shop_Csv(const std::string& filename)
 {
 	std::ifstream file(filename);
-	if (!file.is_open()) 
+	if (!file.is_open())
 	{
 		std::cerr << "Failed to open file: " << filename << std::endl;
 		return;
@@ -104,7 +119,7 @@ void Shop::Read_Shop_Csv(const std::string& filename)
 	std::string line, cell;
 	std::getline(file, line);
 
-	while (std::getline(file, line)) 
+	while (std::getline(file, line))
 	{
 		std::stringstream linestream(line);
 		shop_info shop_i;
@@ -120,7 +135,7 @@ void Shop::Read_Shop_Csv(const std::string& filename)
 
 		std::getline(linestream, cell, ',');
 		shop_i.script = cell;
-		
+
 		shop_infos.push_back(shop_i);
 	}
 	file.close();

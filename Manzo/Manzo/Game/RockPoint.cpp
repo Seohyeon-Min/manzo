@@ -12,7 +12,7 @@ Created:    November 25, 2024
 
 RockPoint::RockPoint(vec2 position, std::string index) :GameObject(position), index(index)
 {
-    AddGOComponent(new Sprite("assets/images/rockpoint_temp.spt", this));
+    AddGOComponent(new Sprite("assets/images/rock/rockpoint_temp.spt", this));
 }
 
 void RockPoint::Update(double dt)

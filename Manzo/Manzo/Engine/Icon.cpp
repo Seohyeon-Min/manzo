@@ -4,13 +4,12 @@
 #include "../Game/Mouse.h"
 #include "../Game/PopUpMovement.h"
 
-Icon::Icon(const std::string& alias, const std::filesystem::path& filename, vec2 position, float scale, bool drag, bool change_pos, bool interactiveWithMouse, bool draw, bool moving) : GameObject(position), alias(alias), position(position), scale(scale), can_drag(drag), can_change_pos(change_pos), interaction(interactiveWithMouse), draw(draw)
+Icon::Icon(const std::string& id, const std::string& group, const std::filesystem::path& filename, vec2 position, float scale, bool drag, bool change_pos, bool interactiveWithMouse, bool draw, bool moving) 
+	: GameObject(position), id(id), group(group), position(position), scale(scale), can_drag(drag), can_change_pos(change_pos), interaction(interactiveWithMouse), draw(draw)
 {
-	//Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(this);
 	AddGOComponent(new Sprite(filename, this));
 	SetScale({ scale,scale });
 
-	Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(this);
 	AddGOComponent(new Dragging(*this));
 
 	if (moving)

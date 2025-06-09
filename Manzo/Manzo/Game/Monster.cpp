@@ -131,7 +131,7 @@ void Monster::ResolveCollision(GameObject* other_object)
             change_state(&state_stanby);
         }
         if (ship_ptr->IsShipMoving()) {
-            std::cout << "yammy\n";
+            //std::cout << "yammy\n";
         }
     }
 }
@@ -205,11 +205,11 @@ void Monster::Alert::CheckExit(GameObject* object)
         monster->change_state(&monster->state_go);
     }
     if (!monster->IsPlayerInRange(monster->ship_ptr->GetPosition())) {
-        std::cout << "Player out of range\n";
+        //std::cout << "Player out of range\n";
         monster->change_state(&monster->state_goback);
     }
     else if ((monster->GetPosition() - monster->ship_ptr->GetPosition()).Length() > monster->vision.dist_from_ship) {
-        std::cout << "Player too far\n";
+        //std::cout << "Player too far\n";
         monster->change_state(&monster->state_goback);
     }
 }

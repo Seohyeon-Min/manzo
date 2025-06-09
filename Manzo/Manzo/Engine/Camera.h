@@ -31,6 +31,7 @@ public:
     Cam();
     void Update(double dt, const vec2& player_position, bool playerMove);
     void SetPosition(vec2 new_position);
+    void SetSmoothPosition(vec2 new_position);
     const vec2& GetPosition() const;
     CameraView& GetCameraView() { return caminfo.camera_view; }
     Camera& GetCamera() { return caminfo.camera; }
@@ -60,6 +61,7 @@ private:
     float lerpFactor = 0.03f;
     vec2 target_position;
     Math::rect limit;
+    float smoothFactor = 0.05f;
 
     struct CamInfo {
         Camera     camera{};

@@ -1,5 +1,6 @@
 #include "BossBullet.h"
 #include "../Engine/Collision.h"
+#include "../Engine/Procedual.h"
 #include "Particles.h"
 #include <cmath>
 #include <stdlib.h>
@@ -14,8 +15,8 @@ int GetRandomValue(int min, int max) {
     return min + rand() % ((max - min) + 1);
 }
 
-BossBullet::BossBullet(vec2 Boss_position, float lifetime)
-    : GameObject(Boss_position), lifetime(lifetime), timeElapsed(0.0f)
+BossBullet::BossBullet(vec2 Boss_position, float lifetime, BulletType bullet_type)
+    : GameObject(Boss_position), lifetime(lifetime), timeElapsed(0.0f), bulletType(bullet_type)
 {
     AddGOComponent(new Sprite("assets/images/bullet.spt", this));
     float Scalerandom = (float)GetRandomValue(1, 2);
@@ -27,7 +28,7 @@ BossBullet::BossBullet(vec2 Boss_position, float lifetime)
         seedInitialized = true;
     }
 
-    Ship* ship = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>();
+    ship = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>();
     vec2 shipPos = ship->GetPosition();
     vec2 direction = { shipPos.x - Boss_position.x, shipPos.y - Boss_position.y };
     float length = sqrt(direction.x * direction.x + direction.y * direction.y);
@@ -35,7 +36,7 @@ BossBullet::BossBullet(vec2 Boss_position, float lifetime)
     direction.y /= length;
 
     this->velocity = vec2(0.0f, 0.0f);
-    float angleOffset = (float)(GetRandomValue(-10,10) * DEG2RAD); 
+    float angleOffset = (float)(GetRandomValue(-10, 10) * DEG2RAD);
     float cosA = cos(angleOffset);
     float sinA = sin(angleOffset);
 
@@ -44,18 +45,45 @@ BossBullet::BossBullet(vec2 Boss_position, float lifetime)
                 direction.x * sinA + direction.y * cosA
     };
 
+
     velocity = { -modifiedDirection.x * 300, -modifiedDirection.y * 300 };
     speed = 30;
     position = Boss_position;
+    this->static_bullet = Boss_position;
     timeElapsed = 0.0f;
+
+
+    if (bulletType == BulletType::StaticTarget || bulletType == BulletType::Accelerating || bulletType == BulletType::Wave) {
+        if (ship) {
+            this->targetPosition = ship->GetPosition();
+            vec2 dir = normalize(this->targetPosition - this->position);
+            float initial_speed = (bulletType == BulletType::Accelerating) ? 10.0f : (float)speed_for_staticTarget;
+            this->velocity = dir * initial_speed;
+        }
+    }
+
+    if (bulletType == BulletType::Wave && ship) {
+        this->targetPosition = ship->GetPosition();
+        this->wave_forward_dir = normalize(this->targetPosition - this->position);
+    }
+    std::vector<int> circleSizes ={ 30, 20, 10 ,10,10};
+    //procedual.Initialize(circleSizes, position);
 }
 
 void BossBullet::Update(double dt) {
     GameObject::Update(dt);
-    Move(dt);
+    Move(dt);   
 
+    //if (!std::isnan(position.x) && !std::isnan(position.y)) {
+    //    procedual.Update(this, 0.2f);
+    //}
+
+    
     if (lifetime <= -1.0f) {
         this->Destroy();
+        procedual.Clear();
+
+        return;
     }
     else {
         lifetime -= dt;
@@ -67,29 +95,60 @@ void BossBullet::Update(double dt) {
 
 
 void BossBullet::Move(double dt) {
-    Ship* ship = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>();
-    if (ship != nullptr) {
-        this->targetPosition = ship->GetPosition();
-    }
-    toPlayer = this->targetPosition - this->position;
-    distanceToPlayer = sqrt(toPlayer.x * toPlayer.x + toPlayer.y * toPlayer.y);
     this->timeElapsed += dt;
 
-    float bulletspeed = (float)speed + (float)(this->distanceToPlayer / this->lifetime) * (float)(this->timeElapsed / this->lifetime);
-    if (bulletspeed > 10000) {
-        bulletspeed = 10000;
+    switch (bulletType)
+    {
+    case BossBullet::BulletType::Homing: {
+        if (ship != nullptr) {
+            this->targetPosition = ship->GetPosition();
+        }
+        toPlayer = this->targetPosition - this->position;
+        distanceToPlayer = sqrt(toPlayer.x * toPlayer.x + toPlayer.y * toPlayer.y);
+
+        float bulletspeed = (float)speed + (float)(this->distanceToPlayer / this->lifetime) * (float)(this->timeElapsed / this->lifetime);
+        if (bulletspeed > 10000) bulletspeed = 10000;
+
+        if (distanceToPlayer > 10.f) {
+            this->velocity += normalize(toPlayer) * bulletspeed * (float)dt;
+        }
+        else {
+            this->velocity += normalize(toPlayer) * bulletspeed * (float)dt;
+        }
+
+        this->position += this->velocity * 0.8f * (float)dt;
+        this->SetVelocity(this->velocity);
+        break;
     }
-    if (distanceToPlayer > 10.f) {
-        this->velocity += (normalize(this->toPlayer) * bulletspeed * (float)dt);
-        
+
+    case BulletType::StaticTarget: {
+        this->static_bullet += this->velocity * (float)(dt);
+        this->position = this->static_bullet;
+        this->SetVelocity(this->velocity);
+        break;
     }
-    else if (distanceToPlayer < 10.f) {
-        this->velocity += (normalize(this->toPlayer) * bulletspeed * (float)dt);
-        
+
+    case BossBullet::BulletType::Wave: {
+        vec2 perp = { -wave_forward_dir.y, wave_forward_dir.x }; // 수직 방향
+        float forwardSpeed = 300.f;
+        float waveOffset = sinf((float)timeElapsed * waveFrequency) * waveAmplitude;
+
+        vec2 movement = wave_forward_dir * forwardSpeed * (float)dt + perp * waveOffset * (float)dt;
+        this->position += movement;
+        this->SetVelocity(movement / (float)dt); // 충돌 계산용
+        break;
     }
-    this->position += (this->velocity) * 0.8f * (float)dt;
-    
-    SetVelocity(this->velocity);
+
+    case BossBullet::BulletType::Accelerating: {
+        this->velocity *= 1.05f;
+        this->position += this->velocity * (float)dt;
+        SetVelocity(this->velocity);
+        break;
+    }
+
+    default:
+        break;
+    }
 }
 
 
@@ -99,6 +158,9 @@ void BossBullet::Draw(DrawLayer drawlayer) {
         &GetMatrix(),
         Engine::GetShaderManager().GetDefaultShader()
     };
+
+    //procedual.Draw(GetMatrix(), drawlayer);
+
 
     draw_call.settings.do_blending = 1;
     GameObject::Draw(draw_call);

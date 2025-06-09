@@ -37,4 +37,6 @@ protected:
         Walking,
     };
 
+    bool soundPlaying = false;
+    bool replay = false;
 };

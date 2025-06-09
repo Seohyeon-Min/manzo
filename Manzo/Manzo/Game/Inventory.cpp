@@ -5,6 +5,9 @@
 #include "../Engine/Engine.h"
 #include "../Engine/Icon.h"
 #include "Dragging.h"
+#include "../Engine/GameObjectManager.h"
+#include "FishEcosystem.h"
+#include "PopUp.h"
 
 Inven::Inven(vec2 position) : GameObject(position), dre_todayFish(rd()), dre_price(rd())
 {
@@ -28,28 +31,29 @@ Inven::Inven(vec2 position) : GameObject(position), dre_todayFish(rd()), dre_pri
 	m1x = saveData.module1.pos;
 	m2x = saveData.module2.pos;
 
-	Engine::GetIconManager().AddIcon("money", { 540,320 }, 1.0f, false);
 
-	Engine::GetIconManager().AddIcon("ModuleTab", { 560,220 }, 1.0f, false, false, true);
-	Engine::GetIconManager().AddIcon("FishTab", { 560,150 }, 1.0f, false, false, true);
-	Engine::GetIconManager().AddIcon("SpecialTab", { 560,80 }, 1.0f, false, false, true);
+	Engine::GetIconManager().AddIcon("OpenInven", "money", "money", { 540,320 }, 1.0f, false);
+	Engine::GetIconManager().AddIcon("OpenInven", "ModuleTab", "moduleTab", { 560, 220 }, 1.0f, false, false, true);
+	Engine::GetIconManager().AddIcon("OpenInven", "FishTab", "fishTab", { 560,150 }, 1.0f, false, false, true);
+	Engine::GetIconManager().AddIcon("OpenInven", "SpecialTab", "specialTab", { 560,80 }, 1.0f, false, false, true);
 
-	///////////////////////////// Module State //////////////////////////////////////
-	Engine::GetIconManager().AddIcon("module_set", { GetPosition().x + savePos[0].x, savePos[0].y }, 0.7f, false);
-	Engine::GetIconManager().AddIcon("module_set", { GetPosition().x + savePos[1].x, savePos[1].y }, 0.7f, false);
+	/////////////////////////////// Module State //////////////////////////////////////
+	Engine::GetIconManager().AddIcon("Module_Tab", "module_set1", "module_empty", { GetPosition().x + savePos[0].x, savePos[0].y }, 0.7f, false);
+	Engine::GetIconManager().AddIcon("Module_Tab", "module_set2", "module_empty", { GetPosition().x + savePos[1].x, savePos[1].y }, 0.7f, false);
 
-	Engine::GetIconManager().AddIcon("module_have", { GetPosition().x + savePos[0].x, -savePos[0].y }, 0.7f, false);
-	Engine::GetIconManager().AddIcon("module_have", { GetPosition().x + savePos[1].x, -savePos[1].y }, 0.7f, false);
+	Engine::GetIconManager().AddIcon("Module_Tab", "module_have1", "module_empty", { GetPosition().x + savePos[0].x, -savePos[0].y }, 0.7f, false);
+	Engine::GetIconManager().AddIcon("Module_Tab", "module_have2", "module_empty", { GetPosition().x + savePos[1].x, -savePos[1].y }, 0.7f, false);
 
-	Engine::GetIconManager().AddIcon("module1", vec2(m1x, module_ptr->IsFirstSetted() ? savePos[0].y : -savePos[0].y), 1.f, true, true, true);
-	Engine::GetIconManager().AddIcon("module2", vec2(m2x, module_ptr->IsSecondSetted() ? savePos[1].y : -savePos[1].y), 1.f, true, true, true);
-	
-	///////////////////////////// Fish Collection State //////////////////////////////////////
-	Engine::GetIconManager().AddIcon("plus1", { 80,-75 }, 1.f, false, false, true);
-	Engine::GetIconManager().AddIcon("plus10", { 50,-75 }, 1.f, false, false, true);
+	Engine::GetIconManager().AddIcon("Module_Tab_Get", "module1", "module1_info", vec2(m1x, module_ptr->IsFirstSetted() ? savePos[0].y : -savePos[0].y), 1.f, true, true, true);
+	Engine::GetIconManager().AddIcon("Module_Tab_Get", "module2", "module2_info", vec2(m2x, module_ptr->IsSecondSetted() ? savePos[1].y : -savePos[1].y), 1.f, true, true, true);
 
-	Engine::GetIconManager().AddIcon("minus1", { -80,-75 }, 1.f, false, false, true);
-	Engine::GetIconManager().AddIcon("minus10", { -50,-75 }, 1.f, false, false, true);
+	/////////////////////////////// Fish Collection State //////////////////////////////////////
+	Engine::GetIconManager().AddIcon("FishPopUp", "plus1", "plus1", { 80,-75 }, 1.f, false, false, true);
+	Engine::GetIconManager().AddIcon("FishPopUp", "plus10", "plus10", { 50,-75 }, 1.f, false, false, true);
+
+	Engine::GetIconManager().AddIcon("FishPopUp", "minus1", "minus1", { -80,-75 }, 1.f, false, false, true);
+	Engine::GetIconManager().AddIcon("FishPopUp", "minus10", "minus10", { -50,-75 }, 1.f, false, false, true);
+	Engine::GetIconManager().AddIcon("FishPopUp", "sell_fish", "confirm", { 0,-110 }, 1.f, false, false, true);
 
 	if (!is_picked)  //pick today's special fish
 	{
@@ -62,18 +66,18 @@ Inven::Inven(vec2 position) : GameObject(position), dre_todayFish(rd()), dre_pri
 		is_picked = true;
 	}
 	todays_fish_icon = "fish" + std::to_string(todays_fish_index + 1);
-	Engine::GetIconManager().AddIcon(todays_fish_icon, { -575,300 }, 1.0f, false, false, false, true, true);
+	Engine::GetIconManager().AddIcon("Mode2_Always", todays_fish_icon + "_today", todays_fish_icon, { -575,300 }, 1.0f, false, false, false, true, true);
 
+	Engine::GetIconManager().ShowIconByGroup("Mode2_Always");
 
 	for (auto& fish : originCollection)
 	{
 		if (fish.second != 0)
 		{
 			std::string file_name = "fish" + std::to_string(fish.first + 1);
-			std::string file_name_pop = "fish_pop" + std::to_string(fish.first + 1);
 
-			Engine::GetIconManager().AddIcon(file_name, { GetPosition().x + 100,float(p -= 80) }, 1.0f, true, false, true);
-			Engine::GetIconManager().AddIcon(file_name_pop, { 0,40 }, 1.0f, false, false, false, false, false);
+			Engine::GetIconManager().AddIcon("Fish_Tab", file_name + "_having", file_name, { GetPosition().x + 100,float(p -= 80) }, 1.0f, true, false, true);
+			Engine::GetIconManager().AddIcon("FishPopping", file_name + "_popping", file_name, { 0,40 }, 1.0f, false, false, false, false, false);
 		}
 	}
 }
@@ -84,8 +88,8 @@ void Inven::Update(double dt)
 
 	Icon* selectedIcon = nullptr;
 	bool clicked = Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT);
-	
-	std::cout << holding << std::endl;
+
+	//std::cout << holding << std::endl;
 
 	if (!holding && Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT)) {
 		selectedIcon = Engine::GetIconManager().GetCollidingIconWithMouse({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY });
@@ -96,7 +100,7 @@ void Inven::Update(double dt)
 
 	if (selectedIcon != nullptr && clicked)
 	{
-		std::string alias = selectedIcon->GetAlias();
+		std::string alias = selectedIcon->GetId();
 
 		if (alias == "ModuleTab")
 		{
@@ -113,40 +117,29 @@ void Inven::Update(double dt)
 			page = 3;
 			change_state(&state_sc);
 		}
-		else if (alias == "close_icon")
-		{
-			page = 0;
-			change_state(&state_none);
-			is_opened = false;
-		}
 
 		holding = false;
 	}
 
 	if (current_state != &state_module)
 	{
-		Engine::GetIconManager().HideIcon("module1");
-		Engine::GetIconManager().HideIcon("module2");
-		Engine::GetIconManager().HideIcon("module_set");
-		Engine::GetIconManager().HideIcon("module_have");
+		Engine::GetIconManager().HideIconByGroup("Module_Tab");
+		Engine::GetIconManager().HideIconByGroup("Module_Tab_Get");
 	}
 
 	if (current_state != &state_fc)
 	{
-		Engine::GetIconManager().HideIcon("plus1");
-		Engine::GetIconManager().HideIcon("plus10");
-		Engine::GetIconManager().HideIcon("minus1");
-		Engine::GetIconManager().HideIcon("minus10");
-		Engine::GetIconManager().HideIcon("close_icon");
-		//Engine::GetIconManager().HideIcon(todays_fish_icon);
+		Engine::GetIconManager().HideIconByGroup("Fish_Tab");
+		Engine::GetIconManager().HideIconByGroup("FishPopUp");
+		how_much_sold = 1;
 
 		for (auto& fish : originCollection)
 		{
 			if (fish.second != 0)
 			{
-				std::string file_name = "fish" + std::to_string(fish.first + 1);
+				std::string file_name = "fish" + std::to_string(fish.first + 1) + "_having";
 
-				Engine::GetIconManager().HideIcon(file_name);
+				Engine::GetIconManager().HideIconById(file_name);
 			}
 		}
 	}
@@ -154,7 +147,6 @@ void Inven::Update(double dt)
 	if (!is_opened)
 	{
 		change_state(&state_none);
-		//Engine::GetIconManager().RemoveAllIcon();
 	}
 }
 
@@ -173,7 +165,7 @@ bool Inven::Open()
 
 	if (selectedIcon != nullptr)
 	{
-		if (selectedIcon->GetAlias() == "go_shop" && clicked)
+		if (selectedIcon->GetId() == "can_go_shop" && clicked)
 			return true;
 	}
 	return false;
@@ -209,8 +201,7 @@ void Inven::State_Module::Enter(GameObject* object)
 	inven->GetGOComponent<Sprite>()->PlayAnimation(static_cast<int>(Animations::Module));
 	inven->page = 1;
 
-	Engine::GetIconManager().ShowIcon("module_set");
-	Engine::GetIconManager().ShowIcon("module_have");
+	Engine::GetIconManager().ShowIconByGroup("Module_Tab");
 }
 
 void Inven::State_Module::Update(GameObject* object, double dt)
@@ -221,53 +212,68 @@ void Inven::State_Module::Update(GameObject* object, double dt)
 	/////////////////////////////////////////////////// Check Buy ///////////////////////////////////////////////////
 	if (inven->buy_first_module)
 	{
-		Engine::GetIconManager().ShowIcon("module1");
+		Engine::GetIconManager().ShowIconById("module1");
 	}
 
 	if (inven->buy_second_module)
 	{
-		Engine::GetIconManager().ShowIcon("module2");
+		Engine::GetIconManager().ShowIconById("module2");
 	}
 
 	/////////////////////////////////////////////////// Check Set ///////////////////////////////////////////////////
-	if (Engine::GetIconManager().IsCollidingWith("module_set", "module1"))
+	if (Engine::GetIconManager().IsCollidingWith("module1", "module_set1"))
 	{
 		inven->module_ptr->SetFirstModule(true);
-		inven->m1x = Engine::GetIconManager().GetIconPosition("module_set", "module1").x;
+		Engine::GetIconManager().SetIconPositionById("module1", "module_set1");
+		inven->m1x = Engine::GetIconManager().GetIconPositionIfColliding("module_set1", "module1").x;
 	}
-	else
+	else if (Engine::GetIconManager().IsCollidingWith("module1", "module_set2"))
+	{
+		inven->module_ptr->SetFirstModule(true);
+		Engine::GetIconManager().SetIconPositionById("module1", "module_set2");
+		inven->m1x = Engine::GetIconManager().GetIconPositionIfColliding("module_set2", "module1").x;
+	}
+	else if(Engine::GetIconManager().IsCollidingWith("module1", "module_have1"))
 	{
 		inven->module_ptr->SetFirstModule(false);
-		inven->m1x = inven->GetPosition().x + inven->savePos[0].x;
+		Engine::GetIconManager().SetIconPositionById("module1", "module_have1");
+		inven->m1x = Engine::GetIconManager().GetIconPositionIfColliding("module_have1", "module1").x;
+	}
+	else if (Engine::GetIconManager().IsCollidingWith("module1", "module_have2"))
+	{
+		inven->module_ptr->SetFirstModule(false);
+		Engine::GetIconManager().SetIconPositionById("module1", "module_have2");
+		inven->m1x = Engine::GetIconManager().GetIconPositionIfColliding( "module_have2", "module1").x;
 	}
 
-	if (Engine::GetIconManager().IsCollidingWith("module_set", "module2"))
+
+	if (Engine::GetIconManager().IsCollidingWith("module2", "module_set1"))
 	{
 		inven->module_ptr->SetSecondModule(true);
-		inven->m2x = Engine::GetIconManager().GetIconPosition("module_set", "module2").x;
+		Engine::GetIconManager().SetIconPositionById("module2", "module_set1");
+		inven->m2x = Engine::GetIconManager().GetIconPositionIfColliding("module_set1", "module2").x;
 	}
-	else
+	else if (Engine::GetIconManager().IsCollidingWith("module2", "module_set2"))
+	{
+		inven->module_ptr->SetSecondModule(true);
+		Engine::GetIconManager().SetIconPositionById("module2", "module_set2");
+		inven->m2x = Engine::GetIconManager().GetIconPositionIfColliding("module_set2", "module2").x;
+	}
+	else if (Engine::GetIconManager().IsCollidingWith("module2", "module_have1"))
 	{
 		inven->module_ptr->SetSecondModule(false);
-		inven->m2x = inven->GetPosition().x + inven->savePos[1].x;
+		Engine::GetIconManager().SetIconPositionById("module2", "module_have1");
+		inven->m2x = Engine::GetIconManager().GetIconPositionIfColliding("module_have1", "module2").x;
 	}
-
-
-	/////////////////////////////////////////////////// Clear ///////////////////////////////////////////////////
-	if (Engine::GetIconManager().IsCollidingWith("module_have", "module1"))
-	{
-		inven->module_ptr->SetFirstModule(false);
-		inven->m1x = inven->GetPosition().x + inven->savePos[0].x;
-	}
-
-	if (Engine::GetIconManager().IsCollidingWith("module_have", "module2"))
+	else if (Engine::GetIconManager().IsCollidingWith("module2", "module_have2"))
 	{
 		inven->module_ptr->SetSecondModule(false);
-		inven->m2x = inven->GetPosition().x + inven->savePos[1].x;
+		Engine::GetIconManager().SetIconPositionById("module2", "module_have2");
+		inven->m2x = Engine::GetIconManager().GetIconPositionIfColliding("module_have2", "module2").x;
 	}
 }
 
-void Inven::State_Module::CheckExit(GameObject* object){}
+void Inven::State_Module::CheckExit(GameObject* object) {}
 
 void Inven::State_FC::Enter(GameObject* object)
 {
@@ -276,17 +282,10 @@ void Inven::State_FC::Enter(GameObject* object)
 
 	inven->page = 2;
 
-	for (auto& fish : inven->originCollection)
-	{
-		if (fish.second != 0)
-		{
-			std::string file_name = "fish" + std::to_string(fish.first + 1);
 
-			Engine::GetIconManager().ShowIcon(file_name);
-		}
-	}
+	Engine::GetIconManager().ShowIconByGroup("Fish_Tab");
 
-	//Engine::GetIconManager().ShowIcon(inven->todays_fish_icon);
+	Engine::GetIconManager().ShowIconById(inven->todays_fish_icon);
 }
 
 void Inven::State_FC::Update(GameObject* object, double dt)
@@ -294,32 +293,23 @@ void Inven::State_FC::Update(GameObject* object, double dt)
 	Inven* inven = static_cast<Inven*>(object);
 	inven->GetGOComponent<Sprite>()->Update(dt);
 
-	// Sell all
-	if (Engine::GetInput().KeyJustPressed(Input::Keys::O))
-	{
-		//earn money
-		inven->money += (inven->todays_price * inven->fishCollection[inven->todays_fish_index]);
-
-		//decrease each type of fish
-		inven->fishCollection[inven->todays_fish_index] = 0;
-		inven->how_much_sold = 0;
-	}
-
 	Icon* selectedIcon = Engine::GetIconManager().GetCollidingIconWithMouse({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY });
 	bool clicked = Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT);
 
 	if (selectedIcon != nullptr)
 	{
-		std::string alias = selectedIcon->GetAlias();
-		if (inven->fishCollection[inven->todays_fish_index] > inven->how_much_sold && alias == "plus1" && clicked)
+		std::string alias = selectedIcon->GetId();
+
+		if (inven->fishCollection[inven->which_fish_sellected] > inven->how_much_sold && alias == "plus1" && clicked)
 		{
 			inven->how_much_sold++;
+
 		}
-		else if (inven->fishCollection[inven->todays_fish_index] >= inven->how_much_sold + 10 && alias == "plus10" && clicked)
+		else if (inven->fishCollection[inven->which_fish_sellected] >= inven->how_much_sold + 10 && alias == "plus10" && clicked)
 		{
 			inven->how_much_sold += 10;
 		}
-		else if (inven->how_much_sold > 0 && alias == "minus1" && clicked)
+		else if (inven->how_much_sold > 1 && alias == "minus1" && clicked)
 		{
 			inven->how_much_sold--;
 		}
@@ -327,47 +317,16 @@ void Inven::State_FC::Update(GameObject* object, double dt)
 		{
 			inven->how_much_sold -= 10;
 		}
-
-		// sell basic fishes
-		for (auto& fish : inven->originCollection)
-		{
-			int index = fish.first;
-			int count = fish.second;
-
-			if (count != 0 && index != inven->todays_fish_index)
-			{
-				std::string fish_alias = "fish" + std::to_string(index + 1);
-
-				if (alias == fish_alias &&
-					Engine::GetIconManager().IsCollidingWith(fish_alias, "rect1") &&
-					inven->fishCollection[index] != 0 &&
-					!inven->has_sold)
-				{
-					inven->has_sold = true;
-					inven->fishCollection[index] -= 1;
-					inven->money += 1;
-				}
-			}
-		}
 	}
 	else
 	{
 		inven->has_sold = false;
-	}
-
-	// decide to sell
-	if (Engine::GetInput().KeyJustPressed(Input::Keys::F1) && inven->fishCollection[inven->todays_fish_index] != 0)
-	{
-		inven->money += (inven->todays_price * inven->how_much_sold);
-		inven->fishCollection[inven->todays_fish_index] -= inven->how_much_sold;
-		inven->how_much_sold = 0;
 	}
 }
 
 void Inven::State_FC::CheckExit(GameObject* object)
 {
 	Inven* inven = static_cast<Inven*>(object);
-	inven->how_much_sold = 0;
 }
 
 void Inven::State_SC::Enter(GameObject* object)

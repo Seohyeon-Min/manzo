@@ -3,7 +3,7 @@
 Player::Player(vec2 start_position) :
     GameObject(start_position)
 {
-    AddGOComponent(new Sprite("assets/images/character_sprite/Player.spt", this));
+    AddGOComponent(new Sprite("assets/images/character/character_sprite/Player.spt", this));
     current_state = &state_idle;
     current_state->Enter(this);
     SetScale({ 2.0f, 2.0f });
@@ -12,6 +12,29 @@ Player::Player(vec2 start_position) :
 void Player::Update(double dt)
 {
     GameObject::Update(dt);
+
+    if (current_state == &state_walking)
+    {
+        if (!soundPlaying)
+        {
+            Engine::GetAudioManager().PlayMusics("walk");
+            soundPlaying = true;
+        }
+        else
+        {
+            if (!replay)
+            {
+                Engine::GetAudioManager().RestartPlayMusic("walk");
+                replay = true;
+            }
+        }
+    }
+    else
+    {
+        Engine::GetAudioManager().StopPlayingMusic("walk");
+        replay = false;
+        soundPlaying = false;
+    }
 }
 
 void Player::Draw(DrawLayer drawlayer)

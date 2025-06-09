@@ -89,7 +89,7 @@
     <ClCompile Include="Engine\BeatSystem.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Game\AI.cpp">
+    <ClCompile Include="Game\FlockingFish.cpp">
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Game\Background.cpp">
@@ -158,9 +158,6 @@
     <ClCompile Include="Game\Shop.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Skill.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Splash.cpp">
       <Filter>Game</Filter>
     </ClCompile>
@@ -206,6 +203,12 @@
     </ClCompile>
     <ClCompile Include="Engine\ScenarioSystem.cpp">
       <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Procedual.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\JellyEnemy.cpp">
+      <Filter>Game</Filter>
     </ClCompile>
   </ItemGroup>
   <!-- 헤더 파일(ClInclude)에 필터 적용 -->
@@ -273,9 +276,6 @@
     <ClInclude Include="Engine\Polygon.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\AABB.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Rapidjson.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -303,7 +303,7 @@
     <ClInclude Include="Engine\UI.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Game\AI.h">
+    <ClInclude Include="Game\FlockingFish.h">
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Game\Background.h">
@@ -375,9 +375,6 @@
     <ClInclude Include="Game\Shop.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Skill.h">
-      <Filter>Game</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Splash.h">
       <Filter>Game</Filter>
     </ClInclude>
@@ -431,6 +428,12 @@
     </ClInclude>
     <ClInclude Include="Engine\ScenarioSystem.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Procedual.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\JellyEnemy.h">
+      <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

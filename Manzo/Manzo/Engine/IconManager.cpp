@@ -18,6 +18,7 @@ IconManager::~IconManager()
 void IconManager::Unload()
 {
 	icons.clear();
+	icon_by_id.clear();
 	icon_list.clear();
 }
 
@@ -29,14 +30,14 @@ void IconManager::LoadIconList()
 		return;
 	}
 
-	std::string line, alias, path;
+	std::string line, img_type, path;
 	std::getline(file, line);
 
 	while (std::getline(file, line)) {
 		std::stringstream linestream(line);
 
-		if (std::getline(linestream, alias, ',') && std::getline(linestream, path, ',')) {
-			icon_list[alias] = path;
+		if (std::getline(linestream, img_type, ',') && std::getline(linestream, path, ',')) {
+			icon_list[img_type] = path;
 		}
 	}
 
@@ -44,26 +45,24 @@ void IconManager::LoadIconList()
 	std::cout << "Icon list loaded successfully!" << std::endl;
 }
 
-
-void IconManager::AddIcon(std::string alias, vec2 position, float scale, bool drag, bool change_pos, bool interaction, bool draw, bool moving)
+void IconManager::AddIcon(std::string group, std::string id, std::string img_type, vec2 position, float scale, bool drag, bool change_pos, bool interaction, bool draw, bool moving)
 {
-	auto it = icon_list.find(alias);
-	if (it != icon_list.end()) {
-		for (const auto& icon : icons)
-		{
-			if (icon->GetAlias() == alias && icon->GetPosition() == position && icon->GetScale() == scale)
-			{
-				return;
-			}
-		}
-		icons.push_back(new Icon(it->first, it->second, position, scale, drag, change_pos, interaction, draw, moving));
-		//Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new Icon(it->first, it->second, position, scale, drag, change_pos, interaction));
+	if (icon_by_id.contains(id)) {
+		std::cerr << "Warning: Icon ID '" << id << "' already exists." << std::endl;
+		return;
 	}
-	else
-	{
-		std::cerr << "Error: Icon alias '" << alias << "' not found!" << std::endl;
+
+	auto it = icon_list.find(img_type);
+	if (it != icon_list.end()) {
+		Icon* newIcon = new Icon(id, group, it->second, position, scale, drag, change_pos, interaction, draw, moving);
+		icons.push_back(newIcon);
+		icon_by_id[id] = newIcon;
+	}
+	else {
+		std::cerr << "Error: img_type '" << img_type << "' not found in icon list!" << std::endl;
 	}
 }
+
 
 void IconManager::RemoveAllIcon()
 {
@@ -74,112 +73,104 @@ void IconManager::RemoveAllIcon()
 	icons.clear();
 }
 
-bool IconManager::IsCollidingWith(std::string obj1, std::string obj2)
+bool IconManager::IsCollidingWith(const std::string& id1, const std::string& id2)
 {
-	std::vector<Icon*> icons1;
-	std::vector<Icon*> icons2;
+	auto it1 = icon_by_id.find(id1);
+	auto it2 = icon_by_id.find(id2);
 
-	for (auto icon : icons)
-	{
-		if (icon->GetAlias() == obj1)
-		{
-			icons1.push_back(icon);
-		}
-		else if (icon->GetAlias() == obj2)
-		{
-			icons2.push_back(icon);
-		}
-	}
-
-	for (auto icon1 : icons1)
-	{
-		for (auto icon2 : icons2)
-		{
-			if (icon1->IsCollidingWith(icon2))
-			{
-				return true;
-			}
-		}
-	}
-
-	if (icons1.empty() || icons2.empty()) {
+	if (it1 == icon_by_id.end() || it2 == icon_by_id.end()) {
 		return false;
 	}
 
-	return false;
+	Icon* icon1 = it1->second;
+	Icon* icon2 = it2->second;
+
+	return icon1->IsCollidingWith(icon2);
 }
 
-void IconManager::HideIcon(std::string alias)
+
+void IconManager::HideIconById(const std::string& id)
 {
-	for (auto icon : icons)
+	auto it = icon_by_id.find(id);
+	if (it != icon_by_id.end()) {
+		it->second->SetHide(true);
+	}
+}
+
+void IconManager::ShowIconById(const std::string& id)
+{
+	auto it = icon_by_id.find(id);
+	if (it != icon_by_id.end()) {
+		it->second->SetHide(false);
+	}
+}
+
+void IconManager::RemoveIconById(const std::string& id)
+{
+	auto it = icon_by_id.find(id);
+	if (it != icon_by_id.end()) {
+		Icon* icon = it->second;
+		icon->Destroy();
+
+		icons.erase(std::remove(icons.begin(), icons.end(), icon), icons.end());
+		icon_by_id.erase(it);
+		delete icon;
+	}
+}
+
+void IconManager::HideIconByGroup(const std::string& group)
+{
+	for (Icon* icon : icons)
 	{
-		if (icon->GetAlias() == alias)
+		if (icon->GetGroup() == group)
 		{
-			icon->SetDraw(false);
 			icon->SetHide(true);
 		}
 	}
 }
 
-void IconManager::ShowIcon(std::string alias)
+void IconManager::ShowIconByGroup(const std::string& group)
 {
-	for (auto icon : icons)
+	for (Icon* icon : icons)
 	{
-		if (icon->GetAlias() == alias)
+		if (icon->GetGroup() == group)
 		{
-			icon->SetDraw(true);
 			icon->SetHide(false);
 		}
 	}
 }
 
-void IconManager::SetIconPosition(std::string alias, vec2 newPosition)
+void IconManager::SetPositionById(const std::string& id, vec2 newPosition)
 {
-	Icon* targetIcon = nullptr;
-	for (Icon* icon : icons)
-	{
-		if (icon->GetAlias() == alias)
-		{
-			targetIcon = icon;
-		}
-	}
-
-	if (targetIcon)
-	{
-		targetIcon->SetPosition(newPosition);
-		targetIcon->position = newPosition;
+	auto it = icon_by_id.find(id);
+	if (it != icon_by_id.end()) {
+		it->second->SetPosition(newPosition);
+		it->second->position = newPosition; // if still needed elsewhere
 	}
 }
 
-vec2 IconManager::GetIconPosition(std::string obj1, std::string obj2)
+void IconManager::SetIconPositionById(const std::string& id, const std::string& target_pos)
 {
-	std::vector<Icon*> icons1;
-	std::vector<Icon*> icons2;
+	auto it1 = icon_by_id.find(id);
+	auto it2 = icon_by_id.find(target_pos);
 
-	for (auto icon : icons)
-	{
-		if (icon->GetAlias() == obj1)
-		{
-			icons1.push_back(icon);
-		}
-		else if (icon->GetAlias() == obj2)
-		{
-			icons2.push_back(icon);
+	if (it1 != icon_by_id.end() && it2 != icon_by_id.end()) {
+		it1->second->SetPosition(it2->second->GetPosition());
+	}
+}
+
+vec2 IconManager::GetIconPositionIfColliding(const std::string& id1, const std::string& id2)
+{
+	auto it1 = icon_by_id.find(id1);
+	auto it2 = icon_by_id.find(id2);
+
+	if (it1 != icon_by_id.end() && it2 != icon_by_id.end()) {
+		if (it1->second->IsCollidingWith(it2->second)) {
+			return it1->second->GetPosition();
 		}
 	}
 
-	for (auto icon1 : icons1)
-	{
-		for (auto icon2 : icons2)
-		{
-			if (icon1->IsCollidingWith(icon2))
-			{
-				return icon1->GetPosition();
-			}
-		}
-	}
-
-	return { 0,0 };
+	return { 0, 0 };
 }
 
 Icon* IconManager::GetCollidingIcon(Icon& icon)
@@ -197,15 +188,36 @@ Icon* IconManager::GetCollidingIcon(Icon& icon)
 	return nullptr;
 }
 
-
 Icon* IconManager::GetCollidingIconWithMouse(vec2 mousePosition)
 {
-	for (Icon* icon : icons)
+	for (auto& [id, icon] : icon_by_id)
 	{
-		if (icon->IsCollidingWith(mousePosition))
+		if (icon->IsCollidingWith(mousePosition) && !icon->IsHide())
 		{
 			return icon;
 		}
 	}
+	return nullptr;
+}
+
+vec2 IconManager::GetIconPosition(const std::string& id1)
+{
+	auto it1 = icon_by_id.find(id1);
+
+	if (it1 != icon_by_id.end()) {
+		return it1->second->GetPosition();
+	}
+
+	return { 0, 0 };
+}
+
+Icon* IconManager::GetIcon(const std::string& id)
+{
+	auto it = icon_by_id.find(id);
+
+	if (it != icon_by_id.end()) {
+		return it->second;
+	}
+
 	return nullptr;
 }

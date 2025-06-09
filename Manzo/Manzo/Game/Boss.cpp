@@ -3,10 +3,15 @@
 #include "Boss.h"
 #include "Ship.h"
 #include "BossBullet.h"
-
+#include "../Engine/GameObjectManager.h"
+#include "JellyEnemy.h"
+#include "../Engine/MathUtils.h"
 
 std::vector<GameObject::State*> stateMap;
 std::vector<std::string> BossJSONfileMap;
+
+#define PI 3.14159265358979f
+#define DEG2RAD (PI / 180.0f)
 
 Boss::Boss(vec2 start_position, BossName name, BossType type)
 	: GameObject(start_position), bossType(type)
@@ -39,8 +44,12 @@ bool IsFirstFrame() {
 
 
 void Boss::Bullet(Boss* boss) {
-		BossBullet* bullet_ptr = new BossBullet(boss->GetPosition(), (float)(boss->beat->GetFixedDuration()) * 2);
+	
+		BossBullet* bullet_ptr = new BossBullet(boss->GetPosition(), (float)(boss->beat->GetFixedDuration()) * 2, BossBullet::BulletType::Wave);
 		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bullet_ptr);
+		JellyEnemy* jelly_ptr = new JellyEnemy({ boss->GetPosition().x, boss->GetPosition().y - 400 }, 50 ,(float)(boss->beat->GetFixedDuration()) * 4, JellyEnemy::JellyType::Up);
+		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(jelly_ptr);
+
 }
 
 
@@ -211,25 +220,32 @@ void Boss::InitializeStates() {
 
 void Boss::Update(double dt) {
 	Boss* boss = static_cast<Boss*>(this);
-	//std::cout << total_entry.size() << std::endl;
+
 	if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
 		if (GameObject::current_state->GetName() != Boss::state_cutscene.GetName()) {
-
 			boss->barCount = beat->GetBarCount();
-			//std::cout << barCount << std::endl;
 			if (boss->barCount <= total_entry.size()) {
 				if (boss->barCount < total_entry.size() && total_entry[boss->barCount] - 1 < stateMap.size()) {
 					change_state(stateMap[total_entry[boss->barCount] - 1]);
-					
 				}
 			}
 			else if (boss->barCount > total_entry.size()) {
-				//std::cerr << "Invalid barCount or index out of range: " << boss->barCount << std::endl;
 				Destroy();
 				AfterDied();
 			}
 		}
 
+		Ship* ship = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>();
+		if (ship) {
+			// 목표 스케일 X값 설정 (좌: 1.0, 우: -1.0)
+			targetScaleX = ship->GetPosition().x > GetPosition().x ? -1.0f : 1.0f;
+		}
+
+		// 서서히 보간
+		const float flipSpeed = 5.0f; // 속도 조절 값 (크면 빠르게 뒤집힘)
+		currentScaleX = Lerp(currentScaleX, targetScaleX, static_cast<float>(dt) * flipSpeed);
+
+		SetScale({ currentScaleX, 1.0f });
 		Move(dt);
 	}
 }
@@ -266,7 +282,7 @@ void Boss::AttackCircle(vec2 pos, double radius, double elapsed_time)
 			if (!isattack) {
 				Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()
 					->GetGOComponent<Ship>()->DeclineFuel(100.f);
-				std::cout << "Attack" << std::endl;
+				//std::cout << "Attack" << std::endl;
 				isattack = true;
 			}
 		}
@@ -287,12 +303,20 @@ void Boss::DrawShieldRange(vec2 pos, double radius)
 	Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call));
 }
 
+//void Boss::Spawn8WayBullets(vec2 position) {
+//	float angleStep = 45.0f;
+//	float speed = 200.0f;
+//
+//	for (int i = 0; i < 8; ++i) {
+//		float angle = angleStep * i * DEG2RAD;
+//		vec2 dir = { cosf(angle), sinf(angle) };
+//		BossBullet* bullet = new BossBullet(position, 4.0f, BossBullet::BulletType::StaticTarget, dir * speed);
+//		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bullet);
+//	}
+//}
 
 
 
-vec2 Lerp(const vec2& start, const vec2& end, float t) {
-	return start + t * (end - start);
-}
 
 void Boss::Move(double dt) {
 	Boss* boss = static_cast<Boss*>(this);
@@ -367,25 +391,24 @@ void SetUni(const GLShader* shader) {
 void Boss::Draw(DrawLayer drawlayer)
 {
 	DrawCall draw_call = {
-		GetGOComponent<Sprite>()->GetTexture(),					// Texture to draw
-		&GetMatrix(),											// Transformation matrix
+		GetGOComponent<Sprite>()->GetTexture(),
+		&GetMatrix(),
 		Engine::GetShaderManager().GetShader("wave")
 	};
-
 	draw_call.settings.do_blending = true;
 	draw_call.SetUniforms = [this](const GLShader* shader) { SetUni(shader); };
 
 	DrawCall draw_call_body = {
-	boss_body,
-	&GetMatrix(),
-	Engine::GetShaderManager().GetDefaultShader()
+		boss_body,
+		&GetMatrix(),
+		Engine::GetShaderManager().GetDefaultShader()
 	};
-
 	draw_call_body.settings.do_blending = true;
 
 	GameObject::Draw(draw_call);
 	GameObject::Draw(draw_call_body);
 }
+
 
 bool Boss::CanCollideWith(GameObjectTypes other_object) {
 	switch (other_object) {

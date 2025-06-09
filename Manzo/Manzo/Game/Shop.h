@@ -8,7 +8,6 @@
 #include "../Engine/GameObjectManager.h"
 #include "..\Engine\Engine.h"
 #include "Fish.h"
-#include "Skill.h"
 #include "Inventory.h"
 #include "..\Engine\Sprite.h"
 
@@ -45,7 +44,6 @@ public:
 private:
 
 	Inven* inven;
-	Skillsys*					skill_ptr;
 	int							Net_Money = 3;
 	bool						shop_available = false; // false = shop disappear / true = shop appear
 	bool already_buy;
