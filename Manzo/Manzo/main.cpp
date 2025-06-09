@@ -6,6 +6,7 @@
 #include "Game/Splash.h"
 #include "Game/Mode1.h"
 #include "Game/Mode2.h"
+#include "Game/Loading.h"
 #include "Game/TutorialMap.h"
 #include "Game/Title.h"
 #include "Game/Mode3.h"
@@ -30,9 +31,16 @@ int main() {
 
         Title title;
         engine->GetGameStateManager().AddGameState(title);
+        std::ofstream saveFile("assets/scenes/save_data.txt", std::ios::trunc);
+        
+
+        //Loading loading;
+        //engine->GetGameStateManager().AddGameState(loading);
 
         Mode1 mode1;
         engine->GetGameStateManager().AddGameState(mode1);
+        Title title;
+        engine->GetGameStateManager().AddGameState(title);
 
         Mode2 mode2;
         engine->GetGameStateManager().AddGameState(mode2);

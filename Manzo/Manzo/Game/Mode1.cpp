@@ -83,8 +83,8 @@ void Mode1::Load()
 	std::cout << cali << std::endl;
 
 	//// camera
-	vec2 start_position = { 600, -500 };
-	Math::rect cam_limit = Math::rect({ 600, -346 }, { 4345, -6000 });
+	vec2 start_position = {600, -5000};
+	Math::rect cam_limit = Math::rect({-1200, -500}, {4300, -12000});
 	camera = new Cam();
 	camera->SetPosition(start_position);
 	camera->SetLimit(cam_limit);
@@ -112,11 +112,10 @@ void Mode1::Load()
 
 	// Map
 	AddGSComponent(new MapManager());
-	// GetGSComponent<MapManager>()->AddMapFile("assets/maps/TemporaryMap.svg");
-
-	// Ear Clipping Test
-	GetGSComponent<MapManager>()->AddMapFile("assets/maps/new_map3.svg");
+	//GetGSComponent<MapManager>()->AddMapFile("assets/maps/level1.svg");
+	GetGSComponent<MapManager>()->AddMapFile("assets/maps/level4.svg");
 	GetGSComponent<MapManager>()->LoadFirstMap();
+
 
 	// Boss
 	Boss::LoadBossfile();
@@ -194,6 +193,15 @@ void Mode1::Update(double dt)
 
 	// beat_system->LoadMusicToSync("Level1_bgm");
 	// audio play
+
+
+	//Map
+	if (!GetGSComponent<MapManager>()->GetCurrentMap()->IsLevelLoaded()) {
+		GetGSComponent<MapManager>()->GetCurrentMap()->ParseSVG();
+	}
+	else {
+		GetGSComponent<MapManager>()->LoadNextMap();
+	}
 
 	UpdateGSComponents(dt);
 	GetGSComponent<GameObjectManager>()->UpdateAll(dt);

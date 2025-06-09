@@ -27,7 +27,8 @@ void Cam::Update(double dt, const vec2& player_position, bool playerMove)
 	// world_to_ndc <- cam_to_ndc * world_to_cam
 	world_to_ndc = cam_to_ndc * world_to_cam;
     
-    if (Engine::GetGameStateManager().GetStateName() == "Mode1") {  //if mode1, activate MapManager
+    if (Engine::GetGameStateManager().GetStateName() == "Loading" ||
+        Engine::GetGameStateManager().GetStateName() == "Mode1") {  //if mode1, activate MapManager
         LoadMap();
     }
 

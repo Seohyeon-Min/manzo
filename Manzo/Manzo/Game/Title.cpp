@@ -64,8 +64,7 @@ void Title::Update(double dt)
 
 	// Move to next scean
 	if (Engine::GetInput().MouseButtonJustReleased((SDL_BUTTON_LEFT))) {
-		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
-		CheckSaveFile();
+		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Loading));
 	}
 }
 

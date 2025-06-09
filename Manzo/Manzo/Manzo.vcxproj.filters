@@ -205,6 +205,8 @@
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Game\JellyEnemy.cpp">
+    </ClCompile>
+    <ClCompile Include="Game\Loading.cpp">
       <Filter>Game</Filter>
     </ClCompile>
   </ItemGroup>
@@ -427,6 +429,9 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Game\JellyEnemy.h">
+    <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Loading.h">
       <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>

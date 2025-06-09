@@ -17,5 +17,6 @@ enum class States {
     Mode2,
     Mode3,
     Tutorial,
+    Loading,
     Splash,
 };
