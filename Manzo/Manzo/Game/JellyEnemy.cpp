@@ -14,8 +14,9 @@
 JellyEnemy::JellyEnemy(vec2 start_position, float hight, float lifetime, JellyType jelly_type)
     : GameObject(start_position), hight(hight), lifetime(lifetime), timeElapsed(0.0f), jelly_type(jelly_type)
 {
-    AddGOComponent(new Sprite("assets/images/bullet.spt", this));
-    texture_vector = Engine::GetTextureManager().Load("assets/images/monster.png");
+    AddGOComponent(new Sprite("assets/images/boss/test_jelly_1.spt", this));
+    texture_vector.push_back(Engine::GetTextureManager().Load("assets/images/boss/test_jelly_2.png"));
+    texture_vector.push_back(Engine::GetTextureManager().Load("assets/images/boss/test_jelly_3.png"));
     SetScale(vec2{ 1.f,1.f });
     static bool seedInitialized = false;
     if (!seedInitialized) {
@@ -68,9 +69,11 @@ void JellyEnemy::Update(double dt) {
     Move(dt);
 
     if (!std::isnan(position.x) && !std::isnan(position.y)) {
-        procedural_jelly.Update(this, 0.2f);
-        test_matrix = mat3::build_translation(procedural_jelly.GetPositions(0, mat3::build_scale(1.f))) *
-            mat3::build_scale(0.3f); // 필요시 스케일 조절
+        procedural_jelly.Update(this, 0.07f);
+        test_matrix =(mat3::build_translation(procedural_jelly.GetPositions(0, mat3::build_scale(1.f))) *
+            mat3::build_scale(1.f)); 
+        test_matrix_1 = (mat3::build_translation(procedural_jelly.GetPositions(1, mat3::build_scale(1.f))) *
+            mat3::build_scale(1.f)); 
     }
 
     if (lifetime <= -1.0f) {
@@ -89,10 +92,9 @@ void JellyEnemy::Move(double dt) {
     this->timeElapsed += dt;
 
     vec2 perp = { -wave_forward_dir.y, wave_forward_dir.x }; // 수직 방향
-    float forwardSpeed = 300.f;
     float waveOffset = sinf((float)timeElapsed * waveFrequency) * waveAmplitude;
 
-    vec2 movement = wave_forward_dir * forwardSpeed * (float)dt + perp * waveOffset * (float)dt;
+    vec2 movement = wave_forward_dir * speed_for_staticTarget * (float)dt + perp * waveOffset * (float)dt;
     this->position += movement;
     this->SetVelocity(movement / (float)dt); 
 }
@@ -107,16 +109,22 @@ void JellyEnemy::Draw(DrawLayer drawlayer) {
     draw_call.settings.do_blending = true;
 
     DrawCall draw_call2 = {
-        texture_vector,
+        texture_vector[0],
         &test_matrix,
         Engine::GetShaderManager().GetDefaultShader()
     };
-    draw_call2.settings.do_blending = true;
-    draw_call2.settings.is_camera_fixed = false;
-    draw_call2.sorting_layer = drawlayer;
 
+    DrawCall draw_call3 = {
+    texture_vector[1],
+    &test_matrix_1,
+    Engine::GetShaderManager().GetDefaultShader()
+    };
+
+
+
+    Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call3));
+    Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call2));
     GameObject::Draw(draw_call);
-    Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call2)); 
 }
 
 bool JellyEnemy::CanCollideWith(GameObjectTypes other_object) {
