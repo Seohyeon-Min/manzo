@@ -92,7 +92,7 @@ private:
 	std::ifstream file;
 
 	char currentCommand = '\0';
-	float margin = 1500.f;	// padding for map's partial drawing
+	float margin = 1500.;	// padding for map's partial drawing
 
 	std::vector<Polygon> original_polygons;
 	std::vector<Polygon> modified_polygons;
