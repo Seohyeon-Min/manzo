@@ -105,7 +105,7 @@ void Mode1::Load()
 
 	// background
 	//background->Add("assets/images/background/rock_pillar/temp_background4.png", 0.0f);
-	background->Add("assets/images/background/rock_pillar/bg1.png", 0.3f);
+	//background->Add("assets/images/background/rock_pillar/bg1.png", 0.3f);
 	//background->Add("assets/images/background/bg2.png", 0.4f);
 	//background->Add("assets/images/background/bg3.png", 0.5f);
 	// background->Add("assets/images/background/bubble.png", 1.5f, DrawLayer::DrawUI);
@@ -319,6 +319,7 @@ void Mode1::Unload()
 
 	//Engine::GetLogger().WriteSaveFile(fishCollection, GetGSComponent<Fish>()->GetMoney(), firstBuy, module->IsFirstSetted(), Engine::GetLogger().GetModule1XPos(), secondBuy, module->IsSecondSetted(), Engine::GetLogger().GetModule2XPos());
 	SaveData save = Engine::GetSaveDataManager().GetSaveData();
+	GetGSComponent<MapManager>()->GetMap(0)->UnloadAll();
 
 	ModuleData m1{ firstBuy, module->IsFirstSetted(), save.module1.pos };
 	ModuleData m2{ secondBuy, module->IsSecondSetted(), save.module2.pos };
