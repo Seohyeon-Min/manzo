@@ -75,7 +75,7 @@ void Mode1::Load()
 	AddGSComponent(new ParticleManager<Particles::HitPraticle>());
 	AddGSComponent(new ParticleManager<Particles::HitPraticle2>());
 	AddGSComponent(new ParticleManager<Particles::CaptureEffect>());
-	AddGSComponent(new ParticleManager<Particles::BulletParticle>());
+	AddGSComponent(new ParticleManager<Particles::bossEbulletParticle>());
 
 	// get cali
 	double cali = Engine::GetSaveDataManager().GetSaveData().user_calibration;

@@ -68,6 +68,10 @@ BossBullet::BossBullet(vec2 Boss_position, float lifetime, BulletType bullet_typ
     }
     std::vector<int> circleSizes ={ 30, 20, 10 ,10,10};
     //procedual.Initialize(circleSizes, position);
+
+    particle_timer = new Timer(0.0);
+    AddGOComponent(particle_timer);
+    particle_timer->Set(particle_time);
 }
 
 void BossBullet::Update(double dt) {
@@ -89,8 +93,10 @@ void BossBullet::Update(double dt) {
         lifetime -= dt;
     }
 
-    Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::BulletParticle>>()->Emit(1, GetPosition(), { 0,0 }, /*-GetVelocity() * 0.4f*/{}, 1.5);
-
+    if (particle_timer->Remaining() == 0.0) {
+        Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEbulletParticle>>()->Emit(1, GetPosition(), {0,0}, -GetVelocity() * 0.1f, 1.5);
+        particle_timer->Reset();
+    }
 }
 
 

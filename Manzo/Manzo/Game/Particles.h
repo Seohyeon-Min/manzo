@@ -44,18 +44,6 @@ namespace Particles {
         float scale;
     };
 
-    class BulletParticle : public Particle {
-    public:
-        BulletParticle() : Particle("assets/images/particle/Plankton.spt")
-        {
-            scale = util::random(0.5f, 1.f); shader = Engine::GetShaderManager().GetShader("change_alpha");
-        };
-        std::string TypeName() override { return "FuelBubble Particle"; }
-        static constexpr int MaxCount = 7;
-        static constexpr double MaxLife = 0.38;
-        float scale;
-    };
-
     class BubblePop : public Particle {
     public:
         BubblePop() : Particle("assets/images/particle/Plankton.spt") 
@@ -107,5 +95,17 @@ namespace Particles {
         float scale;
     };
 
+    class bossEbulletParticle : public Particle {
+    public:
+        bossEbulletParticle() : Particle("assets/images/particle/Plankton.spt")
+        {
+            scale = util::random(0.75f, 2.45f); shader = Engine::GetShaderManager().GetShader("change_alpha");
+            drawlayer = DrawLayer::Draw;
+        };
+        std::string TypeName() override { return "CaptureEffect Particle"; }
+        static constexpr int MaxCount = 200;
+        static constexpr double MaxLife = 0.95;
+        float scale;
+    };
 }
 
