@@ -34,8 +34,9 @@
    inkscape:current-layer="layer1" /><defs
    id="defs1" /><g
    inkscape:groupmode="layer"
-   id="layer1"
-   inkscape:label="Level4-5"><g
+   
+   inkscape:label="Level4-5">
+   <g
      id="g20">
 <path
        id="path73"
@@ -506,5 +507,7 @@
 <path
        id="path84"
        style="fill:#5e6dec;fill-opacity:1;stroke:#73eb50;stroke-width:2.95181;stroke-opacity:0.498039"
-       d="m 169.09961,6946.1621 -56.43359,67.9043 h 0.39648 l 2.63477,113.3554 54.71679,-14.5703 z" /></g></g>
+       d="m 169.09961,6946.1621 -56.43359,67.9043 h 0.39648 l 2.63477,113.3554 54.71679,-14.5703 z" />
+       </g>
+       </g>
          </svg>
