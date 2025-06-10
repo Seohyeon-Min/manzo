@@ -244,12 +244,15 @@ void Mode1::Update(double dt)
 
 	if (Isboss)
 	{
+		
 		camera->SetSmoothPosition(boss_ptr->GetPosition());
+		camera->Update(dt, boss_ptr->GetPosition(), ship_ptr->IsShipMoving());
+
 	}
-
+	else{
 	// camera postion update
-	camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
-
+		camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
+	}
 	// Update Fish Generator
 	fishGenerator->GenerateFish(dt);
 
