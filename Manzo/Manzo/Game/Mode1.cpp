@@ -112,7 +112,7 @@ void Mode1::Load()
 
 	// Map
 	AddGSComponent(new MapManager());
-	//GetGSComponent<MapManager>()->AddMapFile("assets/maps/level1.svg");
+	GetGSComponent<MapManager>()->AddMapFile("assets/maps/level1.svg");
 	GetGSComponent<MapManager>()->AddMapFile("assets/maps/level4.svg");
 	GetGSComponent<MapManager>()->LoadFirstMap();
 

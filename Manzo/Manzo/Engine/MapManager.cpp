@@ -493,7 +493,7 @@ ivec2 Map::WorldToMask(vec2 worldPos)
 
     int maskX = static_cast<int>(std::floor(((worldPos.x - world_left) / world_width) * width));
     int maskY = static_cast<int>(std::floor(((worldPos.y - world_top) / world_height) * height));
-
+    
     maskX = std::clamp(maskX, 0, width - 1);
     maskY = std::clamp(maskY, 0, height - 1);
 
@@ -513,6 +513,7 @@ bool Map::IsMaskTrue(vec2 worldPos)
 }
 
 vec2 Map::Spawn() {
+
     std::uniform_int_distribution<> distX(0, width - 1);
     std::uniform_int_distribution<> distY(0, height - 1);
     int max_attempts = 1000;
