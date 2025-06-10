@@ -21,13 +21,14 @@ void Particle::Start(vec2 position, vec2 velocity, double _max_life, vec2 scale)
 	SetPosition(position);
 	SetVelocity(velocity);
 	SetScale(scale);
-	life = _max_life;
-	max_life = _max_life;
+	life = _max_life - life_offset;
+	max_life = _max_life - life_offset;
 	GetGOComponent<Sprite>()->Reset();
 }
 
 void Particle::Update(double dt)
 {
+	if (!Alive()) return;
 	life -= dt;
 	if (Alive())
 		GameObject::Update(dt);

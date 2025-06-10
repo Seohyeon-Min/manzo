@@ -74,6 +74,19 @@ BossBullet::BossBullet(vec2 Boss_position, float lifetime, BulletType bullet_typ
     particle_timer->Set(particle_time);
 }
 
+vec2 RandomPointAround(const vec2& center, float maxRadius = 15.0f) {
+    float u = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+    float v = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+
+    float r = maxRadius * std::sqrt(u);
+    float theta = v * 2.0f * 3.141592f;
+
+    float dx = std::cos(theta) * r;
+    float dy = std::sin(theta) * r;
+
+    return { center.x + dx, center.y + dy };
+}
+
 void BossBullet::Update(double dt) {
     GameObject::Update(dt);
     Move(dt);   
@@ -93,8 +106,11 @@ void BossBullet::Update(double dt) {
         lifetime -= dt;
     }
 
-    if (particle_timer->Remaining() == 0.0) {
-        Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEbulletParticle>>()->Emit(1, GetPosition(), {0,0}, -GetVelocity() * 0.1f, 1.5);
+
+
+    if (particle_timer->Remaining() <= 0.003) {
+        vec2 bullet_pos = RandomPointAround(GetPosition());
+        Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEbulletParticle>>()->Emit(1, bullet_pos, {0,0}, -GetVelocity() * 0.1f, 1.5);
         particle_timer->Reset();
     }
 }

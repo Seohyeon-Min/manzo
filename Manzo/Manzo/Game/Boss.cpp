@@ -378,14 +378,15 @@ void SetUni(const GLShader* shader) {
 	if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
 		time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
 	}
+
 	shader->SendUniform("uTime", time);
 	shader->SendUniform("uX", 0);
 	shader->SendUniform("uY", 1);
-	shader->SendUniform("uWaveNum", 4);
+	shader->SendUniform("uWaveNum", 3);
 
-	shader->SendUniform("waveStrength", 0.034f);
-	shader->SendUniform("frequency", 27.0f);
-	shader->SendUniform("speed", 4.4f);
+	shader->SendUniform("waveStrength", 0.022f);
+	shader->SendUniform("frequency", 48.0f);
+	shader->SendUniform("speed", 3.f);
 }
 
 void Boss::Draw(DrawLayer drawlayer)

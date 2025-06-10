@@ -99,12 +99,13 @@ namespace Particles {
     public:
         bossEbulletParticle() : Particle("assets/images/particle/Plankton.spt")
         {
-            scale = util::random(0.75f, 2.45f); shader = Engine::GetShaderManager().GetShader("change_alpha");
+            scale = util::random(0.0f, 2.45f); shader = Engine::GetShaderManager().GetShader("change_alpha");
+            life_offset = util::random(0.0f, 0.95f);
             drawlayer = DrawLayer::Draw;
         };
         std::string TypeName() override { return "CaptureEffect Particle"; }
         static constexpr int MaxCount = 200;
-        static constexpr double MaxLife = 0.95;
+        static constexpr double MaxLife = 1.05;
         float scale;
     };
 }

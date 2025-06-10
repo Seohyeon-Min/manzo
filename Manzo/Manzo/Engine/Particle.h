@@ -51,6 +51,7 @@ private:
 protected:
     GLShader* shader = nullptr;
     DrawLayer drawlayer = DrawLayer::Draw;
+    float life_offset = 0.0f;
 };
 
 template<typename T>
