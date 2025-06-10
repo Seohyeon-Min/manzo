@@ -34,7 +34,7 @@ void MapManager::AddMapFile(const std::string& filename) {
 void MapManager::LoadFirstMap() {
     if (mapFiles.empty()) return;
 
-    Map* initialMap = new Map();
+    Map* initialMap = new Map(GetMapIndex(mapFiles[currentMapIndex]));
     initialMap->OpenSVG(mapFiles[currentMapIndex]);
     maps.push_back(initialMap);
 }
@@ -44,7 +44,7 @@ void MapManager::LoadNextMap() {
 
     currentMapIndex++;
 
-    Map* nextMap = new Map();
+    Map* nextMap = new Map(GetMapIndex(mapFiles[currentMapIndex]));
     //nextMap->SetMargin(800.0f);
     nextMap->OpenSVG(mapFiles[currentMapIndex]);    //open next svg file
 
@@ -70,10 +70,16 @@ void MapManager::UpdateMaps(const Math::rect& camera_boundary) {
     }
 }
 
+std::string MapManager::GetMapIndex(const std::string& path) {
+    size_t start = path.find_last_of('/') + 1;
+    size_t end = path.find_last_of('.');
+    return path.substr(start, end - start);
+}
+
 //Map
 //===============================================================
 
-Map::Map() :    pathRegex(R"(<path[^>]*\sd\s*=\s*"([^"]+))"),
+Map::Map(std::string map_index) :    pathRegex(R"(<path[^>]*\sd\s*=\s*"([^"]+))"),
                 gIdRegex(R"(<g[^>]*\bid\s*=\s*"([^"]+))"),
                 circleRegex(R"(circle[^>]*\bcx\s*=\s*"([^"]+))"),
                 cyRegex(R"(\bcy\s*=\s*"([^"]+))"),
@@ -83,7 +89,8 @@ Map::Map() :    pathRegex(R"(<path[^>]*\sd\s*=\s*"([^"]+))"),
                 translateRegex(R"(translate\(([^,]+),\s*([^\)]+)\))"),
                 rotateRegex(R"(rotate\(\s*([^\s,]+)\s*,\s*([^\s,]+)\s*,\s*([^\)]+)\s*\))"),
                 matrixRegex(R"(matrix\(([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+)\))"),
-                pathIdRegex(R"xxx(id="([^"]+)")xxx")
+                pathIdRegex(R"xxx(id="([^"]+)")xxx"),
+                map_index(map_index)
 {
     std::random_device rd;
     gen = std::mt19937(rd());
@@ -153,7 +160,7 @@ void Map::ParseSVG() {
     if (std::regex_search(currentTag, match, gIdRegex)) {
         IsinGroup = true;
         std::string group_index = match[1].str();
-        currentGroup = new RockGroup(group_index, rotateAngle, scale);
+        currentGroup = new RockGroup(group_index, map_index, rotateAngle, scale);
         rock_groups.push_back(currentGroup);
         std::cout << "Group created: " << group_index << std::endl;
         

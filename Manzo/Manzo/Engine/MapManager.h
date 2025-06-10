@@ -42,6 +42,7 @@ public:
 	void LoadNextMap();
 	void UpdateMaps(const Math::rect& camera_boundary);
 	Map* GetMap(int index) { return maps[index]; }
+	std::string GetMapIndex(const std::string& path);
 
 private:
 	std::vector<Map*> maps;
@@ -51,7 +52,7 @@ private:
 
 class Map : public Component {
 public:
-	Map();
+	Map(std::string map_index);
 
 	~Map() {
 		rocks.clear();
@@ -87,6 +88,7 @@ private:
 	std::mt19937 gen;
 
 	std::string file_name;
+	std::string map_index = "";
 	int read_line_number = -1;
 
 	RockGroup* currentGroup = nullptr;
@@ -109,7 +111,7 @@ private:
 	std::ifstream file;
 
 	char currentCommand = '\0';
-	float margin = 1500.;	// padding for map's partial drawing
+	float margin = 1000.f;	// padding for map's partial drawing
 
 	int width, height, channels;
 	std::vector<std::vector<bool>> mask;

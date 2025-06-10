@@ -27,7 +27,7 @@ class RockPoint;
 class RockGroup : public GameObject
 {
 public:
-	RockGroup(const std::string& index, double rotation, vec2 scale);
+	RockGroup(const std::string& index, const std::string& map_index, double rotation, vec2 scale);
 	~RockGroup();
 	GameObjectTypes Type() override { return GameObjectTypes::RockBoundary; }
 	std::string TypeName() override { return "Rock Boundary"; }
@@ -65,5 +65,6 @@ private:
 	std::vector<Rock*> rocks;
 	std::vector<MovingRock*> moving_rocks;
 	std::string index = "";
+	std::string map_index = "";
 	std::vector<vec2> points;	// All polygon's points
 };
