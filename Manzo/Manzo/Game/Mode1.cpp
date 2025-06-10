@@ -51,6 +51,7 @@ void Mode1::Load()
 	Engine::GetShaderManager().LoadShader("health_bar", "assets/shaders/default.vert", "assets/shaders/health_bar.frag");
 	Engine::GetShaderManager().LoadShader("sea_background", "assets/shaders/post_default.vert", "assets/shaders/sea_background.frag");
 	Engine::GetShaderManager().LoadShader("wave", "assets/shaders/default.vert", "assets/shaders/wave.frag");
+	Engine::GetShaderManager().LoadShader("bossEbullet", "assets/shaders/default.vert", "assets/shaders/bossEbullet.frag");
 
 	Engine::GetShaderManager().LoadShader("under_water_god_ray", "assets/shaders/post_default.vert", "assets/shaders/underwater_god_ray.frag");
 	Engine::GetShaderManager().LoadShader("post_default", "assets/shaders/post_default.vert", "assets/shaders/post_default.frag");
@@ -75,7 +76,7 @@ void Mode1::Load()
 	AddGSComponent(new ParticleManager<Particles::HitPraticle>());
 	AddGSComponent(new ParticleManager<Particles::HitPraticle2>());
 	AddGSComponent(new ParticleManager<Particles::CaptureEffect>());
-	AddGSComponent(new ParticleManager<Particles::BulletParticle>());
+	AddGSComponent(new ParticleManager<Particles::bossEbulletParticle>());
 
 	// get cali
 	double cali = Engine::GetSaveDataManager().GetSaveData().user_calibration;

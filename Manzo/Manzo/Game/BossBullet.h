@@ -28,7 +28,8 @@ private:
 	ProceduralChain procedual;
 	Ship* ship;
 
-
+	Timer* particle_timer;
+	const double particle_time = 0.09;
 
 	vec2 position;
 	vec2 velocity;

@@ -11,8 +11,9 @@ FuelUI::FuelUI(Ship* ship) : GameObject({}), ship(ship)
     foreground_texture = Engine::GetTextureManager().Load("assets/images/ship/ui.png");
     //background_texture->SetFiltering(GLTexture::Linear);
     //foreground_texture->SetFiltering(GLTexture::Linear);
-    position = ship->GetPosition();
+    SetPosition(ship->GetPosition());
     SetScale({ scale ,scale });
+    SetCameraFixed(true);
 }
 
 void FuelUI::Update(double dt)

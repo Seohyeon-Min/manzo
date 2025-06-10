@@ -93,8 +93,8 @@ void JellyEnemy::Update(double dt) {
         lifetime -= dt;
     }
 
-    Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::BulletParticle>>()->Emit(
-        1, GetPosition(), { 0,0 }, {}, 1.5);
+    /*Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEbulletParticle>>()->Emit(
+        1, GetPosition(), { 0,0 }, {}, 1.5);*/
 }
 
 void JellyEnemy::Move(double dt) {

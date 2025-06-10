@@ -47,7 +47,7 @@ void Mode3::Load() {
     AddGSComponent(new ParticleManager<Particles::HitPraticle>());
     AddGSComponent(new ParticleManager<Particles::HitPraticle2>());
     AddGSComponent(new ParticleManager<Particles::CaptureEffect>());
-    AddGSComponent(new ParticleManager<Particles::BulletParticle>());
+    AddGSComponent(new ParticleManager<Particles::bossEbulletParticle>());
 
     // background
     background = new Background();
