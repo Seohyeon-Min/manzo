@@ -260,7 +260,7 @@ std::vector<vec2> spline_points;
 void Ship::Update(double dt)
 {
 	vec2 pos = GetPosition();
-	ship_range = Math::rect(vec2{pos.x-200.f,pos.y-200.f}, vec2{ pos.x + 200.f,pos.y + 200.f });
+	ship_range = Math::rect(vec2{pos.x-150.f,pos.y-150.f}, vec2{ pos.x + 150.f,pos.y + 150.f });
 
 
 	if (!IsFuelZero()) {

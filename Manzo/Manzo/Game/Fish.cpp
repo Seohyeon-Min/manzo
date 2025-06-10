@@ -128,9 +128,9 @@ void Fish::Pattern()
 	{
 	case 0:
 		escapeRange = 300.0f;
-		maxEscapeSpeed = 150.0f;
+		maxEscapeSpeed = 100.0f;
 
-		escapeStrength = std::clamp(1.0f - (distance / escapeRange), 0.0f, 1.0f);
+		escapeStrength = std::clamp((distance / escapeRange), 0.0f, 1.0f);
 
 		awayFromShip = -normalize(toShip);
 
@@ -140,10 +140,10 @@ void Fish::Pattern()
 		break;
 
 	case 1:
-		escapeRange = 500.0f;
-		maxEscapeSpeed = 350.0f;
+		escapeRange = 300.0f;
+		maxEscapeSpeed = 200.0f;
 
-		escapeStrength = std::clamp(1.0f - (distance / escapeRange), 0.0f, 1.0f);
+		escapeStrength = std::clamp((distance / escapeRange), 0.0f, 1.0f);
 
 		awayFromShip = -normalize(toShip);
 
