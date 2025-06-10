@@ -33,9 +33,11 @@ void MapManager::AddMapFile(const std::string& filename) {
 
 void MapManager::LoadFirstMap() {
     if (mapFiles.empty()) return;
+    
 
     Map* initialMap = new Map(GetMapIndex(mapFiles[currentMapIndex]));
     initialMap->OpenSVG(mapFiles[currentMapIndex]);
+    initialMap->LoadPNG();
     maps.push_back(initialMap);
 }
 
@@ -56,7 +58,7 @@ void MapManager::UpdateMaps(const Math::rect& camera_boundary) {
         Map* map = maps[currentMapIndex];
         map->LoadMapInBoundary(camera_boundary);
 
-        if (camera_boundary.Bottom() <= -5200) {
+        if (camera_boundary.Bottom() <= -6000) {
             //Unload Previous Map
             LoadNextMap();
             if (currentMapIndex + 1 < maps.size()) {
@@ -487,8 +489,6 @@ vec2 Map::MaskToWorld(int maskX, int maskY)
 
 ivec2 Map::WorldToMask(vec2 worldPos)
 {
-    width = 100;
-    height = 100;
     float world_left = 0.0f;
     float world_top = 0.0f;
     float world_right = 4970.0f;
@@ -516,8 +516,7 @@ ivec2 Map::WorldToMask(vec2 worldPos)
 bool Map::IsMaskTrue(vec2 worldPos)
 {
     ivec2 maskPos = WorldToMask(worldPos);
-    return false;
-    //return mask[maskPos.y][maskPos.x];
+    return mask[maskPos.y][maskPos.x];
 }
 
 vec2 Map::Spawn() {
