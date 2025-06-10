@@ -45,10 +45,10 @@ bool IsFirstFrame() {
 
 void Boss::Bullet(Boss* boss) {
 	
-		BossBullet* bullet_ptr = new BossBullet(boss->GetPosition(), (float)(boss->beat->GetFixedDuration()) * 2, BossBullet::BulletType::Wave);
+		BossBullet* bullet_ptr = new BossBullet(boss->GetPosition(), (float)(boss->beat->GetFixedDuration()) * 2, BossBullet::BulletType::Homing);
 		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bullet_ptr);
-		JellyEnemy* jelly_ptr = new JellyEnemy({ boss->GetPosition().x, boss->GetPosition().y - 400 }, 50 ,(float)(boss->beat->GetFixedDuration()) * 4, JellyEnemy::JellyType::Up);
-		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(jelly_ptr);
+		/*JellyEnemy* jelly_ptr = new JellyEnemy({ boss->GetPosition().x, boss->GetPosition().y - 400 }, 50 ,(float)(boss->beat->GetFixedDuration()) * 4, JellyEnemy::JellyType::Up);
+		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(jelly_ptr);*/
 
 }
 

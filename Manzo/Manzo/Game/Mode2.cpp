@@ -344,7 +344,7 @@ void Mode2::Draw() {
 	if (is_holding_sea_icon) {
 		std::cout << hold_timer << std::endl;
 
-		float progress = std::clamp(hold_timer / 5.0f, 0.0f, 1.0f);
+		progress = std::clamp(hold_timer / 5.0f, 0.0f, 1.0f);
 		Engine::GetRender().DrawCircleProgress({ Engine::GetInput().GetMousePos().mouseCamSpaceX, Engine::GetInput().GetMousePos().mouseCamSpaceY }, 30.0f, progress, 3);
 	}
 }
@@ -383,4 +383,5 @@ void Mode2::Unload() {
 
 	background = nullptr;
 	scenario = nullptr;
+	progress = 0;
 }
