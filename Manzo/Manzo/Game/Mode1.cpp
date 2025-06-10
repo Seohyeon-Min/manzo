@@ -83,7 +83,7 @@ void Mode1::Load()
 	std::cout << cali << std::endl;
 
 	//// camera
-	vec2 start_position = {600, -5000};
+	vec2 start_position = {600, -1000};
 	Math::rect cam_limit = Math::rect({-1200, -500}, {4300, -12000});
 	camera = new Cam();
 	camera->SetPosition(start_position);
@@ -172,7 +172,7 @@ void Mode1::Load()
 	auto bossCopy = boss_ptr;
 	auto shipCopy = ship_ptr;
 
-	Engine::GetEventManager().AddEvent(Event("Boss E Trigger",
+	/*Engine::GetEventManager().AddEvent(Event("Boss E Trigger",
 		[&]() { if (ship_ptr) return ship_ptr->GetPosition().y <= bossPosition.y + 300;
 	return false;
 		},
@@ -180,7 +180,7 @@ void Mode1::Load()
 			GetGSComponent<GameObjectManager>()->Add(boss_ptr);
 			Isboss = true;
 		}
-	));
+	));*/
 
 }
 

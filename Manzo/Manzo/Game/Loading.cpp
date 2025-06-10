@@ -26,12 +26,13 @@ void Loading::Load()
 }
 
 void Loading::Update(double dt) {
-    if (!GetGSComponent<MapManager>()->GetCurrentMap()->IsLevelLoaded()) {
+    /*if (!GetGSComponent<MapManager>()->GetCurrentMap()->IsLevelLoaded()) {
         GetGSComponent<MapManager>()->GetCurrentMap()->ParseSVG();
     }
     else {
         Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode1));
-    }
+    }*/
+    Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode1));
 
     // Draw Loading Screen
     // Loading bar would be great

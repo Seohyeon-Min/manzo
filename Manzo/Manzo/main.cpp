@@ -34,13 +34,11 @@ int main() {
         std::ofstream saveFile("assets/scenes/save_data.txt", std::ios::trunc);
         
 
-        //Loading loading;
-        //engine->GetGameStateManager().AddGameState(loading);
+        /*Loading loading;
+        engine->GetGameStateManager().AddGameState(loading);*/
 
         Mode1 mode1;
         engine->GetGameStateManager().AddGameState(mode1);
-        Title title;
-        engine->GetGameStateManager().AddGameState(title);
 
         Mode2 mode2;
         engine->GetGameStateManager().AddGameState(mode2);

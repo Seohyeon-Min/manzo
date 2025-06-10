@@ -83,7 +83,10 @@ Map::Map() :    pathRegex(R"(<path[^>]*\sd\s*=\s*"([^"]+))"),
                 rotateRegex(R"(rotate\(\s*([^\s,]+)\s*,\s*([^\s,]+)\s*,\s*([^\)]+)\s*\))"),
                 matrixRegex(R"(matrix\(([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+)\))"),
                 pathIdRegex(R"xxx(id="([^"]+)")xxx")
-{}
+{
+    std::random_device rd;
+    gen = std::mt19937(rd());
+}
 
 
 void Map::OpenSVG(const std::string& filename) {

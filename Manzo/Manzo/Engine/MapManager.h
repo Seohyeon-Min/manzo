@@ -52,11 +52,7 @@ private:
 
 class Map : public Component {
 public:
-	Map()
-	{
-		std::random_device rd;
-		gen = std::mt19937(rd());
-	}
+	Map();
 
 	~Map() {
 		rocks.clear();
@@ -75,6 +71,7 @@ public:
 	float GetMargin() { return margin; }
 	
 	void UnloadAll();
+	bool IsLevelLoaded() { return level_loaded; }
 
 	void LoadPNG();
 	vec2 MaskToWorld(int maskX, int maskY);
@@ -87,7 +84,6 @@ public:
 
 private:
 	std::mt19937 gen;
-	bool IsLevelLoaded() { return level_loaded; }
 
 private:
 	int read_line_number = -1;
