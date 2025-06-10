@@ -24,12 +24,15 @@ public:
 	void ResolveCollision([[maybe_unused]] GameObject* other_object) override;
 
 private:
+	void SetUni(const GLShader* shader);
 	BulletType bulletType;
 	ProceduralChain procedual;
 	Ship* ship;
 
 	Timer* particle_timer;
-	const double particle_time = 0.09;
+	const double particle_time = 0.02;
+	int kirakiracnt = 0;
+	const int kirakiramax = 8;
 
 	vec2 position;
 	vec2 velocity;
@@ -38,6 +41,7 @@ private:
 	vec2 static_bullet;
 
 	double lifetime; //same with bpm 
+	float spawn_time;
 	double speed;
 	double speed_for_staticTarget = 500;
 	double timeElapsed;

@@ -95,17 +95,75 @@ namespace Particles {
         float scale;
     };
 
+
     class bossEbulletParticle : public Particle {
     public:
         bossEbulletParticle() : Particle("assets/images/particle/Plankton.spt")
         {
-            scale = util::random(0.0f, 2.45f); shader = Engine::GetShaderManager().GetShader("change_alpha");
+            scale = util::random(0.0f, 1.8f); shader = Engine::GetShaderManager().GetShader("change_alpha");
             life_offset = util::random(0.0f, 0.95f);
             drawlayer = DrawLayer::Draw;
         };
         std::string TypeName() override { return "CaptureEffect Particle"; }
-        static constexpr int MaxCount = 200;
+        static constexpr int MaxCount = 100;
         static constexpr double MaxLife = 1.05;
+        float scale;
+    };
+
+    class bossEKiraKiraParticle : public Particle {
+    public:
+        bossEKiraKiraParticle() : Particle("assets/images/particle/kirakira_particle.spt")
+        {
+            scale = util::random(0.2f, 0.59f); shader = Engine::GetShaderManager().GetShader("emissive");
+            life_offset = util::random(0.0f, 0.70f);
+            drawlayer = DrawLayer::DrawLast;
+        };
+        std::string TypeName() override { return "CaptureEffect Particle"; }
+        static constexpr int MaxCount = 100;
+        static constexpr double MaxLife = 0.80;
+        float scale;
+    };
+
+    class bossEParticle1 : public Particle {
+    public:
+        bossEParticle1() : Particle("assets/images/particle/E_bullet_1.spt")
+        {
+            scale = util::random(0.16f, 0.20f); shader = Engine::GetShaderManager().GetShader("emissive");
+            life_offset = util::random(0.0f, 0.12f);
+            drawlayer = DrawLayer::DrawLast;
+        };
+        std::string TypeName() override { return "CaptureEffect Particle"; }
+        static constexpr int MaxCount =200; 
+        static constexpr double MaxLife = 0.18;
+        float scale;
+    };
+
+    class bossEParticle2 : public Particle {
+    public:
+        bossEParticle2() : Particle("assets/images/particle/E_bullet_2.spt")
+        {
+            scale = util::random(0.0f, 0.5f); shader = Engine::GetShaderManager().GetShader("emissive");
+            life_offset = util::random(0.0f, 0.1f);
+            drawlayer = DrawLayer::DrawFirst;
+        };
+        std::string TypeName() override { return "CaptureEffect Particle"; }
+        static constexpr int MaxCount =100;
+        static constexpr double MaxLife = 0.12;
+        float scale;
+    };
+
+    class bossEParticle3 : public Particle {
+    public:
+        bossEParticle3() : Particle("assets/images/particle/E_bullet_3.spt")
+        {
+            scale = util::random(0.f, 0.8f);
+            life_offset = util::random(0.0f, 0.3f);
+            //life_offset = util::random(0.0f, 0.70f);
+            drawlayer = DrawLayer::DrawFirst;
+        };
+        std::string TypeName() override { return "CaptureEffect Particle"; }
+        static constexpr int MaxCount = 100;
+        static constexpr double MaxLife = 0.4;
         float scale;
     };
 }

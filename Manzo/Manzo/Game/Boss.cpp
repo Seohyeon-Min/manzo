@@ -45,11 +45,8 @@ bool IsFirstFrame() {
 
 void Boss::Bullet(Boss* boss) {
 	
-		BossBullet* bullet_ptr = new BossBullet(boss->GetPosition(), (float)(boss->beat->GetFixedDuration()) * 2, BossBullet::BulletType::Wave);
+		BossBullet* bullet_ptr = new BossBullet(boss->GetPosition(), (float)(boss->beat->GetFixedDuration()) * 2, BossBullet::BulletType::Homing);
 		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bullet_ptr);
-		JellyEnemy* jelly_ptr = new JellyEnemy({ boss->GetPosition().x, boss->GetPosition().y - 400 }, 50 ,(float)(boss->beat->GetFixedDuration()) * 4, JellyEnemy::JellyType::Up);
-		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(jelly_ptr);
-
 }
 
 
@@ -62,7 +59,7 @@ void Boss::Movingtolocation_Boss(int targetEntryNum, Boss* boss) {
 				if (boss->beat->GetBeat()) {
 					boss->current_position = entryData.position;
 
-					for(int i =0; i <4; ++i){
+					for(int i =0; i <1; ++i){
 					boss->Bullet(boss);
 					}
 				}

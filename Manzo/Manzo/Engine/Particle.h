@@ -115,7 +115,6 @@ inline void ParticleManager<T>::EmitRound(int count, vec2 emitter_position, floa
         if (particles[index]->Alive())
             continue;
 
-        // 360도 각도 계산 (0 ~ 2π 범위)
         double angle = ((rand() % 1024) / 1024.0) * 2.0 * util::PI<double>;
 
         // 방향 벡터 계산

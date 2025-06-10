@@ -53,7 +53,20 @@ void Particle::Update(double dt)
 void Particle::Draw(DrawLayer dl)
 {
 	if(Alive())
-		if(shader == nullptr) GameObject::Draw(drawlayer);
+		if (shader == nullptr) {
+			Sprite* sprite = GetGOComponent<Sprite>();
+
+			DrawCall draw_call = {
+				sprite,                       // Texture to draw
+				&GetMatrix(),                          // Transformation matrix
+				Engine::GetShaderManager().GetDefaultShader(), // Shader to use
+			};
+
+			draw_call.settings.do_blending = true;
+			draw_call.sorting_layer = drawlayer;
+
+			GameObject::Draw(draw_call);
+		}
 		else {
 
 			Sprite* sprite = GetGOComponent<Sprite>();
@@ -61,7 +74,7 @@ void Particle::Draw(DrawLayer dl)
 			DrawCall draw_call = {
 				sprite,                       // Texture to draw
 				&GetMatrix(),                          // Transformation matrix
-				Engine::GetShaderManager().GetShader("change_alpha"), // Shader to use
+				shader, // Shader to use
 			};
 
 			draw_call.settings.do_blending = true;
