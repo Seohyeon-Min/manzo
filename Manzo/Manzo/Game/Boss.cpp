@@ -237,12 +237,10 @@ void Boss::Update(double dt) {
 
 		Ship* ship = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>();
 		if (ship) {
-			// 목표 스케일 X값 설정 (좌: 1.0, 우: -1.0)
 			targetScaleX = ship->GetPosition().x > GetPosition().x ? -1.0f : 1.0f;
 		}
 
-		// 서서히 보간
-		const float flipSpeed = 5.0f; // 속도 조절 값 (크면 빠르게 뒤집힘)
+		const float flipSpeed = 5.0f; 
 		currentScaleX = Lerp(currentScaleX, targetScaleX, static_cast<float>(dt) * flipSpeed);
 
 		SetScale({ currentScaleX, 1.0f });

@@ -66,4 +66,6 @@ private:
     bool flag = false;
     bool isLoaded = false;
     char n;
+    float hold_timer = 0.0f;
+    bool is_holding_sea_icon = false;
 };
