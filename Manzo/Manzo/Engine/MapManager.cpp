@@ -45,7 +45,7 @@ void MapManager::LoadNextMap() {
     currentMapIndex++;
 
     Map* nextMap = new Map();
-    nextMap->SetMargin(800.0f);
+    //nextMap->SetMargin(800.0f);
     nextMap->OpenSVG(mapFiles[currentMapIndex]);    //open next svg file
 
     maps.push_back(nextMap);
@@ -56,14 +56,15 @@ void MapManager::UpdateMaps(const Math::rect& camera_boundary) {
         Map* map = maps[currentMapIndex];
         map->LoadMapInBoundary(camera_boundary);
 
-        if (camera_boundary.Bottom() <= EndY + 500) {
+        if (camera_boundary.Bottom() <= -5200) {
             //Unload Previous Map
-        }
-        if (currentMapIndex + 1 < maps.size()) {
-            Map* nextMap = maps[currentMapIndex + 1];
+            LoadNextMap();
+            if (currentMapIndex + 1 < maps.size()) {
+                
 
-            if (!nextMap->IsLevelLoaded()) {    // if next map is not loaded
-                nextMap->ParseSVG();            //parse SVG file
+                if (!maps[currentMapIndex]->IsLevelLoaded()) {    // if next map is not loaded
+                    maps[currentMapIndex]->ParseSVG();            //parse SVG file
+                }
             }
         }
     }
@@ -91,6 +92,7 @@ Map::Map() :    pathRegex(R"(<path[^>]*\sd\s*=\s*"([^"]+))"),
 
 void Map::OpenSVG(const std::string& filename) {
     file.open(filename);
+    this->file_name = filename;
     if (!file.is_open()) {
         std::cerr << "Error opening SVG file." << std::endl;
         return;
@@ -125,7 +127,7 @@ void Map::ParseSVG() {
 
         level_loaded = true;
         file.close();
-        std::cout << "SVG parsing completed." << std::endl;
+        std::cout << file_name << " file's parsing completed." << std::endl;
         return;
     }
 
@@ -245,26 +247,22 @@ void Map::ParseSVG() {
                 }
                 vec.y = -vec.y;
                 positions.push_back(vec);
-                std::cout <<"Position: "<< vec.x <<", "<< vec.y << std::endl;
             }
 
         }
 
         Polygon poly;
         poly.vertices = positions;
-        for (vec2& position : positions) {
-            std::cout << "X : " << position.x << " Y : " << position.y<<std::endl;
-        }
         poly.vertexCount = int(positions.size());
         poly.polyindex = polyIndex.empty() ? "NULL" : polyIndex;
 
 
-        std::cout << "-----------------------------" << std::endl;
+        /*std::cout << "-----------------------------" << std::endl;
         std::cout << "Rotate Translate : " << rotatetranslate.x << ", " << rotatetranslate.y << std::endl;
         std::cout << "Translate : " << translate.x << ", " << translate.y << std::endl;
         std::cout << "Rotate : " << rotateAngle << std::endl;
         std::cout << "poly index : " << poly.polyindex << std::endl;
-        std::cout << "-----------------------------" << std::endl;
+        std::cout << "-----------------------------" << std::endl;*/
 
         
         
@@ -290,7 +288,7 @@ void Map::ParseSVG() {
     if (circle_position.x != 0.f && circle_position.y != 0.f) {
         Box* box = new Box(circle_position);
         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(box);
-        std::cout << "New Circle! " << "\n";
+        //std::cout << "New Circle! " << "\n";
     }
 }
 
@@ -482,6 +480,8 @@ vec2 Map::MaskToWorld(int maskX, int maskY)
 
 ivec2 Map::WorldToMask(vec2 worldPos)
 {
+    width = 100;
+    height = 100;
     float world_left = 0.0f;
     float world_top = 0.0f;
     float world_right = 4970.0f;
@@ -509,11 +509,11 @@ ivec2 Map::WorldToMask(vec2 worldPos)
 bool Map::IsMaskTrue(vec2 worldPos)
 {
     ivec2 maskPos = WorldToMask(worldPos);
-    return mask[maskPos.y][maskPos.x];
+    return false;
+    //return mask[maskPos.y][maskPos.x];
 }
 
 vec2 Map::Spawn() {
-
     std::uniform_int_distribution<> distX(0, width - 1);
     std::uniform_int_distribution<> distY(0, height - 1);
     int max_attempts = 1000;

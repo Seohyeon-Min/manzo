@@ -83,7 +83,7 @@ void Mode1::Load()
 	std::cout << cali << std::endl;
 
 	//// camera
-	vec2 start_position = {600, -1000};
+	vec2 start_position = {3697, -5208};
 	Math::rect cam_limit = Math::rect({-1200, -500}, {4300, -12000});
 	camera = new Cam();
 	camera->SetPosition(start_position);
@@ -112,9 +112,10 @@ void Mode1::Load()
 
 	// Map
 	AddGSComponent(new MapManager());
-	GetGSComponent<MapManager>()->AddMapFile("assets/maps/level1.svg");
+	GetGSComponent<MapManager>()->AddMapFile("assets/maps/level1.svg"); 
 	GetGSComponent<MapManager>()->AddMapFile("assets/maps/level4.svg");
 	GetGSComponent<MapManager>()->LoadFirstMap();
+	
 
 
 	// Boss
@@ -200,8 +201,9 @@ void Mode1::Update(double dt)
 		GetGSComponent<MapManager>()->GetCurrentMap()->ParseSVG();
 	}
 	else {
-		GetGSComponent<MapManager>()->LoadNextMap();
+		//GetGSComponent<MapManager>()->LoadNextMap();
 	}
+
 
 	UpdateGSComponents(dt);
 	GetGSComponent<GameObjectManager>()->UpdateAll(dt);

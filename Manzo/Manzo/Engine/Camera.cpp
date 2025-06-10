@@ -77,6 +77,9 @@ Math::rect Cam::GetCameraBoundary() const
 }
 
 void Cam::LoadMap() { 
-    Math::rect camera_boundary = GetCameraBoundary();
-    Engine::GetGameStateManager().GetGSComponent<MapManager>()->UpdateMaps(camera_boundary);
+    if (Engine::GetGameStateManager().GetGSComponent<MapManager>()->GetCurrentMap()->IsLevelLoaded()) {
+        Math::rect camera_boundary = GetCameraBoundary();
+        Engine::GetGameStateManager().GetGSComponent<MapManager>()->UpdateMaps(camera_boundary);
+    }
+    
 }

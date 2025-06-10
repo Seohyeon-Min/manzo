@@ -47,7 +47,6 @@ private:
 	std::vector<Map*> maps;
 	std::vector<std::string> mapFiles;
 	int currentMapIndex = 0;
-	float EndY = -5600.0f;
 };
 
 class Map : public Component {
@@ -67,8 +66,10 @@ public:
 	void LoadMapInBoundary(const Math::rect& camera_boundary);
 	bool IsOverlapping(const Math::rect& a, const Math::rect& b);
 	
-	void SetMargin(float margin) { this->margin = margin; }
-	float GetMargin() { return margin; }
+	//void SetMargin(float margin) { this->margin = margin; }
+	//float GetMargin() { return margin; }
+	void SetEndY(float endY) { this->EndY = endY; }
+	float GetEndY() { return EndY; }
 	
 	void UnloadAll();
 	bool IsLevelLoaded() { return level_loaded; }
@@ -85,7 +86,7 @@ public:
 private:
 	std::mt19937 gen;
 
-private:
+	std::string file_name;
 	int read_line_number = -1;
 
 	RockGroup* currentGroup = nullptr;
@@ -120,7 +121,7 @@ private:
 	vec2 circle_position{ 0,0 };
 	std::vector<ivec2> valid_spawn_positions;
 
-	float EndY = -7000.0f;
+	float EndY = -5200.f;
 
 	// SVG parsing tags
 	std::regex pathRegex;

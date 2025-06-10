@@ -12,7 +12,15 @@ Created:    November 25, 2024
 
 RockGroup::RockGroup(const std::string& index, double rotation, vec2 scale) :GameObject({ 0,0 }, rotation, scale), index(index)
 {
-    //AddGOComponent(new Sprite("assets/images/rock/" + index +".spt", this));
+    std::string spritePath = "assets/images/rock/" + index + ".spt";
+
+    if (std::filesystem::exists(spritePath)) {
+        AddGOComponent(new Sprite(spritePath, this));
+    }
+    else {
+        std::cout << "Warning: Sprite file not found: " << spritePath << std::endl;
+
+    }
 }
 
 RockGroup::~RockGroup() {

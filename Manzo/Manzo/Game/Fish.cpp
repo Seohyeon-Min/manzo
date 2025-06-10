@@ -24,7 +24,8 @@ Fish::Fish(int index, Fish* parent) : GameObject({ 0, 0 }) {
     if (parent == nullptr) {
         bool isLeft = true; // rand() % 2;
 
-        start_position = map->Spawn();//map->MaskToWorld(4700,5900);//{ startX , startY };
+        //start_position = map->Spawn();//map->MaskToWorld(4700,5900);//{ startX , startY };
+        start_position = vec2({100,100});
         SetPosition(start_position);
         
         //SetVelocity({ 0,0 });
