@@ -60,7 +60,7 @@ public:
     ParticleManager();
     ~ParticleManager();
     void Emit(int count, vec2 emitter_position, vec2 emitter_velocity, vec2 direction, double spread);
-    void EmitRound(int count, vec2 emitter_position, float emitter_velocity, float speed_variation);
+    void EmitRound(int count, vec2 emitter_position, float emitter_velocity, float speed_variation, float radius = 0.f);
     void Spray();
 private:
     std::vector<T*> particles;
@@ -109,8 +109,7 @@ inline void ParticleManager<T>::Emit(int count, vec2 emitter_position, vec2 emit
 }
 
 template<typename T>
-inline void ParticleManager<T>::EmitRound(int count, vec2 emitter_position, float speed, float speed_variation) {
-    mat3 m;
+inline void ParticleManager<T>::EmitRound(int count, vec2 emitter_position, float speed, float speed_variation, float radius) {
     for (int i = 0; i < count; i++) {
         if (particles[index]->Alive())
             continue;
@@ -118,7 +117,10 @@ inline void ParticleManager<T>::EmitRound(int count, vec2 emitter_position, floa
         double angle = ((rand() % 1024) / 1024.0) * 2.0 * util::PI<double>;
 
         // 방향 벡터 계산
-        vec2 direction = { (float)std::cos(angle), (float)std::sin(angle) };
+        vec2 direction = { static_cast<float>(std::cos(angle)), static_cast<float>(std::sin(angle)) };
+
+        // 반지름만큼 이동한 원주상의 위치 계산
+        vec2 spawn_position = emitter_position + direction * radius;
 
         // 속도에 무작위 오차 추가
         float random_speed = speed + ((rand() % 1024) / 1024.0f * 2.0f - 1.0f) * speed_variation;
@@ -131,7 +133,7 @@ inline void ParticleManager<T>::EmitRound(int count, vec2 emitter_position, floa
         float scale = plankton->scale;
         float angle_radians = std::atan2(direction.y, direction.x);
 
-        particles[index]->Start(emitter_position, particle_velocity, T::MaxLife, { scale, scale });
+        particles[index]->Start(spawn_position, particle_velocity, T::MaxLife, { scale, scale });
         particles[index]->SetRotation(angle_radians);
 
         // 인덱스 갱신
@@ -140,6 +142,7 @@ inline void ParticleManager<T>::EmitRound(int count, vec2 emitter_position, floa
             index = 0;
     }
 }
+
 
 template<typename T>
 inline void ParticleManager<T>::Spray()

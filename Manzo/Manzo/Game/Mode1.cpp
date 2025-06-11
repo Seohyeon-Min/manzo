@@ -83,7 +83,7 @@ void Mode1::Load()
 	AddGSComponent(new ParticleManager<Particles::bossEParticle1>());
 	AddGSComponent(new ParticleManager<Particles::bossEParticle2>());
 	AddGSComponent(new ParticleManager<Particles::bossEParticle3>());
-
+	AddGSComponent(new ParticleManager<Particles::BossBlackCircleParticle>());
 
 	// get cali
 	double cali = Engine::GetSaveDataManager().GetSaveData().user_calibration;

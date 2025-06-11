@@ -16,6 +16,7 @@ Effect::~Effect() {
 
 void Effect::Update(double dt) {
     GameObject::Update(dt);
+    if (effect_time <= -1.f) return;
     if (effect_timer->Remaining() <= 0) {
         Destroy();
     }
@@ -260,3 +261,30 @@ void BlackOutEffect::SetAlpha(const GLShader* shader)
     //if (alpha >= 0.3f) alpha = 0.3f;
     shader->SendUniform("uAlpha", alpha);
 }
+
+BossBlackCircle::BossBlackCircle(vec2 pos) : Effect(pos, -1.f)
+{
+    AddGOComponent(new Sprite("assets/images/effect/boss_black_circle.spt", this));
+}
+
+void BossBlackCircle::Update(double dt)
+{
+    Effect::Update(dt);
+    Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::BossBlackCircleParticle>>()
+        ->EmitRound(1, GetPosition(), 20.f, 10.f, 125.f);
+}
+
+void BossBlackCircle::Draw(DrawLayer drawlayer)
+{
+    Sprite* sprite = GetGOComponent<Sprite>();
+    DrawCall draw_call = {
+        sprite,
+        &GetMatrix(),
+        Engine::GetShaderManager().GetDefaultShader()
+    };
+
+    draw_call.settings.do_blending = true;
+    draw_call.sorting_layer = drawlayer;
+    GameObject::Draw(draw_call);
+}
+

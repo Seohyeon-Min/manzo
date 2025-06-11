@@ -77,3 +77,11 @@ private:
     RealTimeTimer* timer;
     double time = 1.3;
 };
+
+class BossBlackCircle : public Effect {
+public:
+    BossBlackCircle(vec2 pos);
+    void Update(double dt) override;
+    void Draw(DrawLayer drawlayer = DrawLayer::DrawLast) override;
+private:
+};

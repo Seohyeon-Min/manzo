@@ -192,7 +192,7 @@ void Mode2::Update(double dt) {
 			if (mouse_down) {
 				is_holding_sea_icon = true;
 				hold_timer += static_cast<float>(dt);
-				if (hold_timer >= 3.0f) {
+				if (hold_timer >= 1.0f) {
 					Engine::GetGameStateManager().ClearNextGameState();
 					Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode1));
 				}

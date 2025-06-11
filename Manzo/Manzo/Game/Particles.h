@@ -166,5 +166,20 @@ namespace Particles {
         static constexpr double MaxLife = 0.4;
         float scale;
     };
+
+    class BossBlackCircleParticle : public Particle {
+    public:
+        BossBlackCircleParticle() : Particle("assets/images/effect/boss_black_circle.spt")
+        {
+            scale = util::random(0.1f, 0.4f); shader = Engine::GetShaderManager().GetShader("change_alpha");
+            life_offset = util::random(0.0f, 0.8f);
+            //life_offset = util::random(0.0f, 0.70f);
+            drawlayer = DrawLayer::DrawFirst;
+        };
+        std::string TypeName() override { return "CaptureEffect Particle"; }
+        static constexpr int MaxCount = 30;
+        static constexpr double MaxLife = 1.6;
+        float scale;
+    };
 }
 

@@ -6,6 +6,7 @@
 #include "../Engine/GameObjectManager.h"
 #include "JellyEnemy.h"
 #include "../Engine/MathUtils.h"
+#include "Effect.h"
 
 std::vector<GameObject::State*> stateMap;
 std::vector<std::string> BossJSONfileMap;
@@ -61,7 +62,7 @@ void Boss::Movingtolocation_Boss(int targetEntryNum, Boss* boss) {
 			if (entryData.delay + 1 == boss->beat->GetDelayCount()) {
 				if (boss->beat->GetBeat()) {
 					boss->current_position = entryData.position;
-
+					// here
 					for(int i =0; i <1; ++i){
 					boss->Bullet(boss);
 					}
@@ -142,8 +143,9 @@ void Boss::Check_BossBehavior(int targetEntryNum, GameObject* object) {
 
 void Boss::State_CutScene::Enter(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
+	std::cout << "State_CutScene Enter" << std::endl;
 	boss->beat = &Engine::GetBeat();
-
+	Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new BossBlackCircle(boss->GetPosition()));
 }
 void Boss::State_CutScene::Update(GameObject* object, double dt) {
 	Boss* boss = static_cast<Boss*>(object);
@@ -155,10 +157,9 @@ void Boss::State_CutScene::CheckExit(GameObject* object) {
 		Engine::GetAudioManager().SetMute("Level1_bgm", true);
 		Engine::GetAudioManager().StopChannel("e morse");
 		//Engine::GetAudioManager().PlayMusics("e boss");
-		boss->beat->SetBPM(boss->bpm);
-
+		boss->beat->SetBPM(200);
 		boss->beat->LoadMusicToSync("e boss");
-		//std::cout << "boss bpm:" << boss->bpm << std::endl;
+		std::cout << "State_CutScene Exit" << std::endl;
 		boss->change_state(&boss->entry1);
 	}
 }
@@ -251,7 +252,7 @@ void Boss::Update(double dt) {
 void Boss::AfterDied()
 {
 	Engine::GetAudioManager().StopChannel("e boss");
-	Engine::GetGameStateManager().GetGSComponent<Beat>()->CleartoOriginal();
+	Engine::GetBeat().CleartoOriginal();
 
 	auto pump = Engine::GetGameStateManager().GetGSComponent<Pump>();
 	if (pump) {

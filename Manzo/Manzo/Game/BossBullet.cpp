@@ -23,7 +23,7 @@ BossBullet::BossBullet(vec2 Boss_position, float lifetime, BulletType bullet_typ
     }
 
     AddGOComponent(new Sprite("assets/images/bullet.spt", this));
-    float Scalerandom = (float)GetRandomValue(1, 2) * 0.1f;
+    float Scalerandom = (float)GetRandomValue(1, 2) * 0.11f;
     SetScale(vec2(Scalerandom));
 
     static bool seedInitialized = false;
@@ -152,10 +152,10 @@ void BossBullet::Move(double dt) {
         if (bulletspeed > 10000) bulletspeed = 10000;
 
         if (distanceToPlayer > 10.f) {
-            this->velocity += normalize(toPlayer) * bulletspeed * (float)dt;
+            this->velocity += normalize(toPlayer) * 1.2f * bulletspeed * (float)dt;
         }
         else {
-            this->velocity += normalize(toPlayer) * bulletspeed * (float)dt;
+            this->velocity += normalize(toPlayer) * 1.2f * bulletspeed * (float)dt;
         }
 
         this->position += this->velocity * 0.8f * (float)dt;
