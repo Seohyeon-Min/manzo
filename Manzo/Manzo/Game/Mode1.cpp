@@ -127,10 +127,16 @@ void Mode1::Load()
 	//     GetGSComponent<Boss>()->ReadBossJSON(static_cast<Boss::BossType>(i));
 	//     BossFirstPos.push_back(GetGSComponent<Boss>()->GetFirstPosition());
 	// }
-	boss_ptr = new Boss({ 4100, -5300 }, Boss::BossName::e, Boss::BossType::MovingToLocation);
-	boss_ptr->ReadBossJSON(Boss::BossName::e);
-	BossFirstPos.push_back(std::make_pair(boss_ptr->GetFirstPosition()[0], boss_ptr->GetFirstPosition()[1]));
-	bossPosition = { 4100, -5300, 0.0f };
+	boss_ptr_e = new Boss({4100, -5300}, Boss::BossName::e, Boss::BossType::MovingToLocation);
+	boss_ptr_e->ReadBossJSON(Boss::BossName::e);
+	BossFirstPos_e.push_back(std::make_pair(boss_ptr_e->GetFirstPosition()[0], boss_ptr_e->GetFirstPosition()[1]));
+	bossPosition_e = {4100, -5300, 0.0f};
+
+	boss_ptr_y = new Boss({ -1200, -9873 }, Boss::BossName::y, Boss::BossType::MovingToLocationPlus);
+	boss_ptr_y->ReadBossJSON(Boss::BossName::y);
+	BossFirstPos_e.push_back(std::make_pair(boss_ptr_y->GetFirstPosition()[0], boss_ptr_y->GetFirstPosition()[1]));
+	bossPosition_e = { -1200, -9873, 0.0f };
+
 
 	// UI
 	GetGSComponent<GameObjectManager>()->Add(new Mouse);
@@ -170,8 +176,8 @@ void Mode1::Load()
 	camera->SetPosition(ship_ptr->GetPosition());
 
 	// Boss Trigger
-	auto bossPosCopy = bossPosition;
-	auto bossCopy = boss_ptr;
+	auto bossPosCopy = bossPosition_e;
+	auto bossCopy = boss_ptr_e;
 	auto shipCopy = ship_ptr;
 
 	/*Engine::GetEventManager().AddEvent(Event("Boss E Trigger",
@@ -220,7 +226,7 @@ void Mode1::Update(double dt)
 
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::E) && !Isboss)
 	{
-		GetGSComponent<GameObjectManager>()->Add(boss_ptr);
+		GetGSComponent<GameObjectManager>()->Add(boss_ptr_y);
 		Isboss = true;
 	}
 
@@ -244,10 +250,15 @@ void Mode1::Update(double dt)
 	}
 
 
+	if (Engine::GetInput().KeyJustPressed(Input::Keys::E) && !Isboss)
+	{
+		GetGSComponent<GameObjectManager>()->Add(boss_ptr_y);
+		Isboss = true;
+	}
 
 	if (Isboss)
 	{
-		camera->SetPosition(boss_ptr->GetPosition());
+		camera->SetPosition(boss_ptr_y->GetPosition());
 	}
 
 	// camera postion update
@@ -262,8 +273,8 @@ void Mode1::Update(double dt)
 	previousPosition = smoothShipPosition;
 
 	// Calculate the distance between ship and boss positions
-	float dx = smoothShipPosition.x - bossPosition.x;
-	float dy = smoothShipPosition.y - bossPosition.y;
+	float dx = smoothShipPosition.x - bossPosition_e.x;
+	float dy = smoothShipPosition.y - bossPosition_e.y;
 	float distance = std::sqrt(dx * dx + dy * dy);
 
 	// Check if within the max distance and apply 3D audio accordingly
@@ -288,7 +299,7 @@ void Mode1::Update(double dt)
 			}
 		}
 
-		Engine::GetAudioManager().SetChannel3dPosition("e morse", bossPosition);
+		Engine::GetAudioManager().SetChannel3dPosition("e morse", bossPosition_e);
 
 		float volumeFactor = 1.0f - std::clamp(distance / 300.0f, 0.0f, 1.0f);
 		// float volume = std::lerp(0.0f, 1.0f, volumeFactor);

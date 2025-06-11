@@ -15,6 +15,7 @@ std::vector<std::string> BossJSONfileMap;
 Boss::Boss(vec2 start_position, BossName name, BossType type)
 	: GameObject(start_position), bossType(type)
 {
+	LoadBossfile();
 	ReadBossJSON(name);
 	InitializeStates();
 	///// have new texture : boss body
@@ -26,6 +27,8 @@ Boss::Boss(vec2 start_position, BossName name, BossType type)
 	// cutscean
 
 	Engine::GetAudioManager().LoadMusic(mp3_file_name, "e boss", false, false);
+	Engine::GetAudioManager().LoadMusic(mp3_file_name, "y boss", false, false);
+
 	////////
 	current_state = &state_cutscene;
 	current_state->Enter(this);
@@ -60,7 +63,6 @@ void Boss::Movingtolocation_Boss(int targetEntryNum, Boss* boss) {
 			if (entryData.delay + 1 == boss->beat->GetDelayCount()) {
 				if (boss->beat->GetBeat()) {
 					boss->current_position = entryData.position;
-
 					for(int i =0; i <4; ++i){
 					boss->Bullet(boss);
 					}
@@ -78,6 +80,21 @@ void Boss::Movingtolocation_Boss(int targetEntryNum, Boss* boss) {
 	}
 }
 
+void Boss::MovingtolocationPlus_Boss(int targetEntryNum, Boss* boss) {
+
+
+	if (targetEntryNum - 1 < boss->parttern.size()) {
+		const auto& entryVec = boss->parttern[targetEntryNum - 1];
+		for (const auto& entryData : entryVec) {
+			if (entryData.delay + 1 == boss->beat->GetDelayCount()) {
+				if (boss->beat->GetBeat()) {
+					boss->current_position += entryData.position;
+					
+				}
+			}
+		}
+	}
+}
 
 void Boss::Chasingplayer_Boss(int targetEntryNum, Boss* boss) {
 
@@ -123,6 +140,9 @@ void Boss::Check_BossBehavior(int targetEntryNum, GameObject* object) {
 	case Boss::BossType::MovingToLocation:
 		Movingtolocation_Boss(targetEntryNum, boss);
 		break;
+	case Boss::BossType::MovingToLocationPlus:
+		MovingtolocationPlus_Boss(targetEntryNum, boss);
+		break;
 	case Boss::BossType::ChasingPlayer:
 		Chasingplayer_Boss(targetEntryNum, boss);
 		break;
@@ -156,7 +176,7 @@ void Boss::State_CutScene::CheckExit(GameObject* object) {
 		//Engine::GetAudioManager().PlayMusics("e boss");
 		boss->beat->SetBPM(boss->bpm);
 
-		boss->beat->LoadMusicToSync("e boss");
+		boss->beat->LoadMusicToSync("y boss");
 		//std::cout << "boss bpm:" << boss->bpm << std::endl;
 		boss->change_state(&boss->entry1);
 	}
@@ -346,7 +366,8 @@ void Boss::LoadBossfile() {
 
 void Boss::ReadBossJSON(BossName name)
 {
-	JsonParser_boss* ReadJson = new JsonParser_boss(BossJSONfileMap[name]);
+
+	JsonParser_boss* ReadJson = new JsonParser_boss(BossJSONfileMap[1]);
 	AddGOComponent(ReadJson);
 
 	boss_name = ReadJson->GetBossName();
@@ -357,6 +378,7 @@ void Boss::ReadBossJSON(BossName name)
 	position = ReadJson->GetMovePosition();
 	parttern = ReadJson->GetParttern();
 	total_entry = ReadJson->GetTotalEntry();
+
 
 }
 

@@ -19,7 +19,8 @@ public:
 		ChasingPlayer,   
 		Shooting,        
 		MultiInstance,   
-		MovingToLocation 
+		MovingToLocation,
+		MovingToLocationPlus
 	};
 
 
@@ -58,6 +59,7 @@ private:
 	static void Check_BossBehavior(int targetEntryNum, GameObject* object);
 	//------
 	static void Movingtolocation_Boss(int targetEntryNum, Boss* object);
+	static void MovingtolocationPlus_Boss(int targetEntryNum, Boss* object);
 	static void Chasingplayer_Boss(int targetEntryNum, Boss* object);
 	static void Shooting_Boss(int targetEntryNum, Boss* object);
 	static void MultiInstance_Boss(int targetEntryNum, Boss* object);
