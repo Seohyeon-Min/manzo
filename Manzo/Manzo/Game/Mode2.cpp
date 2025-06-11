@@ -105,6 +105,8 @@ void Mode2::Load() {
 	sell_popup = new PopUp({ 0,0 }, "assets/images/sell_popup.spt");
 	GetGSComponent<GameObjectManager>()->Add(sell_popup);
 
+	option = new GameOption({ 0,100 });
+	GetGSComponent<GameObjectManager>()->Add(option);
 
 	Engine::GetIconManager().AddIcon("Mode2_None", "can_go_shop", "computer", { 276,4.5 }, 2.0f, false, false, true, true);
 	Engine::GetIconManager().AddIcon("Mode2_None", "can_go_sea", "ship", { 0,-250 }, 1.0f, false, false, true, true);
@@ -117,8 +119,6 @@ void Mode2::Load() {
 		GetGSComponent<GameObjectManager>()->Add(icon);
 	}
 
-	option = new GameOption({ 0,100 });
-	GetGSComponent<GameObjectManager>()->Add(option);
 }
 
 void Mode2::Update(double dt) {
@@ -151,13 +151,10 @@ void Mode2::Update(double dt) {
 	UpdateGSComponents(dt);
 	GetGSComponent<GameObjectManager>()->UpdateAll(dt);
 
-	if (Engine::GetInput().KeyJustPressed(Input::Keys::Esc)) {
-		option->SetOpen(!option->isOpened());
-	}
-
 
 	if (!option->isOpened())
-	{//audio play
+	{
+		//audio play
 		if (!playing)
 		{
 			Engine::GetAudioManager().PlayMusics("home_intro");
@@ -252,29 +249,11 @@ void Mode2::Update(double dt) {
 			Engine::GetIconManager().ShowIconByGroup("Mode2_None");
 			Engine::GetIconManager().HideIconByGroup("OpenInven");
 		}
-
-		Engine::GetIconManager().HideIconByGroup("Option");
 	}
 	else
 	{
-		Engine::GetIconManager().ShowIconByGroup("Option");
 		Engine::GetIconManager().HideIconById("can_go_shop");
-
-		Icon* icon = Engine::GetIconManager().GetCollidingIconWithMouse({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY });
-		bool clicked = Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT);
-
-		if (icon != nullptr) {
-				Engine::GetGameStateManager().SetFromOption(true);
-			if ((icon->GetId() == "cali") && clicked) {
-				Engine::GetGameStateManager().ClearNextGameState();
-				Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Tutorial));
-			}
-			else
-				if ((icon->GetId() == "tutorial") && clicked) {
-					Engine::GetGameStateManager().ClearNextGameState();
-					Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode3));
-				}
-		}
+		Engine::GetIconManager().HideIconById("module_set1");
 	}
 }
 
@@ -392,6 +371,7 @@ void Mode2::Unload() {
 	GetGSComponent<GameObjectManager>()->Unload();
 	GetGSComponent<Background>()->Unload();
 	Engine::GetIconManager().Unload();
+
 	ClearGSComponents();
 	dialog_ptr->Unload();
 	playing = false;

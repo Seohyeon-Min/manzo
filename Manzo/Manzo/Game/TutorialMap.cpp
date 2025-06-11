@@ -18,9 +18,6 @@ void Tutorial::Load()
 {
 	AddGSComponent(new GameObjectManager());
 
-
-	Engine::GetIconManager().LoadIconList();
-
 	// background
 	background = new Background();
 	AddGSComponent(background);
@@ -40,11 +37,6 @@ void Tutorial::Load()
 	ship_ptr = new Ship({ 0, 0 });
 	GetGSComponent<GameObjectManager>()->Add(ship_ptr);
 
-	option = new GameOption({ 0,100 });
-	GetGSComponent<GameObjectManager>()->Add(option);
-
-	// mouse
-	GetGSComponent<GameObjectManager>()->Add(new Mouse);
 
 	default_min_radius = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Pump>()->GetMinRadius() * 4.5f;
 	default_max_radius = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Pump>()->GetMaxRadius() * 4.5f;
@@ -54,14 +46,12 @@ void Tutorial::Load()
 
 	Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Pump>()->SetMinRadius(default_min_radius);
 	Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Pump>()->SetMaxRadius(default_max_radius);
-	
-	Engine::GetIconManager().AddIcon("Option", "cali", "cali", { -160,100 }, 1.0f, false, false, true, true);
-	Engine::GetIconManager().AddIcon("Option", "tutorial", "tutorial", { 160,100 }, 1.f, false, false, true, true);
 
-	for (auto icon : Engine::GetIconManager().GetIconList())
-	{
-		GetGSComponent<GameObjectManager>()->Add(icon);
-	}
+	option = new GameOption({ 0,100 });
+	GetGSComponent<GameObjectManager>()->Add(option);
+
+	// mouse
+	GetGSComponent<GameObjectManager>()->Add(new Mouse);
 }
 
 void Tutorial::Update(double dt)
@@ -69,10 +59,6 @@ void Tutorial::Update(double dt)
 	UpdateGSComponents(dt);
 	GetGSComponent<GameObjectManager>()->UpdateAll(dt);
 	GetGSComponent<Cam>()->Update(dt, {}, false);
-
-	if (Engine::GetInput().KeyJustPressed(Input::Keys::Esc)) {
-		option->SetOpen(!option->isOpened());
-	}
 
 	if (!option->isOpened())
 	{
@@ -97,27 +83,6 @@ void Tutorial::Update(double dt)
 			variable_min_radius += static_cast<float>(4 * variable_min_radius * beat_system->GetLastCali());
 			//Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Pump>()->SetMinRadius(variable_min_radius);
 		}
-		Engine::GetIconManager().HideIconByGroup("Option");
-	}
-	else
-	{
-		Engine::GetIconManager().ShowIconByGroup("Option");
-		Engine::GetIconManager().HideIconById("can_go_shop");
-
-		Icon* icon = Engine::GetIconManager().GetCollidingIconWithMouse({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY });
-		bool clicked = Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT);
-
-		if (icon != nullptr) {
-			Engine::GetGameStateManager().SetFromOption(true);
-			if ((icon->GetId() == "cali") && clicked) {
-				Engine::GetGameStateManager().ReloadState();
-			}
-			else
-				if ((icon->GetId() == "tutorial") && clicked) {
-					Engine::GetGameStateManager().ClearNextGameState();
-					Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode3));
-				}
-		}
 	}
 }
 
@@ -131,6 +96,7 @@ void Tutorial::Draw()
 		ship_ptr->GetPosition(),
 		{255,0,0}
 	};
+
 	draw_call.settings.do_blending = true;
 	draw_call.sorting_layer = DrawLayer::DrawUI;
 	draw_call.order_in_layer = 9;
@@ -146,7 +112,6 @@ void Tutorial::FixedUpdate(double dt)
 
 void Tutorial::Unload()
 {
-
 	delete ship_ptr;
 	ship_ptr = nullptr;
 	playing = false;
@@ -156,6 +121,8 @@ void Tutorial::Unload()
 
  	GetGSComponent<GameObjectManager>()->Unload();
 	GetGSComponent<Background>()->Unload();
+	Engine::GetIconManager().Unload();
+
 	Engine::GetRender().ClearDrawCalls();
 	ClearGSComponents();
 	Engine::GetAudioManager().StopAllChannels();

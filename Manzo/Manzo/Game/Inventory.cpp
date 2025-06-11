@@ -214,6 +214,8 @@ void Inven::State_Module::Update(GameObject* object, double dt)
 	Inven* inven = static_cast<Inven*>(object);
 	inven->GetGOComponent<Sprite>()->Update(dt);
 
+	Engine::GetIconManager().ShowIconById("module_set1");
+
 	/////////////////////////////////////////////////// Check Buy ///////////////////////////////////////////////////
 	if (inven->buy_first_module)
 	{

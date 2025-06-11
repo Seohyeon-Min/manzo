@@ -1,4 +1,4 @@
- 
+
 #include "Mode3.h"
 #include "../Engine/Engine.h"
 #include "../Engine/Timer.h"
@@ -25,7 +25,7 @@
 #include <utility>
 #include <iostream>
 
-Mode3::Mode3() 
+Mode3::Mode3()
 {
 }
 
@@ -33,173 +33,142 @@ void Mode3::Load() {
 	// audio
 	Engine::GetAudioManager().LoadMusic("assets/audios/tutorial.mp3", "tutorial_bgm", false);
 
-    Engine::GetIconManager().LoadIconList();
 	// component
 	AddGSComponent(new GameObjectManager());
 	beat_system = &Engine::GetBeat();
 	beat_system->LoadMusicToSync("tutorial_bgm");
 
 	//// camera
-    AddGSComponent(new Cam());
-    GetGSComponent<Cam>()->SetPosition({ 0, 0 });
+	AddGSComponent(new Cam());
+	GetGSComponent<Cam>()->SetPosition({ 0, 0 });
 
 
-    option = new GameOption({ 0,100 });
-    GetGSComponent<GameObjectManager>()->Add(option);
 
-    // Particle
-    AddGSComponent(new ParticleManager<Particles::Plankton>());
-    AddGSComponent(new ParticleManager<Particles::FuelBubble>());
-    AddGSComponent(new ParticleManager<Particles::BubblePop>());
-    AddGSComponent(new ParticleManager<Particles::HitPraticle>());
-    AddGSComponent(new ParticleManager<Particles::HitPraticle2>());
-    AddGSComponent(new ParticleManager<Particles::CaptureEffect>());
-    AddGSComponent(new ParticleManager<Particles::BulletParticle>());
+	// Particle
+	AddGSComponent(new ParticleManager<Particles::Plankton>());
+	AddGSComponent(new ParticleManager<Particles::FuelBubble>());
+	AddGSComponent(new ParticleManager<Particles::BubblePop>());
+	AddGSComponent(new ParticleManager<Particles::HitPraticle>());
+	AddGSComponent(new ParticleManager<Particles::HitPraticle2>());
+	AddGSComponent(new ParticleManager<Particles::CaptureEffect>());
+	AddGSComponent(new ParticleManager<Particles::BulletParticle>());
 
-    // background
-    background = new Background();
-    AddGSComponent(background);
-    background->Add("assets/images/background/tutorial.png", 0.25f);
+	// background
+	background = new Background();
+	AddGSComponent(background);
+	background->Add("assets/images/background/tutorial.png", 0.25f);
 
 	//// ship
-	ship_ptr = new Ship({0,0});
+	ship_ptr = new Ship({ 0,0 });
 	GetGSComponent<GameObjectManager>()->Add(ship_ptr);
 
-    //Dialog
-    dialog_ptr = new Dialog({ 0,0 });
-    GetGSComponent<GameObjectManager>()->Add(dialog_ptr);
+	//Dialog
+	dialog_ptr = new Dialog({ 0,0 });
+	GetGSComponent<GameObjectManager>()->Add(dialog_ptr);
 
-    // Mouse
-    GetGSComponent<GameObjectManager>()->Add(new Mouse);
-
-    Engine::GetIconManager().AddIcon("Option", "cali", "cali", { -160,100 }, 1.0f, false, false, true, false);
-    Engine::GetIconManager().AddIcon("Option", "tutorial", "tutorial", { 160,100 }, 1.f, false, false, true, false);
-
-    for (auto icon : Engine::GetIconManager().GetIconList())
-    {
-        GetGSComponent<GameObjectManager>()->Add(icon);
-    }
+	option = new GameOption({ 0,100 });
+	GetGSComponent<GameObjectManager>()->Add(option);
+	// Mouse
+	mouse = new Mouse();
+	GetGSComponent<GameObjectManager>()->Add(mouse);
 }
 
 void Mode3::Update(double dt) {
-    UpdateGSComponents(dt);
-    GetGSComponent<GameObjectManager>()->UpdateAll(dt);
-    GetGSComponent<Cam>()->Update(dt, {}, false);
-    beat_system->Update(dt);
-    phaseTimer += dt;
+	UpdateGSComponents(dt);
 
-    if (Engine::GetInput().KeyJustPressed(Input::Keys::Esc)) {
-        option->SetOpen(!option->isOpened());
-    }
+	GetGSComponent<GameObjectManager>()->UpdateAll(dt);
+	GetGSComponent<Cam>()->Update(dt, {}, false);
 
-    if (!option->isOpened())
-    {
-        Engine::GetIconManager().HideIconByGroup("Option");
-        switch (currentPhase) {
-        case TutorialPhase::Init:
+	if (!option->isOpened())
+	{
+		beat_system->Update(dt);
+		phaseTimer += dt;
 
-            if (!textDisplay) {
+		switch (currentPhase) {
+		case TutorialPhase::Init:
 
-                dialog_ptr->LoadDialogGroup("tutorial-1", 0.05);
-                textDisplay = true;
-            }
-            if (Engine::GetInput().KeyJustPressed(Input::Keys::Space)) {
-                dialog_ptr->NextLine();
-                if (dialog_ptr->IsFinished()) {
-                    currentPhase = TutorialPhase::Dash;
-                    textDisplay = false;
-                }
-            }
-            break;
-        case TutorialPhase::Dash:
-            if (beat_system->GetIsOnBeat()) {
-                if (ship_ptr->GetDashSuccess() && !hasSucceededThisBeat) {
-                    success_count++;
-                    hasSucceededThisBeat = true;
-                }
+			if (!textDisplay) {
 
-                hasCheckedThisBeat = true;
-            }
-            else {
-                if (hasCheckedThisBeat && !hasSucceededThisBeat) {
-                    success_count = 0;
-                }
+				dialog_ptr->LoadDialogGroup("tutorial-1", 0.05);
+				textDisplay = true;
+			}
+			if (Engine::GetInput().KeyJustPressed(Input::Keys::Space)) {
+				dialog_ptr->NextLine();
+				if (dialog_ptr->IsFinished()) {
+					currentPhase = TutorialPhase::Dash;
+					textDisplay = false;
+				}
+			}
+			break;
+		case TutorialPhase::Dash:
+			if (beat_system->GetIsOnBeat()) {
+				if (ship_ptr->GetDashSuccess() && !hasSucceededThisBeat) {
+					success_count++;
+					hasSucceededThisBeat = true;
+				}
 
-                hasCheckedThisBeat = false;
-                hasSucceededThisBeat = false;
-            }
+				hasCheckedThisBeat = true;
+			}
+			else {
+				if (hasCheckedThisBeat && !hasSucceededThisBeat) {
+					success_count = 0;
+				}
 
-            if (success_count >= 4) {
-                currentPhase = TutorialPhase::Done;
-            }
-            break;
+				hasCheckedThisBeat = false;
+				hasSucceededThisBeat = false;
+			}
 
-        case TutorialPhase::Done:
-            if (!textDisplay) {
-                dialog_ptr->LoadDialogGroup("tutorial-2", 0.05);
-                textDisplay = true;
-            }
-            if (Engine::GetInput().KeyJustPressed(Input::Keys::Space)) {
-                dialog_ptr->NextLine();
-                if (dialog_ptr->IsFinished()) {
-                    auto& save = Engine::GetSaveDataManager().GetSaveData();
-                    save.eventsDone.push_back("tutorial_end");
-                    Engine::GetSaveDataManager().UpdateSaveData(save);
-                    std::cout << &Engine::GetEventManager() << std::endl;
-                    Engine::GetEventManager().MarkEventDone("tutorial_end");
+			if (success_count >= 4) {
+				currentPhase = TutorialPhase::Done;
+			}
+			break;
 
-                    if (!Engine::GetGameStateManager().FromOption())
-                    {
-                        Engine::GetGameStateManager().ClearNextGameState();
-                        Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
-                    }
-                    else
-                    {
-                        Engine::GetGameStateManager().ClearNextGameState();
-                        Engine::GetGameStateManager().LoadPreviousGameState();
-                    }
-                }
-            }
+		case TutorialPhase::Done:
+			if (!textDisplay) {
+				dialog_ptr->LoadDialogGroup("tutorial-2", 0.05);
+				textDisplay = true;
+			}
+			if (Engine::GetInput().KeyJustPressed(Input::Keys::Space)) {
+				dialog_ptr->NextLine();
+				if (dialog_ptr->IsFinished()) {
+					auto& save = Engine::GetSaveDataManager().GetSaveData();
+					save.eventsDone.push_back("tutorial_end");
+					Engine::GetSaveDataManager().UpdateSaveData(save);
+					std::cout << &Engine::GetEventManager() << std::endl;
+					Engine::GetEventManager().MarkEventDone("tutorial_end");
 
-            break;
-        }
-    }
-    else
-    {
-        Engine::GetIconManager().ShowIconByGroup("Option");
-        Engine::GetIconManager().HideIconById("can_go_shop");
+					if (!Engine::GetGameStateManager().FromOption())
+					{
+						Engine::GetGameStateManager().ClearNextGameState();
+						Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
+					}
+					else
+					{
+						Engine::GetGameStateManager().ClearNextGameState();
+						Engine::GetGameStateManager().LoadPreviousGameState();
+					}
+				}
+			}
 
-        Icon* icon = Engine::GetIconManager().GetCollidingIconWithMouse({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY });
-        bool clicked = Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT);
-
-        if (icon != nullptr) {
-            Engine::GetGameStateManager().SetFromOption(true);
-            if ((icon->GetId() == "cali") && clicked) {
-                Engine::GetGameStateManager().ClearNextGameState();
-                Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Tutorial));
-            }
-            else
-                if ((icon->GetId() == "tutorial") && clicked) {
-                    Engine::GetGameStateManager().ReloadState();
-                }
-        }
-    }
+			break;
+		}
+	}
 }
 
 
 void Mode3::FixedUpdate(double dt)
 {
-    if (GetGSComponent<GameObjectManager>()) {
-        GetGSComponent<GameObjectManager>()->FixedUpdateAll(dt);
-    }
+	if (GetGSComponent<GameObjectManager>()) {
+		GetGSComponent<GameObjectManager>()->FixedUpdateAll(dt);
+	}
 }
 
 void Mode3::Draw() {
-    if (GetGSComponent<Background>() && GetGSComponent<Cam>()) {
-        GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
-    }
-    GetGSComponent<GameObjectManager>()->DrawAll();
-    dialog_ptr->Draw();
+	if (GetGSComponent<Background>() && GetGSComponent<Cam>()) {
+		GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
+	}
+	GetGSComponent<GameObjectManager>()->DrawAll();
+	dialog_ptr->Draw();
 
 
 }
@@ -207,29 +176,31 @@ void Mode3::Draw() {
 
 void Mode3::Unload() {
 
-    beat_system->CleartoOriginal();
-    phaseTimer = 0.0;
-    textDisplay = false;
-    TutorialPhase currentPhase = TutorialPhase::Init;
-    dash_count = 0;
-    beat_count = 0;
-    success_count = 0;
-    hasCheckedThisBeat = false;
-    hasSucceededThisBeat = false;
-    hasLoadedDialog = false;
+	beat_system->CleartoOriginal();
+	phaseTimer = 0.0;
+	textDisplay = false;
+
+	currentPhase = TutorialPhase::Init;
+	dash_count = 0;
+	beat_count = 0;
+	success_count = 0;
+
+	hasCheckedThisBeat = false;
+	hasSucceededThisBeat = false;
+	hasLoadedDialog = false;
 
 
-    auto pump = Engine::GetGameStateManager().GetGSComponent<Pump>();
-    if (pump) {
-        pump->Reset();
-    }
+	auto pump = Engine::GetGameStateManager().GetGSComponent<Pump>();
+	if (pump) {
+		pump->Reset();
+	}
 
-    Engine::GetAudioManager().StopAllChannels();
-    GetGSComponent<GameObjectManager>()->Unload();
-    GetGSComponent<Background>()->Unload();
-    Engine::GetIconManager().Unload();
-    ClearGSComponents();
-    dialog_ptr->Unload();
-    background = nullptr;
+	Engine::GetAudioManager().StopAllChannels();
+	GetGSComponent<GameObjectManager>()->Unload();
+	GetGSComponent<Background>()->Unload();
+	Engine::GetIconManager().Unload();
+	ClearGSComponents();
+	dialog_ptr->Unload();
+	background = nullptr;
 
 }

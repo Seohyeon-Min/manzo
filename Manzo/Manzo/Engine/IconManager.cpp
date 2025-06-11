@@ -17,6 +17,11 @@ IconManager::~IconManager()
 
 void IconManager::Unload()
 {
+	for (Icon* icon : icons)
+	{
+		icon->Destroy();
+		delete icon;   
+	}
 	icons.clear();
 	icon_by_id.clear();
 	icon_list.clear();

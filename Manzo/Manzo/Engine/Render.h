@@ -21,11 +21,11 @@ enum class DrawLayer {
     DrawBackground = 0,
     DrawFirst = 1,
     Draw = 2,
-    DrawLast = 3,
     DrawPlayer,
     DrawPlayerTop,
     DrawDialog,
     DrawUI,
+    DrawLast
 };
 
 enum class DrawType {
