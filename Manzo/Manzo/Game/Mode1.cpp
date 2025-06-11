@@ -118,6 +118,9 @@ void Mode1::Load()
 	GetGSComponent<MapManager>()->AddMapFile("assets/maps/new_map3.svg");
 	GetGSComponent<MapManager>()->LoadFirstMap();
 
+	option = new GameOption({0,0});
+	GetGSComponent<GameObjectManager>()->Add(option);
+
 	// Boss
 	Boss::LoadBossfile();
 

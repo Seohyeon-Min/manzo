@@ -2,6 +2,7 @@
 #include "Dragging.h"
 #include "..\Engine\GameObject.h"
 #include "Inventory.h"
+#include "GameOption.h"
 
 static bool is_on_inven = false;
 static bool is_on_shop = false;
@@ -38,64 +39,68 @@ Shop::~Shop()
 
 void Shop::Update(double dt)
 {
-	GameObject::Update(dt);
-
-	if (inven->GetIsOpened())
+	if (!Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<GameOption>()->isOpened())
 	{
-		Engine::GetIconManager().ShowIconByGroup("Shop");
-		for (auto& info : shop_infos)
+		GameObject::Update(dt);
+
+		if (inven->GetIsOpened())
 		{
-			std::string icon_name = info.icon;
-
-			if (inven->GetMoney() >= info.price)
+			Engine::GetIconManager().ShowIconByGroup("Shop");
+			for (auto& info : shop_infos)
 			{
-				if (Engine::GetIconManager().IsCollidingWith(icon_name, "module_have1"))
+				std::string icon_name = info.icon;
+
+				if (inven->GetMoney() >= info.price)
 				{
-					if (icon_name == "module1_info")
+					if (Engine::GetIconManager().IsCollidingWith(icon_name, "module_have1"))
 					{
-						Engine::GetIconManager().SetIconPositionById("module1", "module_have1");
-						inven->BuyFirstModule(true);
-					}
-					else if (icon_name == "module2_info")
-					{
-						Engine::GetIconManager().SetIconPositionById("module2", "module_have1");
-						inven->BuySecondModule(true);
-					}
+						if (icon_name == "module1_info")
+						{
+							Engine::GetIconManager().SetIconPositionById("module1", "module_have1");
+							inven->BuyFirstModule(true);
+						}
+						else if (icon_name == "module2_info")
+						{
+							Engine::GetIconManager().SetIconPositionById("module2", "module_have1");
+							inven->BuySecondModule(true);
+						}
 
 
-					if (!already_buy)
-					{
-						already_buy = true;
-						inven->SetMoney(inven->GetMoney() - info.price);
+						if (!already_buy)
+						{
+							already_buy = true;
+							inven->SetMoney(inven->GetMoney() - info.price);
+						}
 					}
+					else if (Engine::GetIconManager().IsCollidingWith(icon_name, "module_have2"))
+					{
+						if (icon_name == "module1_info")
+						{
+							Engine::GetIconManager().SetIconPositionById("module1", "module_have2");
+							inven->BuyFirstModule(true);
+						}
+						else if (icon_name == "module2_info")
+						{
+							Engine::GetIconManager().SetIconPositionById("module2", "module_have2");
+							inven->BuySecondModule(true);
+						}
+
+
+						if (!already_buy)
+						{
+							already_buy = true;
+							inven->SetMoney(inven->GetMoney() - info.price);
+						}
+					}
+
 				}
-				else if (Engine::GetIconManager().IsCollidingWith(icon_name, "module_have2"))
-				{
-					if (icon_name == "module1_info")
-					{
-						Engine::GetIconManager().SetIconPositionById("module1", "module_have2");
-						inven->BuyFirstModule(true);
-					}
-					else if (icon_name == "module2_info")
-					{
-						Engine::GetIconManager().SetIconPositionById("module2", "module_have2");
-						inven->BuySecondModule(true);
-					}
-
-
-					if (!already_buy)
-					{
-						already_buy = true;
-						inven->SetMoney(inven->GetMoney() - info.price);
-					}
-				}
-
 			}
 		}
-	}
-	else
-	{
-		Engine::GetIconManager().HideIconByGroup("Shop");
+		else
+		{
+			Engine::GetIconManager().HideIconByGroup("Shop");
+		}
+
 	}
 }
 

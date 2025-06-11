@@ -49,11 +49,15 @@ If you see a popup asking to allow access to public and private networks, please
 [At player's home]
 - **Space Key**: Skip NPC dialogue.
 - **C Key**: End conservation with the NPC.
+- **X Key**: Close Inventory.
 
 [At Ocean]
 - **Left Mouse Click**: Dash when you click in rhythm.  
 - **Tab Key**: Return home when near the sea surface.  
 - **V Key** : Restart the tutorial.
+
+[Anywhere]
+- **ESC Key** : Set game option. (On/Off)
 
 ---
 
