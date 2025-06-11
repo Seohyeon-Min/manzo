@@ -24,7 +24,7 @@ public:
 	bool flag = false;
 	bool collided = false;
 
-	void Update(double dt);
+	void Update(double dt) override;
 	void Draw();
 	void Pattern();
 	void AvoidRock();

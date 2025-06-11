@@ -16,6 +16,7 @@
 #include <map>
 #include "FishEcosystem.h"
 #include "../Engine/MathUtils.h"
+#include "Option.h"
 
 std::map<int, int> fishCollection;
 
@@ -75,6 +76,8 @@ void Fish::ResolveCollision(GameObject* other_object) {
 }
 
 void Fish::Update(double dt) {
+
+
 	GameObject::Update(dt);
 
 	SetFlipX(GetVelocity().x <= 0);

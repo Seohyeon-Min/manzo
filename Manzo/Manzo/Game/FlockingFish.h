@@ -13,7 +13,7 @@ public:
     GameObjectTypes Type() override { return GameObjectTypes::BackgroundFish; }
     std::string TypeName() override { return "Background Fish"; }
 
-    void Update(double dt);
+    void Update(double dt) override;
     void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
 
     static float a, b, c, d;

@@ -1,6 +1,8 @@
 #include "FlockingFish.h"
 #include "ScreenWrap.h"
 #include "FishEcosystem.h"
+#include "Option.h"
+#include "../Engine/GameObjectManager.h"
 
 float BackgroundFish::a = 0.2957f, BackgroundFish::b = 0.0f, BackgroundFish::c = 3.6f, BackgroundFish::d = 0.0174f;
 
@@ -19,7 +21,7 @@ BackgroundFish::BackgroundFish() : GameObject({ start_position })
 	SetPosition(start_position);
 	SetVelocity({ 30,0 });
 
-    AddGOComponent(new Sprite("assets/images/fish/BackgroundFish.spt", this));
+	AddGOComponent(new Sprite("assets/images/fish/BackgroundFish.spt", this));
 
 	AddGOComponent(new ScreenWrap(*this));
 }
@@ -35,15 +37,15 @@ void BackgroundFish::Draw(DrawLayer drawlayer)
 {
 
 
-    DrawCall draw_call = {
-        GetGOComponent<Sprite>()->GetTexture(),                       // Texture to draw
-        &GetMatrix(),                          // Transformation matrix
-        Engine::GetShaderManager().GetDefaultShader()
-    };
+	DrawCall draw_call = {
+		GetGOComponent<Sprite>()->GetTexture(),                       // Texture to draw
+		&GetMatrix(),                          // Transformation matrix
+		Engine::GetShaderManager().GetDefaultShader()
+	};
 
 	draw_call.sorting_layer = drawlayer;
 	draw_call.settings.do_blending = true;
-    GameObject::Draw(draw_call);
+	GameObject::Draw(draw_call);
 }
 
 void BackgroundFish::State_Leader::Enter(GameObject* object)

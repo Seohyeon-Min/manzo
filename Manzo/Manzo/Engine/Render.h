@@ -122,6 +122,7 @@ public:
 
     void ApplyPostProcessing(bool is_title = false);
     void RenderQuad();
+    void ApplyPost(bool apply_) { apply = apply_; }
 
     void SetProjection(const mat3 proj);
     void CreatModel();
@@ -150,4 +151,6 @@ private:
     GLFrameBuffer postProcessFramebuffer[2];
 
     mat3 projection_matrix;
+
+    bool apply = true;
 };

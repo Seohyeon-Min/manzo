@@ -201,6 +201,9 @@
     <ClCompile Include="Engine\EventManager.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Option.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <!-- 헤더 파일(ClInclude)에 필터 적용 -->
   <ItemGroup>
@@ -415,6 +418,9 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Game\Mode3.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Option.h">
       <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>

@@ -90,6 +90,10 @@ void Mode1::Load()
 	camera->SetLimit(cam_limit);
 	AddGSComponent(camera);
 
+	option = new GameOption();
+	GetGSComponent<GameObjectManager>()->Add(option);
+
+
 	//// ship
 	ship_ptr = new Ship(start_position);
 	GetGSComponent<GameObjectManager>()->Add(ship_ptr);
@@ -182,16 +186,17 @@ void Mode1::Load()
 
 void Mode1::Update(double dt)
 {
-	/*
-	std::cout << "Player's X position : "<< ship_ptr->GetPosition().x << "\n";
-	std::cout << "Player's Y position : "<< ship_ptr->GetPosition().y << "\n";
-	*/
 
-	// beat_system->LoadMusicToSync("Level1_bgm");
-	// audio play
+	GetGSComponent<GameObjectManager>()->UpdateAll(dt);
+
+	if (Engine::GetInput().KeyJustPressed(Input::Keys::Esc))
+	{
+		option->SetOpen(!option->IsOpened());
+	}
+
+	Engine::GetRender().ApplyPost(true);
 
 	UpdateGSComponents(dt);
-	GetGSComponent<GameObjectManager>()->UpdateAll(dt);
 	Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::Plankton>>()->Spray();
 	beat_system->Update(dt);
 
@@ -202,24 +207,6 @@ void Mode1::Update(double dt)
 		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
 	}
 
-
-#ifdef _DEBUG
-	AddGSComponent(new ShowCollision());
-
-	if (Engine::GetInput().KeyJustPressed(Input::Keys::W))
-	{
-		Engine::GetGameStateManager().ReloadState();
-	}
-
-
-	if (Engine::GetInput().KeyJustPressed(Input::Keys::E) && !Isboss)
-	{
-		GetGSComponent<GameObjectManager>()->Add(boss_ptr);
-		Isboss = true;
-	}
-#else
-#endif
-	
 
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::V))
 	{
@@ -285,6 +272,26 @@ void Mode1::Update(double dt)
 		Engine::GetAudioManager().StopPlayingMusic("e morse");
 		replay = false;
 	}
+
+
+#ifdef _DEBUG
+	AddGSComponent(new ShowCollision());
+
+	if (Engine::GetInput().KeyJustPressed(Input::Keys::W))
+	{
+		Engine::GetGameStateManager().ReloadState();
+	}
+
+
+	if (Engine::GetInput().KeyJustPressed(Input::Keys::E) && !Isboss)
+	{
+		GetGSComponent<GameObjectManager>()->Add(boss_ptr);
+		Isboss = true;
+	}
+#else
+#endif
+
+
 }
 
 void Mode1::FixedUpdate(double dt)

@@ -5,6 +5,7 @@
 #include "../Engine/Rect.h"
 #include "Rock.h"
 #include "BounceBehavior.h"
+#include "Option.h"
 
 class Beat;
 class Ship : public GameObject {
@@ -86,6 +87,7 @@ private:
     vec2 dash_target;
 
     BounceBehavior* bounceBehavior;
+    GameOption* option;
 
     class State_Idle : public State {
     public:

@@ -8,6 +8,7 @@
 #include "WindowState.h"
 #include "Monster.h"
 #include "States.h"
+#include "Option.h"
 
 #include <iostream>
 
@@ -21,6 +22,8 @@ Ship::Ship(vec2 start_position) :
 	fuel = Maxfuel;
 	FuelFlag = false;
 	SetVelocity({ 0,0 });
+
+	option = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<GameOption>();
 
 	if (Engine::GetGameStateManager().GetStateName() == "Mode3" || Engine::GetGameStateManager().GetStateName() == "Mode1") {
 		bounceBehavior = new DefaultBounceBehavior();
@@ -263,7 +266,7 @@ void Ship::Update(double dt)
 	ship_range = Math::rect(vec2{pos.x-150.f,pos.y-150.f}, vec2{ pos.x + 150.f,pos.y + 150.f });
 
 
-	if (!IsFuelZero()) {
+	if (!IsFuelZero() && !option->IsOpened()) {
 		can_dash = true;
 		GameObject::Update(dt);
 		if (Engine::GetGameStateManager().GetStateName() == "Mode1" || Engine::GetGameStateManager().GetStateName() == "Tutorial") {
@@ -341,8 +344,6 @@ void Ship::Update(double dt)
 void Ship::FixedUpdate(double fixed_dt) {
 	if (!IsFuelZero())
 		GameObject::FixedUpdate(fixed_dt);
-
-
 }
 
 
@@ -370,10 +371,6 @@ void Ship::Draw(DrawLayer drawlayer) {
 		draw_call.sorting_layer = DrawLayer::DrawPlayer;
 		GameObject::Draw(draw_call);
 	}
-
-
-
-
 }
 
 vec2 CatmullRomSpline(const vec2& p0, const vec2& p1, const vec2& p2, const vec2& p3, float t) {
