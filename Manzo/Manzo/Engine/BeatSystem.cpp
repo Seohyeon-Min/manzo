@@ -8,15 +8,16 @@ Beat::Beat(AudioManager* audioMgr)
     : audio(audioMgr)
 {
     fixed_duration = 60.0 / BPM;
-    duration; 
-    delay_duration = fixed_duration / 4 ;
-    current_delay_duration = delay_duration ;
+    duration;
+    delay_duration = fixed_duration / 4;
+    current_delay_duration = delay_duration;
     total_music_length = audio->GetMusicLength("Level1_bgm");
+    judge_offset = fixed_duration * 0.4;
 }
 
 void Beat::LoadMusicToSync(std::string _music_name)
 {
-    music_name =_music_name;
+    music_name = _music_name;
     playing = false;
 }
 //0.29
@@ -24,14 +25,12 @@ void Beat::LoadMusicToSync(std::string _music_name)
 void Beat::ResetCalibration() {
     user_calibration = 0;
 }
-
+int asdfasdf = 0;
 void Beat::Update(double dt)
 {
-    time_taken += dt;
-
     if (!playing)
     {
-       audio->PlayMusics(music_name);
+        audio->PlayMusics(music_name);
         playing = true;
         time_taken = 0;
         //std::cout << "Now Music:: " << Engine::GetAudioManager().GetCurrentMusicTime(music_name) << std::endl;
@@ -41,7 +40,7 @@ void Beat::Update(double dt)
         beat = false;
     }
 
-    if (current_delay_duration + user_calibration <= time_taken ) { // delay count
+    if (current_delay_duration + user_calibration <= time_taken) { // delay count
         if (delay_count >= 16) {
             delay_count = 0;
         }
@@ -56,6 +55,7 @@ void Beat::Update(double dt)
 
         beat_count++;
         duration += fixed_duration; // Update duration for the next beat
+        on_beat_timer = ON_BEAT_WINDOW;
     }
 
     if (beat_count >= 4) {
@@ -63,14 +63,13 @@ void Beat::Update(double dt)
         beat_count = 0;
     }
 
-    if ((judge_offset >= time_taken + user_calibration || duration - judge_offset <= time_taken + user_calibration)) { // judge_offset
-        if (!is_on_beat)
-            is_on_beat = true;
-    }
-    else {
-        if (is_on_beat)
-            is_on_beat = false;
-    }
+    double diff = std::abs(time_taken + user_calibration - duration);
+    if (diff <= judge_offset || on_beat_timer > 0.0)
+        is_on_beat = true;
+    else
+        is_on_beat = false;
+
+    on_beat_timer = std::max(0.0, on_beat_timer - dt);
 
     if (Engine::GetGameStateManager().GetStateName() == "Tutorial") {
         CollectCaliData();
@@ -80,6 +79,12 @@ void Beat::Update(double dt)
     //    << ", Current delay duration: " << current_delay_duration
     //    << ", Beat Count: " << beat_count
     //    << " beat: " << beat << std::endl;
+
+        //if (beat)
+    //    std::cout << asdfasdf++ << "fixed : " << fixed_duration << " duration : " << duration << " - on beat\n";
+    //if (beat) std::cout << "beat @ " << time_taken << '\n';
+    //std::cout << (is_on_beat ? "ON\n" : "OFF\n");
+    time_taken += dt;
 }
 
 void Beat::CollectCaliData()
@@ -121,6 +126,7 @@ void Beat::CalculateCali()
 
     //std::cout << "Median calibration value: " << median << std::endl;
     user_calibration = median;
+    real_calibration = median;
     auto& saveData = Engine::GetSaveDataManager().GetSaveData();
     saveData.user_calibration = user_calibration; // newValue´Â double Å¸ÀÔ
 
@@ -132,9 +138,11 @@ void Beat::CalculateCali()
 void Beat::SetBPM(int set_BPM)
 {
     BPM = set_BPM;
-    duration = 60.0 / BPM;
+    fixed_duration = 60.0 / BPM;
+    duration = fixed_duration;
     delay_duration = duration / 4;
-    current_delay_duration = 0;
+    current_delay_duration = delay_duration;
+    judge_offset = fixed_duration * 0.4;
     time_taken = 0;
     bar_count = 0;
     beat_count = 0;
@@ -143,6 +151,10 @@ void Beat::SetBPM(int set_BPM)
     is_on_beat = false;
     playing = false;
     //music_name.clear();
+
+    //maybe wrong
+    double ratio = 100 / set_BPM;
+    user_calibration = real_calibration * ratio;
 }
 
 void Beat::CleartoOriginal() {
@@ -151,6 +163,7 @@ void Beat::CleartoOriginal() {
     duration = fixed_duration;
     delay_duration = fixed_duration / 4;
     current_delay_duration = delay_duration;
+    judge_offset = fixed_duration * 0.4;
 
     time_taken = 0;
     bar_count = 0;

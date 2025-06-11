@@ -19,7 +19,7 @@ public:
     void CalculateCali();
     void CleartoOriginal();
     double GetUserCali() { return user_calibration; }
-    const double GetLastCali() {return calibrations.back();}
+    const double GetLastCali() { return calibrations.back(); }
     void SetUserCali(double cali) { user_calibration = cali; }
 
 private:
@@ -34,7 +34,7 @@ private:
     double time_taken = 0;
     double total_music_length = 0;
     double right_time_for_calibration;
-    static constexpr double judge_offset = 0.2;
+    double judge_offset = 0.2;
     bool beat = true;
     bool is_on_beat = false;
     bool playing = false;
@@ -42,7 +42,11 @@ private:
     int channel_id = 0;
     std::string music_name;
 
+    double on_beat_timer = 0.0;
+    static constexpr double ON_BEAT_WINDOW = 0.15;
+
     std::vector<double> calibrations;
     int calibrations_cnt = 0;
     double user_calibration = 0;
+    double real_calibration = 0; // not affected by ratio. always same even the bpm changes
 };

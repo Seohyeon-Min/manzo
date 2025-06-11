@@ -2,7 +2,7 @@
     "Boss name" : "y", 
     "Index" : 2,
     "Isbossfight" : false,
-    "BPM" : 200,
+    "BPM" : 125,
     "Mp3" : "assets/audios/boss/y.mp3",
     "Position" : [-1200, -9873],
     "Total entry" : [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
