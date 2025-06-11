@@ -5,6 +5,7 @@
 #include "BossBullet.h"
 #include "../Engine/GameObjectManager.h"
 #include "JellyEnemy.h"
+#include "../Engine/BeatSystem.h"
 
 std::vector<GameObject::State*> stateMap;
 std::vector<std::string> BossJSONfileMap;
@@ -26,8 +27,8 @@ Boss::Boss(vec2 start_position, BossName name, BossType type)
 	current_position = start_position;
 	// cutscean
 
-	Engine::GetAudioManager().LoadMusic(mp3_file_name, "e boss", false, false);
-	Engine::GetAudioManager().LoadMusic(mp3_file_name, "y boss", false, false);
+	
+
 
 	////////
 	current_state = &state_cutscene;
@@ -81,15 +82,12 @@ void Boss::Movingtolocation_Boss(int targetEntryNum, Boss* boss) {
 }
 
 void Boss::MovingtolocationPlus_Boss(int targetEntryNum, Boss* boss) {
-
-
 	if (targetEntryNum - 1 < boss->parttern.size()) {
 		const auto& entryVec = boss->parttern[targetEntryNum - 1];
 		for (const auto& entryData : entryVec) {
 			if (entryData.delay + 1 == boss->beat->GetDelayCount()) {
-				if (boss->beat->GetBeat()) {
+				for(int i = 0; i < 1; ++i){
 					boss->current_position += entryData.position;
-					
 				}
 			}
 		}
@@ -133,6 +131,8 @@ void Boss::MultiInstance_Boss(int targetEntryNum, Boss* object) {
 }
 
 void Boss::Check_BossBehavior(int targetEntryNum, GameObject* object) {
+	
+
 	Boss* boss = static_cast<Boss*>(object);
 
 	switch (boss->bossType)
@@ -163,23 +163,26 @@ void Boss::State_CutScene::Enter(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
 	boss->beat = &Engine::GetBeat();
 
+
 }
 void Boss::State_CutScene::Update(GameObject* object, double dt) {
 	Boss* boss = static_cast<Boss*>(object);
+	Engine::GetAudioManager().LoadMusic(boss->mp3_file_name, "boss music", false, false);
+	
+	boss->current_state->CheckExit(object);
 }
 void Boss::State_CutScene::CheckExit(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
 
-	if (boss->beat->GetBeat()) {
-		Engine::GetAudioManager().SetMute("Level1_bgm", true);
-		Engine::GetAudioManager().StopChannel("e morse");
-		//Engine::GetAudioManager().PlayMusics("e boss");
-		boss->beat->SetBPM(boss->bpm);
+	std::cout << boss->mp3_file_name;
 
-		boss->beat->LoadMusicToSync("y boss");
-		//std::cout << "boss bpm:" << boss->bpm << std::endl;
-		boss->change_state(&boss->entry1);
-	}
+	Engine::GetAudioManager().SetMute("Level1_bgm", true);
+	Engine::GetAudioManager().StopChannel("e morse");
+	//Engine::GetAudioManager().PlayMusics("e boss");
+	boss->beat->SetBPM(200);
+	boss->beat->LoadMusicToSync("boss music");
+	//std::cout << "boss bpm:" << boss->bpm << std::endl;
+	boss->change_state(&boss->entry1);
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
 void Boss::Entry1::Enter(GameObject* object) {
@@ -187,6 +190,7 @@ void Boss::Entry1::Enter(GameObject* object) {
 }
 void Boss::Entry1::Update(GameObject* object, double dt) {
 	int targetEntryNum = 1;
+	Check_BossBehavior(targetEntryNum, object);
 }
 void Boss::Entry1::CheckExit(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
@@ -238,6 +242,7 @@ void Boss::InitializeStates() {
 
 
 void Boss::Update(double dt) {
+
 	Boss* boss = static_cast<Boss*>(this);
 	//std::cout << total_entry.size() << std::endl;
 	if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
@@ -264,7 +269,7 @@ void Boss::Update(double dt) {
 
 void Boss::AfterDied()
 {
-	Engine::GetAudioManager().StopChannel("e boss");
+	Engine::GetAudioManager().StopChannel("boss music");
 	Engine::GetGameStateManager().GetGSComponent<Beat>()->CleartoOriginal();
 
 	auto pump = Engine::GetGameStateManager().GetGSComponent<Pump>();
@@ -367,7 +372,7 @@ void Boss::LoadBossfile() {
 void Boss::ReadBossJSON(BossName name)
 {
 
-	JsonParser_boss* ReadJson = new JsonParser_boss(BossJSONfileMap[1]);
+	JsonParser_boss* ReadJson = new JsonParser_boss(BossJSONfileMap[name]);
 	AddGOComponent(ReadJson);
 
 	boss_name = ReadJson->GetBossName();

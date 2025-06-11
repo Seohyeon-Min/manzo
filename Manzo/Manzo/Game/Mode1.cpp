@@ -134,8 +134,8 @@ void Mode1::Load()
 
 	boss_ptr_y = new Boss({ -1200, -9873 }, Boss::BossName::y, Boss::BossType::MovingToLocationPlus);
 	boss_ptr_y->ReadBossJSON(Boss::BossName::y);
-	BossFirstPos_e.push_back(std::make_pair(boss_ptr_y->GetFirstPosition()[0], boss_ptr_y->GetFirstPosition()[1]));
-	bossPosition_e = { -1200, -9873, 0.0f };
+	BossFirstPos_y.push_back(std::make_pair(boss_ptr_y->GetFirstPosition()[0], boss_ptr_y->GetFirstPosition()[1]));
+	bossPosition_y = { -1200, -9873, 0.0f };
 
 
 	// UI
@@ -217,6 +217,7 @@ void Mode1::Update(double dt)
 	Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::Plankton>>()->Spray();
 	beat_system->Update(dt);
 
+
 	// Handle Input
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::TAB) && ship_ptr->GetPosition().y >= -800.f)
 	{
@@ -249,12 +250,11 @@ void Mode1::Update(double dt)
 		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Tutorial));
 	}
 
-
-	if (Engine::GetInput().KeyJustPressed(Input::Keys::E) && !Isboss)
-	{
-		GetGSComponent<GameObjectManager>()->Add(boss_ptr_y);
-		Isboss = true;
-	}
+	//if (Engine::GetInput().KeyJustPressed(Input::Keys::E) && !Isboss)
+	//{
+	//	GetGSComponent<GameObjectManager>()->Add(boss_ptr_e);
+	//	Isboss = true;
+	//}
 
 	if (Isboss)
 	{
