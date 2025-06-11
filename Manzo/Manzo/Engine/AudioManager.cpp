@@ -176,12 +176,9 @@ std::string AudioManager::GetID(const std::string& alias)
 	return nullptr; // Return -1 if the sound is not found
 }
 
-std::string AudioManager::PlayMusics(const std::string& alias, const vec3& vPosition, float fVolumedB) {
+void AudioManager::PlayMusics(const std::string& alias, const vec3& vPosition, float fVolumedB) {
 	auto tFoundIt = sgpImplementation->mSounds.find(alias);
 	if (tFoundIt == sgpImplementation->mSounds.end()) {
-		// Load music if it hasn't been loaded yet
-		//std::cerr << "Error: Sound with alias " << alias << " not found. Please load it first." << std::endl;
-		return "";
 	}
 
 	FMOD::Channel* pChannel = nullptr;
@@ -201,8 +198,6 @@ std::string AudioManager::PlayMusics(const std::string& alias, const vec3& vPosi
 		// Use alias as the channel ID
 		sgpImplementation->mChannels[alias] = pChannel;
 	}
-
-	return alias;
 }
 
 
@@ -252,11 +247,10 @@ void AudioManager::StopPlayingMusic(const std::string& alias)
 {
 	auto tFoundIt = sgpImplementation->mChannels.find(alias);
 	if (tFoundIt != sgpImplementation->mChannels.end()) {
-		// 채널을 일시 정지합니다.
 		ErrorCheck(tFoundIt->second->setPaused(true));
+		isPause = true;
 	}
 }
-
 
 void AudioManager::Set3dListenerAndOrientation(const vec3& vPosition, const vec3& vLook, const vec3& vUp) {
 	if (!sgpImplementation->mpSystem)

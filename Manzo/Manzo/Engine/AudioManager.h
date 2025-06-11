@@ -45,11 +45,12 @@ public:
 	float GetMusicLength(const std::string& alias);
 	std::string GetID(const std::string& alias);
 
-	std::string PlayMusics(const std::string& alias, const vec3& vPos = vec3{ 0, 0, 0 }, float fVolumedB = 0.0f);
+	void PlayMusics(const std::string& alias, const vec3& vPos = vec3{ 0, 0, 0 }, float fVolumedB = 0.0f);
 	void StopChannel(const std::string& alias);
 	void StopAllChannels();
 	void RestartPlayMusic(const std::string& alias);
 	void StopPlayingMusic(const std::string& alias);
+	void PausePlayingMusic(const std::string& alias);
 	bool IsPlayingMusic(const std::string& alias) const;
 
 	bool IsAnyMusicPlaying() const;
@@ -76,4 +77,5 @@ public:
 
 private:
 	bool isMute = false;
+	bool isPause = false;
 };
