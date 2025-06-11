@@ -7,6 +7,9 @@
 #include "Mouse.h"
 #include "States.h"
 
+#include "../Engine/Icon.h"
+#include "../Engine/IconManager.h"
+
 Tutorial::Tutorial()
 {
 }
@@ -16,6 +19,7 @@ void Tutorial::Load()
 	AddGSComponent(new GameObjectManager());
 
 
+	Engine::GetIconManager().LoadIconList();
 
 	// background
 	background = new Background();
@@ -36,11 +40,8 @@ void Tutorial::Load()
 	ship_ptr = new Ship({ 0, 0 });
 	GetGSComponent<GameObjectManager>()->Add(ship_ptr);
 
-	AddGSComponent(new ParticleManager<Particles::FuelBubble>());
-	AddGSComponent(new ParticleManager<Particles::BubblePop>());
-	AddGSComponent(new ParticleManager<Particles::HitPraticle>());
-	AddGSComponent(new ParticleManager<Particles::HitPraticle2>());
-	AddGSComponent(new ParticleManager<Particles::CaptureEffect>());
+	option = new GameOption({ 0,100 });
+	GetGSComponent<GameObjectManager>()->Add(option);
 
 	// mouse
 	GetGSComponent<GameObjectManager>()->Add(new Mouse);
@@ -50,8 +51,17 @@ void Tutorial::Load()
 	variable_min_radius = default_min_radius;
 	//variable_min_radius = defalut_max_radius;
 	ship_ptr->SetScale({ 3.5f, 3.5f });
+
 	Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Pump>()->SetMinRadius(default_min_radius);
 	Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Pump>()->SetMaxRadius(default_max_radius);
+	
+	Engine::GetIconManager().AddIcon("Option", "cali", "cali", { -160,100 }, 1.0f, false, false, true, true);
+	Engine::GetIconManager().AddIcon("Option", "tutorial", "tutorial", { 160,100 }, 1.f, false, false, true, true);
+
+	for (auto icon : Engine::GetIconManager().GetIconList())
+	{
+		GetGSComponent<GameObjectManager>()->Add(icon);
+	}
 }
 
 void Tutorial::Update(double dt)
@@ -59,26 +69,55 @@ void Tutorial::Update(double dt)
 	UpdateGSComponents(dt);
 	GetGSComponent<GameObjectManager>()->UpdateAll(dt);
 	GetGSComponent<Cam>()->Update(dt, {}, false);
-	beat_system->Update(dt);
 
-	if (Engine::GetInput().KeyJustPressed(Input::Keys::Enter)) {
-		if (!Engine::GetGameStateManager().FromOption())
-		{
-			Engine::GetGameStateManager().ClearNextGameState();
-			Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode3));
-		}
-		else
-		{
-			Engine::GetGameStateManager().ClearNextGameState();
-			Engine::GetGameStateManager().LoadPreviousGameState();
-		}
+	if (Engine::GetInput().KeyJustPressed(Input::Keys::Esc)) {
+		option->SetOpen(!option->isOpened());
 	}
 
-	if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT))
+	if (!option->isOpened())
 	{
-		variable_min_radius = default_min_radius;
-		variable_min_radius += static_cast<float>(4 * variable_min_radius * beat_system->GetLastCali());
-		//Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Pump>()->SetMinRadius(variable_min_radius);
+		beat_system->Update(dt);
+
+		if (Engine::GetInput().KeyJustPressed(Input::Keys::Enter)) {
+			if (!Engine::GetGameStateManager().FromOption())
+			{
+				Engine::GetGameStateManager().ClearNextGameState();
+				Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode3));
+			}
+			else
+			{
+				Engine::GetGameStateManager().ClearNextGameState();
+				Engine::GetGameStateManager().LoadPreviousGameState();
+			}
+		}
+
+		if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT))
+		{
+			variable_min_radius = default_min_radius;
+			variable_min_radius += static_cast<float>(4 * variable_min_radius * beat_system->GetLastCali());
+			//Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Pump>()->SetMinRadius(variable_min_radius);
+		}
+		Engine::GetIconManager().HideIconByGroup("Option");
+	}
+	else
+	{
+		Engine::GetIconManager().ShowIconByGroup("Option");
+		Engine::GetIconManager().HideIconById("can_go_shop");
+
+		Icon* icon = Engine::GetIconManager().GetCollidingIconWithMouse({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY });
+		bool clicked = Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT);
+
+		if (icon != nullptr) {
+			Engine::GetGameStateManager().SetFromOption(true);
+			if ((icon->GetId() == "cali") && clicked) {
+				Engine::GetGameStateManager().ReloadState();
+			}
+			else
+				if ((icon->GetId() == "tutorial") && clicked) {
+					Engine::GetGameStateManager().ClearNextGameState();
+					Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode3));
+				}
+		}
 	}
 }
 

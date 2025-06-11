@@ -12,6 +12,7 @@
 #include "Shop.h"
 #include "Module.h"
 #include "DialogBox.h"
+#include "GameOption.h"
 
 class Background;
 class Ship;
@@ -51,6 +52,7 @@ private:
     Cam* camera;
     Background* background;
     Dialog* dialog_ptr;
+    GameOption* option;
     double phaseTimer = 0.0;
     bool textDisplay = false;
 
