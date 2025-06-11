@@ -14,6 +14,7 @@ Updated:    03/14/2024
 #include "GameState.h"
 #include <vector>
 #include <thread>
+#include <unordered_set>
 
 
 class GameStateManager {
@@ -27,11 +28,16 @@ public:
     void SetNextGameState(int index);
     void ClearNextGameState();
     void ReloadState();
+    void LoadPreviousGameState();
     bool HasGameEnded();
+
     bool IsNull() { return current_gamestate == nullptr; }
     std::string GetStateName() { return current_gamestate->GetName(); }
     template<typename T>
     T* GetGSComponent() { return current_gamestate->GetGSComponent<T>(); }
+
+    void SetFromOption(bool flag) { option = flag; }
+    bool FromOption() { return option; }
 
 private:
     enum class Status {
@@ -47,4 +53,7 @@ private:
     std::vector<GameState*> gamestates;
     GameState* current_gamestate;
     GameState* next_gamestate;
+
+    int prev_index;
+    bool option;
 };

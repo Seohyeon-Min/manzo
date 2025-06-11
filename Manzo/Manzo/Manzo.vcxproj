@@ -39,6 +39,7 @@
     <ClCompile Include="Engine\TextureManager.cpp" />
     <ClCompile Include="Engine\Timer.cpp" />
     <ClCompile Include="Engine\UI.cpp" />
+    <ClCompile Include="Game\Cali.cpp" />
     <ClCompile Include="Game\FlockingFish.cpp" />
     <ClCompile Include="Game\Background.cpp" />
     <ClCompile Include="Game\Boss.cpp" />
@@ -116,6 +117,7 @@
     <ClInclude Include="Engine\TextureManager.h" />
     <ClInclude Include="Engine\Timer.h" />
     <ClInclude Include="Engine\UI.h" />
+    <ClInclude Include="Game\Cali.h" />
     <ClInclude Include="Game\FlockingFish.h" />
     <ClInclude Include="Game\Background.h" />
     <ClInclude Include="Game\Boss.h" />

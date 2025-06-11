@@ -62,9 +62,16 @@ void Tutorial::Update(double dt)
 	beat_system->Update(dt);
 
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::Enter)) {
-		//if (ship_ptr->IsShipUnder() && Engine::GetInput().KeyJustPressed(Input::Keys::Q)) {
-		Engine::GetGameStateManager().ClearNextGameState();
-		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode3));
+		if (!Engine::GetGameStateManager().FromOption())
+		{
+			Engine::GetGameStateManager().ClearNextGameState();
+			Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode3));
+		}
+		else
+		{
+			Engine::GetGameStateManager().ClearNextGameState();
+			Engine::GetGameStateManager().LoadPreviousGameState();
+		}
 	}
 
 	if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT))

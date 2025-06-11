@@ -24,11 +24,24 @@ void GameStateManager::AddGameState(GameState& gamestate) {
 }
 
 void GameStateManager::SetNextGameState(int index) {
+    if (current_gamestate != nullptr) {
+        for (int i = 0; i < gamestates.size(); ++i) {
+            if (gamestates[i] == current_gamestate) {
+                prev_index = i;
+                break;
+            }
+        }
+    }
     next_gamestate = gamestates[index];
 }
 
 void GameStateManager::ReloadState() {
     status = Status::UNLOADING;
+}
+
+void GameStateManager::LoadPreviousGameState()
+{
+    next_gamestate = gamestates[prev_index];
 }
 
 void GameStateManager::ClearNextGameState() {
@@ -46,7 +59,6 @@ void GameStateManager::Update(double dt) {
 
     switch (status) {
     case Status::STARTING:
-
         next_gamestate = gamestates[0];
         status = Status::LOADING;
         if (gamestates.size() < 1) {
@@ -75,7 +87,6 @@ void GameStateManager::Update(double dt) {
             //}
             current_gamestate->Draw();
         }
-
         break;
     case Status::UNLOADING:
         Engine::GetLogger().LogEvent("Unload " + current_gamestate->GetName());

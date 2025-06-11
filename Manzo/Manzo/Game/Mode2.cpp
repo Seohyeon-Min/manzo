@@ -264,6 +264,7 @@ void Mode2::Update(double dt) {
 		bool clicked = Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT);
 
 		if (icon != nullptr) {
+				Engine::GetGameStateManager().SetFromOption(true);
 			if ((icon->GetId() == "cali") && clicked) {
 				Engine::GetGameStateManager().ClearNextGameState();
 				Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Tutorial));
