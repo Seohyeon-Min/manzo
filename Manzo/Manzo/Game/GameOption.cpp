@@ -14,6 +14,7 @@ void GameOption::Update(double dt)
 {
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::Esc)) {
 		SetOpen(!isOpened());
+		Engine::GetRender().ApplyPost(!isOpened());
 	}
 
 	if (opened)

@@ -129,6 +129,8 @@ public:
     void CreateCircleLineModel();
     void ClearDrawCalls();
 
+    void ApplyPost(bool apply_) { apply = apply_; }
+
 private:
     // Internal render method
     void Draw(const DrawCall& draw_call);
@@ -150,4 +152,5 @@ private:
     GLFrameBuffer postProcessFramebuffer[2];
 
     mat3 projection_matrix;
+    bool apply = true;
 };
