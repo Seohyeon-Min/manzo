@@ -137,27 +137,21 @@ Rock* GameObjectManager::FindNearestRock(GameObject* object) {
 			rock = static_cast<Rock*>(gameObj);
 			rockPoints = rock->GetPoints();
 		}
-		else if (gameObj->Type() == GameObjectTypes::ObstacleRock/* && gameObj->IsVisible(camera_bounds)*/) {
-			rock = static_cast<ObstacleRock*>(gameObj);
-			rockPoints = rock->GetPoints();
-		}
 		if (!rock || rock->IsCrashed()) continue;
-		else {
-			continue;
-		}
+		
 
-			for (size_t i = 0; i < rockPoints.size(); ++i) {
-				vec2 p1 = rockPoints[i];
-				vec2 p2 = rockPoints[(i + 1) % rockPoints.size()];
+		for (size_t i = 0; i < rockPoints.size(); ++i) {
+			vec2 p1 = rockPoints[i];
+			vec2 p2 = rockPoints[(i + 1) % rockPoints.size()];
 
-				vec2 closestPoint = ClosestPoint(object_Position, p1, p2);
-				float distance = (closestPoint - object_Position).LengthSquared();
+			vec2 closestPoint = ClosestPoint(object_Position, p1, p2);
+			float distance = (closestPoint - object_Position).LengthSquared();
 
-				if (distance < nearestDistance) {
-					nearestDistance = distance;
-					nearestRock = rock;
-				}
+			if (distance < nearestDistance) {
+				nearestDistance = distance;
+				nearestRock = rock;
 			}
+		}
 	}
 
 	return nearestRock;
