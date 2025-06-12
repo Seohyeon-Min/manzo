@@ -14,11 +14,7 @@ Created:    September 12, 2024
 #include "Component.h"
 #include "GameObject.h"
 #include "Polygon.h"
-#include "..\Game\GameObjectTypes.h"
-#include "..\Game\Rock.h"
-#include "..\Game\RockGroup.h"
-#include "..\Game\RockPoint.h"
-#include "..\Game\Box.h"
+#include "..\Game\Map.h"
 
 
 #include <vector>
@@ -48,93 +44,4 @@ private:
 	std::vector<Map*> maps;
 	std::vector<std::string> mapFiles;
 	int currentMapIndex = 0;
-};
-
-class Map : public Component {
-public:
-	Map(std::string map_index);
-
-	~Map() {
-		rocks.clear();
-		rock_groups.clear();
-		valid_spawn_positions.clear();
-		mask.clear();
-	}
-
-	void OpenSVG(const std::string& filename);
-	void ParseSVG();
-	std::vector<vec2> parsePathData(const std::string& pathData);	// path parsing
-	void LoadMapInBoundary(const Math::rect& camera_boundary);
-	bool IsOverlapping(const Math::rect& a, const Math::rect& b);
-	
-	//void SetMargin(float margin) { this->margin = margin; }
-	//float GetMargin() { return margin; }
-	void SetEndY(float endY) { this->EndY = endY; }
-	float GetEndY() { return EndY; }
-	
-	void UnloadAll();
-	bool IsLevelLoaded() { return level_loaded; }
-
-	void LoadPNG();
-	vec2 MaskToWorld(int maskX, int maskY);
-	ivec2 WorldToMask(vec2 worldPos);
-	bool IsMaskTrue(vec2 worldPos);
-	vec2 Spawn();
-	int GetWorldWidth() { return width; }
-	int GetWorldHeight() { return height; }
-	std::vector<std::vector<bool>> GetMask() { return mask; }
-
-private:
-	std::mt19937 gen;
-
-	std::string file_name;
-	std::string map_index = "";
-	int read_line_number = -1;
-
-	RockGroup* currentGroup = nullptr;
-
-	vec2 translate = { 0, 0 };
-	float rotateAngle = 0;
-	vec2 rotatetranslate = { 0, 0 };
-	vec2 scale = { 1.0f, 1.0f };
-
-	bool IsinG = false;
-	bool IsTranslate = false;
-	bool IsRotate = false;
-	bool IsScale = false;
-	bool IsinGroup = false;
-	std::string pathData;
-	std::string polyIndex;
-	std::string circleIndex;
-
-	bool level_loaded = false;
-	std::ifstream file;
-
-	char currentCommand = '\0';
-	float margin = 1000.f;	// padding for map's partial drawing
-
-	int width, height, channels;
-	std::vector<std::vector<bool>> mask;
-
-	std::vector<Polygon> original_polygons;
-	std::vector<Polygon> modified_polygons;
-	std::vector<Rock*> rocks;
-	std::vector<RockGroup*> rock_groups;
-	vec2 circle_position{ 0,0 };
-	std::vector<ivec2> valid_spawn_positions;
-
-	float EndY = -5200.f;
-
-	// SVG parsing tags
-	std::regex pathRegex;
-	std::regex gIdRegex;
-	std::regex circleRegex;
-	std::regex cyRegex;
-	std::regex cIdxRegex;
-	std::regex labelRegex;
-	std::regex transformRegex;
-	std::regex translateRegex;
-	std::regex rotateRegex;
-	std::regex matrixRegex;
-	std::regex pathIdRegex;
 };

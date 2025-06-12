@@ -204,9 +204,13 @@
     <ClCompile Include="Engine\Procedual.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Game\JellyEnemy.cpp">
-    </ClCompile>
     <ClCompile Include="Game\Loading.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\JellyEnemy.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Map.cpp">
       <Filter>Game</Filter>
     </ClCompile>
   </ItemGroup>
@@ -429,9 +433,12 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Game\JellyEnemy.h">
-    <Filter>Game</Filter>
+      <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Game\Loading.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Map.h">
       <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>

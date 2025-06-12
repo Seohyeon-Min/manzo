@@ -43,7 +43,6 @@ public:
 	void AddMovingRock(MovingRock* moving_rock) { moving_rocks.push_back(moving_rock); }
 	std::vector<Rock*> GetRocks() { return rocks; }
 	std::vector<MovingRock*> GetMovingRocks() { return moving_rocks; }
-	bool MatchIndex();
 	vec2 FindCenterRect();
 	vec2 FindCenterPoly();
 	Math::rect FindBoundary();

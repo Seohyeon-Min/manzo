@@ -68,37 +68,6 @@ Math::rect RockGroup::FindBoundary() {
     }
 }
 
-bool RockGroup::MatchIndex()
-{
-    std::ifstream file("assets/images/rock/rock.csv");
-    std::string line, cell;
-    if (!file.is_open()) {
-        std::cerr << "Failed to Open CSV." << std::endl;
-        return false;
-    }
-
-    if (file.is_open()) {
-        while (std::getline(file, line)) {
-            std::stringstream linestream(line);
-            std::string index, x_str, y_str, file_path;
-
-            std::getline(linestream, index, ',');
-            std::string polyind = (this->index).substr(0, 5);
-
-            if (index == polyind) {
-                std::getline(linestream, file_path, ',');
-                SetPosition(FindCenterRect());
-                AddGOComponent(new Sprite(file_path, this));
-
-                return true;
-
-            }
-        }
-
-    }
-    std::cerr << "Index not found in the file." << std::endl;
-    return false;
-}
 
 vec2 RockGroup::FindCenterRect() {  // Calculate texture's position.
     vec2 center = { 0, 0 };
@@ -170,6 +139,7 @@ vec2 RockGroup::FindCenterPoly() {  // Calculate Polygon's position
     
     return center;
 }
+
 void RockGroup::SetPoints() {
     if (!rocks.empty()) {
         for (auto& rock : rocks) {
