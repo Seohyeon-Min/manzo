@@ -212,8 +212,9 @@ void Boss::InitializeStates() {
 
 
 void Boss::Update(double dt) {
-	//std::cout << total_entry.size() << std::endl;
-	if (Engine::GetGameStateManager().GetStateName() == "Mode1" && !Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<GameOption>()->isOpened()) 
+	auto option = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<GameOption>();
+
+	if (Engine::GetGameStateManager().GetStateName() == "Mode1" && !option->isOpened()) 
 	{
 		if (GameObject::current_state->GetName() != Boss::state_cutscene.GetName()) {
 
@@ -233,6 +234,11 @@ void Boss::Update(double dt) {
 		}
 
 		Move(dt);
+	}
+
+	if (option->isOpened())
+	{
+		Engine::GetAudioManager().StopPlayingMusic("e boss");
 	}
 }
 

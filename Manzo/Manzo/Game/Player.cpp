@@ -40,6 +40,11 @@ void Player::Update(double dt)
 			soundPlaying = false;
 		}
 	}
+	else
+	{/*
+		SetVelocity({ 0,0 });
+		GetGOComponent<Sprite>()->PlayAnimation(static_cast<int>(Animations::Idle));*/
+	}
 
 }
 

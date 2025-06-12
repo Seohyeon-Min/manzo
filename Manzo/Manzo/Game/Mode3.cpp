@@ -153,6 +153,11 @@ void Mode3::Update(double dt) {
 			break;
 		}
 	}
+	else
+	{
+		Engine::GetAudioManager().StopPlayingMusic("tutorial_bgm");
+		beat_system->SetPause(false);
+	}
 }
 
 

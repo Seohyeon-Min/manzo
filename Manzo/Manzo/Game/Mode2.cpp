@@ -254,6 +254,19 @@ void Mode2::Update(double dt) {
 	{
 		Engine::GetIconManager().HideIconById("can_go_shop");
 		Engine::GetIconManager().HideIconById("module_set1");
+
+		Engine::GetAudioManager().StopPlayingMusic("home_intro");
+		Engine::GetAudioManager().StopPlayingMusic("home_replay");
+		Engine::GetAudioManager().StopPlayingMusic("walk");
+
+		if (!Engine::GetAudioManager().IsMusicFinished("home_intro"))
+		{
+			playing = false;
+		}
+		else
+		{
+			playing_replay = false;
+		}
 	}
 }
 

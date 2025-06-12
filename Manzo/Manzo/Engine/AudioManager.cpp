@@ -176,11 +176,10 @@ std::string AudioManager::GetID(const std::string& alias)
 	return nullptr; // Return -1 if the sound is not found
 }
 
-std::string AudioManager::PlayMusics(const std::string& alias, const vec3& vPosition, float fVolumedB) {
+std::string AudioManager::PlayMusics(const std::string& alias, const vec3& vPosition, float fVolumedB)
+{
 	auto tFoundIt = sgpImplementation->mSounds.find(alias);
 	if (tFoundIt == sgpImplementation->mSounds.end()) {
-		// Load music if it hasn't been loaded yet
-		//std::cerr << "Error: Sound with alias " << alias << " not found. Please load it first." << std::endl;
 		return "";
 	}
 
@@ -195,10 +194,14 @@ std::string AudioManager::PlayMusics(const std::string& alias, const vec3& vPosi
 			ErrorCheck(pChannel->set3DAttributes(&position, nullptr));
 		}
 
+		auto it = sgpImplementation->mChannelPositions.find(alias);
+		if (it != sgpImplementation->mChannelPositions.end()) {
+			ErrorCheck(pChannel->setPosition(it->second, FMOD_TIMEUNIT_MS));
+		}
+
 		ErrorCheck(pChannel->setVolume(dbToVolume(fVolumedB)));
 		ErrorCheck(pChannel->setPaused(false));
 
-		// Use alias as the channel ID
 		sgpImplementation->mChannels[alias] = pChannel;
 	}
 
@@ -248,9 +251,14 @@ void AudioManager::StopPlayingMusic(const std::string& alias)
 {
 	auto tFoundIt = sgpImplementation->mChannels.find(alias);
 	if (tFoundIt != sgpImplementation->mChannels.end()) {
+		unsigned int position = 0;
+		tFoundIt->second->getPosition(&position, FMOD_TIMEUNIT_MS); 
+		sgpImplementation->mChannelPositions[alias] = position;
+
 		ErrorCheck(tFoundIt->second->setPaused(true));
 	}
 }
+
 
 
 void AudioManager::Set3dListenerAndOrientation(const vec3& vPosition, const vec3& vLook, const vec3& vUp) {

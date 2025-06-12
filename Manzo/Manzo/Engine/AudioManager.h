@@ -10,6 +10,8 @@
 #include <math.h>
 #include <iostream>
 
+#include <map>
+
 struct Implementation {
 	Implementation();
 	~Implementation();
@@ -26,6 +28,7 @@ struct Implementation {
 
 	SoundMap mSounds;
 	ChannelMap mChannels;
+	std::map<std::string, unsigned int> mChannelPositions;
 };
 
 class AudioManager {
@@ -76,4 +79,5 @@ public:
 
 private:
 	bool isMute = false;
+
 };

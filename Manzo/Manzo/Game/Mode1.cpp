@@ -186,12 +186,6 @@ void Mode1::Load()
 
 void Mode1::Update(double dt)
 {
-	/*
-	std::cout << "Player's X position : "<< ship_ptr->GetPosition().x << "\n";
-	std::cout << "Player's Y position : "<< ship_ptr->GetPosition().y << "\n";
-	*/
-
-	// beat_system->LoadMusicToSync("Level1_bgm");
 	// audio play
 
 	UpdateGSComponents(dt);
@@ -218,6 +212,7 @@ void Mode1::Update(double dt)
 	{
 
 		Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::Plankton>>()->Spray();
+
 
 		beat_system->Update(dt);
 
@@ -290,6 +285,16 @@ void Mode1::Update(double dt)
 			Engine::GetAudioManager().StopPlayingMusic("e morse");
 			replay = false;
 		}
+	}
+	else
+	{
+		Engine::GetAudioManager().StopPlayingMusic("e morse");
+		Engine::GetAudioManager().StopPlayingMusic("Level1_bgm");
+		Engine::GetAudioManager().StopPlayingMusic("dash");
+
+		soundPlaying = false;
+		replay = false;
+		beat_system->SetPause(false);
 	}
 }
 

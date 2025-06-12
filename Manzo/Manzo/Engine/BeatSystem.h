@@ -21,6 +21,7 @@ public:
     double GetUserCali() { return user_calibration; }
     const double GetLastCali() {return calibrations.back();}
     void SetUserCali(double cali) { user_calibration = cali; }
+    void SetPause(bool pause_) { playing = pause_; }
 
 private:
     int BPM = 100;

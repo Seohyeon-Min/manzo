@@ -84,6 +84,11 @@ void Tutorial::Update(double dt)
 			//Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Pump>()->SetMinRadius(variable_min_radius);
 		}
 	}
+	else
+	{
+		Engine::GetAudioManager().StopPlayingMusic("tutorial_bgm");
+		beat_system->SetPause(false); 
+	}
 }
 
 void Tutorial::Draw()
