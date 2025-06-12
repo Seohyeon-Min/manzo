@@ -42,7 +42,6 @@ void MapManager::LoadFirstMap() {
 }
 
 void MapManager::LoadNextMap() {
-    if (currentMapIndex + 1 >= mapFiles.size()) return;
 
     currentMapIndex++;
 
@@ -55,15 +54,14 @@ void MapManager::LoadNextMap() {
 
 void MapManager::UpdateMaps(const Math::rect& camera_boundary) {
     if (currentMapIndex < maps.size()) {
-        Map* map = maps[currentMapIndex];
-        map->LoadMapInBoundary(camera_boundary);
+        maps[currentMapIndex]->LoadMapInBoundary(camera_boundary);
 
-        if (camera_boundary.Bottom() <= -6000) {
+        if (camera_boundary.Bottom() <= -6000.f) {
             //Unload Previous Map
-            LoadNextMap();
-            if (currentMapIndex + 1 < maps.size()) {
-                
-
+            maps[currentMapIndex]->UnloadAll();
+            
+            if (currentMapIndex + 1 <= maps.size()) {
+                LoadNextMap();
                 if (!maps[currentMapIndex]->IsLevelLoaded()) {    // if next map is not loaded
                     maps[currentMapIndex]->ParseSVG();            //parse SVG file
                 }

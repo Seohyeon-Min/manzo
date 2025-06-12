@@ -23,22 +23,48 @@
    inkscape:pagecheckerboard="0"
    inkscape:deskcolor="#d1d1d1"
    inkscape:document-units="px"
-   inkscape:zoom="0.10122317"
-   inkscape:cx="2519.1861"
-   inkscape:cy="3181.0899"
-   inkscape:window-width="1163"
-   inkscape:window-height="1000"
-   inkscape:window-x="0"
+   inkscape:zoom="0.11313708"
+   inkscape:cx="777.81749"
+   inkscape:cy="3615.0836"
+   inkscape:window-width="958"
+   inkscape:window-height="1120"
+   inkscape:window-x="-7"
    inkscape:window-y="0"
    inkscape:window-maximized="0"
    inkscape:current-layer="g1" /><defs
    id="defs1">
 
          
-         </defs><g
+         
+
+
+
+
+
+
+
+
+
+
+     
+
+
+
+
+
+
+     
+   
+     
+     
+     
+     
+   
+     
+     </defs><g
    inkscape:label="Layer 1"
    inkscape:groupmode="layer"
-   >
+>
    
          
          <g
@@ -264,29 +290,43 @@
          
          
          <g
-   id="g08"
-   inkscape:label="g08">
-<path
-   id="path8"
-   style="fill:#d62969;fill-opacity:0.498039;stroke:#738823;stroke-width:2.95181"
-   d="m 2291.9355,1269.4062 -49.3652,-113.5449 0.3945,-0.7402 -558.0117,76.0586 122.9336,270.4531 145.2617,64.8086 z" />
-<path
-   id="path39"
-   style="fill:#d62969;fill-opacity:0.498039;stroke:#738823;stroke-width:2.95181"
-   d="m 4998.8555,3086.0566 -163.1367,30.7168 0.1308,0.1016 24.6973,390.2266 138.3086,4.9394 z" />
-<path
+   id="g86"
+   inkscape:export-filename="g86.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96">
+   <path
    id="path42"
    style="fill:#d62969;fill-opacity:0.498039;stroke:#738823;stroke-width:2.95181"
    d="m 4905.1191,1817.4922 -0.1152,0.2734 -523.5957,232.1602 -0.7812,-0.291 -325.6094,454.5625 0.3789,0.1699 780.3223,612.4062 163.1367,-30.7168 V 1843.3203 Z" />
-<path
+     <path
    id="path41"
    style="fill:#d62969;fill-opacity:0.498039;stroke:#738823;stroke-width:2.95181"
    d="m 4998.8555,1595.4844 -93.7364,222.0078 93.7364,25.8281 z" />
-<path
+     <path
+   id="path39"
+   style="fill:#d62969;fill-opacity:0.498039;stroke:#738823;stroke-width:2.95181"
+   d="m 4998.8555,3086.0566 -163.1367,30.7168 0.1308,0.1016 24.6973,390.2266 138.3086,4.9394 z" />
+     </g>
+     <g
+   id="g85"
+   inkscape:export-filename="g85.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96">
+   <path
    id="path40"
    style="fill:#d62969;fill-opacity:0.498039;stroke:#738823;stroke-width:2.95181"
    d="m 2291.9355,1269.4062 -338.7871,297.0352 2101.8692,937.7559 325.6094,-454.5625 -2088.6622,-780.1621 z" />
-<path
+     </g>
+     <g
+   id="g84"
+   inkscape:export-filename="g84.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96">
+   <path
+   id="path8"
+   style="fill:#d62969;fill-opacity:0.498039;stroke:#738823;stroke-width:2.95181"
+   d="m 2291.9355,1269.4062 -49.3652,-113.5449 0.3945,-0.7402 -558.0117,76.0586 122.9336,270.4531 145.2617,64.8086 z" />
+     <path
    id="path38"
    style="fill:#d62969;fill-opacity:0.498039;stroke:#738823;stroke-width:2.95181"
    d="m 2326.543,686.60156 -464.3203,54.33594 -177.8262,489.0176 0.5566,1.2246 558.0117,-76.0586 197.1875,-369.72852 z" />
@@ -376,45 +416,76 @@
          
          
          <g
-   id="g12"
-   inkscape:label="g12">
-<path
+   id="g87"
+   inkscape:export-filename="..\images\rock\level1\g87.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96">
+   <path
+     id="path63"
+     style="fill:#d62969;fill-opacity:0.498039;stroke:#738823;stroke-width:2.95181"
+     d="m 961.57227,5082.8926 -1045.611332,-12.877 -34.511718,857.4805 741.99023,46.0547 z" />
+     </g>
+     <g
+   id="g88"
+   inkscape:export-filename="..\images\rock\level1\g88.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96">
+   <path
+     id="path64"
+     style="fill:#d62969;fill-opacity:0.498039;stroke:#738823;stroke-width:2.95181"
+     d="m 2401.7012,5367.709 -1490.99026,-150.8457 -287.27149,756.6875 690.48825,42.8574 1047.1914,-316.1328 79.0332,-212.4024 z" />
+     </g>
+     <g
+   id="g89"
+   inkscape:export-filename="..\images\rock\level1\g89.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96">
+   <path
+     id="path65"
+     style="fill:#d62969;fill-opacity:0.498039;stroke:#738823;stroke-width:2.95181"
+     d="M 2230.8984 4613.1445 L 1101.5957 4714.0605 L 910.71094 5216.8633 L 2401.7012 5367.709 L 2400.6367 5364.3848 L 2484.6094 5231.0156 L 2484.7793 5230.9785 L 2230.8984 4613.1445 z " />
+     </g>
+     <g
+   id="g81">
+   <path
+     id="path73"
+     style="fill:#d62969;fill-opacity:0.498039;stroke:#738823;stroke-width:2.95181"
+     d="m 1364.4258,3824.0586 -479.93557,28.0762 -0.30468,0.7382 -938.521488,479.1387 -29.703124,738.0039 1045.611332,12.877 455.82613,-1200.6719 z" />
+     <path
+     id="path62"
+     style="fill:#d62969;fill-opacity:0.498039;stroke:#738823;stroke-width:2.95181"
+     d="m 1165.752,3605.8281 -203.40044,58.1426 -77.86133,188.1641 479.93557,-28.0762 -198.6856,-218.1641 z" />
+     <path
+     id="path61"
+     style="fill:#d62969;fill-opacity:0.498039;stroke:#738823;stroke-width:2.95181"
+     d="m 1062.0098,3423.1289 -99.65824,240.8418 203.40044,-58.1426 29.6269,-182.6992 z" />
+     <path
+     id="path74"
+     style="fill:#d62969;fill-opacity:0.498039;stroke:#738823;stroke-width:2.95181"
+     d="M 1417.3984 3882.2207 L 1101.5957 4714.0605 L 2230.8984 4613.1445 L 2015.8906 4089.9082 L 2015.3496 4089.9727 L 1877.041 3991.1816 L 1417.6602 3882.5098 L 1417.3984 3882.2207 z " />
+     </g>
+     <g
+   id="g82"
+   inkscape:export-filename="..\images\rock\level1\g82.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96">
+   <path
    id="path14"
    style="fill:#d62969;fill-opacity:0.498039;stroke:#738823;stroke-width:2.95181"
    d="m 3655.2852,4109.7246 -84.4532,543.6836 0.4844,-0.3242 256.8594,-24.6973 286.4941,-167.9453 19.7598,-251.918 -479.1406,-98.7929 z" />
-<path
+     <path
    id="path57"
    style="fill:#d62969;fill-opacity:0.498039;stroke:#738823;stroke-width:2.95181"
    d="m 3231.0996,3808.1348 148.2871,972.9043 191.4453,-127.6309 84.4532,-543.6836 -306.25,-355.6426 z" />
-<path
+     <path
    id="path58"
    style="fill:#d62969;fill-opacity:0.498039;stroke:#738823;stroke-width:2.95181"
    d="m 2351.7617,4050.125 355.586,1133.1602 537.957,-115.2754 133.3691,-286.4961 0.7129,-0.4746 -114.8691,-753.6465 -752.0762,-79.5196 z" />
-<path
+     <path
    id="path60"
    style="fill:#d62969;fill-opacity:0.498039;stroke:#738823;stroke-width:2.95181"
    d="m 2015.8906,4089.9082 468.8887,1141.0703 222.5684,-47.6933 -355.586,-1133.1602 -0.5215,0.332 z" />
-<path
-   id="path63"
-   style="fill:#d62969;fill-opacity:0.498039;stroke:#738823;stroke-width:2.95181"
-   d="m 1417.3984,3882.2207 -52.9726,-58.1621 -479.93557,28.0762 -0.30468,0.7382 -938.521488,479.1387 -64.214842,1595.4844 741.99023,46.0547 z" />
-<path
-   id="path64"
-   style="fill:#d62969;fill-opacity:0.498039;stroke:#738823;stroke-width:2.95181"
-   d="m 2401.7012,5367.709 -1490.99026,-150.8457 -287.27149,756.6875 690.48825,42.8574 1047.1914,-316.1328 79.0332,-212.4024 z" />
-<path
-   id="path65"
-   style="fill:#d62969;fill-opacity:0.498039;stroke:#738823;stroke-width:2.95181"
-   d="m 1417.3984,3882.2207 -506.68746,1334.6426 1490.99026,150.8457 -1.0645,-3.3242 83.9727,-133.3692 0.1699,-0.037 -468.8887,-1141.0703 -0.541,0.064 -138.3086,-98.7911 -459.3808,-108.6718 z" />
-<path
-   id="path62"
-   style="fill:#d62969;fill-opacity:0.498039;stroke:#738823;stroke-width:2.95181"
-   d="m 1165.752,3605.8281 -203.40044,58.1426 -77.86133,188.1641 479.93557,-28.0762 -198.6856,-218.1641 z" />
-<path
-   id="path61"
-   style="fill:#d62969;fill-opacity:0.498039;stroke:#738823;stroke-width:2.95181"
-   d="m 1062.0098,3423.1289 -99.65824,240.8418 203.40044,-58.1426 29.6269,-182.6992 z" />
-<path
+     <path
    id="path59"
    style="fill:#d62969;fill-opacity:0.498039;stroke:#738823;stroke-width:2.95181"
    d="m 2869.8965,3403.3711 -143.2481,118.5508 -192.6445,301.3144 -19.7578,123.4883 -1.8047,1.1484 752.0762,79.5196 -33.418,-219.2578 -0.6133,0.2812 -143.248,-192.6426 -24.6992,-108.6718 z" />
@@ -504,7 +575,8 @@
 
 </g>
 <g
-   id="g78">
+   id="g78"
+   transform="translate(30.562095,27.724187)">
 <circle
    style="fill:#ece15e;stroke:#d52868;stroke-width:1.62023;stroke-opacity:0.498039"
    id="path72-2-4-9-3"
@@ -513,6 +585,17 @@
    r="24.189886" />
 
 </g>
+
+<g
+   id="g83">
+   <circle
+   style="fill:#ece15e;stroke:#d52868;stroke-width:1.62023;stroke-opacity:0.498039"
+   id="path72-2-4-9-3-7"
+   cx="1802.7312"
+   cy="3927.4241"
+   r="24.189886"
+   transform="translate(30.562095,27.724187)" />
+     </g>
 <g
    id="g79">
 <circle

@@ -49,8 +49,6 @@ public:
 	void LoadMapInBoundary(const Math::rect& camera_boundary);
 	bool IsOverlapping(const Math::rect& a, const Math::rect& b);
 
-	//void SetMargin(float margin) { this->margin = margin; }
-	//float GetMargin() { return margin; }
 	void SetEndY(float endY) { this->EndY = endY; }
 	float GetEndY() { return EndY; }
 
@@ -105,7 +103,7 @@ private:
 	vec2 circle_position{ 0,0 };
 	std::vector<ivec2> valid_spawn_positions;
 
-	float EndY = -5200.f;
+	float EndY = 0.f;
 
 	// SVG parsing tags
 	std::regex pathRegex;

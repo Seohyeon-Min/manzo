@@ -362,14 +362,32 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
 
 void Map::UnloadAll() {
     for (Rock* rock : rocks) {
-        if (!rock->IsActivated()) {
+        if (rock->IsActivated()) {
+            rock->Active(false);
+            Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Remove(rock);
+            rock->Destroy();
+            rock = nullptr;
             delete rock;
+
         }
+        else 
+        rock->Destroy();
+        rock = nullptr;
+        delete rock;
     }
     for (RockGroup* rockgroup : rock_groups) {
-        if (!rockgroup->IsActivated()) {
+        if (rockgroup->IsActivated()) {
+            rockgroup->Active(false);
+            Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Remove(rockgroup);
+            rockgroup->Destroy();
+            rockgroup = nullptr;
             delete rockgroup;
+
         }
+        else
+            rockgroup->Destroy();
+            rockgroup = nullptr;
+            delete rockgroup;
     }
 }
 
