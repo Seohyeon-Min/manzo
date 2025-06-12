@@ -375,7 +375,7 @@ void Map::UnloadAll() {
 
 void Map::LoadPNG()
 {
-    std::string filename_str = "assets/maps/" + map_index + "/mask.png";
+    std::string filename_str = "assets/images/rock/" + map_index + "/mask.png";
     const char* filename = filename_str.c_str();
     unsigned char* imgData = stbi_load(filename, &width, &height, &channels, 0);
 
