@@ -7,6 +7,7 @@
 GameOption::GameOption(vec2 pos) : GameObject(pos)
 {
 	AddGOComponent(new Sprite("assets/images/Option.spt", this));
+	shader = Engine::GetShaderManager().GetShader("window");
 }
 
 void GameOption::Update(double dt)
@@ -32,10 +33,10 @@ void GameOption::Update(double dt)
 					Engine::GetGameStateManager().ClearNextGameState();
 					Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Tutorial));
 				}
-				else if ((icon->GetId() == "tutorial") && clicked) 
+				else if ((icon->GetId() == "tutorial") && clicked)
 				{
-						Engine::GetGameStateManager().ClearNextGameState();
-						Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode3));
+					Engine::GetGameStateManager().ClearNextGameState();
+					Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode3));
 				}
 			}
 		}
@@ -55,6 +56,17 @@ void GameOption::Draw(DrawLayer drawlayer)
 		else
 			layer = DrawLayer::DrawLast;
 
-		GameObject::Draw(layer);
+		DrawCall draw_call = {
+				GetGOComponent<Sprite>()->GetTexture(),
+				&GetMatrix(),
+				shader
+		};
+
+		draw_call.settings.do_blending = false;
+		draw_call.settings.is_camera_fixed = true;
+		draw_call.sorting_layer = layer;
+
+		Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call));
+
 	}
 }

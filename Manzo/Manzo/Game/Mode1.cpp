@@ -56,6 +56,7 @@ void Mode1::Load()
 	Engine::GetShaderManager().LoadShader("post_default", "assets/shaders/post_default.vert", "assets/shaders/post_default.frag");
 	Engine::GetShaderManager().LoadShader("post_bloom", "assets/shaders/post_default.vert", "assets/shaders/post_bloom.frag");
 	Engine::GetShaderManager().LoadShader("post_underwater_distortion", "assets/shaders/post_default.vert", "assets/shaders/post_underwater_distortion.frag");
+	Engine::GetShaderManager().LoadShader("window", "assets/shaders/window.vert", "assets/shaders/window.frag");
 
 	// audio
 	Engine::GetAudioManager().LoadMusic("assets/audios/Level1_bgm.mp3", "Level1_bgm", false);
@@ -118,9 +119,6 @@ void Mode1::Load()
 	GetGSComponent<MapManager>()->AddMapFile("assets/maps/new_map3.svg");
 	GetGSComponent<MapManager>()->LoadFirstMap();
 
-	option = new GameOption({0,0});
-	GetGSComponent<GameObjectManager>()->Add(option);
-
 	// Boss
 	Boss::LoadBossfile();
 
@@ -180,6 +178,9 @@ void Mode1::Load()
 			Isboss = true;
 		}
 	));
+
+	option = new GameOption({ 0,0 });
+	GetGSComponent<GameObjectManager>()->Add(option);
 
 }
 

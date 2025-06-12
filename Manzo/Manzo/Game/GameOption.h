@@ -19,4 +19,5 @@ public:
 private:
     bool opened = false;
     DrawLayer layer;
+    GLShader* shader;
 };

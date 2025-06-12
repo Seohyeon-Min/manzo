@@ -50,7 +50,6 @@ public:
 	void StopAllChannels();
 	void RestartPlayMusic(const std::string& alias);
 	void StopPlayingMusic(const std::string& alias);
-	void PausePlayingMusic(const std::string& alias);
 	bool IsPlayingMusic(const std::string& alias) const;
 
 	bool IsAnyMusicPlaying() const;
