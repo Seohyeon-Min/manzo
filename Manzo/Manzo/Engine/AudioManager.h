@@ -45,7 +45,7 @@ public:
 	float GetMusicLength(const std::string& alias);
 	std::string GetID(const std::string& alias);
 
-	void PlayMusics(const std::string& alias, const vec3& vPos = vec3{ 0, 0, 0 }, float fVolumedB = 0.0f);
+	std::string PlayMusics(const std::string& alias, const vec3& vPos = vec3{ 0, 0, 0 }, float fVolumedB = 0.0f);
 	void StopChannel(const std::string& alias);
 	void StopAllChannels();
 	void RestartPlayMusic(const std::string& alias);
@@ -61,7 +61,7 @@ public:
 	void SetMode(const std::string& alias, bool spatial_on);
 
 	void Set3DMode(FMOD_MODE mode);
-	
+
 	void SetChannelVolume(const std::string& alias, float fVolumedB);
 	void SetMute(const std::string& alias, bool mute); //if true, mute
 	const bool GetMute() {
@@ -76,5 +76,4 @@ public:
 
 private:
 	bool isMute = false;
-	bool isPause = false;
 };

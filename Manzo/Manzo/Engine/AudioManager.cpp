@@ -13,7 +13,7 @@ Implementation::Implementation() {
 		32,
 		FMOD_STUDIO_INIT_LIVEUPDATE,
 		FMOD_INIT_NORMAL,
-		nullptr 
+		nullptr
 	));
 
 	AudioManager::ErrorCheck(mpStudioSystem->getCoreSystem(&mpSystem));
@@ -109,7 +109,7 @@ float AudioManager::GetCurrentMusicTime(const std::string& alias) {
 		unsigned int currentPosition = 0;
 		FMOD_RESULT result = channel->getPosition(&currentPosition, FMOD_TIMEUNIT_MS);
 		if (ErrorCheck(result) == 0) {
-			return currentPosition / 1000.0f; // 초 단위로 변환
+			return currentPosition / 1000.0f;
 		}
 		else {
 			//std::cerr << "Error: Failed to get current music time." << std::endl;
@@ -176,9 +176,12 @@ std::string AudioManager::GetID(const std::string& alias)
 	return nullptr; // Return -1 if the sound is not found
 }
 
-void AudioManager::PlayMusics(const std::string& alias, const vec3& vPosition, float fVolumedB) {
+std::string AudioManager::PlayMusics(const std::string& alias, const vec3& vPosition, float fVolumedB) {
 	auto tFoundIt = sgpImplementation->mSounds.find(alias);
 	if (tFoundIt == sgpImplementation->mSounds.end()) {
+		// Load music if it hasn't been loaded yet
+		//std::cerr << "Error: Sound with alias " << alias << " not found. Please load it first." << std::endl;
+		return "";
 	}
 
 	FMOD::Channel* pChannel = nullptr;
@@ -198,6 +201,8 @@ void AudioManager::PlayMusics(const std::string& alias, const vec3& vPosition, f
 		// Use alias as the channel ID
 		sgpImplementation->mChannels[alias] = pChannel;
 	}
+
+	return alias;
 }
 
 
@@ -220,7 +225,6 @@ void AudioManager::StopAllChannels()
 
 void AudioManager::RestartPlayMusic(const std::string& alias)
 {
-	// 주어진 채널 ID를 찾기
 	auto tFoundIt = sgpImplementation->mChannels.find(alias);
 	if (tFoundIt == sgpImplementation->mChannels.end())
 	{
@@ -228,13 +232,10 @@ void AudioManager::RestartPlayMusic(const std::string& alias)
 		return;
 	}
 
-	// 해당 채널을 가져오기
 	FMOD::Channel* pChannel = tFoundIt->second;
 
-	// 현재 재생 위치를 0으로 설정 (처음부터 다시 시작)
 	ErrorCheck(pChannel->setPosition(0, FMOD_TIMEUNIT_MS));
 
-	// 채널이 일시 정지 상태라면 다시 재생
 	bool bIsPaused = false;
 	ErrorCheck(pChannel->getPaused(&bIsPaused));
 	if (bIsPaused)
@@ -248,9 +249,9 @@ void AudioManager::StopPlayingMusic(const std::string& alias)
 	auto tFoundIt = sgpImplementation->mChannels.find(alias);
 	if (tFoundIt != sgpImplementation->mChannels.end()) {
 		ErrorCheck(tFoundIt->second->setPaused(true));
-		isPause = true;
 	}
 }
+
 
 void AudioManager::Set3dListenerAndOrientation(const vec3& vPosition, const vec3& vLook, const vec3& vUp) {
 	if (!sgpImplementation->mpSystem)
@@ -340,7 +341,6 @@ bool AudioManager::IsPlayingMusic(const std::string& alias) const
 bool AudioManager::IsAnyMusicPlaying() const {
 	for (auto it = sgpImplementation->mChannels.begin(); it != sgpImplementation->mChannels.end(); ++it) {
 		bool bIsPlaying = false;
-		// 각 채널의 재생 여부를 확인합니다.
 		if (ErrorCheck(it->second->isPlaying(&bIsPlaying)) == 0 && bIsPlaying) {
 			return true;
 		}
@@ -351,13 +351,11 @@ bool AudioManager::IsAnyMusicPlaying() const {
 bool AudioManager::IsMusicFinished(const std::string& alias) {
 	auto it = sgpImplementation->mChannels.find(alias);
 	if (it == sgpImplementation->mChannels.end()) {
-		// 채널이 없다면 아직 PlayMusics로 재생된 적이 없는 것
-		return false; // 음악이 "시작도 안 했음"이니 false 반환
+		return false; 
 	}
 
 	FMOD::Channel* pChannel = it->second;
 	if (!pChannel) {
-		// 이상하게 nullptr이면 끝난 걸로 간주
 		return true;
 	}
 
@@ -366,16 +364,15 @@ bool AudioManager::IsMusicFinished(const std::string& alias) {
 
 	if (result != FMOD_OK) {
 		ErrorCheck(result);
-		return true; // 오류가 났으면 재생 안 되는 걸로 간주
+		return true;
 	}
 
 	if (!isPlaying) {
-		// 재생이 끝난 경우, mChannels에서도 제거해주면 안전
 		sgpImplementation->mChannels.erase(it);
 		return true;
 	}
 
-	return false; // 아직 재생 중
+	return false;
 }
 
 
