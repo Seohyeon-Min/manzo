@@ -9,7 +9,7 @@ Created:    June 12, 2025
 */
 
 #include "Map.h"
-
+#include <string.h>
 #include "vec2.h"
 #include "stb_image.h"
 #include "..\Engine\MapManager.h"
@@ -375,10 +375,12 @@ void Map::UnloadAll() {
 
 void Map::LoadPNG()
 {
-    unsigned char* imgData = stbi_load("assets/maps/mask.png", &width, &height, &channels, 0);
+    std::string filename_str = "assets/maps/" + map_index + "/mask.png";
+    const char* filename = filename_str.c_str();
+    unsigned char* imgData = stbi_load(filename, &width, &height, &channels, 0);
 
     if (!imgData) {
-        std::cerr << "Failed to load map mask .png file.\n";
+        std::cerr << "Failed to load " + filename_str + " file.\n";
         return;
     }
 

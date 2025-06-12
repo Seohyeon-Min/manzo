@@ -14,13 +14,7 @@ RockGroup::RockGroup(const std::string& index, const std::string& map_index, dou
 {
     std::string spritePath = "assets/images/rock/" + map_index + "/" + index + ".spt";
 
-    if (std::filesystem::exists(spritePath)) {
-        AddGOComponent(new Sprite(spritePath, this));
-    }
-    else {
-        std::cout << "Warning: Sprite file not found: " << spritePath << std::endl;
-
-    }
+    
 }
 
 RockGroup::~RockGroup() {
