@@ -58,13 +58,20 @@ Inven::Inven(vec2 position) : GameObject(position), dre_todayFish(rd()), dre_pri
 
 	if (!is_picked)  //pick today's special fish
 	{
-		std::uniform_int_distribution<> todays_fish(0, total_fishNum - 1);
-		std::uniform_int_distribution<> fish_price(1, 4);
-		todays_fish_index = todays_fish(dre_todayFish);
-		todays_price = fish_price(dre_price);
+		if ((Engine::GetGameStateManager().GetPreviouseStateName() != "Tutorial" || Engine::GetGameStateManager().GetPreviouseStateName() != "Mode3"))
+		{
+			std::uniform_int_distribution<> todays_fish(0, total_fishNum - 1);
+			std::uniform_int_distribution<> fish_price(1, 4);
+			todays_fish_index = todays_fish(dre_todayFish);
+			todays_price = fish_price(dre_price);
 
-		std::cout << "Today's fish is : " << todays_fish_index << ",   price : " << todays_price << "\n";
-		is_picked = true;
+			is_picked = true;
+		}
+		else
+		{
+			//정보전달 어케 할건지? 셉뎉매 vs 겜뎉매
+			is_picked = true;
+		}
 	}
 	todays_fish_icon = "fish" + std::to_string(todays_fish_index + 1);
 	Engine::GetIconManager().AddIcon("Mode2_Always", todays_fish_icon + "_today", todays_fish_icon, { -575,300 }, 1.0f, false, false, false, true, true);

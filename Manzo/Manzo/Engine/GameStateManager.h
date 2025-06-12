@@ -38,6 +38,7 @@ public:
 
     void SetFromOption(bool flag) { option = flag; }
     bool FromOption() { return option; }
+    std::string GetPreviouseStateName();
 
 private:
     enum class Status {

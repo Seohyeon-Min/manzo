@@ -7,7 +7,6 @@
 GameOption::GameOption(vec2 pos) : GameObject(pos)
 {
 	AddGOComponent(new Sprite("assets/images/Option.spt", this));
-	shader = Engine::GetShaderManager().GetShader("window");
 }
 
 void GameOption::Update(double dt)
@@ -57,17 +56,21 @@ void GameOption::Draw(DrawLayer drawlayer)
 		else
 			layer = DrawLayer::DrawLast;
 
-		DrawCall draw_call = {
-				GetGOComponent<Sprite>()->GetTexture(),
-				&GetMatrix(),
-				shader
-		};
+		if (Engine::GetGameStateManager().GetStateName() == "Mode1")
+		{
+			DrawCall draw_call = {
+				   GetGOComponent<Sprite>()->GetTexture(),
+				   &GetMatrix(),
+				   Engine::GetShaderManager().GetDefaultShader()
+			};
 
-		draw_call.settings.do_blending = false;
-		draw_call.settings.is_camera_fixed = true;
-		draw_call.sorting_layer = layer;
+			draw_call.settings.is_camera_fixed = true;
+			draw_call.sorting_layer = layer;
 
-		Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call));
+			Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call));
+		}
+		else
+			GameObject::Draw(layer);
 
 	}
 }
