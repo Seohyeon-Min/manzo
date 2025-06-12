@@ -41,9 +41,8 @@ void Player::Update(double dt)
 		}
 	}
 	else
-	{/*
-		SetVelocity({ 0,0 });
-		GetGOComponent<Sprite>()->PlayAnimation(static_cast<int>(Animations::Idle));*/
+	{
+		change_state(&state_idle);
 	}
 
 }
