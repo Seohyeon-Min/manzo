@@ -6,6 +6,7 @@
 #include "Ship.h"
 #include <vector>
 #include <cmath>
+#include "GameOption.h"
 
 #define PI  3.14159265358979
 #define DEG2RAD (PI/180.0f)
@@ -51,18 +52,25 @@ BossBullet::BossBullet(vec2 Boss_position, float lifetime)
 }
 
 void BossBullet::Update(double dt) {
-    GameObject::Update(dt);
-    Move(dt);
+    if (!Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<GameOption>()->isOpened())
+    {
+        GameObject::Update(dt);
+        Move(dt);
 
-    if (lifetime <= -1.0f) {
-        this->Destroy();
+        if (lifetime <= -1.0f) {
+            this->Destroy();
+        }
+        else {
+            lifetime -= dt;
+        }
+
+        Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::BulletParticle>>()->Emit(1, GetPosition(), { 0,0 }, /*-GetVelocity() * 0.4f*/{}, 1.5);
+
     }
-    else {
-        lifetime -= dt;
+    else
+    {
+        SetVelocity({ 0,0 });
     }
-
-    Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::BulletParticle>>()->Emit(1, GetPosition(), { 0,0 }, /*-GetVelocity() * 0.4f*/{}, 1.5);
-
 }
 
 

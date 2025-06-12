@@ -40,4 +40,8 @@ private:
 	Map* map;
 	Fish* parentFish = nullptr;
 	Ship* ship;
+
+	vec2 pausedVelocity;
+	bool wasPaused = false;
+
 };

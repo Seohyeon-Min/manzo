@@ -16,6 +16,7 @@
 #include <map>
 #include "FishEcosystem.h"
 #include "../Engine/MathUtils.h"
+#include "GameOption.h"
 
 std::map<int, int> fishCollection;
 
@@ -75,6 +76,21 @@ void Fish::ResolveCollision(GameObject* other_object) {
 }
 
 void Fish::Update(double dt) {
+	auto gameOption = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<GameOption>();
+
+	if (gameOption->isOpened()) {
+		if (!wasPaused) {
+			pausedVelocity = GetVelocity();
+			SetVelocity({ 0, 0 });
+			wasPaused = true;
+		}
+		return;
+	}
+	else if (wasPaused) {
+		SetVelocity(pausedVelocity);
+		wasPaused = false;
+	}
+
 	GameObject::Update(dt);
 
 	SetFlipX(GetVelocity().x <= 0);
@@ -90,24 +106,21 @@ void Fish::Update(double dt) {
 		}
 	}
 
-	if (GetPosition().x < 0.f || GetPosition().x > 5000.f)
-	{
+	if (GetPosition().x < 0.f || GetPosition().x > 5000.f) {
 		auto& list = Engine::GetGameStateManager().GetGSComponent<FishGenerator>()->fishList;
 		list.erase(std::remove(list.begin(), list.end(), this), list.end());
 		this->Destroy();
 	}
 
-
-	if (ship->CatchFish(GetPosition()))
-	{
+	if (ship->CatchFish(GetPosition())) {
 		Pattern();
 	}
-	else
-	{
+	else {
 		AvoidRock();
 		flag = true;
 	}
 }
+
 
 void Fish::Draw() {
 	GameObject::Draw(DrawLayer::DrawLast);

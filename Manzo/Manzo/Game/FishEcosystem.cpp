@@ -2,6 +2,7 @@
 #include "../Engine/GameObjectManager.h"
 #include "FishEcosystem.h"
 #include "FlockingFish.h"
+#include "GameOption.h"
 
 std::mt19937 dre_fishIndex(rd());
 
@@ -81,43 +82,46 @@ void FishGenerator::ReadFishCSV(const std::string& filename)
 
 void FishGenerator::GenerateFish(double dt)
 {
-	timer->Update(dt);
-
-	if (timer->Remaining() == 0)
+	if(!Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<GameOption>()->isOpened())
 	{
-		fishList.resize(fishCnt);
-		fishList.shrink_to_fit();
+		timer->Update(dt);
 
-		if (fishList.size() < 80) //limit of fish num
+		if (timer->Remaining() == 0)
 		{
-			std::discrete_distribution<> fishIndex(weights.begin(), weights.end());
+			fishList.resize(fishCnt);
+			fishList.shrink_to_fit();
 
-			Fish* newFish = new Fish(fishIndex(dre_fishIndex));
-			fishList.push_back(newFish);
-			Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(newFish);
-			timer->Reset();
-
-			if (newFish->type == FishType::Fish3)
+			if (fishList.size() < 80) //limit of fish num
 			{
-				int shape_index = rand() % formations.size();
-				const auto& selectedFormation = formations[shape_index];
+				std::discrete_distribution<> fishIndex(weights.begin(), weights.end());
 
-				for (const auto& offset : selectedFormation.offsets)
+				Fish* newFish = new Fish(fishIndex(dre_fishIndex));
+				fishList.push_back(newFish);
+				Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(newFish);
+				timer->Reset();
+
+				if (newFish->type == FishType::Fish3)
 				{
-					Fish* additionalFish = new Fish(newFish->type, newFish);
+					int shape_index = rand() % formations.size();
+					const auto& selectedFormation = formations[shape_index];
 
-					float randomX = rand() % static_cast<int>(selectedFormation.randomOffsetMaxX - selectedFormation.randomOffsetMinX)
-						+ selectedFormation.randomOffsetMinX;
-					float randomY = rand() % static_cast<int>(selectedFormation.randomOffsetMaxY - selectedFormation.randomOffsetMinY)
-						+ selectedFormation.randomOffsetMinY;
+					for (const auto& offset : selectedFormation.offsets)
+					{
+						Fish* additionalFish = new Fish(newFish->type, newFish);
 
-					vec2 randomOffset = { randomX, randomY };
+						float randomX = rand() % static_cast<int>(selectedFormation.randomOffsetMaxX - selectedFormation.randomOffsetMinX)
+							+ selectedFormation.randomOffsetMinX;
+						float randomY = rand() % static_cast<int>(selectedFormation.randomOffsetMaxY - selectedFormation.randomOffsetMinY)
+							+ selectedFormation.randomOffsetMinY;
 
-					additionalFish->SetPosition(newFish->GetPosition() + offset + randomOffset);
-					additionalFish->SetVelocity(newFish->GetVelocity());
+						vec2 randomOffset = { randomX, randomY };
 
-					fishList.push_back(additionalFish);
-					Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(additionalFish);
+						additionalFish->SetPosition(newFish->GetPosition() + offset + randomOffset);
+						additionalFish->SetVelocity(newFish->GetVelocity());
+
+						fishList.push_back(additionalFish);
+						Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(additionalFish);
+					}
 				}
 			}
 		}

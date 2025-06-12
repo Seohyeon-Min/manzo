@@ -196,17 +196,6 @@ void Mode1::Update(double dt)
 
 	UpdateGSComponents(dt);
 	GetGSComponent<GameObjectManager>()->UpdateAll(dt);
-	Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::Plankton>>()->Spray();
-
-	beat_system->Update(dt);
-
-	// Handle Input
-	if (Engine::GetInput().KeyJustPressed(Input::Keys::TAB) && ship_ptr->GetPosition().y >= -800.f)
-	{
-		Engine::GetGameStateManager().ClearNextGameState();
-		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
-	}
-
 
 #ifdef _DEBUG
 	AddGSComponent(new ShowCollision());
@@ -224,71 +213,83 @@ void Mode1::Update(double dt)
 	}
 #else
 #endif
-	
 
-	if (Engine::GetInput().KeyJustPressed(Input::Keys::V))
+	if (!option->isOpened())
 	{
-		Engine::GetGameStateManager().ClearNextGameState();
-		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Tutorial));
-	}
 
+		Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::Plankton>>()->Spray();
 
+		beat_system->Update(dt);
 
-	if (Isboss)
-	{
-		camera->SetPosition(boss_ptr->GetPosition());
-	}
-
-	// camera postion update
-	camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
-
-	// Update Fish Generator
-	fishGenerator->GenerateFish(dt);
-
-	// Update 3D Audio with smooth transition for ship position
-	smoothShipPosition.x = std::lerp(previousPosition.x, ship_ptr->GetPosition().x, 0.1f);
-	smoothShipPosition.y = std::lerp(previousPosition.y, ship_ptr->GetPosition().y, 0.1f);
-	previousPosition = smoothShipPosition;
-
-	// Calculate the distance between ship and boss positions
-	float dx = smoothShipPosition.x - bossPosition.x;
-	float dy = smoothShipPosition.y - bossPosition.y;
-	float distance = std::sqrt(dx * dx + dy * dy);
-
-	// Check if within the max distance and apply 3D audio accordingly
-	bool isWithinRange = distance < maxDistance;
-
-	Engine::GetAudioManager().Set3dListenerAndOrientation(smoothShipPosition, vec3{ 0.0f, -1.0f, 0.0f }, vec3{ 0.0f, 0.0f, 1.0f });
-
-	// Apply 3D position for the boss and calculate volume based on the distance
-	if (isWithinRange && !Isboss)
-	{
-		if (!soundPlaying)
+		// Handle Input
+		if (Engine::GetInput().KeyJustPressed(Input::Keys::TAB) && ship_ptr->GetPosition().y >= -800.f)
 		{
-			Engine::GetAudioManager().PlayMusics("e morse");
-			soundPlaying = true;
+			Engine::GetGameStateManager().ClearNextGameState();
+			Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
+		}
+
+		if (Engine::GetInput().KeyJustPressed(Input::Keys::V))
+		{
+			Engine::GetGameStateManager().ClearNextGameState();
+			Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Tutorial));
+		}
+
+		if (Isboss)
+		{
+			camera->SetPosition(boss_ptr->GetPosition());
+		}
+
+		// camera postion update
+		camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
+
+		// Update Fish Generator
+		fishGenerator->GenerateFish(dt);
+
+		// Update 3D Audio with smooth transition for ship position
+		smoothShipPosition.x = std::lerp(previousPosition.x, ship_ptr->GetPosition().x, 0.1f);
+		smoothShipPosition.y = std::lerp(previousPosition.y, ship_ptr->GetPosition().y, 0.1f);
+		previousPosition = smoothShipPosition;
+
+		// Calculate the distance between ship and boss positions
+		float dx = smoothShipPosition.x - bossPosition.x;
+		float dy = smoothShipPosition.y - bossPosition.y;
+		float distance = std::sqrt(dx * dx + dy * dy);
+
+		// Check if within the max distance and apply 3D audio accordingly
+		bool isWithinRange = distance < maxDistance;
+
+		Engine::GetAudioManager().Set3dListenerAndOrientation(smoothShipPosition, vec3{ 0.0f, -1.0f, 0.0f }, vec3{ 0.0f, 0.0f, 1.0f });
+
+		// Apply 3D position for the boss and calculate volume based on the distance
+		if (isWithinRange && !Isboss)
+		{
+			if (!soundPlaying)
+			{
+				Engine::GetAudioManager().PlayMusics("e morse");
+				soundPlaying = true;
+			}
+			else
+			{
+				if (!replay)
+				{
+					Engine::GetAudioManager().RestartPlayMusic("e morse");
+					replay = true;
+				}
+			}
+
+			Engine::GetAudioManager().SetChannel3dPosition("e morse", bossPosition);
+
+			float volumeFactor = 1.0f - std::clamp(distance / 300.0f, 0.0f, 1.0f);
+			// float volume = std::lerp(0.0f, 1.0f, volumeFactor);
+			float volume = std::lerp(-20.0f, 1.0f, volumeFactor);
+
+			Engine::GetAudioManager().SetChannelVolume("e morse", volume);
 		}
 		else
 		{
-			if (!replay)
-			{
-				Engine::GetAudioManager().RestartPlayMusic("e morse");
-				replay = true;
-			}
+			Engine::GetAudioManager().StopPlayingMusic("e morse");
+			replay = false;
 		}
-
-		Engine::GetAudioManager().SetChannel3dPosition("e morse", bossPosition);
-
-		float volumeFactor = 1.0f - std::clamp(distance / 300.0f, 0.0f, 1.0f);
-		// float volume = std::lerp(0.0f, 1.0f, volumeFactor);
-		float volume = std::lerp(-20.0f, 1.0f, volumeFactor);
-
-		Engine::GetAudioManager().SetChannelVolume("e morse", volume);
-	}
-	else
-	{
-		Engine::GetAudioManager().StopPlayingMusic("e morse");
-		replay = false;
 	}
 }
 

@@ -5,6 +5,7 @@
 #include "BossBullet.h"
 #include "../Engine/GameObjectManager.h"
 #include "../Engine/MathUtils.h"
+#include "GameOption.h"
 
 std::vector<GameObject::State*> stateMap;
 std::vector<std::string> BossJSONfileMap;
@@ -211,20 +212,20 @@ void Boss::InitializeStates() {
 
 
 void Boss::Update(double dt) {
-	Boss* boss = static_cast<Boss*>(this);
 	//std::cout << total_entry.size() << std::endl;
-	if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
+	if (Engine::GetGameStateManager().GetStateName() == "Mode1" && !Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<GameOption>()->isOpened()) 
+	{
 		if (GameObject::current_state->GetName() != Boss::state_cutscene.GetName()) {
 
-			boss->barCount = beat->GetBarCount();
+			barCount = beat->GetBarCount();
 			//std::cout << barCount << std::endl;
-			if (boss->barCount <= total_entry.size()) {
-				if (boss->barCount < total_entry.size() && total_entry[boss->barCount] - 1 < stateMap.size()) {
-					change_state(stateMap[total_entry[boss->barCount] - 1]);
+			if (barCount <= total_entry.size()) {
+				if (barCount < total_entry.size() && total_entry[barCount] - 1 < stateMap.size()) {
+					change_state(stateMap[total_entry[barCount] - 1]);
 					
 				}
 			}
-			else if (boss->barCount > total_entry.size()) {
+			else if (barCount > total_entry.size()) {
 				//std::cerr << "Invalid barCount or index out of range: " << boss->barCount << std::endl;
 				Destroy();
 				AfterDied();
