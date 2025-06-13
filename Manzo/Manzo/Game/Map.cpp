@@ -21,28 +21,34 @@ Created:    June 12, 2025
 #define M_PI 3.14
 #endif
 
-Map::Map(std::string map_index) : pathRegex(R"(<path[^>]*\sd\s*=\s*"([^"]+))"),
-gIdRegex(R"(<g[^>]*\bid\s*=\s*"([^"]+))"),
-circleRegex(R"(circle[^>]*\bcx\s*=\s*"([^"]+))"),
-cyRegex(R"(\bcy\s*=\s*"([^"]+))"),
-cIdxRegex(R"()"),
-labelRegex(R"(inkscape:label\s*=\s*"([^"]+))"),
-transformRegex(R"xxx(transform\s*=\s*"([^"]+)")xxx"),
-translateRegex(R"(translate\(([^,]+),\s*([^\)]+)\))"),
-rotateRegex(R"(rotate\(\s*([^\s,]+)\s*,\s*([^\s,]+)\s*,\s*([^\)]+)\s*\))"),
-matrixRegex(R"(matrix\(([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+)\))"),
-pathIdRegex(R"xxx(id="([^"]+)")xxx"),
-map_index(map_index)
+Map::Map(const std::string& filename, Math::rect map_boundary) :
+        pathRegex(R"(<path[^>]*\sd\s*=\s*"([^"]+))"),
+        gIdRegex(R"(<g[^>]*\bid\s*=\s*"([^"]+))"),
+        circleRegex(R"(circle[^>]*\bcx\s*=\s*"([^"]+))"),
+        cyRegex(R"(\bcy\s*=\s*"([^"]+))"),
+        cIdxRegex(R"()"),
+        labelRegex(R"(inkscape:label\s*=\s*"([^"]+))"),
+        transformRegex(R"xxx(transform\s*=\s*"([^"]+)")xxx"),
+        translateRegex(R"(translate\(([^,]+),\s*([^\)]+)\))"),
+        rotateRegex(R"(rotate\(\s*([^\s,]+)\s*,\s*([^\s,]+)\s*,\s*([^\)]+)\s*\))"),
+        matrixRegex(R"(matrix\(([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+)\))"),
+        pathIdRegex(R"xxx(id="([^"]+)")xxx"),
+        file_path(filename),
+        map_boundary(map_boundary)
 {
+
+    size_t start = file_path.find_last_of('/') + 1;
+    size_t end = file_path.find_last_of('.');
+    this->map_index = file_path.substr(start, end - start);
+
     std::random_device rd;
     gen = std::mt19937(rd());
 }
 
 
-void Map::OpenSVG(const std::string& filename) {
-    file.open(filename);
-    this->file_name = filename;
-    if (!file.is_open()) {
+void Map::OpenSVG() {
+    map_file.open(this->file_path);
+    if (!map_file.is_open()) {
         std::cerr << "Error opening SVG file." << std::endl;
         return;
     }
@@ -59,9 +65,9 @@ void Map::ParseSVG() {
     std::string currentTag;
 
     do {
-        if (!std::getline(file, line)) {
+        if (!std::getline(map_file, line)) {
             level_loaded = true;
-            file.close();
+            map_file.close();
             std::cout << "End of File." << std::endl;
             return;
         }
@@ -75,8 +81,8 @@ void Map::ParseSVG() {
         }
 
         level_loaded = true;
-        file.close();
-        std::cout << file_name << " file's parsing completed." << std::endl;
+        map_file.close();
+        std::cout << file_path << " file's parsing completed." << std::endl;
         return;
     }
 

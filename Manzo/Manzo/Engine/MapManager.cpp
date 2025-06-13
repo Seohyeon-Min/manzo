@@ -27,51 +27,35 @@ Map* MapManager::GetCurrentMap() {
     return maps[currentMapIndex];
 }
 
-void MapManager::AddMapFile(const std::string& filename) {
-    mapFiles.push_back(filename);
+void MapManager::AddMap(Map* new_map) {
+    maps.push_back(new_map);
 }
 
-void MapManager::LoadFirstMap() {
-    if (mapFiles.empty()) return;
-    
-
-    Map* initialMap = new Map(GetMapIndex(mapFiles[currentMapIndex]));
-    initialMap->OpenSVG(mapFiles[currentMapIndex]);
-    initialMap->LoadPNG();
-    maps.push_back(initialMap);
-}
-
-void MapManager::LoadNextMap() {
-
-    currentMapIndex++;
-
-    Map* nextMap = new Map(GetMapIndex(mapFiles[currentMapIndex]));
-    //nextMap->SetMargin(800.0f);
-    nextMap->OpenSVG(mapFiles[currentMapIndex]);    //open next svg file
-
-    maps.push_back(nextMap);
+void MapManager::LoadMap() {
+    if (maps.empty()) return;
+    maps[currentMapIndex]->OpenSVG();
+    maps[currentMapIndex]->LoadPNG();
 }
 
 void MapManager::UpdateMaps(const Math::rect& camera_boundary) {
+    
     if (currentMapIndex < maps.size()) {
         maps[currentMapIndex]->LoadMapInBoundary(camera_boundary);
 
-        if (camera_boundary.Bottom() <= -6000.f) {
-            //Unload Previous Map
-            maps[currentMapIndex]->UnloadAll();
-            
-            if (currentMapIndex + 1 <= maps.size()) {
-                LoadNextMap();
-                if (!maps[currentMapIndex]->IsLevelLoaded()) {    // if next map is not loaded
-                    maps[currentMapIndex]->ParseSVG();            //parse SVG file
+        if (!maps[currentMapIndex]->IsOverlapping(maps[currentMapIndex]->GetMapBoundary(), camera_boundary)) { // Is player  in the level boundary?
+            if (!MapIncreased) {
+                maps[currentMapIndex]->UnloadAll(); //Unload Previous Map
+
+                if (currentMapIndex + 1 <= maps.size()) {
+                    currentMapIndex++;
+                    LoadMap();
+
                 }
             }
+
         }
+        else MapIncreased = false;
+        
     }
 }
 
-std::string MapManager::GetMapIndex(const std::string& path) {
-    size_t start = path.find_last_of('/') + 1;
-    size_t end = path.find_last_of('.');
-    return path.substr(start, end - start);
-}

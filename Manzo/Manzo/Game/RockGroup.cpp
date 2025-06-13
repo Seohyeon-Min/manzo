@@ -13,7 +13,6 @@ Created:    November 25, 2024
 RockGroup::RockGroup(const std::string& index, const std::string& map_index, double rotation, vec2 scale) :GameObject({ 0,0 }, rotation, scale), index(index), map_index(map_index)
 {
     std::string spritePath = "assets/images/rock/" + map_index +"/" + index + ".spt";
-    std::cout << spritePath << std::endl;
     if (std::filesystem::exists(spritePath)) {
         AddGOComponent(new Sprite(spritePath, this));
     }

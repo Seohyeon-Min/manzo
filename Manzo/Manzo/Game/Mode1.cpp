@@ -112,10 +112,13 @@ void Mode1::Load()
 	// background->Add("assets/images/background/bubble.png", 1.5f, DrawLayer::DrawUI);
 
 	// Map
+	Math::rect level1_boundary = { {-1000.f, 0},{5000.f, -6000.f} };
+	Math::rect level2_boundary = { {-1000.f, -6000.f},{0, -10000.f} };
+
 	AddGSComponent(new MapManager());
-	GetGSComponent<MapManager>()->AddMapFile("assets/maps/level1.svg"); 
-	GetGSComponent<MapManager>()->AddMapFile("assets/maps/level4.svg");
-	GetGSComponent<MapManager>()->LoadFirstMap();
+	GetGSComponent<MapManager>()->AddMap(new Map("assets/maps/level1.svg", level1_boundary));
+	GetGSComponent<MapManager>()->AddMap(new Map("assets/maps/level4.svg", level2_boundary));
+	GetGSComponent<MapManager>()->LoadMap();	//load first map
 	
 
 
@@ -206,9 +209,6 @@ void Mode1::Update(double dt)
 	//Map
 	if (!GetGSComponent<MapManager>()->GetCurrentMap()->IsLevelLoaded()) {
 		GetGSComponent<MapManager>()->GetCurrentMap()->ParseSVG();
-	}
-	else {
-		//GetGSComponent<MapManager>()->LoadNextMap();
 	}
 
 

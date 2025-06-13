@@ -34,7 +34,7 @@ Created:    June 12, 2025
 
 class Map : public Component {
 public:
-	Map(std::string map_index);
+	Map(const std::string& filename, Math::rect map_boundary);
 
 	~Map() {
 		rocks.clear();
@@ -43,17 +43,16 @@ public:
 		mask.clear();
 	}
 
-	void OpenSVG(const std::string& filename);
+	void OpenSVG();
 	void ParseSVG();
+
 	std::vector<vec2> parsePathData(const std::string& pathData);	// path parsing
 	void LoadMapInBoundary(const Math::rect& camera_boundary);
 	bool IsOverlapping(const Math::rect& a, const Math::rect& b);
-
-	void SetEndY(float endY) { this->EndY = endY; }
-	float GetEndY() { return EndY; }
+	bool IsLevelLoaded() { return level_loaded; }
+	Math::rect GetMapBoundary() { return map_boundary; }
 
 	void UnloadAll();
-	bool IsLevelLoaded() { return level_loaded; }
 
 	void LoadPNG();
 	vec2 MaskToWorld(int maskX, int maskY);
@@ -65,14 +64,31 @@ public:
 	std::vector<std::vector<bool>> GetMask() { return mask; }
 
 private:
-	std::mt19937 gen;
+	std::mt19937 gen;	
+	float margin = 1000.f;	//map drawing zone margin - should be smaller!!!!!
+	Math::rect map_boundary = { {0, 0},{0, 0} };
+	// mask
+	int width, height, channels;
+	std::vector<std::vector<bool>> mask;
+	std::vector<ivec2> valid_spawn_positions;
 
-	std::string file_name;
+	// file reading
+	bool level_loaded = false;	// boolean - is this level fully loaded?
+	std::ifstream map_file;
+	std::string file_path;
 	std::string map_index = "";
 	int read_line_number = -1;
+	char currentCommand = '\0';
 
+	// map objects management
 	RockGroup* currentGroup = nullptr;
+	std::vector<Polygon> original_polygons;
+	std::vector<Polygon> modified_polygons;
+	std::vector<Rock*> rocks;
+	std::vector<RockGroup*> rock_groups;
+	vec2 circle_position{ 0,0 };
 
+	// SVG parsing index and variables
 	vec2 translate = { 0, 0 };
 	float rotateAngle = 0;
 	vec2 rotatetranslate = { 0, 0 };
@@ -86,24 +102,6 @@ private:
 	std::string pathData;
 	std::string polyIndex;
 	std::string circleIndex;
-
-	bool level_loaded = false;
-	std::ifstream file;
-
-	char currentCommand = '\0';
-	float margin = 1000.f;	// padding for map's partial drawing
-
-	int width, height, channels;
-	std::vector<std::vector<bool>> mask;
-
-	std::vector<Polygon> original_polygons;
-	std::vector<Polygon> modified_polygons;
-	std::vector<Rock*> rocks;
-	std::vector<RockGroup*> rock_groups;
-	vec2 circle_position{ 0,0 };
-	std::vector<ivec2> valid_spawn_positions;
-
-	float EndY = 0.f;
 
 	// SVG parsing tags
 	std::regex pathRegex;

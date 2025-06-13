@@ -33,15 +33,13 @@ class Map;
 class MapManager : public Component {
 public:
 	Map* GetCurrentMap();
-	void AddMapFile(const std::string& filename);
-	void LoadFirstMap();
-	void LoadNextMap();
+	void AddMap(Map* new_map);
+	void LoadMap();
 	void UpdateMaps(const Math::rect& camera_boundary);
 	Map* GetMap(int index) { return maps[index]; }
-	std::string GetMapIndex(const std::string& path);
 
 private:
 	std::vector<Map*> maps;
-	std::vector<std::string> mapFiles;
 	int currentMapIndex = 0;
+	bool MapIncreased = false;
 };
