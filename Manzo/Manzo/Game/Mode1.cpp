@@ -105,13 +105,12 @@ void Mode1::Load()
 
 	// background
 	background->Add("assets/images/background/rock_pillar/r1.png", {350.f,-1600.f}, 0.1f);
-
-	background->Add("assets/images/background/rock_pillar/r6.png", { 5050.f,-400.f }, 0.2f);
 	background->Add("assets/images/background/rock_pillar/r2.png", { 5050.f,-900.f }, 0.1f);
-
 	background->Add("assets/images/background/rock_pillar/r3.png", { 2400.f,-3500.f }, 0.05f);
 	background->Add("assets/images/background/rock_pillar/r4.png", { 3900.f,-2550.f }, 0.05f);
-
+	background->Add("assets/images/background/rock_pillar/r5.png", { 1500.f,-3600.f }, 0.1f);
+	background->Add("assets/images/background/rock_pillar/r6.png", { 5420.f,-370.f }, 0.2f);
+	background->Add("assets/images/background/rock_pillar/r8.png", { 4300.f,-3700.f }, 0.13f);
 
 	// Map
 	AddGSComponent(new MapManager());
