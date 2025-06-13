@@ -21,7 +21,12 @@ Background::Background()
 
 void Background::Add(const std::filesystem::path& texture_path, float speed, DrawLayer draw_layer)
 {
-    backgrounds.push_back(ParallaxLayer({ Engine::GetTextureManager().Load(texture_path), speed, mat3{},draw_layer }));
+    backgrounds.push_back(ParallaxLayer({ Engine::GetTextureManager().Load(texture_path), vec2{}, mat3{}, speed, draw_layer }));
+}
+
+void Background::Add(const std::filesystem::path& texture_path, vec2 pos, float speed, DrawLayer draw_layer)
+{
+    backgrounds.push_back(ParallaxLayer({ Engine::GetTextureManager().Load(texture_path), pos, mat3{},  speed,draw_layer }));
 }
 
 void Background::SetUniforms(const GLShader* shader, Ship* ship) {
@@ -45,11 +50,15 @@ void Background::Draw(const Cam& camera)
 
     for (ParallaxLayer& background : backgrounds) {
 
-        background.matrix = mat3::build_translation({ (0 + cameraPos.x) * background.speed, (0 + cameraPos.y) * background.speed });
+        vec2 parallax_offset = cameraPos * background.speed;
+        vec2 final_pos = { background.pos.x - parallax_offset.x,background.pos.y };
+
+        if (background.pos != vec2{ 0.f,0.f })
+            background.matrix = mat3::build_translation(final_pos) * mat3::build_scale(2.f, 3.f);
 
         DrawCall draw_call = {
-            background.texture,                       // Texture to draw
-            &background.matrix,                          // Transformation matrix
+            background.texture,
+            &background.matrix,
             Engine::GetShaderManager().GetDefaultShader()
         };
 
@@ -59,6 +68,7 @@ void Background::Draw(const Cam& camera)
         Engine::GetRender().AddBackgroundDrawCall(draw_call);
     }
 }
+
 
 void Background::ShaderBackgroundDraw(GLShader* shader, const Cam& camera, Ship* ship)
 {

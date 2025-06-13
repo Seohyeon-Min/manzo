@@ -100,7 +100,7 @@ void FishGenerator::GenerateFish(double dt)
 				Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(newFish);
 				timer->Reset();
 
-				if (newFish->type == FishType::Fish3)
+				if (newFish->type == FishType::Fish3 || newFish->type == FishType::Fish8)
 				{
 					int shape_index = rand() % formations.size();
 					const auto& selectedFormation = formations[shape_index];

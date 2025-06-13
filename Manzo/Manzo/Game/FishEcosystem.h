@@ -25,7 +25,7 @@ public:
 
     enum FishType
     {
-        Fish1 = 1, Fish2, Fish3
+		Fish1 = 1, Fish2, Fish3, Fish4, Fish5, Fish6, Fish7, Fish8
     };
 
     struct FishDex

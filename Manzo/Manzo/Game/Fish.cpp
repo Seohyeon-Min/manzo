@@ -39,8 +39,8 @@ Fish::Fish(int index, Fish* parent) : GameObject({ 0, 0 }) {
 		type = Engine::GetGameStateManager().GetGSComponent<FishGenerator>()->fishBook[index].type;
 	}
 	else {
-		index = 2;
 		type = parent->type;
+		index = static_cast<int>(type-1);
 		parentFish = parent;
 	}
 
@@ -64,9 +64,16 @@ void Fish::ResolveCollision(GameObject* other_object) {
 		if (!collided)
 		{
 			collided = true;
-			Engine::GetGameStateManager().GetGSComponent<FishGenerator>()->SetFishCnt(Engine::GetGameStateManager().GetGSComponent<FishGenerator>()->GetFishCnt() - 1);
-			Engine::GetGameStateManager().GetGSComponent<FishGenerator>()->SetMoney(Engine::GetGameStateManager().GetGSComponent<FishGenerator>()->money + Engine::GetGameStateManager().GetGSComponent<FishGenerator>()->moneys[type - 1]);
-			fishCollection[type - 1]++;
+			if (type != Engine::GetGameStateManager().GetGSComponent<FishGenerator>()->FishType::Fish8)
+			{
+				Engine::GetGameStateManager().GetGSComponent<FishGenerator>()->SetFishCnt(Engine::GetGameStateManager().GetGSComponent<FishGenerator>()->GetFishCnt() - 1);
+				Engine::GetGameStateManager().GetGSComponent<FishGenerator>()->SetMoney(Engine::GetGameStateManager().GetGSComponent<FishGenerator>()->money + Engine::GetGameStateManager().GetGSComponent<FishGenerator>()->moneys[type - 1]);
+				fishCollection[type - 1]++;
+			}
+			else
+			{
+				Engine::GetGameStateManager().GetGSComponent<FishGenerator>()->SetMoney(Engine::GetGameStateManager().GetGSComponent<FishGenerator>()->money - Engine::GetGameStateManager().GetGSComponent<FishGenerator>()->moneys[type - 1]);
+			}
 		}
 		auto& list = Engine::GetGameStateManager().GetGSComponent<FishGenerator>()->fishList;
 		list.erase(std::remove(list.begin(), list.end(), this), list.end());
@@ -136,6 +143,25 @@ void Fish::Pattern()
 	float escapeRange, maxEscapeSpeed, escapeStrength;
 	vec2 awayFromShip, newVelocity, circleDir;
 
+	if (type == Engine::GetGameStateManager().GetGSComponent<FishGenerator>()->FishType::Fish8)
+	{
+		escapeRange = 400.0f;
+		maxEscapeSpeed = 200.0f;
+
+		if (toShip.Length() < 1e-5f) {
+			toShip = vec2(1.0f, 0.0f);
+		}
+
+		distance = toShip.Length();
+		escapeStrength = std::max(0.2f, std::clamp(1.0f - (distance / escapeRange), 0.0f, 1.0f));
+
+		circleDir = normalize(vec2(-toShip.y, toShip.x));
+
+		vec2 circleVelocity = circleDir * maxEscapeSpeed * escapeStrength;
+
+		this->SetVelocity(circleVelocity);
+		return;
+	}
 
 	switch ((type - 1) % 3)
 	{
