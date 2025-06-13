@@ -62,4 +62,9 @@ private:
 
     bool firstBuy = false;
     bool secondBuy = false;
+
+    //Map boundary
+    Math::rect level1_boundary = { {-700.f, 0},{5000.f, -5300.f} };
+    Math::rect level2_boundary = { {-1000.f, -5300.f},{0, -10000.f} };
+
 };

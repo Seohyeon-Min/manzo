@@ -45,8 +45,7 @@ void MapManager::UpdateMaps(const Math::rect& camera_boundary) {
         if (!maps[currentMapIndex]->IsOverlapping(maps[currentMapIndex]->GetMapBoundary(), camera_boundary)) { // Is player  in the level boundary?
             if (!MapIncreased) {
                 maps[currentMapIndex]->UnloadAll(); //Unload Previous Map
-
-                if (currentMapIndex + 1 <= maps.size()) {
+                if (currentMapIndex + 1 < maps.size()) {
                     currentMapIndex++;
                     LoadMap();
 

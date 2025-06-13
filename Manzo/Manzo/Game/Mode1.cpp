@@ -112,8 +112,7 @@ void Mode1::Load()
 	// background->Add("assets/images/background/bubble.png", 1.5f, DrawLayer::DrawUI);
 
 	// Map
-	Math::rect level1_boundary = { {-1000.f, 0},{5000.f, -6000.f} };
-	Math::rect level2_boundary = { {-1000.f, -6000.f},{0, -10000.f} };
+	
 
 	AddGSComponent(new MapManager());
 	GetGSComponent<MapManager>()->AddMap(new Map("assets/maps/level1.svg", level1_boundary));
