@@ -7,6 +7,7 @@
 #include "JellyEnemy.h"
 #include "../Engine/MathUtils.h"
 #include "Effect.h"
+#include "BackGround.h"
 
 std::vector<GameObject::State*> stateMap;
 std::vector<std::string> BossJSONfileMap;
@@ -53,14 +54,15 @@ void Boss::Bullet(Boss* boss) {
 
 }
 
-
+int cnt = 0;
 void Boss::Movingtolocation_Boss(int targetEntryNum, Boss* boss) {
-
+	//if(boss->beat->GetBeat())std::cout << cnt++<<" getbeat\n";
 	if (targetEntryNum - 1 < boss->parttern.size()) {
 		const auto& entryVec = boss->parttern[targetEntryNum - 1];
 		for (const auto& entryData : entryVec) {
-			if (entryData.delay + 1 == boss->beat->GetDelayCount()) {
+			if (entryData.delay == boss->beat->GetDelayCount()) {
 				if (boss->beat->GetBeat()) {
+					
 					boss->current_position = entryData.position;
 					// here
 					for(int i =0; i <1; ++i){
@@ -141,6 +143,25 @@ void Boss::Check_BossBehavior(int targetEntryNum, GameObject* object) {
 	}
 }
 
+bool aa = false;
+float starter = 0.f;
+void SetTansUni(const GLShader* shader)
+{
+	float time = 0.f;
+	if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+		time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+	}
+	if (!aa) {
+		starter = time;
+		aa = true;
+	}
+	
+	shader->SendUniform("uTime", time);
+	shader->SendUniform("uStartTime", starter);
+	shader->SendUniform("uResolution", Engine::window_width, Engine::window_height);
+	std::cout << time << " <- time. " << starter << " start..\n ";
+}
+
 void Boss::State_CutScene::Enter(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
 	std::cout << "State_CutScene Enter" << std::endl;
@@ -152,12 +173,11 @@ void Boss::State_CutScene::Update(GameObject* object, double dt) {
 }
 void Boss::State_CutScene::CheckExit(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
-
 	if (boss->beat->GetBeat()) {
 		Engine::GetAudioManager().SetMute("Level1_bgm", true);
 		Engine::GetAudioManager().StopChannel("e morse");
 		//Engine::GetAudioManager().PlayMusics("e boss");
-		boss->beat->SetBPM(200);
+		boss->beat->SetBPM(boss->bpm);
 		boss->beat->LoadMusicToSync("e boss");
 		std::cout << "State_CutScene Exit" << std::endl;
 		boss->change_state(&boss->entry1);
@@ -221,7 +241,7 @@ void Boss::InitializeStates() {
 
 void Boss::Update(double dt) {
 	Boss* boss = static_cast<Boss*>(this);
-
+	//Engine::GetGameStateManager().GetGSComponent<Background>()->ShaderBackgroundDraw(Engine::GetShaderManager().GetShader("sea_background"), *GetGSComponent<Cam>(), ship_ptr);
 	if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
 		if (GameObject::current_state->GetName() != Boss::state_cutscene.GetName()) {
 			boss->barCount = beat->GetBarCount();
@@ -388,8 +408,14 @@ void SetUni(const GLShader* shader) {
 	shader->SendUniform("speed", 3.f);
 }
 
+
+
 void Boss::Draw(DrawLayer drawlayer)
 {
+
+	Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new BossBlackCircle2(GetPosition()));
+	Engine::GetGameStateManager().GetGSComponent<Background>()->ShaderBackgroundDraw(Engine::GetShaderManager().GetShader("ink_transition"), *Engine::GetGameStateManager().GetGSComponent<Cam>(), nullptr, [this](const GLShader* shader) { SetTansUni(shader); });
+
 	DrawCall draw_call = {
 		GetGOComponent<Sprite>()->GetTexture(),
 		&GetMatrix(),
@@ -407,6 +433,7 @@ void Boss::Draw(DrawLayer drawlayer)
 
 	GameObject::Draw(draw_call);
 	GameObject::Draw(draw_call_body);
+
 }
 
 

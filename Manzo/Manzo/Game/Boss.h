@@ -45,7 +45,6 @@ public:
 	void Spawn8WayBullets(vec2 position);
 
 private:
-
 	//class BossBehavior {
 	//public:
 	//	virtual void Update(Boss* boss, double dt) = 0; // Abstract method

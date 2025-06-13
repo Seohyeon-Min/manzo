@@ -85,3 +85,13 @@ public:
     void Draw(DrawLayer drawlayer = DrawLayer::DrawLast) override;
 private:
 };
+
+class BossBlackCircle2 : public Effect {
+public:
+    BossBlackCircle2(vec2 pos);
+    void Update(double dt) override;
+    void Draw(DrawLayer drawlayer = DrawLayer::DrawLast) override;
+private:
+    void SetFadeinUni(const GLShader* shader);
+    float spawn_t;
+};

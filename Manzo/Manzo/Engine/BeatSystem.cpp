@@ -79,12 +79,16 @@ void Beat::Update(double dt)
     //    << ", Current delay duration: " << current_delay_duration
     //    << ", Beat Count: " << beat_count
     //    << " beat: " << beat << std::endl;
-
         //if (beat)
     //    std::cout << asdfasdf++ << "fixed : " << fixed_duration << " duration : " << duration << " - on beat\n";
     //if (beat) std::cout << "beat @ " << time_taken << '\n';
     //std::cout << (is_on_beat ? "ON\n" : "OFF\n");
     time_taken += dt;
+}
+
+bool Beat::GetBeat()
+{
+    return beat;
 }
 
 void Beat::CollectCaliData()

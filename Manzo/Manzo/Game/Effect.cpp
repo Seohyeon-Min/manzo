@@ -271,7 +271,7 @@ void BossBlackCircle::Update(double dt)
 {
     Effect::Update(dt);
     Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::BossBlackCircleParticle>>()
-        ->EmitRound(1, GetPosition(), 20.f, 10.f, 125.f);
+        ->EmitRound(1, GetPosition(), 20.f, 10.f, 115.f);
 }
 
 void BossBlackCircle::Draw(DrawLayer drawlayer)
@@ -285,6 +285,57 @@ void BossBlackCircle::Draw(DrawLayer drawlayer)
 
     draw_call.settings.do_blending = true;
     draw_call.sorting_layer = drawlayer;
+    GameObject::Draw(draw_call);
+}
+
+BossBlackCircle2::BossBlackCircle2(vec2 pos) : Effect(pos, -1.f)
+{
+    AddGOComponent(new Sprite("assets/images/effect/boss_black_circle.spt", this));
+    float time = 0.f;
+    if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+        time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+    }
+    spawn_t = time;
+}
+
+void BossBlackCircle2::Update(double dt)
+{
+    float time = 0.f;
+    if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+        time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+    }
+    std::cout << time << " - time\n";
+    if (time >= 15.f + spawn_t) {
+        Destroy();
+    }
+}
+
+
+void BossBlackCircle2::SetFadeinUni(const GLShader* shader)
+{
+    float time = 0.f;
+    if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+        time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+    }
+    shader->SendUniform("uTime", time);
+    shader->SendUniform("uStartDelay", spawn_t + 9.f);
+    shader->SendUniform("uFadeDuration", 3.f);
+
+    //std::cout << time << " - time : " << spawn_t<< "\n";
+}
+
+void BossBlackCircle2::Draw(DrawLayer drawlayer)
+{
+    Sprite* sprite = GetGOComponent<Sprite>();
+    DrawCall draw_call = {
+        sprite,
+        &GetMatrix(),
+        Engine::GetShaderManager().GetShader("fade_out")
+    };
+
+    draw_call.settings.do_blending = true;
+    draw_call.sorting_layer = DrawLayer::DrawLast;
+    draw_call.SetUniforms = [this](const GLShader* shader) { SetFadeinUni(shader); };
     GameObject::Draw(draw_call);
 }
 

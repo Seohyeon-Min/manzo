@@ -21,7 +21,7 @@ public:
     void Add(const std::filesystem::path& texture_path, float speed, DrawLayer = DrawLayer::DrawBackground);
     void Unload();
     void Draw(const Cam& camera);
-    void ShaderBackgroundDraw(GLShader* shader, const Cam& camera, Ship* ship);
+    void ShaderBackgroundDraw(GLShader* shader, const Cam& camera, Ship* ship, std::function<void(const GLShader*)> SetUniformsFunc = nullptr);
     void SetUniforms(const GLShader* shader, Ship* ship);
     ivec2 GetSize();
 private:

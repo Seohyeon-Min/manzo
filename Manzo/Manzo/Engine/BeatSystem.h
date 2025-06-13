@@ -9,7 +9,7 @@ public:
     void LoadMusicToSync(std::string music_name);
     void ResetCalibration();
     void Update(double dt);
-    bool GetBeat() { return beat; }
+    bool GetBeat();
     bool GetIsOnBeat() { return is_on_beat; }
     void SetBPM(int set_BPM);
     int GetBarCount() { return bar_count; }
