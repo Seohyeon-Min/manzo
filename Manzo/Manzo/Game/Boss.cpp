@@ -60,9 +60,8 @@ void Boss::Movingtolocation_Boss(int targetEntryNum, Boss* boss) {
 	if (targetEntryNum - 1 < boss->parttern.size()) {
 		const auto& entryVec = boss->parttern[targetEntryNum - 1];
 		for (const auto& entryData : entryVec) {
-
 			if (boss->beat->GetDelayCount() == entryData.delay + 1) {
-				if (boss->beat->GetBeat()) {
+				
 					
 					boss->current_position = entryData.position;
 					
@@ -70,7 +69,7 @@ void Boss::Movingtolocation_Boss(int targetEntryNum, Boss* boss) {
 					for(int i =0; i <1; ++i){
 					boss->Bullet(boss);
 					}
-				}
+				
 				
 			}
 			if (entryData.attacktype == 3) {
