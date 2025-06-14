@@ -3,6 +3,7 @@
 #include <to_span.h>
 #include "GameObjectManager.h"
 #include "../Game/Fish.h"
+#include "MathUtils.h"
 
 Raycasting::Raycasting(GameObject* object_) : object(object_)
 {
@@ -76,13 +77,23 @@ void Raycasting::Update(double dt)
     ///////////////////////////////////////////////////////////////////////////////////
     UpdateRadius();
 
+    float w = (float)Engine::window_width;
+    float h = (float)Engine::window_height;
     vec2 shipWorldPos = object->GetPosition();
     mat3 modelToWorld = mat3::build_translation(shipWorldPos) *
         mat3::build_scale(radius, radius);
     shader->SendUniform("uModelToWorld", util::to_span(modelToWorld));
     mat3 WORLD_TO_NDC = cam->world_to_ndc;
     mat3 modelToNDC = WORLD_TO_NDC * modelToWorld;
+
+    mat3 ndc_to_screen = mat3::build_translation({ w / 2.f, h / 2.f }) * mat3::build_scale({ w / 2.f, h / 2.f });
+
+    mat3 world_to_screen = ndc_to_screen * WORLD_TO_NDC;
+    mat3 screenToWorld = Inverse(world_to_screen);
+
+    shader->SendUniform("uScreenToWorld", util::to_span(screenToWorld));
     shader->SendUniform("uModelToNDC", util::to_span(modelToNDC));
+    shader->SendUniform("uWorldToScreen", util::to_span(world_to_screen));
     ///////////////////////////////////////////////////////////////////////////////////
 
     shader->SendUniform("uLightPos", shipWorldPos.x, shipWorldPos.y);

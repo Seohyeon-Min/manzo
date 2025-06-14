@@ -13,3 +13,32 @@ vec2 ClosestPoint(vec2 point, vec2 a, vec2 b) {
 vec2 Lerp(const vec2& a, const vec2& b, float t) {
 	return a * (1.0f - t) + b * t;
 }
+
+mat3 Inverse(mat3& m)
+{
+    float det =
+        m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]) -
+        m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0]) +
+        m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]);
+
+    if (det == 0.0f)
+        return mat3(); // 또는 assert(false), 예외 등
+
+    float invDet = 1.0f / det;
+
+    mat3 result;
+
+    result[0][0] = (m[1][1] * m[2][2] - m[1][2] * m[2][1]) * invDet;
+    result[0][1] = -(m[0][1] * m[2][2] - m[0][2] * m[2][1]) * invDet;
+    result[0][2] = (m[0][1] * m[1][2] - m[0][2] * m[1][1]) * invDet;
+
+    result[1][0] = -(m[1][0] * m[2][2] - m[1][2] * m[2][0]) * invDet;
+    result[1][1] = (m[0][0] * m[2][2] - m[0][2] * m[2][0]) * invDet;
+    result[1][2] = -(m[0][0] * m[1][2] - m[0][2] * m[1][0]) * invDet;
+
+    result[2][0] = (m[1][0] * m[2][1] - m[1][1] * m[2][0]) * invDet;
+    result[2][1] = -(m[0][0] * m[2][1] - m[0][1] * m[2][0]) * invDet;
+    result[2][2] = (m[0][0] * m[1][1] - m[0][1] * m[1][0]) * invDet;
+
+    return result;
+}
