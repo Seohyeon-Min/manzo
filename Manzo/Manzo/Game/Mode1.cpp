@@ -59,6 +59,7 @@ void Mode1::Load()
 	Engine::GetShaderManager().LoadShader("post_underwater_distortion", "assets/shaders/post_default.vert", "assets/shaders/post_underwater_distortion.frag");
 	Engine::GetShaderManager().LoadShader("ray_casting", "assets/shaders/ray_casting.vert", "assets/shaders/ray_casting.frag");
 	Engine::GetShaderManager().LoadShader("light", "assets/shaders/light.vert", "assets/shaders/light.frag");
+	Engine::GetShaderManager().LoadShader("obstacle_pass", "assets/shaders/default.vert", "assets/shaders/obstacle_pass.frag");
 
 	// audio
 	Engine::GetAudioManager().LoadMusic("assets/audios/Level1_bgm.mp3", "Level1_bgm", false);
