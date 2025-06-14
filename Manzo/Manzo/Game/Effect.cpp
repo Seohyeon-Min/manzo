@@ -379,6 +379,6 @@ void BlackTransition::SetUni(const GLShader* shader)
 
     shader->SendUniform("uTime", time);
     shader->SendUniform("uStartTime", spawn_t);
-    shader->SendUniform("uDelay", 18.7f);
+    shader->SendUniform("uDelay", 19.0f);
     shader->SendUniform("uResolution", Engine::window_width, Engine::window_height);
 }
