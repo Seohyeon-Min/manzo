@@ -210,6 +210,9 @@
     <ClCompile Include="Game\JellyEnemy.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\DialogSystem.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <!-- 헤더 파일(ClInclude)에 필터 적용 -->
   <ItemGroup>
@@ -434,6 +437,9 @@
     </ClInclude>
     <ClInclude Include="Game\JellyEnemy.h">
       <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\DialogSystem.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

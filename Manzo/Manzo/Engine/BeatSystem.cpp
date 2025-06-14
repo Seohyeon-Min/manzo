@@ -41,10 +41,10 @@ void Beat::Update(double dt)
     }
 
     if (current_delay_duration + user_calibration <= time_taken ) { // delay count
+        delay_count++;
         if (delay_count >= 16) {
             delay_count = 0;
         }
-        delay_count++;
         current_delay_duration += delay_duration;
     }
 
@@ -83,6 +83,7 @@ void Beat::Update(double dt)
     //    std::cout << asdfasdf++ << "fixed : " << fixed_duration << " duration : " << duration << " - on beat\n";
     //if (beat) std::cout << "beat @ " << time_taken << '\n';
     //std::cout << (is_on_beat ? "ON\n" : "OFF\n");
+    //std::cout << beat << " <- beat ," << delay_count << " <- delay_count \n";
     time_taken += dt;
 }
 
