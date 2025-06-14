@@ -26,6 +26,7 @@ Created:    March 8, 2023
 #include "Fish.h"
 #include "Boss.h"
 #include "Monster.h"
+#include "RayCasting.h"
 
 #include <utility>
 #include <iostream>
@@ -185,6 +186,7 @@ void Mode1::Load()
 	option = new GameOption({ 0,0 });
 	GetGSComponent<GameObjectManager>()->Add(option);
 
+	AddGSComponent(new Raycasting(ship_ptr));
 }
 
 void Mode1::Update(double dt)
@@ -312,21 +314,21 @@ void Mode1::FixedUpdate(double dt)
 
 void Mode1::Draw()
 {
-	// GetGSComponent<Map>()->AddDrawCall();
-	background->ShaderBackgroundDraw(Engine::GetShaderManager().GetShader("sea_background"), *GetGSComponent<Cam>(), ship_ptr);
-	GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
-	GetGSComponent<GameObjectManager>()->DrawAll();
+	//// GetGSComponent<Map>()->AddDrawCall();
+	////background->ShaderBackgroundDraw(Engine::GetShaderManager().GetShader("sea_background"), *GetGSComponent<Cam>(), ship_ptr);
+	////GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
+	//GetGSComponent<GameObjectManager>()->DrawAll();
 
-	if (ship_ptr->GetFuel() <= 0)
-	{
-		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "CLICK TO RESTART", { 0, 0 }, 10.098f, { 1.f, 1.f, 1.f }, 1.0f);
-		// Draw Font
-	}
+	//if (ship_ptr->GetFuel() <= 0)
+	//{
+	//	Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "CLICK TO RESTART", { 0, 0 }, 10.098f, { 1.f, 1.f, 1.f }, 1.0f);
+	//	// Draw Font
+	//}
 
-	if (module->IsSecondSetted())
-	{
-		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, std::to_string(static_cast<int>(ship_ptr->GetFuel())), { -0.001f, 0.75f }, 0.05f, { 1.f, 1.f, 1.f }, 1.f, false);
-	}
+	//if (module->IsSecondSetted())
+	//{
+	//	Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, std::to_string(static_cast<int>(ship_ptr->GetFuel())), { -0.001f, 0.75f }, 0.05f, { 1.f, 1.f, 1.f }, 1.f, false);
+	//}
 }
 void Mode1::Unload()
 {
