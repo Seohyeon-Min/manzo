@@ -12,6 +12,7 @@ Created:    March 8, 2023
 #include "../Engine/ShowCollision.h"
 #include "../Engine/AudioManager.h"
 #include "../Engine/Icon.h"
+#include "../Engine/Render.h"
 
 #include <cmath>
 
@@ -182,11 +183,24 @@ void Mode2::Update(double dt) {
 
 	Icon* icon = Engine::GetIconManager().GetCollidingIconWithMouse({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY });
 	bool clicked = Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT);
+	bool mouse_down = Engine::GetInput().MouseButtonPressed(SDL_BUTTON_LEFT); // 누르고 있는지 확인
+	bool mouse_released = Engine::GetInput().MouseButtonJustReleased(SDL_BUTTON_LEFT);
+	
 
 	if (icon != nullptr) {
-		if ((icon->GetId() == "can_go_sea") && clicked && !inven_ptr->GetIsOpened()) {
-			Engine::GetGameStateManager().ClearNextGameState();
-			Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode1));
+		if (icon != nullptr && icon->GetId() == "can_go_sea" && !inven_ptr->GetIsOpened()) {
+			if (mouse_down) {
+				is_holding_sea_icon = true;
+				hold_timer += static_cast<float>(dt);
+				if (hold_timer >= 1.0f) {
+					Engine::GetGameStateManager().ClearNextGameState();
+					Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode1));
+				}
+			}
+			else if (mouse_released) {
+				is_holding_sea_icon = false;
+				hold_timer = 0.0f;
+			}
 		}
 		else if ([&]() {
 			std::string alias = icon->GetId();
@@ -222,6 +236,10 @@ void Mode2::Update(double dt) {
 			Engine::GetIconManager().HideIconByGroup("FishPopUp");
 			Engine::GetIconManager().HideIconByGroup("FishPopping");
 			sell_popup->SetPop(false);
+		}
+		else {
+			is_holding_sea_icon = false;
+			hold_timer = 0.0f;
 		}
 	}
 
@@ -322,6 +340,13 @@ void Mode2::Draw() {
 		Engine::GetIconManager().HideIconByGroup("FishPopUp");
 		Engine::GetIconManager().HideIconByGroup("FishPopping");
 	}
+
+	if (is_holding_sea_icon) {
+		std::cout << hold_timer << std::endl;
+
+		progress = std::clamp(hold_timer / 5.0f, 0.0f, 1.0f);
+		Engine::GetRender().DrawCircleProgress({ Engine::GetInput().GetMousePos().mouseCamSpaceX, Engine::GetInput().GetMousePos().mouseCamSpaceY }, 30.0f, progress, 3);
+	}
 }
 
 void Mode2::Unload() {
@@ -358,4 +383,5 @@ void Mode2::Unload() {
 
 	background = nullptr;
 	scenario = nullptr;
+	progress = 0;
 }

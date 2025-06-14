@@ -43,6 +43,7 @@ public:
     static mat3           build_rotation(float angle_in_radians) noexcept;
     static constexpr mat3 build_translation(float translate_x, float translate_y) noexcept;
     static constexpr mat3 build_translation(const vec2& translation) noexcept;
+    static constexpr mat3 build_flipX_centered(const vec2& center) noexcept;
 
     float* operator[](size_t index) noexcept
     {
@@ -151,4 +152,10 @@ constexpr mat3 mat3::build_translation(float translate_x, float translate_y) noe
 constexpr mat3 mat3::build_translation(const vec2& translation) noexcept
 {
     return build_translation(translation.x, translation.y);
+}
+
+constexpr mat3 mat3::build_flipX_centered(const vec2& center) noexcept {
+    return mat3::build_translation(center) *
+        mat3::build_scale({ -1.0f, 1.0f }) *
+        mat3::build_translation(-center);
 }

@@ -95,6 +95,11 @@ bool Input::MouseButtonJustPressed(Uint8 button) {
     return MouseButtonDown(button) && !previous_mouse_state[button - 1];
 }
 
+bool Input::MouseButtonPressed(Uint8 button) {
+    if (!mouse_on) return false;
+    return SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(button);
+}
+
 bool Input::MouseButtonJustReleased(Uint8 button) {
     if (!mouse_on) return false;
     return !MouseButtonDown(button) && previous_mouse_state[button - 1];

@@ -201,6 +201,9 @@
     <ClCompile Include="Engine\EventManager.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\ScenarioSystem.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
     <ClCompile Include="Engine\Procedual.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -424,6 +427,9 @@
     </ClInclude>
     <ClInclude Include="Game\Mode3.h">
       <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\ScenarioSystem.h">
+      <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Procedual.h">
       <Filter>Engine</Filter>

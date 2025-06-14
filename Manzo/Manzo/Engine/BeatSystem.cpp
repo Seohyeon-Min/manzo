@@ -87,6 +87,11 @@ void Beat::Update(double dt)
     time_taken += dt;
 }
 
+bool Beat::GetBeat()
+{
+    return beat;
+}
+
 void Beat::CollectCaliData()
 {
     if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT)) {
@@ -108,7 +113,7 @@ void Beat::CalculateCali()
         return;
     }
 
-    // º¤ÅÍ º¹»ç ÈÄ Á¤·Ä
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     std::vector<double> sorted = calibrations;
     std::sort(sorted.begin(), sorted.end());
 
@@ -116,11 +121,11 @@ void Beat::CalculateCali()
     size_t size = sorted.size();
 
     if (size % 2 == 0) {
-        // Â¦¼ö°³ÀÏ °æ¿ì: Áß¾Ó µÎ °ªÀÇ Æò±Õ
+        // Â¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: ï¿½ß¾ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
         median = (sorted[size / 2 - 1] + sorted[size / 2]) / 2.0;
     }
     else {
-        // È¦¼ö°³ÀÏ °æ¿ì: °¡¿îµ¥ °ª
+        // È¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½îµ¥ ï¿½ï¿½
         median = sorted[size / 2];
     }
 
@@ -128,10 +133,10 @@ void Beat::CalculateCali()
     user_calibration = median;
     real_calibration = median;
     auto& saveData = Engine::GetSaveDataManager().GetSaveData();
-    saveData.user_calibration = user_calibration; // newValue´Â double Å¸ÀÔ
+    saveData.user_calibration = user_calibration; // newValueï¿½ï¿½ double Å¸ï¿½ï¿½
 
     Engine::GetSaveDataManager().UpdateSaveData(saveData);
-    // ¿©±â¼­ median °ªÀ» °ÔÀÓ º¸Á¤¿¡ »ç¿ëÇÏ¸é µË´Ï´Ù.
+    // ï¿½ï¿½ï¿½â¼­ median ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Ë´Ï´ï¿½.
 }
 
 

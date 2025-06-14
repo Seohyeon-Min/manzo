@@ -16,6 +16,7 @@ Effect::~Effect() {
 
 void Effect::Update(double dt) {
     GameObject::Update(dt);
+    if (effect_time <= -1.f) return;
     if (effect_timer->Remaining() <= 0) {
         Destroy();
     }
@@ -259,4 +260,125 @@ void BlackOutEffect::SetAlpha(const GLShader* shader)
     //std::cout << timer->Remaining() << std::endl;
     //if (alpha >= 0.3f) alpha = 0.3f;
     shader->SendUniform("uAlpha", alpha);
+}
+
+BossBlackCircle::BossBlackCircle(vec2 pos) : Effect(pos, -1.f)
+{
+    AddGOComponent(new Sprite("assets/images/effect/boss_black_circle.spt", this));
+}
+
+void BossBlackCircle::Update(double dt)
+{
+    Effect::Update(dt);
+    Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::BossBlackCircleParticle>>()
+        ->EmitRound(1, GetPosition(), 20.f, 10.f, 115.f);
+}
+
+void BossBlackCircle::Draw(DrawLayer drawlayer)
+{
+    Sprite* sprite = GetGOComponent<Sprite>();
+    DrawCall draw_call = {
+        sprite,
+        &GetMatrix(),
+        Engine::GetShaderManager().GetDefaultShader()
+    };
+
+    draw_call.settings.do_blending = true;
+    draw_call.sorting_layer = drawlayer;
+    GameObject::Draw(draw_call);
+}
+
+BossBlackCircle2::BossBlackCircle2(vec2 pos) : Effect(pos, -1.f)
+{
+    AddGOComponent(new Sprite("assets/images/effect/boss_black_circle.spt", this));
+    float time = 0.f;
+    if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+        time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+    }
+    spawn_t = time;
+}
+
+void BossBlackCircle2::Update(double dt)
+{
+    float time = 0.f;
+    if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+        time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+    }
+    if (time >= 15.f + spawn_t) {
+        Destroy();
+    }
+}
+
+
+void BossBlackCircle2::SetFadeinUni(const GLShader* shader)
+{
+    float time = 0.f;
+    if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+        time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+    }
+    shader->SendUniform("uTime", time);
+    shader->SendUniform("uStartDelay", spawn_t + 9.f);
+    shader->SendUniform("uFadeDuration", 3.f);
+
+    //std::cout << time << " - time : " << spawn_t<< "\n";
+}
+
+void BossBlackCircle2::Draw(DrawLayer drawlayer)
+{
+    Sprite* sprite = GetGOComponent<Sprite>();
+    DrawCall draw_call = {
+        sprite,
+        &GetMatrix(),
+        Engine::GetShaderManager().GetShader("fade_out")
+    };
+
+    draw_call.settings.do_blending = true;
+    draw_call.sorting_layer = DrawLayer::DrawLast;
+    draw_call.SetUniforms = [this](const GLShader* shader) { SetFadeinUni(shader); };
+    GameObject::Draw(draw_call);
+}
+
+BlackTransition::BlackTransition() : Effect({}, -1.f)
+{
+    AddGOComponent(new Sprite("assets/images/effect/full_quad.spt", this));
+    float time = 0.f;
+    if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+        time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+    }
+    spawn_t = time;
+}
+
+void BlackTransition::Update(double dt)
+{
+    if (stop) Destroy();
+}
+
+void BlackTransition::Draw(DrawLayer drawlayer)
+{
+    Sprite* sprite = GetGOComponent<Sprite>();
+    DrawCall draw_call = {
+        sprite,
+        &GetMatrix(),
+        Engine::GetShaderManager().GetShader("ink_transition")
+    };
+
+    draw_call.settings.do_blending = true;
+    draw_call.settings.is_camera_fixed = true;
+    draw_call.sorting_layer = DrawLayer::DrawFirst;
+    draw_call.order_in_layer = 1;
+    draw_call.SetUniforms = [this](const GLShader* shader) { SetUni(shader); };
+    GameObject::Draw(draw_call);
+}
+
+void BlackTransition::SetUni(const GLShader* shader)
+{
+    float time = 0.f;
+    if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+        time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+    }
+
+    shader->SendUniform("uTime", time);
+    shader->SendUniform("uStartTime", spawn_t);
+    shader->SendUniform("uDelay", 19.0f);
+    shader->SendUniform("uResolution", Engine::window_width, Engine::window_height);
 }

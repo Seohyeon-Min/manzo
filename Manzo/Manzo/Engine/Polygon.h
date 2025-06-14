@@ -42,6 +42,6 @@ struct [[nodiscard]] EntryData {
 	float attacktype;
 	vec2 position;
 	float delay;
-
+	bool zoom;
 
 };

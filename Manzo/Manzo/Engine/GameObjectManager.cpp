@@ -55,13 +55,14 @@ void GameObjectManager::DrawAll()
 	auto camera_bounds = Engine::GetGameStateManager().GetGSComponent<Cam>()->GetBounds();
 
 	for (auto object : objects) {
-		if (object->isCameraFixed()) {
-			object->Draw();
-		}
-		else if (true) {
-			object->Draw();
-		}
 
+			if (object->isCameraFixed()) {
+				object->Draw();
+			}
+			else if (true) {
+				if (object->IsVisible(camera_bounds))
+				object->Draw();
+			}
 	}
 
 	Engine::GetRender().RenderAll();
@@ -73,13 +74,16 @@ void GameObjectManager::CollisionTest()
 	if (!collision_on) {
 		return;
 	}
-	for (auto object_1 : objects) {
-		//if (!object_1->isActive(camera_bounds)) continue; <--- it is needfull
-		for (auto object_2 : objects) {
-			if (object_1 != object_2 && object_1->CanCollideWith(object_2->Type())) {
+	for (auto it1 = objects.begin(); it1 != objects.end(); ++it1) {
+		auto object_1 = *it1;
+		auto it2 = it1;
+		++it2;
+		for (; it2 != objects.end(); ++it2) {
+			auto object_2 = *it2;
+			if (object_1->CanCollideWith(object_2->Type()) || object_2->CanCollideWith(object_1->Type())) {
 				if (object_1->IsCollidingWith(object_2)) {
-					//Engine::GetLogger().LogEvent("Collision Detected: " + object_1->TypeName() + " and " + object_2->TypeName());
 					object_1->ResolveCollision(object_2);
+					object_2->ResolveCollision(object_1);
 				}
 			}
 		}

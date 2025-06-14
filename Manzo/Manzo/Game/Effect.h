@@ -77,3 +77,33 @@ private:
     RealTimeTimer* timer;
     double time = 1.3;
 };
+
+class BossBlackCircle : public Effect {
+public:
+    BossBlackCircle(vec2 pos);
+    void Update(double dt) override;
+    void Draw(DrawLayer drawlayer = DrawLayer::DrawLast) override;
+private:
+};
+
+class BossBlackCircle2 : public Effect {
+public:
+    BossBlackCircle2(vec2 pos);
+    void Update(double dt) override;
+    void Draw(DrawLayer drawlayer = DrawLayer::DrawLast) override;
+private:
+    void SetFadeinUni(const GLShader* shader);
+    float spawn_t;
+};
+
+class BlackTransition : public Effect {
+public:
+    BlackTransition();
+    void Update(double dt) override;
+    void Draw(DrawLayer drawlayer = DrawLayer::DrawLast) override;
+    void Quit() { stop = true; }
+private:
+    void SetUni(const GLShader* shader);
+    float spawn_t;
+    bool stop = false;
+};

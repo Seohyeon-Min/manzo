@@ -113,6 +113,7 @@ void Ship::State_Idle::Update([[maybe_unused]] GameObject* object, [[maybe_unuse
 void Ship::State_Idle::CheckExit(GameObject* object) {
 	Ship* ship = static_cast<Ship*>(object);
 	if (ship->can_dash && Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT) && ship->beat->GetIsOnBeat()) {
+		//std::cout << "exit idle\n";
 		ship->destination = ship->dash_target;
 		ship->direction = { ship->destination.x - ship->GetPosition().x,
 							ship->destination.y - ship->GetPosition().y };
@@ -229,7 +230,12 @@ void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_
 
 void Ship::State_Move::CheckExit(GameObject* object) {
 	Ship* ship = static_cast<Ship*>(object);
+	//if (ship->beat->GetIsOnBeat())
+	//	std::cout << " is on beat? : true get is on beat move\n";
+	//else
+	//	std::cout << " is on beat? : false\n";
 	if (!ship->beat->GetIsOnBeat() && !ship->hit_with) {
+		//std::cout << "exit move\n";
 		ship->move = false;
 		ship->change_state(&ship->state_idle);
 		skip_enter = false;
@@ -756,6 +762,8 @@ Pump::Pump() :
 	beat = &Engine::GetBeat();
 }
 
+bool beat_started = false;
+
 void Pump::Update(double dt)
 {
 	GameObject::Update(dt);
@@ -767,10 +775,20 @@ void Pump::Update(double dt)
 		float decrease_duration = (float)beat->GetFixedDuration() - 0.1f;
 		float delta_radius = (max_pump_radius - min_pump_radius) / decrease_duration;
 		float delta_alpha = 1 / decrease_duration;
-		if (beat->GetBeat()) {
+
+		// Triggered once per beat
+		if (beat->GetBeat() && !beat_started) {
 			radius = min_pump_radius;
 			wait = true;
+			beat_started = true;
 		}
+
+		// Reset trigger when beat is over
+		if (!beat->GetBeat()) {
+			beat_started = false;
+		}
+
+		// Exit wait only when not on beat anymore
 		if (wait && !beat->GetIsOnBeat()) {
 			radius = max_pump_radius;
 			alpha = 0.f;
@@ -784,8 +802,8 @@ void Pump::Update(double dt)
 
 		radius = std::max(radius, min_pump_radius);
 	}
-
 }
+
 
 void Pump::Draw(DrawLayer drawlayer)
 {

@@ -42,6 +42,9 @@ void Monster::Update(double dt)
 
     transform.scale = std::max(transform.scale, 1.0f);
 
+
+
+
     SetRotation(transform.angle);
     if (transform.angle >= -1.5f && transform.angle < 1.5f) {
         // ¿ÞÂÊ: ÁÂ¿ì ¹ÝÀü

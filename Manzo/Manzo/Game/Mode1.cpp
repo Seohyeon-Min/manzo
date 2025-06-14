@@ -51,6 +51,11 @@ void Mode1::Load()
 	Engine::GetShaderManager().LoadShader("health_bar", "assets/shaders/default.vert", "assets/shaders/health_bar.frag");
 	Engine::GetShaderManager().LoadShader("sea_background", "assets/shaders/post_default.vert", "assets/shaders/sea_background.frag");
 	Engine::GetShaderManager().LoadShader("wave", "assets/shaders/default.vert", "assets/shaders/wave.frag");
+	Engine::GetShaderManager().LoadShader("bossEbullet", "assets/shaders/default.vert", "assets/shaders/bossEbullet.frag");
+	Engine::GetShaderManager().LoadShader("emissive", "assets/shaders/default.vert", "assets/shaders/emissive.frag");
+	Engine::GetShaderManager().LoadShader("fade_in", "assets/shaders/default.vert", "assets/shaders/fade_in.frag");
+	Engine::GetShaderManager().LoadShader("fade_out", "assets/shaders/default.vert", "assets/shaders/fade_out.frag");
+	Engine::GetShaderManager().LoadShader("ink_transition", "assets/shaders/default.vert", "assets/shaders/ink_transition.frag");
 
 	Engine::GetShaderManager().LoadShader("under_water_god_ray", "assets/shaders/post_default.vert", "assets/shaders/underwater_god_ray.frag");
 	Engine::GetShaderManager().LoadShader("post_default", "assets/shaders/post_default.vert", "assets/shaders/post_default.frag");
@@ -75,7 +80,12 @@ void Mode1::Load()
 	AddGSComponent(new ParticleManager<Particles::HitPraticle>());
 	AddGSComponent(new ParticleManager<Particles::HitPraticle2>());
 	AddGSComponent(new ParticleManager<Particles::CaptureEffect>());
-	AddGSComponent(new ParticleManager<Particles::BulletParticle>());
+	AddGSComponent(new ParticleManager<Particles::bossEbulletParticle>());
+	AddGSComponent(new ParticleManager<Particles::bossEKiraKiraParticle>());
+	AddGSComponent(new ParticleManager<Particles::bossEParticle1>());
+	AddGSComponent(new ParticleManager<Particles::bossEParticle2>());
+	AddGSComponent(new ParticleManager<Particles::bossEParticle3>());
+	AddGSComponent(new ParticleManager<Particles::BossBlackCircleParticle>());
 
 	// get cali
 	double cali = Engine::GetSaveDataManager().GetSaveData().user_calibration;
@@ -258,12 +268,15 @@ void Mode1::Update(double dt)
 
 	if (Isboss)
 	{
-		camera->SetPosition(boss_ptr_y->GetPosition());
+		
+		camera->SetSmoothPosition(boss_ptr_y->GetPosition());
+		camera->Update(dt, boss_ptr_y->GetPosition(), ship_ptr->IsShipMoving());
+
 	}
-
+	else{
 	// camera postion update
-	camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
-
+		camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
+	}
 	// Update Fish Generator
 	fishGenerator->GenerateFish(dt);
 

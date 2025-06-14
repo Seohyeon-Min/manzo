@@ -6,6 +6,9 @@
 #include "../Engine/GameObjectManager.h"
 #include "JellyEnemy.h"
 #include "../Engine/BeatSystem.h"
+#include "../Engine/MathUtils.h"
+#include "Effect.h"
+#include "BackGround.h"
 
 std::vector<GameObject::State*> stateMap;
 std::vector<std::string> BossJSONfileMap;
@@ -48,26 +51,29 @@ bool IsFirstFrame() {
 
 void Boss::Bullet(Boss* boss) {
 	
-		BossBullet* bullet_ptr = new BossBullet(boss->GetPosition(), (float)(boss->beat->GetFixedDuration()) * 2, BossBullet::BulletType::Wave);
+		BossBullet* bullet_ptr = new BossBullet(boss->GetPosition(), (float)(boss->beat->GetFixedDuration()) * 2, BossBullet::BulletType::Homing);
 		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bullet_ptr);
-		JellyEnemy* jelly_ptr = new JellyEnemy({ boss->GetPosition().x, boss->GetPosition().y - 400 }, 50 ,(float)(boss->beat->GetFixedDuration()) * 4, JellyEnemy::JellyType::Up);
-		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(jelly_ptr);
+		/*JellyEnemy* jelly_ptr = new JellyEnemy({ boss->GetPosition().x, boss->GetPosition().y - 400 }, 50 ,(float)(boss->beat->GetFixedDuration()) * 4, JellyEnemy::JellyType::Up);
+		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(jelly_ptr);*/
 
 }
 
-
+int cnt = 0;
 void Boss::Movingtolocation_Boss(int targetEntryNum, Boss* boss) {
-
+	//if(boss->beat->GetBeat())std::cout << cnt++<<" getbeat\n";
 	if (targetEntryNum - 1 < boss->parttern.size()) {
 		const auto& entryVec = boss->parttern[targetEntryNum - 1];
 		for (const auto& entryData : entryVec) {
-			if (entryData.delay + 1 == boss->beat->GetDelayCount()) {
-				if (boss->beat->GetBeat()) {
+			if (boss->beat->GetDelayCount() == entryData.delay + 1) {
+				
+					
 					boss->current_position = entryData.position;
-					for(int i =0; i <4; ++i){
+					
+					// here
+					for(int i =0; i <1; ++i){
 					boss->Bullet(boss);
 					}
-				}
+				
 				
 			}
 			if (entryData.attacktype == 3) {
@@ -77,6 +83,7 @@ void Boss::Movingtolocation_Boss(int targetEntryNum, Boss* boss) {
 				boss->AttackCircle(entryData.position, 350, (double)(boss->beat->GetFixedDuration() * 4));
 			}
 		}
+		
 		
 	}
 }
@@ -159,11 +166,12 @@ void Boss::Check_BossBehavior(int targetEntryNum, GameObject* object) {
 	}
 }
 
+
 void Boss::State_CutScene::Enter(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
+	std::cout << "State_CutScene Enter" << std::endl;
 	boss->beat = &Engine::GetBeat();
-
-
+	Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new BossBlackCircle(boss->GetPosition()));
 }
 void Boss::State_CutScene::Update(GameObject* object, double dt) {
 	Boss* boss = static_cast<Boss*>(object);
@@ -244,25 +252,30 @@ void Boss::InitializeStates() {
 void Boss::Update(double dt) {
 
 	Boss* boss = static_cast<Boss*>(this);
-	//std::cout << total_entry.size() << std::endl;
+	//Engine::GetGameStateManager().GetGSComponent<Background>()->ShaderBackgroundDraw(Engine::GetShaderManager().GetShader("sea_background"), *GetGSComponent<Cam>(), ship_ptr);
 	if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
 		if (GameObject::current_state->GetName() != Boss::state_cutscene.GetName()) {
-
 			boss->barCount = beat->GetBarCount();
-			//std::cout << barCount << std::endl;
 			if (boss->barCount <= total_entry.size()) {
 				if (boss->barCount < total_entry.size() && total_entry[boss->barCount] - 1 < stateMap.size()) {
 					change_state(stateMap[total_entry[boss->barCount] - 1]);
-					
 				}
 			}
 			else if (boss->barCount > total_entry.size()) {
-				//std::cerr << "Invalid barCount or index out of range: " << boss->barCount << std::endl;
 				Destroy();
 				AfterDied();
 			}
 		}
 
+		Ship* ship = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>();
+		if (ship) {
+			targetScaleX = ship->GetPosition().x > GetPosition().x ? -1.0f : 1.0f;
+		}
+
+		const float flipSpeed = 5.0f; 
+		currentScaleX = Lerp(currentScaleX, targetScaleX, static_cast<float>(dt) * flipSpeed);
+
+		SetScale({ currentScaleX, 1.0f });
 		Move(dt);
 	}
 }
@@ -333,9 +346,7 @@ void Boss::DrawShieldRange(vec2 pos, double radius)
 //}
 
 
-vec2 Lerp(const vec2& start, const vec2& end, float t) {
-	return start + t * (end - start);
-}
+
 
 void Boss::Move(double dt) {
 	Boss* boss = static_cast<Boss*>(this);
@@ -354,7 +365,7 @@ void Boss::Move(double dt) {
 	SetVelocity((lerped_position - GetPosition()) / (float)dt);
 	GameObjectManager* gameobjectmanager = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>();
 	GameObject::Update(dt);
-	vec2 nearestRockpoint = gameobjectmanager->FindNearestRockPoint(boss);
+	//vec2 nearestRockpoint = gameobjectmanager->FindNearestRockPoint(boss);
 
 	if ((current_position - GetPosition()).Length() < 10.0f) {
 		lerp_factor = 0.0f;
@@ -399,38 +410,42 @@ void SetUni(const GLShader* shader) {
 	if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
 		time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
 	}
+
 	shader->SendUniform("uTime", time);
 	shader->SendUniform("uX", 0);
 	shader->SendUniform("uY", 1);
-	shader->SendUniform("uWaveNum", 4);
+	shader->SendUniform("uWaveNum", 3);
 
-	shader->SendUniform("waveStrength", 0.034f);
-	shader->SendUniform("frequency", 27.0f);
-	shader->SendUniform("speed", 4.4f);
+	shader->SendUniform("waveStrength", 0.022f);
+	shader->SendUniform("frequency", 48.0f);
+	shader->SendUniform("speed", 3.f);
 }
+
+
 
 void Boss::Draw(DrawLayer drawlayer)
 {
+
 	DrawCall draw_call = {
-		GetGOComponent<Sprite>()->GetTexture(),					// Texture to draw
-		&GetMatrix(),											// Transformation matrix
+		GetGOComponent<Sprite>()->GetTexture(),
+		&GetMatrix(),
 		Engine::GetShaderManager().GetShader("wave")
 	};
-
 	draw_call.settings.do_blending = true;
 	draw_call.SetUniforms = [this](const GLShader* shader) { SetUni(shader); };
 
 	DrawCall draw_call_body = {
-	boss_body,
-	&GetMatrix(),
-	Engine::GetShaderManager().GetDefaultShader()
+		boss_body,
+		&GetMatrix(),
+		Engine::GetShaderManager().GetDefaultShader()
 	};
-
 	draw_call_body.settings.do_blending = true;
 
 	GameObject::Draw(draw_call);
 	GameObject::Draw(draw_call_body);
+
 }
+
 
 bool Boss::CanCollideWith(GameObjectTypes other_object) {
 	switch (other_object) {

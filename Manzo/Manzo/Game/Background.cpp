@@ -60,7 +60,7 @@ void Background::Draw(const Cam& camera)
     }
 }
 
-void Background::ShaderBackgroundDraw(GLShader* shader, const Cam& camera, Ship* ship)
+void Background::ShaderBackgroundDraw(GLShader* shader, const Cam& camera, Ship* ship, std::function<void(const GLShader*)> SetUniformsFunc)
 {
     vec2 cameraPos = camera.GetPosition();
     basic_mat = mat3::build_translation({ (0 + cameraPos.x), (0 + cameraPos.y) });
@@ -73,7 +73,15 @@ void Background::ShaderBackgroundDraw(GLShader* shader, const Cam& camera, Ship*
 
     draw_call.settings.do_blending = true;
     draw_call.settings.is_camera_fixed = true;
-    draw_call.SetUniforms = [this, ship](const GLShader* shader) { SetUniforms(shader, ship); };
+
+    if (SetUniformsFunc) {
+        draw_call.SetUniforms = SetUniformsFunc;
+    }
+    else {
+        draw_call.SetUniforms = [this, ship](const GLShader* shader) {
+            SetUniforms(shader, ship);
+            };
+    }
 
     Engine::GetRender().AddBackgroundDrawCall(draw_call);
 }

@@ -128,6 +128,8 @@ public:
     void CreatLineModel();
     void CreateCircleLineModel();
     void ClearDrawCalls();
+    
+    void DrawCircleProgress(vec2 center, float radius, float current_progress, float max_progress, int segments = 100, color3 color = { 255,255,255 });
 
 private:
     // Internal render method

@@ -7,6 +7,7 @@
 #include "to_span.h"
 
 #include <vector>
+#include <cmath>
 #include <unordered_map>
 #include <filesystem>
 #include <memory>
@@ -14,7 +15,7 @@
 #include <array>
 #include <iostream>
 
-
+#define PI  3.14159265358979
 const float WORLD_SIZE_MAX = (float)std::max(Engine::window_width, Engine::window_height);
 
 Render::Render(){
@@ -772,4 +773,36 @@ void Render::RenderQuad()
     glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
     glBindVertexArray(0);
+}
+
+void Render::DrawCircleProgress(vec2 center, float radius, float current_progress, float max_progress, int segments, color3 color) {
+    if (max_progress <= 0.0f || current_progress <= 0.0f) return;
+    if (current_progress > max_progress) current_progress = max_progress;
+
+    float progress_ratio = current_progress / max_progress;
+    float angle_step = float(10.0f * PI / static_cast<float>(segments));
+    float angle_max = float(10.0f * PI * progress_ratio);
+
+    for (int i = 0; i < segments; ++i) {
+        float theta1 = angle_step * i;
+        float theta2 = angle_step * (i + 1);
+
+        if (theta1 >= angle_max) break;
+
+        if (theta2 > angle_max) theta2 = angle_max;
+
+        vec2 p1 = center + vec2{ radius * std::cos(theta1), radius * std::sin(theta1) };
+        vec2 p2 = center + vec2{ radius * std::cos(theta2), radius * std::sin(theta2) };
+
+        LineDrawCallPro line;
+        line.start = p1;
+        line.end = p2;
+        line.color = color;
+        line.width = 3.0f;
+        line.alpha = 1.0f;
+        line.settings.is_camera_fixed = true;
+        line.sorting_layer = DrawLayer::DrawUI;
+
+        Engine::GetRender().AddDrawCall(std::make_unique<LineDrawCallPro>(line));
+    }
 }
