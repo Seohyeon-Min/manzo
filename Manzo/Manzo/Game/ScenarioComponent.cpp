@@ -107,7 +107,7 @@ void ScenarioComponent::Load()
             return total >= 15;
         },
         []() {
-            std::cout << "¹°°í±â 15¸¶¸® ÀÌº¥Æ® ¿Ï·á!" << std::endl;
+            std::cout << "Â¹Â°Â°Ã­Â±Ã¢ 15Â¸Â¶Â¸Â® Ã€ÃŒÂºÂ¥Ã†Â® Â¿ÃÂ·Ã¡!" << std::endl;
             Engine::GetEventManager().MarkEventDone("catch_15_fish");
 
             auto* popup = new PopUp({ -420,195 }, "assets/images/catch_done_popup.spt", true);
@@ -140,5 +140,11 @@ void ScenarioComponent::Load()
     //));
 
     has_initialized = true;
+}
+
+void ScenarioComponent::Unload()
+{
+    Engine::GetEventManager().RemoveStepEvent("npc_intro");
+    Engine::GetEventManager().RemoveStepEvent("after_tutorial_end");
 }
 

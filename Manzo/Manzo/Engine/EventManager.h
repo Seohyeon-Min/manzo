@@ -9,6 +9,7 @@ class EventManager {
 public:
     void AddEvent(const Event& e);
     void AddStepEvent(std::shared_ptr<StepEvent> s);
+    void RemoveStepEvent(const std::string& id);
     void Update();
     void ResetAll();
 
@@ -16,10 +17,10 @@ public:
 
     bool HasEventDone(const std::string& id) const;
     void MarkEventDone(const std::string& id);
-    void LoadSavedEvents(const std::vector<std::string>& saved); // ÀúÀåµÈ ÀÌº¥Æ® ºÒ·¯¿À±â
+    void LoadSavedEvents(const std::vector<std::string>& saved); // ì €ì¥ëœ ì´ë²¤íŠ¸ ë¶ˆëŸ¬ì˜¤ê¸°
 
 private:
     std::vector<Event> one_shot_events;
     std::vector<std::shared_ptr<StepEvent>> step_events;
-    std::vector<std::string> done_events; // ÀúÀåµÈ ÀÌº¥Æ® ¸®½ºÆ®
+    std::vector<std::string> done_events; // ì €ì¥ëœ ì´ë²¤íŠ¸ ë¦¬ìŠ¤íŠ¸
 };

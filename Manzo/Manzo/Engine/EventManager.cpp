@@ -9,6 +9,12 @@ void EventManager::AddEvent(const Event& e) {
 void EventManager::AddStepEvent(std::shared_ptr<StepEvent> s) {
     step_events.push_back(std::move(s));
 }
+void EventManager::RemoveStepEvent(const std::string& id) {
+    auto it = std::remove_if(step_events.begin(), step_events.end(),
+        [&](const std::shared_ptr<StepEvent>& e) { return e && e->GetID() == id; });
+    step_events.erase(it, step_events.end());
+}
+
 
 void EventManager::Update() {
     for (auto& e : one_shot_events)
@@ -51,7 +57,7 @@ void EventManager::MarkEventDone(const std::string& id)
     if (std::find(done.begin(), done.end(), id) == done.end()) {
         done.push_back(id);
         std::cout << "[MarkEventDone] pushed to eventsDone: " << id << "\n";
-        Engine::GetSaveDataManager().UpdateSaveData(saveData); // ÀúÀå
+        Engine::GetSaveDataManager().UpdateSaveData(saveData); // Ã€ÃºÃ€Ã¥
     }
 }
 

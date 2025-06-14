@@ -183,7 +183,7 @@ void Mode2::Update(double dt) {
 
 	Icon* icon = Engine::GetIconManager().GetCollidingIconWithMouse({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY });
 	bool clicked = Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT);
-	bool mouse_down = Engine::GetInput().MouseButtonPressed(SDL_BUTTON_LEFT); // ´©¸£°í ÀÖ´ÂÁö È®ÀÎ
+	bool mouse_down = Engine::GetInput().MouseButtonPressed(SDL_BUTTON_LEFT); // Â´Â©Â¸Â£Â°Ã­ Ã€Ã–Â´Ã‚ÃÃ¶ ÃˆÂ®Ã€Ã
 	bool mouse_released = Engine::GetInput().MouseButtonJustReleased(SDL_BUTTON_LEFT);
 	
 
@@ -377,6 +377,7 @@ void Mode2::Unload() {
 	GetGSComponent<GameObjectManager>()->Unload();
 	GetGSComponent<Background>()->Unload();
 	Engine::GetIconManager().Unload();
+    if (scenario) scenario->Unload();
 	ClearGSComponents();
 	dialog_ptr->Unload();
 	playing = false;
