@@ -28,18 +28,21 @@ void ScenarioComponent::Load()
     intro->AddStep(
         [npc]() { return !npc->IsWalking(); },
         [this, npc]() {
-            if (!dialog) {
+            auto locked = dialog.lock();
+            if (!locked) {
                 std::cout << "dialog is null!" << std::endl;
+                return;
             }
-            dialog->LoadDialogGroup("day-1_1");
+            locked->LoadDialogGroup("day-1_1");
             //Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Mouse>()->SetMouseOn(true);
             //Engine::GetInput().SetMouseInputOn(false);
-            
         }
     );
-
     intro->AddStep(
-        [this, npc]() { return dialog->IsFinished(); },
+        [this, npc]() {
+            auto locked = dialog.lock();
+            return locked && locked->IsFinished();
+        },
         []() {
             Engine::GetInput().SetMouseInputOn(true);
             Engine::GetGameStateManager().ClearNextGameState();
@@ -107,7 +110,7 @@ void ScenarioComponent::Load()
             return total >= 15;
         },
         []() {
-            std::cout << "¹°°í±â 15¸¶¸® ÀÌº¥Æ® ¿Ï·á!" << std::endl;
+            std::cout << "Â¹Â°Â°Ã­Â±Ã¢ 15Â¸Â¶Â¸Â® Ã€ÃŒÂºÂ¥Ã†Â® Â¿ÃÂ·Ã¡!" << std::endl;
             Engine::GetEventManager().MarkEventDone("catch_15_fish");
 
             auto* popup = new PopUp({ -420,195 }, "assets/images/catch_done_popup.spt", true);

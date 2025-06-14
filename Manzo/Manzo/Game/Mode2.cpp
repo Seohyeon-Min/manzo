@@ -27,6 +27,7 @@ Created:    March 8, 2023
 
 #include <iostream>     // for debug
 #include "Module.h"
+#include <memory>
 
 Mode2::Mode2() {}
 
@@ -73,13 +74,13 @@ void Mode2::Load() {
 	Engine::GetIconManager().LoadIconList();
 
 	// Dialog
-	dialog_ptr = new Dialog({ 0,0 });
-	GetGSComponent<GameObjectManager>()->Add(dialog_ptr);
+        dialog_ptr = std::make_shared<Dialog>(vec2{ 0,0 });
+        GetGSComponent<GameObjectManager>()->Add(dialog_ptr.get());
 
 	//Engine::GetLogger().LoadSaveFile();
 
 	//ScenarioComponent
-	scenario = new ScenarioComponent(dialog_ptr);
+        scenario = new ScenarioComponent(dialog_ptr);
 	AddGSComponent(scenario);
 	scenario->Load();
 
@@ -183,7 +184,7 @@ void Mode2::Update(double dt) {
 
 	Icon* icon = Engine::GetIconManager().GetCollidingIconWithMouse({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY });
 	bool clicked = Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT);
-	bool mouse_down = Engine::GetInput().MouseButtonPressed(SDL_BUTTON_LEFT); // ´©¸£°í ÀÖ´ÂÁö È®ÀÎ
+	bool mouse_down = Engine::GetInput().MouseButtonPressed(SDL_BUTTON_LEFT); // Â´Â©Â¸Â£Â°Ã­ Ã€Ã–Â´Ã‚ÃÃ¶ ÃˆÂ®Ã€Ã
 	bool mouse_released = Engine::GetInput().MouseButtonJustReleased(SDL_BUTTON_LEFT);
 	
 
