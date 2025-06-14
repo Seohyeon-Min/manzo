@@ -314,9 +314,8 @@ void Mode1::FixedUpdate(double dt)
 
 void Mode1::Draw()
 {
-	//// GetGSComponent<Map>()->AddDrawCall();
-	////background->ShaderBackgroundDraw(Engine::GetShaderManager().GetShader("sea_background"), *GetGSComponent<Cam>(), ship_ptr);
-	////GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
+	//background->ShaderBackgroundDraw(Engine::GetShaderManager().GetShader("sea_background"), *GetGSComponent<Cam>(), ship_ptr);
+	//GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
 	//GetGSComponent<GameObjectManager>()->DrawAll();
 
 	//if (ship_ptr->GetFuel() <= 0)
@@ -330,6 +329,7 @@ void Mode1::Draw()
 	//	Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, std::to_string(static_cast<int>(ship_ptr->GetFuel())), { -0.001f, 0.75f }, 0.05f, { 1.f, 1.f, 1.f }, 1.f, false);
 	//}
 }
+
 void Mode1::Unload()
 {
 

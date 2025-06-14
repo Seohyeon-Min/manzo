@@ -1,6 +1,6 @@
 #version 330 core
 
-in vec2 vTexCoord;
+in vec2 vWorldPos;
 out vec4 FragColor;
 
 uniform vec2 uLightPos;
@@ -14,14 +14,15 @@ bool isObstacleAt(vec2 screenPos) {
     return texture(uObstacleMap, uv).r > 0.5;
 }
 
+
 void main() {
-    vec2 fragPos = vTexCoord * uScreenSize;
+    vec2 fragPos = vWorldPos;
     vec2 dir = normalize(fragPos - uLightPos);
     float dist = length(fragPos - uLightPos);
 
     if (dist > uLightRadius) discard;
 
-    for (float t = 0.0; t < dist; t += 1.0) {
+    for (float t = 0.0; t < dist; t += 4.0) {
         vec2 samplePos = uLightPos + dir * t;
         if (isObstacleAt(samplePos)) discard;
     }

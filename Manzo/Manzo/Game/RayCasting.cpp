@@ -1,4 +1,6 @@
 #include "RayCasting.h"
+#include "../Engine/Camera.h"
+#include <to_span.h>
 
 GLuint Raycasting::createObstacleTexture(unsigned int width, unsigned int height) {
     std::vector<unsigned char> data(width * height, 0);
@@ -58,13 +60,17 @@ void Raycasting::Update(double dt)
 {
     shader->Use();
 
-    std::cout << "Mouse Pos: " << Engine::GetInput().GetMousePos().mouseCamSpaceX + Engine::window_width / 2.f << ", " << Engine::GetInput().GetMousePos().mouseCamSpaceY + Engine::window_height / 2.f << std::endl;
-    std::cout << "Ship World Pos: " << object->GetPosition().x << ", " << object->GetPosition().y << std::endl;
+    vec2 shipWorldPos = object->GetPosition();
+    mat3 modelToWorld = mat3::build_translation(shipWorldPos);
+    shader->SendUniform("uModelToWorld", util::to_span(modelToWorld));
+    mat3 WORLD_TO_NDC = Engine::GetGameStateManager().GetGSComponent<Cam>()->world_to_ndc;
+    mat3 modelToNDC = WORLD_TO_NDC * modelToWorld;
+    shader->SendUniform("uModelToNDC", util::to_span(modelToNDC));
 
-    
-    shader->SendUniform("uLightPos", Engine::GetInput().GetMousePos().mouseCamSpaceX + Engine::window_width / 2.f, Engine::GetInput().GetMousePos().mouseCamSpaceY + Engine::window_height / 2.f);
-	shader->SendUniform("uLightColor", 1.0f, 0.9f, 0.7f);
-	shader->SendUniform("uLightRadius", 250.0f);
+
+    shader->SendUniform("uLightPos", shipWorldPos.x, shipWorldPos.y);
+    shader->SendUniform("uLightColor", 1.0f, 0.9f, 0.7f);
+	shader->SendUniform("uLightRadius", 800.0f);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, obstacleTex);
