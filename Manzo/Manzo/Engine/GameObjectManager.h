@@ -43,6 +43,10 @@ public:
         return nullptr;
     }
 
+	std::list<GameObject*> GetAllObjects() const {
+		return objects;
+	}
+
 private:
     std::list<GameObject*> objects;
     bool collision_on = true;

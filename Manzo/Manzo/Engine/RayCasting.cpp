@@ -1,25 +1,8 @@
 #include "RayCasting.h"
 #include "Camera.h"
 #include <to_span.h>
-
-GLuint Raycasting::createObstacleTexture(unsigned int width, unsigned int height) {
-    std::vector<unsigned char> data(width * height, 0);
-
-    // Create a simple box obstacle in the center
-    for (unsigned int y = 550; y < 750; ++y) {
-        for (unsigned int x = 350; x < 450; ++x) {
-            data[y * width + x] = 255; // Mark as obstacle
-        }
-    }
-
-    GLuint tex;
-    glGenTextures(1, &tex);
-    glBindTexture(GL_TEXTURE_2D, tex);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, data.data());
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    return tex;
-}
+#include "GameObjectManager.h"
+#include "../Game/Fish.h"
 
 Raycasting::Raycasting(GameObject* object_) : object(object_)
 {
@@ -27,7 +10,6 @@ Raycasting::Raycasting(GameObject* object_) : object(object_)
     glDepthMask(GL_FALSE);
 
 	shader = Engine::GetShaderManager().GetShader("light");
-    //obstacleTex = createObstacleTexture(Engine::window_width, Engine::window_height);
 
 
     shader->Use();
@@ -43,11 +25,50 @@ Raycasting::~Raycasting()
 	shader = nullptr;
 }
 
+GLuint Raycasting::createObstacleTexture(unsigned int width, unsigned int height, const std::list<GameObject*>& allObjects) {
+    std::vector<unsigned char> data(width * height, 0);
+
+    for (auto* obj : allObjects) {
+
+        int startX = (int)obj->GetPosition().x;
+        int startY = (int)obj->GetPosition().y;
+
+        auto sprite = obj->GetGOComponent<Sprite>();
+        if (!sprite) continue;  // Sprite ¾øÀ¸¸é ½ºÅµ
+
+        int texWidth = sprite->GetTexture()->GetWidth();
+        int texHeight = sprite->GetTexture()->GetHeight();
+
+        for (int y = startY; y < startY + texHeight && y < (int)height; ++y) {
+            for (int x = startX; x < startX + texWidth && x < (int)width; ++x) {
+                if (x >= 0 && y >= 0)
+                    data[y * width + x] = 255;
+            }
+        }
+    }
+
+    GLuint tex;
+    glGenTextures(1, &tex);
+    glBindTexture(GL_TEXTURE_2D, tex);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, data.data());
+
+    return tex;
+}
+
+
 void Raycasting::Update(double dt)
 {
+   // obstacleTex = createObstacleTexture(Engine::window_width, Engine::window_height, Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetAllObjects());
+
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_DST_COLOR);
+    glBlendFunc(GL_DST_COLOR, GL_ZERO);
 
     Cam* cam = Engine::GetGameStateManager().GetGSComponent<Cam>();
     shader->Use();
@@ -72,8 +93,7 @@ void Raycasting::Update(double dt)
 	shader->SendUniform("uLightRadius", radius);
 
     ///////////////////////////////////////////////////////////////////////////////////
-    //glActiveTexture(GL_TEXTURE0);
-    //glBindTexture(GL_TEXTURE_2D, obstacleTex);
+
 
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);

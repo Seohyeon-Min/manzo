@@ -6,9 +6,9 @@
 
 class Raycasting {
 public:
-    GLuint createObstacleTexture(unsigned int width, unsigned int height);
     Raycasting(GameObject* object_);
     ~Raycasting();
+    GLuint createObstacleTexture(unsigned int width, unsigned int height, const std::list<GameObject*>& allObjects);
     void Update(double dt);
     void UpdateRadius();
 
