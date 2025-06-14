@@ -207,7 +207,10 @@ void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_
 			}
 			
 			ship->HitWithBounce(ship->nearestRock, velocity); // calculate normal
-			ship->nearestRock->GetRockGroup()->Crash(true);		// rock is crashed (GameObjectManager will destroy this)
+
+			if (ship->nearestRock->Type() == GameObjectTypes::ObstacleRock) {	// if obstaclerock
+				ship->nearestRock->GetRockGroup()->Crash(true);		// rock is crashed (MapManager will destroy this)
+			}
 		}
 		else {
 			Engine::GetLogger().LogEvent("@@@@ Error: No nearest rock!! @@@@");

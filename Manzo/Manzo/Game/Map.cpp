@@ -34,7 +34,6 @@ Map::Map(const std::string& filename, Math::rect map_boundary) :
         matrixRegex(R"(matrix\(([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+)\))"),
         pathIdRegex(R"xxx(id="([^"]+)")xxx"),
         fillColorRegex(R"(fill:\s*(#[0-9a-fA-F]+);)"),
-
         file_path(filename),
         map_boundary(map_boundary)
 {
@@ -51,7 +50,7 @@ Map::Map(const std::string& filename, Math::rect map_boundary) :
 void Map::OpenSVG() {
     map_file.open(this->file_path);
     if (!map_file.is_open()) {
-        std::cerr << "Error opening SVG file." << std::endl;
+        Engine::GetLogger().LogError(file_path + "Error opening SVG file.");
         return;
     }
 }
@@ -59,7 +58,7 @@ void Map::OpenSVG() {
 void Map::ParseSVG() {
 
     if (level_loaded) {
-        std::cerr << "Level is already loaded." << std::endl;
+        Engine::GetLogger().LogError("Level is already loaded.");
         return;
     }
 
@@ -70,11 +69,11 @@ void Map::ParseSVG() {
         if (!std::getline(map_file, line)) {
             level_loaded = true;
             map_file.close();
-            std::cout << "End of File." << std::endl;
             return;
         }
         currentTag += line;
-    } while (currentTag.find('>') == std::string::npos);
+    } while (currentTag.find("/>") == std::string::npos && currentTag.find('>') == std::string::npos);
+
 
     // </svg>
     if (currentTag.find("</svg>") != std::string::npos) {
@@ -84,7 +83,7 @@ void Map::ParseSVG() {
 
         level_loaded = true;
         map_file.close();
-        std::cout << file_path << " file's parsing completed." << std::endl;
+        Engine::GetLogger().LogDebug(file_path + "file's parsing completed.");
         return;
     }
 
@@ -112,7 +111,7 @@ void Map::ParseSVG() {
         std::string group_index = match[1].str();
         currentGroup = new RockGroup(group_index, map_index, rotateAngle, scale);
         rock_groups.push_back(currentGroup);
-        std::cout << "Group created: " << group_index << std::endl;
+        //std::cout << "Group created: " << group_index << std::endl;
 
     }
 
@@ -222,12 +221,13 @@ void Map::ParseSVG() {
         std::cout << "-----------------------------" << std::endl;*/
 
 
-        if (std::regex_search(currentTag, match, fillColorRegex)) {
-            fillColor = match[1].str();
-        }
-
         Polygon original_poly = poly;   //for collision
         Polygon modified_poly = poly;   //for object position
+
+        if (std::regex_search(currentTag, match, fillColorRegex)) {
+            fillColor = match[1].str();
+            std::cout << fillColor << std::endl;
+        }
 
         vec2 poly_center = original_poly.FindCenter();
 
@@ -240,6 +240,7 @@ void Map::ParseSVG() {
         GameObject* rock = nullptr;
         if (fillColor == obstacleColor) {   //generate obstacle rock
             rock = new ObstacleRock(original_poly, modified_poly, original_poly.FindCenter(), rotateAngle, scale);
+            std::cout << "Made OOOOOOOOOOOOOOOOOObstacle Rock" << std::endl;
         }
         else {                              //generate general rock
             rock = new Rock(original_poly, modified_poly, original_poly.FindCenter(), rotateAngle, scale);
@@ -422,11 +423,13 @@ void Map::UnloadCrashedRock() {
     for (RockGroup* rockgroup : rock_groups) {
         if (rockgroup->IsCrashed()) {
             for (Rock* rock : rockgroup->GetRocks()) {
-                rock->Active(false);
-                Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Remove(rock);
-                rock->Destroy();
-                rock = nullptr;
-                delete rock;
+                ObstacleRock* obstacleRock = static_cast<ObstacleRock*>(rock);
+
+                obstacleRock->Active(false);
+                Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Remove(obstacleRock);
+                obstacleRock->Destroy();
+                obstacleRock = nullptr;
+                delete obstacleRock;
             }
         }
             rockgroup->Active(false);
@@ -434,8 +437,6 @@ void Map::UnloadCrashedRock() {
             rockgroup->Destroy();
             rockgroup = nullptr;
             delete rockgroup;
-
-        
     }
 }
 
@@ -446,7 +447,8 @@ void Map::LoadPNG()
     unsigned char* imgData = stbi_load(filename, &width, &height, &channels, 0);
 
     if (!imgData) {
-        std::cerr << "Failed to load " + filename_str + " file.\n";
+
+        Engine::GetLogger().LogError("Failed to load " + filename_str + " file");
         return;
     }
 
@@ -467,7 +469,7 @@ void Map::LoadPNG()
         }
     }
 
-    std::cout << "Load PNG successfully" << std::endl;
+    Engine::GetLogger().LogDebug("Load PNG successfully");
     //for (int i = 0; i < height; i++)
     //{
     //    for (int j = 0; j < width; j++)

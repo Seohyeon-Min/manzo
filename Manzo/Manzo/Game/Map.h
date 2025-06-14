@@ -96,7 +96,7 @@ private:
 	vec2 rotatetranslate = { 0, 0 };
 	vec2 scale = { 1.0f, 1.0f };
 	std::string fillColor = "#000000";	//parsing data's fillcolor
-	std::string obstacleColor = "#ba22ffff"; // color for obstacle rock
+	std::string obstacleColor = "#ba22ff"; // color for obstacle rock
 	
 
 	bool IsinG = false;
@@ -121,4 +121,5 @@ private:
 	std::regex matrixRegex;
 	std::regex pathIdRegex;
 	std::regex fillColorRegex;
+	std::regex styleRegex;
 };
