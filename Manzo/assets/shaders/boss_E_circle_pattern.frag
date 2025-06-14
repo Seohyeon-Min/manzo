@@ -34,7 +34,7 @@ void main()
     float rawAlpha = smoothstep(uRadius, animatedRadius, dist);
     float alpha = rawAlpha * 0.2;
 
-    vec4 red = vec4(0.7882, 0.0549, 0.4196, 0.2); 
+    vec4 red = vec4(0.8784, 0.9608, 1.0, 0.993); 
 
     outColor = vec4(red.rgb, alpha);
     if (outColor.a == 0.0)

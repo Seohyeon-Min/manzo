@@ -364,6 +364,12 @@ void BlackTransition::Draw(DrawLayer drawlayer)
 
     draw_call.settings.do_blending = true;
     draw_call.settings.is_camera_fixed = true;
+    float time = 0.f;
+    if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+        time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+    }
+    if(time - spawn_t >= 30.f) draw_call.sorting_layer = DrawLayer::DrawBackground;
+    else
     draw_call.sorting_layer = DrawLayer::DrawFirst;
     draw_call.SetUniforms = [this](const GLShader* shader) { SetUni(shader); };
     GameObject::Draw(draw_call);
@@ -382,7 +388,7 @@ void BlackTransition::SetUni(const GLShader* shader)
     shader->SendUniform("uResolution", Engine::window_width, Engine::window_height);
 }
 
-CirclePattern::CirclePattern(float _radius) : Effect({}, 4.f)
+CirclePattern::CirclePattern(float _radius, float life) : Effect({}, life)
 {
     AddGOComponent(new Sprite("assets/images/effect/full_quad.spt", this));
     float time = 0.f;
@@ -396,6 +402,7 @@ CirclePattern::CirclePattern(float _radius) : Effect({}, 4.f)
 void CirclePattern::Update(double dt)
 {
     Effect::Update(dt);
+
 }
 
 void CirclePattern::Draw(DrawLayer drawlayer)
@@ -409,7 +416,7 @@ void CirclePattern::Draw(DrawLayer drawlayer)
 
     draw_call.settings.do_blending = true;
     draw_call.settings.is_camera_fixed = true;
-    draw_call.sorting_layer = DrawLayer::DrawFirst;
+    draw_call.sorting_layer = DrawLayer::DrawBackground;
     draw_call.SetUniforms = [this](const GLShader* shader) { SetUni(shader); };
     GameObject::Draw(draw_call);
 }
@@ -425,4 +432,40 @@ void CirclePattern::SetUni(const GLShader* shader)
     shader->SendUniform("uStartTime", spawn_t);
     shader->SendUniform("uRadius", radius);
     shader->SendUniform("uResolution", Engine::window_width, Engine::window_height);
+}
+
+
+
+Flash::Flash() : Effect({}, 1.0f)
+{
+    AddGOComponent(new Sprite("assets/images/effect/full_quad_w.spt", this));
+    life = max_life;
+}
+
+void Flash::Update(double dt)
+{
+    Effect::Update(dt);
+    life -= static_cast<float>(dt);
+}
+
+void Flash::Draw(DrawLayer drawlayer)
+{
+    Sprite* sprite = GetGOComponent<Sprite>();
+    DrawCall draw_call = {
+        sprite,
+        &GetMatrix(),
+        Engine::GetShaderManager().GetShader("change_alpha_no_texture")
+    };
+    draw_call.settings.do_blending = true;
+    draw_call.settings.is_camera_fixed = true;
+    draw_call.sorting_layer = DrawLayer::DrawLast;
+    draw_call.SetUniforms = [this](const GLShader* shader) { SetUni(shader); };
+    GameObject::Draw(draw_call);
+}
+
+void Flash::SetUni(const GLShader* shader)
+{
+    float alpha = float(life / max_life);
+    shader->SendUniform("uAlpha", alpha);
+    shader->SendUniform("uFillColor", 1.f,1.f,1.f); // Èò»ö ¹øÂ½ÀÓ
 }

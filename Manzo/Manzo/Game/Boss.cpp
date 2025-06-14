@@ -265,11 +265,13 @@ void Boss::AfterDied()
 	Engine::GetAudioManager().SetMute("Level1_bgm", false);
 }
 
-
+int cir_cnt = 0;
 void Boss::AttackCircle(vec2 pos, double radius, double elapsed_time)
 {
-	DrawShieldRange(pos, radius);
-	Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new CirclePattern(static_cast<float>(radius)));
+	//DrawShieldRange(pos, radius);
+
+		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new CirclePattern(static_cast<float>(radius-10)));
+
 	std::thread([this, pos, radius, elapsed_time]() {
 		std::this_thread::sleep_for(std::chrono::duration<double>(elapsed_time));
 
@@ -282,13 +284,15 @@ void Boss::AttackCircle(vec2 pos, double radius, double elapsed_time)
 		{
 
 			if (!isattack) {
+				if(cir_cnt)
+				Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new Flash());
 				Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()
 					->GetGOComponent<Ship>()->DeclineFuel(100.f);
 				//std::cout << "Attack" << std::endl;
 				isattack = true;
 			}
 		}
-
+		++cir_cnt;
 		//std::cout << "Attack Triggered at Position (" << pos.x << ", " << pos.y << ")" << std::endl;
 		}).detach();
 }
