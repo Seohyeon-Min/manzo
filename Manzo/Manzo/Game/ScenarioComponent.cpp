@@ -1,10 +1,13 @@
 #include "../Engine/GameObjectManager.h"
 #include "../Engine/GameState.h"
 #include "ScenarioComponent.h"
+#include "../Engine/Engine.h"
 #include "NPC.h"
 #include "Mouse.h"
 #include "PopUp.h"
 #include "States.h"
+ScenarioComponent::ScenarioComponent() : dialog(&Engine::GetDialogSystem().GetDialog()) {}
+
 
 void ScenarioComponent::Load()
 {
@@ -107,7 +110,7 @@ void ScenarioComponent::Load()
             return total >= 15;
         },
         []() {
-            std::cout << "¹°°í±â 15¸¶¸® ÀÌº¥Æ® ¿Ï·á!" << std::endl;
+            std::cout << "Â¹Â°Â°Ã­Â±Ã¢ 15Â¸Â¶Â¸Â® Ã€ÃŒÂºÂ¥Ã†Â® Â¿ÃÂ·Ã¡!" << std::endl;
             Engine::GetEventManager().MarkEventDone("catch_15_fish");
 
             auto* popup = new PopUp({ -420,195 }, "assets/images/catch_done_popup.spt", true);
@@ -142,3 +145,5 @@ void ScenarioComponent::Load()
     has_initialized = true;
 }
 
+
+void ScenarioComponent::Unload() {}

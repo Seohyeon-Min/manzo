@@ -6,8 +6,7 @@
 
 class ScenarioComponent : public Component {
 public:
-    ScenarioComponent(Dialog* dia)
-        : dialog(dia) {}
+    ScenarioComponent();
     void Load();
     void Unload();
 

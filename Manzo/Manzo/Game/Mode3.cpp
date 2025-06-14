@@ -58,9 +58,9 @@ void Mode3::Load() {
 	ship_ptr = new Ship({0,0});
 	GetGSComponent<GameObjectManager>()->Add(ship_ptr);
 
-    //Dialog
-    dialog_ptr = new Dialog({ 0,0 });
-    GetGSComponent<GameObjectManager>()->Add(dialog_ptr);
+    //Dialog from global system
+    Dialog& dialog = Engine::GetDialogSystem().GetDialog();
+    GetGSComponent<GameObjectManager>()->Add(&dialog);
 
     // Mouse
     GetGSComponent<GameObjectManager>()->Add(new Mouse);
@@ -80,12 +80,12 @@ void Mode3::Update(double dt) {
 
         if (!textDisplay ) {
 
-            dialog_ptr->LoadDialogGroup("tutorial-1", 0.05);
+            Engine::GetDialogSystem().GetDialog().LoadDialogGroup("tutorial-1", 0.05);
             textDisplay = true;
         }
         if (Engine::GetInput().KeyJustPressed(Input::Keys::Space)) {
-            dialog_ptr->NextLine();
-            if (dialog_ptr->IsFinished()) {
+            Engine::GetDialogSystem().GetDialog().NextLine();
+            if (Engine::GetDialogSystem().GetDialog().IsFinished()) {
                 currentPhase = TutorialPhase::Dash;
                 textDisplay = false;
             }
@@ -116,12 +116,12 @@ void Mode3::Update(double dt) {
 
     case TutorialPhase::Done:
         if (!textDisplay) {
-            dialog_ptr->LoadDialogGroup("tutorial-2", 0.05);
+            Engine::GetDialogSystem().GetDialog().LoadDialogGroup("tutorial-2", 0.05);
             textDisplay = true;
         }
         if (Engine::GetInput().KeyJustPressed(Input::Keys::Space)) {
-            dialog_ptr->NextLine();
-            if (dialog_ptr->IsFinished()) {
+            Engine::GetDialogSystem().GetDialog().NextLine();
+            if (Engine::GetDialogSystem().GetDialog().IsFinished()) {
                 auto& save = Engine::GetSaveDataManager().GetSaveData();
                 save.eventsDone.push_back("tutorial_end");
                 Engine::GetSaveDataManager().UpdateSaveData(save);
@@ -150,7 +150,7 @@ void Mode3::Draw() {
         GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
     }
     GetGSComponent<GameObjectManager>()->DrawAll();
-    dialog_ptr->Draw();
+    Engine::GetDialogSystem().GetDialog().Draw();
 
 
 }
@@ -170,7 +170,7 @@ void Mode3::Unload() {
     GetGSComponent<Background>()->Unload();
     Engine::GetIconManager().Unload();
     ClearGSComponents();
-    dialog_ptr->Unload();
+    Engine::GetDialogSystem().GetDialog().Unload();
     background = nullptr;
 
 }

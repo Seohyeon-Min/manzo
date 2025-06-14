@@ -26,6 +26,7 @@ Created:    March 8, 2023
 #include "SaveDataManager.h"
 #include "EventManager.h"
 #include "ScenarioSystem.h"
+#include "DialogSystem.h"
 
 #include <chrono>
 #include <time.h>
@@ -87,6 +88,10 @@ public:
         return Instance()->eventmanager;
     }
 
+    static DialogSystem& GetDialogSystem() {
+        return Instance()->dialogsystem;
+    }
+
     void Start(std::string window_title);
     void Stop();
     void Update();
@@ -131,4 +136,5 @@ private:
     SaveDataManager savedatamanager;
     Beat beat;
     EventManager eventmanager;
+    DialogSystem dialogsystem;
 };
