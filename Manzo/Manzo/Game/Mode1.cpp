@@ -314,7 +314,7 @@ void Mode1::Draw()
 	GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
 	GetGSComponent<GameObjectManager>()->DrawAll();
 
-	raycasting->Update(0.0);
+	raycasting->Render();
 
 	if (ship_ptr->GetFuel() <= 0)
 	{

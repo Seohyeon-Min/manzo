@@ -8,8 +8,7 @@ class Raycasting {
 public:
     Raycasting(GameObject* object_);
     ~Raycasting();
-    GLuint createObstacleTexture(unsigned int width, unsigned int height, const std::list<GameObject*>& allObjects);
-    void Update(double dt);
+    void Render();
     void UpdateRadius();
 
 private:
@@ -30,4 +29,15 @@ private:
 
     GLuint VAO, VBO;
     float radius;
+
+
+    float minY = -5000.f;
+    float maxY = 0.f;
+
+    float minRadius = 100.f;
+    float maxRadius = 1000.f;
+
+
+    float w = (float)Engine::window_width;
+    float h = (float)Engine::window_height;
 };
