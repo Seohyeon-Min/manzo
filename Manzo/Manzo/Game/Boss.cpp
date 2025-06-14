@@ -252,7 +252,6 @@ void Boss::InitializeStates() {
 void Boss::Update(double dt) {
 
 	Boss* boss = static_cast<Boss*>(this);
-	//Engine::GetGameStateManager().GetGSComponent<Background>()->ShaderBackgroundDraw(Engine::GetShaderManager().GetShader("sea_background"), *GetGSComponent<Cam>(), ship_ptr);
 	if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
 		if (GameObject::current_state->GetName() != Boss::state_cutscene.GetName()) {
 			boss->barCount = beat->GetBarCount();
@@ -297,7 +296,7 @@ void Boss::AfterDied()
 void Boss::AttackCircle(vec2 pos, double radius, double elapsed_time)
 {
 	DrawShieldRange(pos, radius);
-
+	Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new CirclePattern(static_cast<float>(radius)));
 	std::thread([this, pos, radius, elapsed_time]() {
 		std::this_thread::sleep_for(std::chrono::duration<double>(elapsed_time));
 

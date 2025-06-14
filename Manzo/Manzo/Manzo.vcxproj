@@ -16,6 +16,7 @@
     <ClCompile Include="Engine\BeatSystem.cpp" />
     <ClCompile Include="Engine\Camera.cpp" />
     <ClCompile Include="Engine\Collision.cpp" />
+    <ClCompile Include="Engine\DialogSystem.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
     <ClCompile Include="Engine\EventManager.cpp" />
     <ClCompile Include="Engine\Font.cpp" />
@@ -93,6 +94,7 @@
     <ClInclude Include="Engine\Collision.h" />
     <ClInclude Include="Engine\Component.h" />
     <ClInclude Include="Engine\ComponentManager.h" />
+    <ClInclude Include="Engine\DialogSystem.h" />
     <ClInclude Include="Engine\DrawSetting.h" />
     <ClInclude Include="Engine\Engine.h" />
     <ClInclude Include="Engine\EventManager.h" />

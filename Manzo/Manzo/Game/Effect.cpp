@@ -365,7 +365,6 @@ void BlackTransition::Draw(DrawLayer drawlayer)
     draw_call.settings.do_blending = true;
     draw_call.settings.is_camera_fixed = true;
     draw_call.sorting_layer = DrawLayer::DrawFirst;
-    draw_call.order_in_layer = 1;
     draw_call.SetUniforms = [this](const GLShader* shader) { SetUni(shader); };
     GameObject::Draw(draw_call);
 }
@@ -380,5 +379,50 @@ void BlackTransition::SetUni(const GLShader* shader)
     shader->SendUniform("uTime", time);
     shader->SendUniform("uStartTime", spawn_t);
     shader->SendUniform("uDelay", 19.0f);
+    shader->SendUniform("uResolution", Engine::window_width, Engine::window_height);
+}
+
+CirclePattern::CirclePattern(float _radius) : Effect({}, 4.f)
+{
+    AddGOComponent(new Sprite("assets/images/effect/full_quad.spt", this));
+    float time = 0.f;
+    if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+        time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+    }
+    spawn_t = time;
+    radius = _radius/ Engine::window_height;
+}
+
+void CirclePattern::Update(double dt)
+{
+    Effect::Update(dt);
+}
+
+void CirclePattern::Draw(DrawLayer drawlayer)
+{
+    Sprite* sprite = GetGOComponent<Sprite>();
+    DrawCall draw_call = {
+        sprite,
+        &GetMatrix(),
+        Engine::GetShaderManager().GetShader("circle_pattern")
+    };
+
+    draw_call.settings.do_blending = true;
+    draw_call.settings.is_camera_fixed = true;
+    draw_call.sorting_layer = DrawLayer::DrawFirst;
+    draw_call.SetUniforms = [this](const GLShader* shader) { SetUni(shader); };
+    GameObject::Draw(draw_call);
+}
+
+void CirclePattern::SetUni(const GLShader* shader)
+{
+    float time = 0.f;
+    if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+        time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+    }
+
+    shader->SendUniform("uTime", time);
+    shader->SendUniform("uStartTime", spawn_t);
+    shader->SendUniform("uRadius", radius);
     shader->SendUniform("uResolution", Engine::window_width, Engine::window_height);
 }

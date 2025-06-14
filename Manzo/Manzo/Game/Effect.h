@@ -107,3 +107,14 @@ private:
     float spawn_t;
     bool stop = false;
 };
+
+class CirclePattern : public Effect {
+public:
+    CirclePattern(float radius);
+    void Update(double dt) override;
+    void Draw(DrawLayer drawlayer = DrawLayer::DrawLast) override;
+private:
+    void SetUni(const GLShader* shader);
+    float spawn_t;
+    float radius;
+};
