@@ -113,7 +113,6 @@ void Beat::CalculateCali()
         return;
     }
 
-    // ���� ���� �� ����
     std::vector<double> sorted = calibrations;
     std::sort(sorted.begin(), sorted.end());
 
@@ -121,11 +120,9 @@ void Beat::CalculateCali()
     size_t size = sorted.size();
 
     if (size % 2 == 0) {
-        // ¦������ ���: �߾� �� ���� ���
         median = (sorted[size / 2 - 1] + sorted[size / 2]) / 2.0;
     }
     else {
-        // Ȧ������ ���: ��� ��
         median = sorted[size / 2];
     }
 
@@ -133,10 +130,9 @@ void Beat::CalculateCali()
     user_calibration = median;
     real_calibration = median;
     auto& saveData = Engine::GetSaveDataManager().GetSaveData();
-    saveData.user_calibration = user_calibration; // newValue�� double Ÿ��
+    saveData.user_calibration = user_calibration; 
 
     Engine::GetSaveDataManager().UpdateSaveData(saveData);
-    // ���⼭ median ���� ���� ������ ����ϸ� �˴ϴ�.
 }
 
 

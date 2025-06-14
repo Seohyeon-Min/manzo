@@ -66,14 +66,14 @@ void Boss::Movingtolocation_Boss(int targetEntryNum, Boss* boss) {
 		for (const auto& entryData : entryVec) {
 			if (boss->beat->GetDelayCount() == entryData.delay + 1) {
 				
+					if(boss->beat->GetBeat()){
+						boss->current_position = entryData.position;
 					
-					boss->current_position = entryData.position;
-					
-					// here
-					for(int i =0; i <1; ++i){
-					boss->Bullet(boss);
+						// here
+						for(int i =0; i <1; ++i){
+						boss->Bullet(boss);
 					}
-				
+					}
 				
 			}
 			if (entryData.attacktype == 3) {

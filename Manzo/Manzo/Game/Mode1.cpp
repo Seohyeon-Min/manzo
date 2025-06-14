@@ -237,7 +237,7 @@ void Mode1::Update(double dt)
 
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::E) && !Isboss)
 	{
-		GetGSComponent<GameObjectManager>()->Add(boss_ptr_y);
+		GetGSComponent<GameObjectManager>()->Add(boss_ptr_e);
 		Isboss = true;
 	}
 
@@ -269,8 +269,8 @@ void Mode1::Update(double dt)
 	if (Isboss)
 	{
 		
-		camera->SetSmoothPosition(boss_ptr_y->GetPosition());
-		camera->Update(dt, boss_ptr_y->GetPosition(), ship_ptr->IsShipMoving());
+		camera->SetSmoothPosition(boss_ptr_e->GetPosition());
+		camera->Update(dt, boss_ptr_e->GetPosition(), ship_ptr->IsShipMoving());
 
 	}
 	else{
