@@ -49,7 +49,6 @@ private:
     Ship* ship_ptr;
     Background* background;
     Shop* shop_ptr;
-    Dialog* dialog_ptr;
     Player* player_ptr;
     Inven* inven_ptr;
     Module* module_ptr;

@@ -27,7 +27,7 @@ Engine::Engine() :
 #else
     logger(Logger::Severity::Event, false),
 #endif
-    beat(&audiomanager),savedatamanager("assets/jsons/save.json")
+    beat(&audiomanager),savedatamanager("assets/jsons/save.json"), dialogsystem()
 {
     unsigned int seed = static_cast<unsigned int>(std::time(NULL));
     std::srand(seed);
@@ -43,6 +43,7 @@ void Engine::Start(std::string window_title)
 
 void Engine::Stop() {
     logger.LogEvent("Engine Stopped");
+    dialogsystem.Unload();
 }
 
 void Engine::Update() {

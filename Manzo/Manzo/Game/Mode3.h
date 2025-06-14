@@ -50,7 +50,6 @@ private:
     Reef* reef_ptr;
     Cam* camera;
     Background* background;
-    Dialog* dialog_ptr;
     double phaseTimer = 0.0;
     bool textDisplay = false;
 

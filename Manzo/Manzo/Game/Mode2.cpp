@@ -72,14 +72,14 @@ void Mode2::Load() {
 	// Icon
 	Engine::GetIconManager().LoadIconList();
 
-	// Dialog
-	dialog_ptr = new Dialog({ 0,0 });
-	GetGSComponent<GameObjectManager>()->Add(dialog_ptr);
+	// Dialog from global system
+        Dialog& dialog = Engine::GetDialogSystem().GetDialog();
+        GetGSComponent<GameObjectManager>()->Add(&dialog);
 
 	//Engine::GetLogger().LoadSaveFile();
 
 	//ScenarioComponent
-	scenario = new ScenarioComponent(dialog_ptr);
+	scenario = new ScenarioComponent();
 	AddGSComponent(scenario);
 	scenario->Load();
 
@@ -157,12 +157,12 @@ void Mode2::Update(double dt) {
 	}
 
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::Z) && !isLoaded) {
-		dialog_ptr->LoadDialogGroup("dialog-1", 0.05);
+		Engine::GetDialogSystem().GetDialog().LoadDialogGroup("dialog-1", 0.05);
 		isLoaded = true;
 	}
 	if ((Engine::GetInput().KeyJustPressed(Input::Keys::X) && !isLoaded)) {
 
-		dialog_ptr->LoadRandomDialog("dialog-2", 0.05);
+		Engine::GetDialogSystem().GetDialog().LoadRandomDialog("dialog-2", 0.05);
 		isLoaded = true;
 	}
 #else
@@ -170,20 +170,20 @@ void Mode2::Update(double dt) {
 
 	//Dialog
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::Space)) {
-		dialog_ptr->NextLine();
+		Engine::GetDialogSystem().GetDialog().NextLine();
 	}
 
 
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::C)) {
-		dialog_ptr->Hide();
+		Engine::GetDialogSystem().GetDialog().Hide();
 		isLoaded = false;
 	}
 
-	dialog_ptr->Update(dt);
+	Engine::GetDialogSystem().GetDialog().Update(dt);
 
 	Icon* icon = Engine::GetIconManager().GetCollidingIconWithMouse({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY });
 	bool clicked = Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT);
-	bool mouse_down = Engine::GetInput().MouseButtonPressed(SDL_BUTTON_LEFT); // ¥©∏£∞Ì ¿÷¥¬¡ˆ »Æ¿Œ
+	bool mouse_down = Engine::GetInput().MouseButtonPressed(SDL_BUTTON_LEFT); // ¬¥¬©¬∏¬£¬∞√≠ √Ä√ñ¬¥√Ç√Å√∂ √à¬Æ√Ä√é
 	bool mouse_released = Engine::GetInput().MouseButtonJustReleased(SDL_BUTTON_LEFT);
 	
 
@@ -272,7 +272,7 @@ void Mode2::Draw() {
 		GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
 	}
 	GetGSComponent<GameObjectManager>()->DrawAll();
-	dialog_ptr->Draw();
+	Engine::GetDialogSystem().GetDialog().Draw();
 
 	today_fish_popup->SetPop(true);
 
@@ -378,7 +378,7 @@ void Mode2::Unload() {
 	GetGSComponent<Background>()->Unload();
 	Engine::GetIconManager().Unload();
 	ClearGSComponents();
-	dialog_ptr->Unload();
+	Engine::GetDialogSystem().GetDialog().Unload();
 	playing = false;
 
 	background = nullptr;
