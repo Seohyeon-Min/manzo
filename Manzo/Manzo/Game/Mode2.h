@@ -23,6 +23,7 @@ Created:    Sept 12, 2024
 #include "Module.h"
 #include "ScenarioComponent.h"
 #include "PopUp.h"
+#include <memory>
 #include "FishEcosystem.h"
 
 class Fish;
@@ -49,7 +50,7 @@ private:
     Ship* ship_ptr;
     Background* background;
     Shop* shop_ptr;
-    Dialog* dialog_ptr;
+    std::shared_ptr<Dialog> dialog_ptr;
     Player* player_ptr;
     Inven* inven_ptr;
     Module* module_ptr;
