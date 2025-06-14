@@ -33,6 +33,8 @@ Map::Map(const std::string& filename, Math::rect map_boundary) :
         rotateRegex(R"(rotate\(\s*([^\s,]+)\s*,\s*([^\s,]+)\s*,\s*([^\)]+)\s*\))"),
         matrixRegex(R"(matrix\(([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+)\))"),
         pathIdRegex(R"xxx(id="([^"]+)")xxx"),
+        fillColorRegex(R"(fill:\s*(#[0-9a-fA-F]+);)"),
+
         file_path(filename),
         map_boundary(map_boundary)
 {
@@ -220,23 +222,35 @@ void Map::ParseSVG() {
         std::cout << "-----------------------------" << std::endl;*/
 
 
+        if (std::regex_search(currentTag, match, fillColorRegex)) {
+            fillColor = match[1].str();
+        }
 
         Polygon original_poly = poly;   //for collision
         Polygon modified_poly = poly;   //for object position
 
         vec2 poly_center = original_poly.FindCenter();
+
         std::vector<vec2> new_vertices;
         for (vec2 vertice : original_poly.vertices) {
             new_vertices.push_back({ vertice.x - poly_center.x, vertice.y - poly_center.y });
         }
         modified_poly.vertices = new_vertices;
 
-        Rock* rock = new Rock(original_poly, modified_poly, original_poly.FindCenter(), rotateAngle, scale);
-        if (currentGroup) {
-            currentGroup->AddRock(rock);
-            rock->SetRockGroup(currentGroup);
+        GameObject* rock = nullptr;
+        if (fillColor == obstacleColor) {   //generate obstacle rock
+            rock = new ObstacleRock(original_poly, modified_poly, original_poly.FindCenter(), rotateAngle, scale);
         }
-        rocks.push_back(rock);
+        else {                              //generate general rock
+            rock = new Rock(original_poly, modified_poly, original_poly.FindCenter(), rotateAngle, scale);
+        }
+        
+        if (currentGroup) {             //set RockGroup & add rock into RockGroup
+            currentGroup->AddRock(dynamic_cast<Rock*>(rock));
+            dynamic_cast<Rock*>(rock)->SetRockGroup(currentGroup);
+        }
+
+        rocks.push_back(dynamic_cast<Rock*>(rock));
         return;
     }
 
@@ -337,7 +351,7 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
 
                     Polygon original_poly = rock->GetOriginalPoly();
                     Polygon modified_poly = rock->GetModifiedPoly();
-                    if (!rock->IsActivated() && !rock->IsCrashed()) {
+                    if (!rock->IsActivated() && !rock->GetRockGroup()->IsCrashed()) {
                         rock->Active(true);
                         rock->AddGOComponent(new MAP_SATCollision(modified_poly, rock));
                         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rock);
@@ -402,7 +416,27 @@ void Map::UnloadAll() {
             rockgroup = nullptr;
             delete rockgroup;
     }
-    std::cout << "Unlaod Complete" + map_index << std::endl;
+}
+
+void Map::UnloadCrashedRock() {
+    for (RockGroup* rockgroup : rock_groups) {
+        if (rockgroup->IsCrashed()) {
+            for (Rock* rock : rockgroup->GetRocks()) {
+                rock->Active(false);
+                Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Remove(rock);
+                rock->Destroy();
+                rock = nullptr;
+                delete rock;
+            }
+        }
+            rockgroup->Active(false);
+            Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Remove(rockgroup);
+            rockgroup->Destroy();
+            rockgroup = nullptr;
+            delete rockgroup;
+
+        
+    }
 }
 
 void Map::LoadPNG()

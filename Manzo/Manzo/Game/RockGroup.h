@@ -55,7 +55,12 @@ public:
 	std::vector<vec2> GetPoints() { return points; }
 	void SetPoints();	// Fill vector of polygon's points
 
+	//Crash
+	void Crash(bool crashed) { this->crashed = crashed; }
+	bool IsCrashed() { return crashed; }
+
 private:
+	bool crashed = false;
 	bool loaded = false; // Is Rockgroup loaded in map?
 	bool can_collide = true;
 	vec2 start_position;

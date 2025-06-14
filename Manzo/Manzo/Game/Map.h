@@ -54,6 +54,7 @@ public:
 	Math::rect GetMapBoundary() { return map_boundary; }
 
 	void UnloadAll();
+	void UnloadCrashedRock();
 
 	void LoadPNG();
 	vec2 MaskToWorld(int maskX, int maskY);
@@ -94,6 +95,9 @@ private:
 	float rotateAngle = 0;
 	vec2 rotatetranslate = { 0, 0 };
 	vec2 scale = { 1.0f, 1.0f };
+	std::string fillColor = "#000000";	//parsing data's fillcolor
+	std::string obstacleColor = "#ba22ffff"; // color for obstacle rock
+	
 
 	bool IsinG = false;
 	bool IsTranslate = false;
@@ -116,4 +120,5 @@ private:
 	std::regex rotateRegex;
 	std::regex matrixRegex;
 	std::regex pathIdRegex;
+	std::regex fillColorRegex;
 };

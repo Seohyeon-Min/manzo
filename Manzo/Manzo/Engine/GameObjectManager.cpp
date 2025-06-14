@@ -26,9 +26,13 @@ void GameObjectManager::Unload()
 
 void GameObjectManager::UpdateAll(double dt)
 {
+
+	
 	std::vector<GameObject*> destroy_objects;
 	for (auto object : objects) {
 		object->Update(dt);
+
+
 		if (object->Destroyed()) {
 			destroy_objects.push_back(object);
 		}
@@ -137,7 +141,7 @@ Rock* GameObjectManager::FindNearestRock(GameObject* object) {
 			rock = static_cast<Rock*>(gameObj);
 			rockPoints = rock->GetPoints();
 		}
-		if (!rock || rock->IsCrashed()) continue;
+		if (!rock) continue;
 		
 
 		for (size_t i = 0; i < rockPoints.size(); ++i) {
@@ -163,9 +167,7 @@ void GameObjectManager::Remove(GameObject* object) {
 
 	if (it != objects.end()) {
 		objects.erase(it);
-		//std::cout << "GameObject Removed from Vector.\n";
 	}
 	else {
-		//std::cout << "GameObject Not Found.\n";
 	}
 }

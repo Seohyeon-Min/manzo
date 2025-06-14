@@ -22,10 +22,6 @@ Rock::~Rock() {
 void Rock::Update(double dt)
 {
     GameObject::Update(dt);
-    if (this->crashed) {
-        this->RemoveGOComponent<MAP_SATCollision>();
-        this->Destroy();
-    }
 }
 
 void Rock::Draw()
