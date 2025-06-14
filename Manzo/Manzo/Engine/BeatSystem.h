@@ -21,6 +21,7 @@ public:
     double GetUserCali() { return user_calibration; }
     const double GetLastCali() {return calibrations.back();}
     void SetUserCali(double cali) { user_calibration = cali; }
+    bool GetDelaySwitch() { return delay_count_switch; }
 
 private:
     int BPM = 100;
