@@ -26,7 +26,6 @@ Created:    March 8, 2023
 #include "Fish.h"
 #include "Boss.h"
 #include "Monster.h"
-#include "RayCasting.h"
 
 #include <utility>
 #include <iostream>
@@ -57,7 +56,6 @@ void Mode1::Load()
 	Engine::GetShaderManager().LoadShader("post_default", "assets/shaders/post_default.vert", "assets/shaders/post_default.frag");
 	Engine::GetShaderManager().LoadShader("post_bloom", "assets/shaders/post_default.vert", "assets/shaders/post_bloom.frag");
 	Engine::GetShaderManager().LoadShader("post_underwater_distortion", "assets/shaders/post_default.vert", "assets/shaders/post_underwater_distortion.frag");
-	Engine::GetShaderManager().LoadShader("ray_casting", "assets/shaders/ray_casting.vert", "assets/shaders/ray_casting.frag");
 	Engine::GetShaderManager().LoadShader("light", "assets/shaders/light.vert", "assets/shaders/light.frag");
 
 	// audio
@@ -185,8 +183,7 @@ void Mode1::Load()
 
 	option = new GameOption({ 0,0 });
 	GetGSComponent<GameObjectManager>()->Add(option);
-
-	AddGSComponent(new Raycasting(ship_ptr));
+	raycasting = new Raycasting(ship_ptr);
 }
 
 void Mode1::Update(double dt)
@@ -195,7 +192,6 @@ void Mode1::Update(double dt)
 
 	UpdateGSComponents(dt);
 	GetGSComponent<GameObjectManager>()->UpdateAll(dt);
-
 #ifdef _DEBUG
 	AddGSComponent(new ShowCollision());
 
@@ -314,20 +310,22 @@ void Mode1::FixedUpdate(double dt)
 
 void Mode1::Draw()
 {
-	//background->ShaderBackgroundDraw(Engine::GetShaderManager().GetShader("sea_background"), *GetGSComponent<Cam>(), ship_ptr);
-	//GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
-	//GetGSComponent<GameObjectManager>()->DrawAll();
+	background->ShaderBackgroundDraw(Engine::GetShaderManager().GetShader("sea_background"), *GetGSComponent<Cam>(), ship_ptr);
+	GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
+	GetGSComponent<GameObjectManager>()->DrawAll();
 
-	//if (ship_ptr->GetFuel() <= 0)
-	//{
-	//	Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "CLICK TO RESTART", { 0, 0 }, 10.098f, { 1.f, 1.f, 1.f }, 1.0f);
-	//	// Draw Font
-	//}
+	raycasting->Update(0.0);
 
-	//if (module->IsSecondSetted())
-	//{
-	//	Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, std::to_string(static_cast<int>(ship_ptr->GetFuel())), { -0.001f, 0.75f }, 0.05f, { 1.f, 1.f, 1.f }, 1.f, false);
-	//}
+	if (ship_ptr->GetFuel() <= 0)
+	{
+		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "CLICK TO RESTART", { 0, 0 }, 10.098f, { 1.f, 1.f, 1.f }, 1.0f);
+		// Draw Font
+	}
+
+	if (module->IsSecondSetted())
+	{
+		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, std::to_string(static_cast<int>(ship_ptr->GetFuel())), { -0.001f, 0.75f }, 0.05f, { 1.f, 1.f, 1.f }, 1.f, false);
+	}
 }
 
 void Mode1::Unload()

@@ -204,8 +204,8 @@
     <ClCompile Include="Game\GameOption.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="Game\RayCasting.cpp">
-      <Filter>Game</Filter>
+    <ClCompile Include="Engine\RayCasting.cpp">
+      <Filter>Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <!-- 헤더 파일(ClInclude)에 필터 적용 -->
@@ -426,8 +426,8 @@
     <ClInclude Include="Game\GameOption.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Game\RayCasting.h">
-      <Filter>Game</Filter>
+    <ClInclude Include="Engine\RayCasting.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -31,6 +31,7 @@
     <ClCompile Include="Engine\MathUtils.cpp" />
     <ClCompile Include="Engine\Particle.cpp" />
     <ClCompile Include="Engine\Rapidjson.cpp" />
+    <ClCompile Include="Engine\RayCasting.cpp" />
     <ClCompile Include="Engine\Render.cpp" />
     <ClCompile Include="Engine\SaveDataManager.cpp" />
     <ClCompile Include="Engine\ShaderManager.cpp" />
@@ -62,7 +63,6 @@
     <ClCompile Include="Game\NPC.cpp" />
     <ClCompile Include="Game\GameOption.cpp" />
     <ClCompile Include="Game\Player.cpp" />
-    <ClCompile Include="Game\RayCasting.cpp" />
     <ClCompile Include="Game\ScenarioComponent.cpp" />
     <ClCompile Include="Game\PopUp.cpp" />
     <ClCompile Include="Game\ScreenWrap.cpp" />
@@ -108,6 +108,7 @@
     <ClInclude Include="Engine\Particle.h" />
     <ClInclude Include="Engine\Polygon.h" />
     <ClInclude Include="Engine\Rapidjson.h" />
+    <ClInclude Include="Engine\RayCasting.h" />
     <ClInclude Include="Engine\Rect.h" />
     <ClInclude Include="Engine\Render.h" />
     <ClInclude Include="Engine\SaveDataManager.h" />
@@ -140,7 +141,6 @@
     <ClInclude Include="Game\GameOption.h" />
     <ClInclude Include="Game\Particles.h" />
     <ClInclude Include="Game\Player.h" />
-    <ClInclude Include="Game\RayCasting.h" />
     <ClInclude Include="Game\SaveData.h" />
     <ClInclude Include="Game\ScenarioComponent.h" />
     <ClInclude Include="Game\PopUp.h" />

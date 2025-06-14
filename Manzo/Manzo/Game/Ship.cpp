@@ -8,17 +8,14 @@
 #include "WindowState.h"
 #include "Monster.h"
 #include "States.h"
-#include "RayCasting.h"
 
 #include <iostream>
 #include "GameOption.h"
-#include "RayCasting.h"
 
 Ship::Ship(vec2 start_position) :
 	GameObject(start_position), move(false)
 {
 	AddGOComponent(new Sprite("assets/images/ship/ship.spt", this));
-	//AddGOComponent(new Raycasting(this));
 
 	beat = &Engine::GetBeat();
 	hit_text = Engine::GetTextureManager().Load("assets/images/ship/ship_hit.png");
@@ -266,8 +263,6 @@ void Ship::Update(double dt)
 {
 	vec2 pos = GetPosition();
 	ship_range = Math::rect(vec2{ pos.x - 150.f,pos.y - 150.f }, vec2{ pos.x + 150.f,pos.y + 150.f });
-
-	//GetGOComponent<Raycasting>()->Update(dt);
 
 	if (!Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<GameOption>()->isOpened())
 	{
