@@ -37,9 +37,11 @@ public:
 	void LoadMap();
 	void UpdateMaps(const Math::rect& camera_boundary);
 	Map* GetMap(int index) { return maps[index]; }
+	bool IsMapChanged() { return MapChanged; }
 
 private:
 	std::vector<Map*> maps;
 	int currentMapIndex = 0;
 	bool MapIncreased = false;
+	bool MapChanged = false;
 };

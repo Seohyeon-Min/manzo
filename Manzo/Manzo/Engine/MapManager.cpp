@@ -21,7 +21,6 @@ Created:    September 12, 2024
 
 
 //MapManager
-
 Map* MapManager::GetCurrentMap() {
     if (maps.empty()) return nullptr;
     return maps[currentMapIndex];
@@ -38,23 +37,24 @@ void MapManager::LoadMap() {
 }
 
 void MapManager::UpdateMaps(const Math::rect& camera_boundary) {
-    
     if (currentMapIndex < maps.size()) {
         maps[currentMapIndex]->LoadMapInBoundary(camera_boundary);
 
         if (!maps[currentMapIndex]->IsOverlapping(maps[currentMapIndex]->GetMapBoundary(), camera_boundary)) { // Is player  in the level boundary?
-            if (!MapIncreased) {
-                maps[currentMapIndex]->UnloadAll(); //Unload Previous Map
+
+            if (!MapIncreased) {    // Is map index increased?
+                maps[currentMapIndex]->UnloadAll(); // Unload Previous Map
+
                 if (currentMapIndex + 1 < maps.size()) {
                     currentMapIndex++;
+                    MapChanged = true;
                     LoadMap();
-
                 }
             }
-
         }
-        else MapIncreased = false;
-        
+        else {
+            MapIncreased = false;
+            MapChanged = false;
+        }
     }
 }
-

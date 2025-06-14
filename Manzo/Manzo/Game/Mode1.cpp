@@ -111,12 +111,12 @@ void Mode1::Load()
 	//background->Add("assets/images/background/bg3.png", 0.5f);
 	// background->Add("assets/images/background/bubble.png", 1.5f, DrawLayer::DrawUI);
 
-	// Map
 	
 
+	// Map
 	AddGSComponent(new MapManager());
 	GetGSComponent<MapManager>()->AddMap(new Map("assets/maps/level1.svg", level1_boundary));
-	GetGSComponent<MapManager>()->AddMap(new Map("assets/maps/level4.svg", level2_boundary));
+	GetGSComponent<MapManager>()->AddMap(new Map("assets/maps/level4.svg", level4_boundary));
 	GetGSComponent<MapManager>()->LoadMap();	//load first map
 	
 
@@ -204,13 +204,6 @@ void Mode1::Update(double dt)
 	// beat_system->LoadMusicToSync("Level1_bgm");
 	// audio play
 
-
-	//Map
-	if (!GetGSComponent<MapManager>()->GetCurrentMap()->IsLevelLoaded()) {
-		GetGSComponent<MapManager>()->GetCurrentMap()->ParseSVG();
-	}
-
-
 	UpdateGSComponents(dt);
 	GetGSComponent<GameObjectManager>()->UpdateAll(dt);
 	Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::Plankton>>()->Spray();
@@ -262,6 +255,15 @@ void Mode1::Update(double dt)
 
 	// camera postion update
 	camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
+
+	//Map
+	if (!GetGSComponent<MapManager>()->GetCurrentMap()->IsLevelLoaded()) {
+		GetGSComponent<MapManager>()->GetCurrentMap()->ParseSVG();
+	}
+	//camera limit update
+	if (GetGSComponent<MapManager>()->IsMapChanged()) {
+		camera->SetLimit(GetGSComponent<MapManager>()->GetCurrentMap()->GetMapBoundary());
+	}
 
 	// Update Fish Generator
 	fishGenerator->GenerateFish(dt);

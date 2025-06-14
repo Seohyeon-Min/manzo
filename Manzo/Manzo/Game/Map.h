@@ -49,6 +49,7 @@ public:
 	std::vector<vec2> parsePathData(const std::string& pathData);	// path parsing
 	void LoadMapInBoundary(const Math::rect& camera_boundary);
 	bool IsOverlapping(const Math::rect& a, const Math::rect& b);
+	bool IsOverlappingMargin(const Math::rect& a, const Math::rect& b);
 	bool IsLevelLoaded() { return level_loaded; }
 	Math::rect GetMapBoundary() { return map_boundary; }
 

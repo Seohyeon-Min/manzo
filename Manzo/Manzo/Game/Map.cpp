@@ -310,6 +310,13 @@ std::vector<vec2> Map::parsePathData(const std::string& pathData) {
 }
 
 bool Map::IsOverlapping(const Math::rect& camera_boundary, const Math::rect& rock) {
+    return !(camera_boundary.Right() < rock.Left() ||
+        camera_boundary.Left() > rock.Right() ||
+        camera_boundary.Top() < rock.Bottom() ||
+        camera_boundary.Bottom() > rock.Top());
+}
+
+bool Map::IsOverlappingMargin(const Math::rect& camera_boundary, const Math::rect& rock) {
     return !(camera_boundary.Right() + margin < rock.Left() ||
         camera_boundary.Left() - margin > rock.Right() ||
         camera_boundary.Top() + margin < rock.Bottom() ||
@@ -322,7 +329,7 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
 
         if (!rocks.empty()) {
 
-            bool overlapping = IsOverlapping(camera_boundary, rockgroup->FindBoundary());
+            bool overlapping = IsOverlappingMargin(camera_boundary, rockgroup->FindBoundary());
 
             if (overlapping) {
                 //Add Rock in GameState
@@ -395,6 +402,7 @@ void Map::UnloadAll() {
             rockgroup = nullptr;
             delete rockgroup;
     }
+    std::cout << "Unlaod Complete" + map_index << std::endl;
 }
 
 void Map::LoadPNG()
