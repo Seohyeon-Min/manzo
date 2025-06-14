@@ -110,11 +110,22 @@ private:
 
 class CirclePattern : public Effect {
 public:
-    CirclePattern(float radius);
+    CirclePattern(float radius, float life = 4.f);
     void Update(double dt) override;
     void Draw(DrawLayer drawlayer = DrawLayer::DrawLast) override;
 private:
     void SetUni(const GLShader* shader);
     float spawn_t;
     float radius;
+};
+
+class Flash : public Effect {
+public:
+    Flash();
+    void Update(double dt) override;
+    void Draw(DrawLayer drawlayer = DrawLayer::DrawLast) override;
+private:
+    void SetUni(const GLShader* shader);
+    float life = 0;
+    float max_life = 2.4f;
 };

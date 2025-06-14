@@ -38,6 +38,7 @@ private:
     bool beat = true;
     bool is_on_beat = false;
     bool playing = false;
+    bool delay_count_switch = false;
     AudioManager* audio;
     int channel_id = 0;
     std::string music_name;

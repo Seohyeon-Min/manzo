@@ -25,7 +25,7 @@ void Beat::LoadMusicToSync(std::string _music_name)
 void Beat::ResetCalibration() {
     user_calibration = 0;
 }
-int asdfasdf = 0;
+
 void Beat::Update(double dt)
 {
     if (!playing)
@@ -40,13 +40,16 @@ void Beat::Update(double dt)
         beat = false;
     }
 
+    
     if (current_delay_duration + user_calibration <= time_taken ) { // delay count
         delay_count++;
+        delay_count_switch = true;
         if (delay_count >= 16) {
             delay_count = 0;
         }
         current_delay_duration += delay_duration;
     }
+    else delay_count_switch = false;
 
     if (duration + user_calibration <= time_taken) { // right beat
         beat = true; // Beat detected
@@ -84,7 +87,7 @@ void Beat::Update(double dt)
     //    std::cout << asdfasdf++ << "fixed : " << fixed_duration << " duration : " << duration << " - on beat\n";
     //if (beat) std::cout << "beat @ " << time_taken << '\n';
     //std::cout << (is_on_beat ? "ON\n" : "OFF\n");
-    //std::cout << beat << " <- beat ," << delay_count << " <- delay_count \n";
+    std::cout << delay_count_switch << " <- delay_count_switch ," << delay_count << " <- delay_count \n";
     time_taken += dt;
 }
 
