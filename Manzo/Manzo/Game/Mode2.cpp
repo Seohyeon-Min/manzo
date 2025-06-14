@@ -345,7 +345,7 @@ void Mode2::Draw() {
 		std::cout << hold_timer << std::endl;
 
 		progress = std::clamp(hold_timer / 5.0f, 0.0f, 1.0f);
-		Engine::GetRender().DrawCircleProgress({ Engine::GetInput().GetMousePos().mouseCamSpaceX, Engine::GetInput().GetMousePos().mouseCamSpaceY }, 30.0f, progress, 3);
+		Engine::GetRender().DrawCircleProgress({ Engine::GetInput().GetMousePos().mouseCamSpaceX, Engine::GetInput().GetMousePos().mouseCamSpaceY }, 30.0f,progress,1.f );
 	}
 }
 
@@ -383,5 +383,5 @@ void Mode2::Unload() {
 
 	background = nullptr;
 	scenario = nullptr;
-	progress = 0;
+	hold_timer = 0.f;
 }

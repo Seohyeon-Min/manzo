@@ -784,12 +784,12 @@ void Render::DrawCircleProgress(vec2 center, float radius, float current_progres
     float angle_max = float(10.0f * PI * progress_ratio);
 
     for (int i = 0; i < segments; ++i) {
-        float theta1 = angle_step * i;
-        float theta2 = angle_step * (i + 1);
+        float theta1 = (float)(angle_step * i + (PI / 2.0f));        
+        float theta2 = (float)(angle_step * (i + 1) + (PI / 2.0f));  
 
-        if (theta1 >= angle_max) break;
+        if (theta1 >= angle_max + (PI / 2.0f)) break;
 
-        if (theta2 > angle_max) theta2 = angle_max;
+        if (theta2 > angle_max + (PI / 2.0f)) theta2 = (float)(angle_max + (PI / 2.0f));
 
         vec2 p1 = center + vec2{ radius * std::cos(theta1), radius * std::sin(theta1) };
         vec2 p2 = center + vec2{ radius * std::cos(theta2), radius * std::sin(theta2) };
