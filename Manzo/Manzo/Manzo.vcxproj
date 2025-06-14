@@ -39,7 +39,6 @@
     <ClCompile Include="Engine\TextureManager.cpp" />
     <ClCompile Include="Engine\Timer.cpp" />
     <ClCompile Include="Engine\UI.cpp" />
-    <ClCompile Include="Game\Cali.cpp" />
     <ClCompile Include="Game\FlockingFish.cpp" />
     <ClCompile Include="Game\Background.cpp" />
     <ClCompile Include="Game\Boss.cpp" />
@@ -63,6 +62,7 @@
     <ClCompile Include="Game\NPC.cpp" />
     <ClCompile Include="Game\GameOption.cpp" />
     <ClCompile Include="Game\Player.cpp" />
+    <ClCompile Include="Game\RayCasting.cpp" />
     <ClCompile Include="Game\ScenarioComponent.cpp" />
     <ClCompile Include="Game\PopUp.cpp" />
     <ClCompile Include="Game\ScreenWrap.cpp" />
@@ -117,7 +117,6 @@
     <ClInclude Include="Engine\TextureManager.h" />
     <ClInclude Include="Engine\Timer.h" />
     <ClInclude Include="Engine\UI.h" />
-    <ClInclude Include="Game\Cali.h" />
     <ClInclude Include="Game\FlockingFish.h" />
     <ClInclude Include="Game\Background.h" />
     <ClInclude Include="Game\Boss.h" />
@@ -141,6 +140,7 @@
     <ClInclude Include="Game\GameOption.h" />
     <ClInclude Include="Game\Particles.h" />
     <ClInclude Include="Game\Player.h" />
+    <ClInclude Include="Game\RayCasting.h" />
     <ClInclude Include="Game\SaveData.h" />
     <ClInclude Include="Game\ScenarioComponent.h" />
     <ClInclude Include="Game\PopUp.h" />

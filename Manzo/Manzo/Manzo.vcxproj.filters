@@ -204,7 +204,7 @@
     <ClCompile Include="Game\GameOption.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Cali.cpp">
+    <ClCompile Include="Game\RayCasting.cpp">
       <Filter>Game</Filter>
     </ClCompile>
   </ItemGroup>
@@ -426,7 +426,7 @@
     <ClInclude Include="Game\GameOption.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Cali.h">
+    <ClInclude Include="Game\RayCasting.h">
       <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>

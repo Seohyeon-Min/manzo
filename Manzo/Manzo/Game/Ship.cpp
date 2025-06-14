@@ -8,6 +8,7 @@
 #include "WindowState.h"
 #include "Monster.h"
 #include "States.h"
+#include "RayCasting.h"
 
 #include <iostream>
 #include "GameOption.h"
@@ -16,6 +17,7 @@ Ship::Ship(vec2 start_position) :
 	GameObject(start_position), move(false)
 {
 	AddGOComponent(new Sprite("assets/images/ship/ship.spt", this));
+
 	beat = &Engine::GetBeat();
 	hit_text = Engine::GetTextureManager().Load("assets/images/ship/ship_hit.png");
 
@@ -355,7 +357,6 @@ void Ship::FixedUpdate(double fixed_dt) {
 
 
 void Ship::Draw(DrawLayer drawlayer) {
-
 	if (hit_with) {
 		DrawCall draw_call = {
 		hit_text,                       // Texture to draw
