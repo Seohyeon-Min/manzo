@@ -207,13 +207,14 @@
     <ClCompile Include="Engine\Procedual.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Game\JellyEnemy.cpp">
-    </ClCompile>
     <ClCompile Include="Game\Loading.cpp">
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Engine\DialogSystem.cpp">
       <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\JellyEnemy.cpp">
+      <Filter>Game</Filter>
     </ClCompile>
   </ItemGroup>
   <!-- 헤더 파일(ClInclude)에 필터 적용 -->
@@ -438,7 +439,7 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Game\JellyEnemy.h">
-    <Filter>Game</Filter>
+      <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Game\Loading.h">
       <Filter>Game</Filter>

@@ -24,23 +24,26 @@ void GameObjectManager::Unload()
 	objects.clear();
 }
 
-void GameObjectManager::UpdateAll(double dt)
-{
-	std::vector<GameObject*> destroy_objects;
+void GameObjectManager::UpdateAll(double dt) {
+	// 1. update only
 	for (auto object : objects) {
-		object->Update(dt);
+		object->Update(dt); // 이 시점에서는 delete 안 일어남
+	}
+
+	// 2. collect to delete
+	std::vector<GameObject*> to_delete;
+	for (auto object : objects) {
 		if (object->Destroyed()) {
-			destroy_objects.push_back(object);
+			to_delete.push_back(object);
 		}
 	}
-	for (auto d_object : destroy_objects) {
-		if (d_object != nullptr) {
-			objects.remove(d_object);
-			delete d_object;
-		}
+
+	// 3. delete safely
+	for (auto obj : to_delete) {
+		objects.remove(obj);
+		delete obj;
 	}
 }
-
 void GameObjectManager::FixedUpdateAll(double dt)
 {
 	if (objects.empty()) return;

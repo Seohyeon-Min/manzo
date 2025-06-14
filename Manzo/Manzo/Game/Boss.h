@@ -1,6 +1,8 @@
 #pragma once
 #include "../Engine/GameObject.h"
 #include "GameObjectTypes.h"
+#include "BossBullet.h"
+#include "JellyEnemy.h"
 #include <list>
 #include <chrono>
 #include <vector>
@@ -39,7 +41,8 @@ public:
 	void InitializeStates();
 	void AfterDied();
 	const std::array<int, 2> GetFirstPosition() { return position; }
-	void Bullet(Boss* boss);
+	void Bullet(Boss* boss, BossBullet::BulletType type);
+	void Jelly(Boss* boss, JellyEnemy::JellyType jellytype, int X_position, int y_posiiton , BossBullet::BulletType bullettype);
 	void AttackCircle(vec2 pos, double radius, double elapsed_time);
 	void DrawShieldRange(vec2 pos, double radius);
 	void UpdateAttackCircles(double dt);
@@ -133,6 +136,7 @@ private:
 	bool isattack;
 	float currentScaleX = 1.0f;
 	float targetScaleX = 1.0f;
+	bool jelly_pop = false;
 
 	GLTexture* boss_body = nullptr;
 

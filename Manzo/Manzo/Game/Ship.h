@@ -38,7 +38,7 @@ private:
 
     static constexpr double speed = 6500.f;
     static constexpr float deceleration = 0.88f;
-    static constexpr double skidding_speed = 1500.f;
+    static constexpr double skidding_speed = 150.f;
     double slow_down_factor = 0.02;
     float toi = 0;
     bool move;

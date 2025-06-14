@@ -9,6 +9,13 @@
 #include "../Engine/MathUtils.h"
 #include "Effect.h"
 #include "BackGround.h"
+#include <iostream>
+#include <cstdlib>
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctime>
+
+
 
 std::vector<GameObject::State*> stateMap;
 std::vector<std::string> BossJSONfileMap;
@@ -49,13 +56,18 @@ bool IsFirstFrame() {
 }
 
 
-void Boss::Bullet(Boss* boss) {
+void Boss::Bullet(Boss* boss,BossBullet::BulletType type) {
 	
-		BossBullet* bullet_ptr = new BossBullet(boss->GetPosition(), (float)(boss->beat->GetFixedDuration()) * 2, BossBullet::BulletType::Homing);
+		BossBullet* bullet_ptr = new BossBullet(boss->GetPosition(), (float)(boss->beat->GetFixedDuration()) * 2, type);
 		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bullet_ptr);
-		/*JellyEnemy* jelly_ptr = new JellyEnemy({ boss->GetPosition().x, boss->GetPosition().y - 400 }, 50 ,(float)(boss->beat->GetFixedDuration()) * 4, JellyEnemy::JellyType::Up);
-		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(jelly_ptr);*/
+}
 
+void Boss::Jelly(Boss* boss, JellyEnemy::JellyType jellytype, int X_position, int y_posiiton, BossBullet::BulletType bullettype) {
+	JellyEnemy* jelly_ptr = new JellyEnemy({ boss->GetPosition().x+X_position, boss->GetPosition().y - y_posiiton }, 100 ,(float)(boss->beat->GetFixedDuration()) * 8, jellytype);
+	Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(jelly_ptr);
+	if (jelly_ptr->Destroyed()) {
+		boss->Bullet(boss, bullettype);
+	}
 }
 
 int cnt = 0;
@@ -64,14 +76,14 @@ void Boss::Movingtolocation_Boss(int targetEntryNum, Boss* boss) {
 	if (targetEntryNum - 1 < boss->parttern.size()) {
 		const auto& entryVec = boss->parttern[targetEntryNum - 1];
 		for (const auto& entryData : entryVec) {
-			if (boss->beat->GetDelayCount() == entryData.delay + 1) {
+			if (boss->beat->GetDelayCount() == entryData.delay) {
 				
 					if(boss->beat->GetBeat()){
 						boss->current_position = entryData.position;
 					
 						// here
 						for(int i =0; i <1; ++i){
-						boss->Bullet(boss);
+						boss->Bullet(boss, BossBullet::BulletType::Homing);
 					}
 					}
 				
@@ -92,11 +104,33 @@ void Boss::MovingtolocationPlus_Boss(int targetEntryNum, Boss* boss) {
 	if (targetEntryNum - 1 < boss->parttern.size()) {
 		const auto& entryVec = boss->parttern[targetEntryNum - 1];
 		for (const auto& entryData : entryVec) {
-			if (entryData.delay + 1 == boss->beat->GetDelayCount()) {
+
+			if (entryData.delay + 1 == boss->beat->GetDelayCount()&& boss->beat->GetDelaySwitch()) {
 				for(int i = 0; i < 1; ++i){
 					boss->current_position += entryData.position;
 				}
+				
+				if (entryData.attacktype == 1) {
+					boss->Jelly(boss, JellyEnemy::JellyType::Up, (rand() % 601) - 300, 370, BossBullet::BulletType::Accelerating);
+				}
+				else if (entryData.attacktype == 2) {
+
+					boss->Bullet(boss, BossBullet::BulletType::Accelerating);
+
+				}
+				else if (entryData.attacktype == 3) {
+
+					boss->Bullet(boss, BossBullet::BulletType::Homing);
+
+				}
+				else if (entryData.attacktype == 4) {
+
+					boss->Bullet(boss, BossBullet::BulletType::Wave);
+				}
+				
 			}
+			
+			
 		}
 	}
 }
