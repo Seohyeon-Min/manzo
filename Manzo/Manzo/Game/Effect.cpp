@@ -304,7 +304,6 @@ void BossBlackCircle2::Update(double dt)
     if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
         time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
     }
-    std::cout << time << " - time\n";
     if (time >= 15.f + spawn_t) {
         Destroy();
     }
@@ -339,3 +338,47 @@ void BossBlackCircle2::Draw(DrawLayer drawlayer)
     GameObject::Draw(draw_call);
 }
 
+BlackTransition::BlackTransition() : Effect({}, -1.f)
+{
+    AddGOComponent(new Sprite("assets/images/effect/full_quad.spt", this));
+    float time = 0.f;
+    if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+        time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+    }
+    spawn_t = time;
+}
+
+void BlackTransition::Update(double dt)
+{
+    if (stop) Destroy();
+}
+
+void BlackTransition::Draw(DrawLayer drawlayer)
+{
+    Sprite* sprite = GetGOComponent<Sprite>();
+    DrawCall draw_call = {
+        sprite,
+        &GetMatrix(),
+        Engine::GetShaderManager().GetShader("ink_transition")
+    };
+
+    draw_call.settings.do_blending = true;
+    draw_call.settings.is_camera_fixed = true;
+    draw_call.sorting_layer = DrawLayer::DrawFirst;
+    draw_call.order_in_layer = 1;
+    draw_call.SetUniforms = [this](const GLShader* shader) { SetUni(shader); };
+    GameObject::Draw(draw_call);
+}
+
+void BlackTransition::SetUni(const GLShader* shader)
+{
+    float time = 0.f;
+    if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+        time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+    }
+
+    shader->SendUniform("uTime", time);
+    shader->SendUniform("uStartTime", spawn_t);
+    shader->SendUniform("uDelay", 18.7f);
+    shader->SendUniform("uResolution", Engine::window_width, Engine::window_height);
+}

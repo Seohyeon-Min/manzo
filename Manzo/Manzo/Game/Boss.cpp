@@ -143,24 +143,6 @@ void Boss::Check_BossBehavior(int targetEntryNum, GameObject* object) {
 	}
 }
 
-bool aa = false;
-float starter = 0.f;
-void SetTansUni(const GLShader* shader)
-{
-	float time = 0.f;
-	if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
-		time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
-	}
-	if (!aa) {
-		starter = time;
-		aa = true;
-	}
-	
-	shader->SendUniform("uTime", time);
-	shader->SendUniform("uStartTime", starter);
-	shader->SendUniform("uResolution", Engine::window_width, Engine::window_height);
-	std::cout << time << " <- time. " << starter << " start..\n ";
-}
 
 void Boss::State_CutScene::Enter(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
@@ -174,6 +156,8 @@ void Boss::State_CutScene::Update(GameObject* object, double dt) {
 void Boss::State_CutScene::CheckExit(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
 	if (boss->beat->GetBeat()) {
+		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new BossBlackCircle2(boss->GetPosition()));
+		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new BlackTransition());
 		Engine::GetAudioManager().SetMute("Level1_bgm", true);
 		Engine::GetAudioManager().StopChannel("e morse");
 		//Engine::GetAudioManager().PlayMusics("e boss");
@@ -412,9 +396,6 @@ void SetUni(const GLShader* shader) {
 
 void Boss::Draw(DrawLayer drawlayer)
 {
-
-	Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new BossBlackCircle2(GetPosition()));
-	Engine::GetGameStateManager().GetGSComponent<Background>()->ShaderBackgroundDraw(Engine::GetShaderManager().GetShader("ink_transition"), *Engine::GetGameStateManager().GetGSComponent<Cam>(), nullptr, [this](const GLShader* shader) { SetTansUni(shader); });
 
 	DrawCall draw_call = {
 		GetGOComponent<Sprite>()->GetTexture(),

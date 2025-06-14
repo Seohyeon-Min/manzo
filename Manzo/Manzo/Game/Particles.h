@@ -105,7 +105,7 @@ namespace Particles {
             drawlayer = DrawLayer::Draw;
         };
         std::string TypeName() override { return "CaptureEffect Particle"; }
-        static constexpr int MaxCount = 100;
+        static constexpr int MaxCount = 50;
         static constexpr double MaxLife = 1.05;
         float scale;
     };
@@ -119,7 +119,7 @@ namespace Particles {
             drawlayer = DrawLayer::DrawLast;
         };
         std::string TypeName() override { return "CaptureEffect Particle"; }
-        static constexpr int MaxCount = 100;
+        static constexpr int MaxCount = 50;
         static constexpr double MaxLife = 0.80;
         float scale;
     };
@@ -133,7 +133,7 @@ namespace Particles {
             drawlayer = DrawLayer::DrawLast;
         };
         std::string TypeName() override { return "CaptureEffect Particle"; }
-        static constexpr int MaxCount =200; 
+        static constexpr int MaxCount =50; 
         static constexpr double MaxLife = 0.18;
         float scale;
     };
@@ -144,10 +144,10 @@ namespace Particles {
         {
             scale = util::random(0.0f, 0.5f); shader = Engine::GetShaderManager().GetShader("emissive");
             life_offset = util::random(0.0f, 0.1f);
-            drawlayer = DrawLayer::DrawFirst;
+            drawlayer = DrawLayer::Draw;
         };
         std::string TypeName() override { return "CaptureEffect Particle"; }
-        static constexpr int MaxCount =100;
+        static constexpr int MaxCount =50;
         static constexpr double MaxLife = 0.12;
         float scale;
     };
@@ -159,10 +159,10 @@ namespace Particles {
             scale = util::random(0.f, 0.8f);
             life_offset = util::random(0.0f, 0.3f);
             //life_offset = util::random(0.0f, 0.70f);
-            drawlayer = DrawLayer::DrawFirst;
+            drawlayer = DrawLayer::Draw;
         };
         std::string TypeName() override { return "CaptureEffect Particle"; }
-        static constexpr int MaxCount = 100;
+        static constexpr int MaxCount = 50;
         static constexpr double MaxLife = 0.4;
         float scale;
     };
