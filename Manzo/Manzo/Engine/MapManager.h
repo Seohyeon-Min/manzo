@@ -59,6 +59,8 @@ public:
 	void LoadMapInBoundary(const Math::rect& camera_boundary);
 	bool IsOverlapping(const Math::rect& a, const Math::rect& b);
 
+	void FillPolygonScanline(const std::vector<ivec2>& polygon, std::vector<unsigned char>& data, int width, int height);
+
 	void Translate(const vec2& offset);
 	void UnloadAll();
 
@@ -70,6 +72,8 @@ public:
 	int GetWorldWidth() { return width; }
 	int GetWorldHeight() { return height; }
 	std::vector<std::vector<bool>> GetMask() { return mask; }
+
+	GLuint obstacleTex = 0;
 
 private:
 	std::mt19937 gen;
@@ -87,6 +91,7 @@ private:
 	vec2 circle_position{ 0,0 };
 	float EndY = 100.0f;
 	std::vector<ivec2> valid_spawn_positions;
-
+	
+    std::vector<unsigned char> data;
 
 };

@@ -7,7 +7,9 @@ Project:    Manzo
 Author:     SeokWha Hong
 Created:    September 12, 2024
 */
-
+#define _CRT_SECURE_NO_WARNINGS
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
 #include "stb_image.h"
 #include "MapManager.h"
 #include "GameObjectManager.h"
@@ -26,6 +28,7 @@ Created:    September 12, 2024
 #ifndef M_PI
 #define M_PI 3.14
 #endif
+#include "Camera.h"
 
 
 //MapManager
@@ -432,54 +435,141 @@ bool Map::IsOverlapping(const Math::rect& camera_boundary, const Math::rect& roc
         camera_boundary.Bottom() - margin > rock.Top());
 }
 
+void Map::FillPolygonScanline(const std::vector<ivec2>& polygon, std::vector<unsigned char>& data, int width, int height) {
+    if (polygon.size() < 3) return;
+
+    // 폴리곤의 Y 범위 구하기
+    int minY = polygon[0].y;
+    int maxY = polygon[0].y;
+    for (const auto& vertex : polygon) {
+        minY = std::min(minY, vertex.y);
+        maxY = std::max(maxY, vertex.y);
+    }
+
+    // 각 스캔라인에 대해
+    for (int y = minY; y <= maxY; ++y) {
+        std::vector<int> intersections;
+
+        // 모든 에지와의 교점 찾기
+        for (size_t i = 0; i < polygon.size(); ++i) {
+            int j = int((i + 1) % polygon.size());
+            ivec2 p1 = polygon[i];
+            ivec2 p2 = polygon[j];
+
+            // 수평선 제외
+            if (p1.y == p2.y) continue;
+
+            // y가 에지 범위에 있는지 확인
+            if (y >= std::min(p1.y, p2.y) && y < std::max(p1.y, p2.y)) {
+                // 교점의 x 좌표 계산
+                int x = p1.x + (y - p1.y) * (p2.x - p1.x) / (p2.y - p1.y);
+                intersections.push_back(x);
+            }
+        }
+
+        // 교점들을 x 좌표로 정렬
+        std::sort(intersections.begin(), intersections.end());
+
+        // 교점 쌍 사이를 채우기 (even-odd rule)
+        for (size_t i = 0; i < intersections.size(); i += 2) {
+            if (i + 1 < intersections.size()) {
+                int startX = intersections[i];
+                int endX = intersections[i + 1];
+
+                for (int x = startX; x <= endX; ++x) {
+                    if (x >= 0 && x < width && y >= 0 && y < height) {
+                        data[y * width + x] = 255;
+                    }
+                }
+            }
+        }
+    }
+}
+
 void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
+    // 1. 화면 해상도(또는 원하는 마스크 해상도) 지정
+    int width = Engine::window_width;   // 또는 원하는 해상도
+    int height = Engine::window_height;
+    data.resize(width * height, 0);
+
+    // 2. 월드→마스크 변환 람다 (카메라 뷰 기준)
+    auto wv = [&](vec2 worldPos) -> ivec2 {
+        float world_left = camera_boundary.Left();
+        float world_right = camera_boundary.Right();
+        float world_bottom = camera_boundary.Bottom();
+        float world_top = camera_boundary.Top();
+
+        float world_width = world_right - world_left;
+        float world_height = world_top - world_bottom;
+
+        int maskX = static_cast<int>(((worldPos.x - world_left) / world_width) * width);
+        int maskY = static_cast<int>(((world_top - worldPos.y) / world_height) * height);
+
+        return {
+            std::clamp(maskX, 0, width - 1),
+            std::clamp(maskY, 0, height - 1)
+        };
+        };
+
+    // 3. RockGroup 순회 및 장애물 맵 마스킹
     for (RockGroup* rockgroup : rock_groups) {
         std::vector<Rock*> rocks = rockgroup->GetRocks();
-
-        if(!rocks.empty()){
-
+        if (!rocks.empty()) {
             bool overlapping = IsOverlapping(camera_boundary, rockgroup->FindBoundary());
-
-            if (true) {
-                //Add Rock in GameState
-                for (auto& rock : rockgroup->GetRocks()) {
-
-                    Polygon original_poly = rock->GetOriginalPoly();
-                    Polygon modified_poly = rock->GetModifiedPoly();
+            if (overlapping) {
+                for (auto& rock : rocks) {
                     if (!rock->IsActivated()) {
                         rock->Active(true);
-                        rock->AddGOComponent(new MAP_SATCollision(modified_poly, rock));
+                        rock->AddGOComponent(new MAP_SATCollision(rock->GetModifiedPoly(), rock));
                         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rock);
                     }
                 }
-
-                // Add RockGroup in GameState
                 if (!rockgroup->IsActivated()) {
                     rockgroup->Active(true);
                     rockgroup->SetPosition(rockgroup->FindCenterRect());
                     Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rockgroup);
                 }
-
+                // --- 장애물 맵에 Rock 폴리곤 마스킹 ---
+                for (Rock* rock : rocks) {
+                    Polygon poly = rock->GetOriginalPoly();
+                    std::vector<ivec2> maskPoly;
+                    for (auto& vert : poly.vertices) {
+                        maskPoly.push_back(wv(vert));
+                    }
+                    FillPolygonScanline(maskPoly, data, width, height);  // 폴리곤을 마스크에 채우기
+                }
             }
             else {
                 for (Rock* rock : rocks) {
-                    //Remove Rock in GameState
                     if (rock->IsActivated()) {
                         rock->Active(false);
                         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Remove(rock);
-                        //std::cout << "Unloaded Rock!!!!!!!!!!!!!!!!!" << "\n";
                     }
                 }
-
-                // Remove RockGroup in GameState
                 if (rockgroup->IsActivated()) {
                     rockgroup->Active(false);
                     Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Remove(rockgroup);
                 }
             }
-            
         }
     }
+
+    // 4. OpenGL 텍스처로 업로드(최초 1회 생성, 이후 데이터만 갱신)
+    if (obstacleTex == 0) {
+        glGenTextures(1, &obstacleTex);
+        glBindTexture(GL_TEXTURE_2D, obstacleTex);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, data.data());
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    }
+    else {
+        glBindTexture(GL_TEXTURE_2D, obstacleTex);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RED, GL_UNSIGNED_BYTE, data.data());
+    }
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    // 5. 디버그용 PNG로 저장
+    stbi_write_png("obstacle.png", width, height, 1, data.data(), width);
 }
 
 void Map::Translate(const vec2& offset) {

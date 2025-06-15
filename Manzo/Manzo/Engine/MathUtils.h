@@ -3,6 +3,9 @@
 #include <algorithm>
 #include <mat3.h>
 
+#ifndef M_PI
+#define M_PI 3.14
+#endif
 
 /*
 * 

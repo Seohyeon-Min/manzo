@@ -14,9 +14,21 @@ Raycasting::Raycasting(GameObject* object_) : object(object_)
 
 
     shader->Use();
-    shader->SendUniform("uObstacleMap", 1);
     shader->SendUniform("uScreenSize", w, h);
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
 
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    // 초기 빈 데이터 (동적업데이트 예정)
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * (NUM_RAYS + 2), nullptr, GL_DYNAMIC_DRAW);
+
+    // 위치 attribute (vec2)
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+
+    glBindVertexArray(0);
 }
 
 Raycasting::~Raycasting()
@@ -26,14 +38,98 @@ Raycasting::~Raycasting()
 	shader = nullptr;
 }
 
+#include <vector>
+#include <cmath>
+#include "MathUtils.h"
+
+void Raycasting::UpdateMesh()
+{
+    vec2 lightPos = object->GetPosition();
+
+    // cam, world_to_ndc, ndc_to_screen 등을 얻는다
+    Cam* cam = Engine::GetGameStateManager().GetGSComponent<Cam>();
+    mat3 WORLD_TO_NDC = cam->world_to_ndc;
+    mat3 ndc_to_screen = mat3::build_translation({ w / 2.f, h / 2.f }) * mat3::build_scale({ w / 2.f, h / 2.f });
+    mat3 world_to_screen = ndc_to_screen * WORLD_TO_NDC;
+
+    std::vector<vec2> points;
+    points.reserve(NUM_RAYS);
+
+    // raycast 로 obstacle 검사 (world 좌표계)
+    for (int i = 0; i < NUM_RAYS; ++i)
+    {
+        float angle = (float)i / NUM_RAYS * 2.0f * (float)M_PI;
+        vec2 dir = { cos(angle), sin(angle) };
+
+        float stepSize = 5.0f;
+        float maxDist = radius;
+
+        vec2 pos = lightPos;
+        float dist = 0.0f;
+        bool hit = false;
+
+        while (dist < maxDist)
+        {
+            pos = pos + dir * stepSize;
+            dist += stepSize;
+
+            int mapX = (int)pos.x; // 또는 obstacleMap 좌표계 변환 필요
+            int mapY = (int)pos.y;
+
+            if (pos.x < 0 || pos.x >= 1280 || pos.y < 0 || pos.y >=720) break;
+
+                hit = true;
+        }
+
+        if (!hit)
+            pos = lightPos + dir * maxDist;
+
+        // world 좌표 pos → screen 좌표로 변환
+        vec3 p_world = { pos.x, pos.y, 1.0f };
+        vec3 p_screen = world_to_screen * p_world;
+        points.push_back({ p_screen.x, p_screen.y });
+    }
+
+    // 빛 위치도 screen 좌표로 변환
+    vec3 lightPos_screen = world_to_screen * vec3{ lightPos.x, lightPos.y, 1.0f };
+
+    // 삼각형 팬용 버텍스 배열 생성
+    std::vector<float> vertices;
+    vertices.reserve((NUM_RAYS + 2) * 2);
+
+    vertices.push_back(lightPos_screen.x);
+    vertices.push_back(lightPos_screen.y);
+
+    for (auto& p : points)
+    {
+        vertices.push_back(p.x);
+        vertices.push_back(p.y);
+    }
+
+    vertices.push_back(points[0].x);
+    vertices.push_back(points[0].y);
+
+    numVertices = NUM_RAYS + 2;
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(float), vertices.data());
+}
+
 void Raycasting::Render()
 {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_DST_COLOR, GL_ZERO);
 
+    UpdateMesh();
+
     Cam* cam = Engine::GetGameStateManager().GetGSComponent<Cam>();
     shader->Use();
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, Engine::GetGameStateManager().GetGSComponent<MapManager>()->GetMap(0)->obstacleTex);  // map에서 가져옴
+
+    shader->SendUniform("uObstacleMap", 1);
 
     ///////////////////////////////////////////////////////////////////////////////////
     UpdateRadius();
@@ -65,7 +161,8 @@ void Raycasting::Render()
 
 
     glBindVertexArray(VAO);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, numVertices);
+    glBindVertexArray(0);
 
      Engine::GetRender().RenderQuad();
 }
