@@ -1,9 +1,5 @@
 #include "DialogSystem.h"
-
-DialogSystem& DialogSystem::Instance() {
-    static DialogSystem instance;
-    return instance;
-}
+#include "../Game/DialogBox.h"
 
 void DialogSystem::SetDialog(std::shared_ptr<Dialog> dlg) {
     current_dialog = dlg;

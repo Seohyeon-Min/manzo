@@ -73,15 +73,15 @@ void Mode2::Load() {
 	Engine::GetIconManager().LoadIconList();
 
 	// Dialog
-	dialog_ptr = new Dialog({ 0,0 });
-	GetGSComponent<GameObjectManager>()->Add(dialog_ptr);
-
+	dialog_ptr = std::make_shared<Dialog>(vec2(0, 0));
+	GetGSComponent<GameObjectManager>()->Add(dialog_ptr.get());
+	Engine::GetDialogSystem().SetDialog(dialog_ptr);
 	//Engine::GetLogger().LoadSaveFile();
 
 	//ScenarioComponent
-	scenario = new ScenarioComponent(dialog_ptr);
-	AddGSComponent(scenario);
-	scenario->Load();
+	//scenario = new ScenarioComponent(dialog_ptr);
+	//AddGSComponent(scenario);
+	//scenario->Load();
 
 	// Module
 	module_ptr = new Module({ 0, 0 });
@@ -101,12 +101,15 @@ void Mode2::Load() {
 	// Mouse
 	GetGSComponent<GameObjectManager>()->Add(new Mouse);
 
+	// Scenario
+	Engine::GetScenarioSystem().LoadMode2Scenarios();
+
 
 	sell_popup = new PopUp({ 0,0 }, "assets/images/sell_popup.spt");
 	GetGSComponent<GameObjectManager>()->Add(sell_popup);
 
 
-	Engine::GetIconManager().AddIcon("Mode2_None", "can_go_shop", "computer", { 276,4.5 }, 2.0f, false, false, true, true);
+	Engine::GetIconManager().AddIcon("Mode2_None", "can_go_shop", "computer", { 288,-40.5 }, 2.0f, false, false, true, true);
 	Engine::GetIconManager().AddIcon("Mode2_None", "can_go_sea", "ship", { 0,-250 }, 1.0f, false, false, true, true);
 	Engine::GetIconManager().AddIcon("FishPopUp", "close_fishPopUp", "close_icon", { 78,105 }, 1.f, false, false, true, false);
 
@@ -334,8 +337,8 @@ void Mode2::Draw() {
 	}
 	else
 	{
-		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "Click Ship to Start the Game", { -100.f,-150.f }, 0.05f, { 0.f,0.f,0.f }, 0.5f);
-		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "Click Computer to Equip Module", { 30.f,30.f }, 0.05f, { 1.f,1.f,1.f }, 0.5f);
+		//Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "Click Ship to Start the Game", { -100.f,-150.f }, 0.05f, { 0.f,0.f,0.f }, 0.5f);
+		//Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "Click Computer to Equip Module", { 30.f,30.f }, 0.05f, { 1.f,1.f,1.f }, 0.5f);
 		sell_popup->SetPop(false);
 		Engine::GetIconManager().HideIconByGroup("FishPopUp");
 		Engine::GetIconManager().HideIconByGroup("FishPopping");
