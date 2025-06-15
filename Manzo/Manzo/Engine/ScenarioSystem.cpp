@@ -4,6 +4,7 @@
 #include "../Game/DialogBox.h"
 #include "../Game/States.h"
 #include "../Game/PopUp.h"
+#include "Icon.h"
 
 void ScenarioSystem::LoadMode2Scenarios()
 {
@@ -20,7 +21,6 @@ void ScenarioSystem::LoadMode2Scenarios()
             npc->Walk();
             Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->SetCollisionON(false);
             Engine::GetInput().SetMouseInputOn(false);
-            //Engine::GetIconManager().SetCollisionON(false);
         }
     );
 
@@ -32,9 +32,6 @@ void ScenarioSystem::LoadMode2Scenarios()
                 std::cout << "dialog is null!" << std::endl;
             }
             dlg->LoadDialogGroup("day-1_1");
-            //Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Mouse>()->SetMouseOn(true);
-            //Engine::GetInput().SetMouseInputOn(false);
-
         }
     );
 
@@ -43,60 +40,55 @@ void ScenarioSystem::LoadMode2Scenarios()
     return dlg && dlg->IsFinished(); },
         []() {
             Engine::GetInput().SetMouseInputOn(true);
-            Engine::GetGameStateManager().ClearNextGameState();
-            Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Tutorial));
-            //auto* quest = new PopUp({ -420,195 }, "assets/images/quest_popup.spt", true);
-            //Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(quest);
-            //quest->SetPop(true);
+            auto* quest = new PopUp({ -420,195 }, "assets/images/quest_popup.spt", true);
+            Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(quest);
+            quest->SetPop(true);
         }
     );
 
 
-    auto tuto_end = std::make_shared<StepEvent>("after_tutorial_end");
 
-    //tuto_end->AddStep(
-    //    []() {
+    auto do_tuto = std::make_shared<StepEvent>("do_tutorial");
+
+    do_tuto->AddStep(
+        [this]() {
+            return (!Engine::GetEventManager().HasEventDone("do_tutorial")) &&
+                triggered;
+        },
+        [this]() {
+            Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->SetCollisionON(false);
+            auto dlg = Engine::GetDialogSystem().GetDialog();
+            if (!dlg) {
+                std::cout << "dialog is null!" << std::endl;
+            }
+            dlg->LoadDialogGroup("do_tutorial");
+        }
+    );
+
+    do_tuto->AddStep(
+        [this, npc]() {auto dlg = Engine::GetDialogSystem().GetDialog();
+    return dlg && dlg->IsFinished(); },
+        []() {
+            Engine::GetInput().SetMouseInputOn(true);
+            Engine::GetGameStateManager().ClearNextGameState();
+            Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Tutorial));
+        }
+    );
+
+    //Engine::GetEventManager().AddEvent(Event("after_tutorial_end",
+    //    [this]() {
     //        return Engine::GetEventManager().HasEventDone("tutorial_end") &&
     //            (Engine::GetGameStateManager().GetStateName() == "Mode2");
     //    },
     //    [this]() {
-    //        dialog->LoadDialogGroup("after_tutorial_end"); /////////////////////////////////////////////////////////////////
-    //        //auto* quest = new PopUp({ -420,195 }, "assets/images/quest_popup.spt", true);
-    //        //Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(quest);
-    //        //quest->SetPop(true);
+    //        // dialog->LoadDialogGroup("after_tutorial_end"); /////////////////////////////////////////////////////////////////
+    //        auto* quest = new PopUp({ -420,195 }, "assets/images/quest_popup.spt", true);
+    //        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(quest);
+    //        quest->SetPop(true);
+
+    //        Engine::GetEventManager().ResetEvent("after_tutorial_end");
     //    }
-    //);
-
-    //tuto_end->AddStep(
-
-    //);
-
-    //tuto_end->AddStep(
-    //    [this, npc]() { return dialog->IsFinished(); },
-    //    []() {
-    //        Engine::GetInput().SetMouseInputOn(true);
-    //        Engine::GetGameStateManager().ClearNextGameState();
-    //        Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Tutorial));
-    //        //auto* quest = new PopUp({ -420,195 }, "assets/images/quest_popup.spt", true);
-    //        //Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(quest);
-    //        //quest->SetPop(true);
-    //    }
-    //);
-
-    Engine::GetEventManager().AddEvent(Event("after_tutorial_end",
-        [this]() {
-            return Engine::GetEventManager().HasEventDone("tutorial_end") &&
-                (Engine::GetGameStateManager().GetStateName() == "Mode2");
-        },
-        [this]() {
-            // dialog->LoadDialogGroup("after_tutorial_end"); /////////////////////////////////////////////////////////////////
-            auto* quest = new PopUp({ -420,195 }, "assets/images/quest_popup.spt", true);
-            Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(quest);
-            quest->SetPop(true);
-
-            Engine::GetEventManager().ResetEvent("after_tutorial_end");
-        }
-    ));
+    //));
 
     Engine::GetEventManager().AddEvent(Event("catch_15_fish",
         []() {
@@ -125,7 +117,7 @@ void ScenarioSystem::LoadMode2Scenarios()
 
 
     Engine::GetEventManager().AddStepEvent(intro);
-    Engine::GetEventManager().AddStepEvent(tuto_end);
+    Engine::GetEventManager().AddStepEvent(do_tuto);
     //intro.AddStep(
     //    []() { return dialog->IsFinished(); },
     //    []() {
@@ -141,4 +133,11 @@ void ScenarioSystem::LoadMode2Scenarios()
     //));
 
     has_initialized = true;
+}
+
+void ScenarioSystem::Mode2Update()
+{
+    bool clicked = Engine::GetIconManager().IsIconClicked("can_go_sea");
+    if (clicked) triggered = true;
+    //std::cout << triggered<<" upader\n";
 }

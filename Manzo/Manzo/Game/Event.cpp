@@ -50,11 +50,12 @@ StepEvent::StepEvent(const std::string& id) : id(id) {}
 
 void StepEvent::AddStep(const std::function<bool()>& trigger, const std::function<void()>& action) {
     steps.emplace_back("step_" + std::to_string(steps.size()), trigger, action);
+    std::cout << "[DEBUG] StepEvent '" << id << "' added\n";
 }
 
 void StepEvent::Update() {
     if (IsFinished()) return;
-
+    std::cout << "[DEBUG] StepEvent update called\n";
     Event& step = steps[current_step];
     if (!step.HasRun()) {
         step.Update();

@@ -24,6 +24,7 @@ void Title::Load()
 	Engine::GetShaderManager().LoadShader("title_gradation", "assets/shaders/post_default.vert", "assets/shaders/title_color_gradation.frag");
 	Engine::GetShaderManager().LoadShader("image_distortion", "assets/shaders/default.vert", "assets/shaders/image_distortion.frag");
 	Engine::GetShaderManager().LoadShader("post_water_wave", "assets/shaders/post_default.vert", "assets/shaders/post_water_wave.frag");
+	Engine::GetShaderManager().LoadShader("post_wave_transition", "assets/shaders/post_default.vert", "assets/shaders/post_wave_transition.frag");
 
 
 	AddGSComponent(new GameObjectManager());

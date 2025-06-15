@@ -261,6 +261,8 @@ void Mode2::Update(double dt) {
 		Engine::GetIconManager().HideIconByGroup("OpenInven");
 	}
 
+	Engine::GetScenarioSystem().Mode2Update();
+
 }
 
 void Mode2::FixedUpdate(double dt)

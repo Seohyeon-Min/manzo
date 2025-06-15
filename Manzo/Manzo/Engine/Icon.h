@@ -36,6 +36,7 @@ public:
 	bool IsHide() { return hide; }
 	void SetSelected(bool select) { selected = select; }
 
+
 	void SetHide(bool set) 
 	{ 
 		hide = set; 
