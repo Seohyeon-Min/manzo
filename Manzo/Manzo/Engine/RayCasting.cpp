@@ -71,7 +71,7 @@ void Raycasting::UpdateMesh()
         // 장애물 맵 접근을 위한 람다 함수
         auto isObstacleAt = [&](vec2 worldPos) -> bool {
             // 월드 좌표를 장애물 맵 좌표로 변환
-            vec2 cameraPos = Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition();
+            vec2 cameraPos = Engine::GetGameStateManager().GetGSComponent<Cam>()->GetTargetPosition();
             float camViewWidth = 20.0f;   // 카메라 뷰 폭
             float camViewHeight = 15.0f;  // 카메라 뷰 높이
 

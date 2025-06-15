@@ -515,12 +515,10 @@ void Map::DrawRockLine(ivec2 p0, ivec2 p1, std::vector<unsigned char>& data, int
 
 
 void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
-    // 1. 화면 해상도(또는 원하는 마스크 해상도) 지정
-    int width = Engine::window_width;   // 또는 원하는 해상도
+    int width = Engine::window_width;
     int height = Engine::window_height;
     data.resize(width * height, 0);
 
-    // 2. 월드→마스크 변환 람다 (카메라 뷰 기준)
     auto wv = [&](vec2 worldPos) -> ivec2 {
         float world_left = camera_boundary.Left();
         float world_right = camera_boundary.Right();
@@ -539,7 +537,6 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
         };
         };
 
-    // 3. RockGroup 순회 및 장애물 맵 마스킹
     for (RockGroup* rockgroup : rock_groups) {
         std::vector<Rock*> rocks = rockgroup->GetRocks();
         if (!rocks.empty()) {
@@ -564,10 +561,7 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
                     for (auto& vert : poly.vertices) {
                         maskPoly.push_back(wv(vert));
                     }
-                    for (size_t i = 0; i < maskPoly.size(); ++i) {
-                        int j = int((i + 1) % maskPoly.size());
-                        DrawRockLine(maskPoly[i], maskPoly[j], data, width, height);
-                    }
+                    FillPolygonScanline(maskPoly, data, width, height);
                 }
             }
             else {
@@ -585,7 +579,7 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
         }
     }
 
-    // 4. OpenGL 텍스처로 업로드(최초 1회 생성, 이후 데이터만 갱신)
+
     if (obstacleTex == 0) {
         glGenTextures(1, &obstacleTex);
         glBindTexture(GL_TEXTURE_2D, obstacleTex);

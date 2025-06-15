@@ -29,6 +29,7 @@ Created:    March 8, 2023
 class Cam : public Component {
 public:
     Cam();
+    vec2 GetTargetPosition() const;
     void Update(double dt, const vec2& player_position, bool playerMove);
     void SetPosition(vec2 new_position);
     const vec2& GetPosition() const;
