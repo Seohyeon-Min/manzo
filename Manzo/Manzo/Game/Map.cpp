@@ -226,7 +226,6 @@ void Map::ParseSVG() {
 
         if (std::regex_search(currentTag, match, fillColorRegex)) {
             fillColor = match[1].str();
-            std::cout << fillColor << std::endl;
         }
 
         vec2 poly_center = original_poly.FindCenter();
@@ -247,7 +246,6 @@ void Map::ParseSVG() {
                 
             }
             obstacle_rocks.push_back(dynamic_cast<ObstacleRock*>(rock));
-            std::cout << "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" << std::endl;
         }
         else {                                                  
             Rock* rock = new Rock(original_poly, modified_poly, original_poly.FindCenter(), rotateAngle, scale);  //generate general rock

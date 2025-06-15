@@ -66,7 +66,7 @@ private:
 
     //Map boundary
     Math::rect level1_boundary = { {700.f, 0},{4500.f, -5500.f} };
-    Math::rect level1_camera_boundary = { {700.f, 0},{4500.f, -6800.f} };
+    Math::rect level1_camera_boundary = { {700.f, 0},{4400.f, -6800.f} };
     Math::rect level4_boundary = { {-2000.f, -6200.f},{3500.f, -10000.f} };
 
 };
