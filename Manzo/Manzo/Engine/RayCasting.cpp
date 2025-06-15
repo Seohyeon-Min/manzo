@@ -79,5 +79,6 @@ void Raycasting::UpdateRadius()
 
     float t = (y - minY) / (maxY - minY);
 
-    radius = minRadius + t * (maxRadius - minRadius);
+    //radius = minRadius + t * (maxRadius - minRadius);
+    radius =900.f;
 }

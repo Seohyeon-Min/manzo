@@ -101,7 +101,8 @@ void BossBullet::Update(double dt) {
         //    procedual.Update(this, 0.2f);
         //}
         vec2 pos = GetPosition();
-        
+        lifetime -= static_cast<float>(dt);
+
         if (lifetime <= 0.5)
             if (particle_timer->Remaining() <= 0.003) {
                 vec2 bullet_pos = RandomPointAround(pos);
