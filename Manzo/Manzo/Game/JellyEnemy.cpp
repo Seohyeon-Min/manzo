@@ -7,6 +7,7 @@
 #include "Ship.h"
 #include <vector>
 #include <cmath>
+#include "BossBullet.h"
 
 #define PI  3.14159265358979
 #define DEG2RAD (PI/180.0f)
@@ -17,12 +18,8 @@ JellyEnemy::JellyEnemy(vec2 start_position, float hight, float lifetime, JellyTy
     AddGOComponent(new Sprite("assets/images/boss/test_jelly_1.spt", this));
     texture_vector.push_back(Engine::GetTextureManager().Load("assets/images/boss/test_jelly_2.png"));
     texture_vector.push_back(Engine::GetTextureManager().Load("assets/images/boss/test_jelly_3.png"));
-    SetScale(vec2{ 1.f,1.f });
-    static bool seedInitialized = false;
-    if (!seedInitialized) {
-        srand(static_cast<unsigned int>(time(nullptr)));
-        seedInitialized = true;
-    }
+    SetScale(vec2{ scale,scale });
+
 
     ship = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>();
     vec2 shipPos = ship->GetPosition();
@@ -84,17 +81,18 @@ void JellyEnemy::Update(double dt) {
             mat3::build_rotation(procedural_jelly.GetRotation(1, this)) *
             mat3::build_scale(1.f);
     }
+    lifetime -= dt;
+    if (!marked_for_bullet && lifetime <= 0.0f) {
+        bullet_spawn_position = this->GetPosition();
+        marked_for_bullet = true;
+    }
 
-    if (lifetime <= -1.0f) {
-        this->Destroy();
+    if (marked_for_bullet && this) {
+        auto* bullet = new BossBullet(bullet_spawn_position, 4.0f, BossBullet::BulletType::Accelerating);
+        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bullet);
+        this->Destroy(); // 이제 안전
         return;
     }
-    else {
-        lifetime -= dt;
-    }
-
-    /*Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEbulletParticle>>()->Emit(
-        1, GetPosition(), { 0,0 }, {}, 1.5);*/
 }
 
 void JellyEnemy::Move(double dt) {

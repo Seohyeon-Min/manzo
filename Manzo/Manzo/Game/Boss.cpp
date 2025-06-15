@@ -5,10 +5,18 @@
 #include "BossBullet.h"
 #include "../Engine/GameObjectManager.h"
 #include "JellyEnemy.h"
+#include "../Engine/BeatSystem.h"
 #include "../Engine/MathUtils.h"
 #include "Effect.h"
 #include "BackGround.h"
 #include "GameOption.h"
+#include <iostream>
+#include <cstdlib>
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctime>
+
+
 
 std::vector<GameObject::State*> stateMap;
 std::vector<std::string> BossJSONfileMap;
@@ -19,6 +27,7 @@ std::vector<std::string> BossJSONfileMap;
 Boss::Boss(vec2 start_position, BossName name, BossType type)
 	: GameObject(start_position), bossType(type)
 {
+	LoadBossfile();
 	ReadBossJSON(name);
 	InitializeStates();
 	///// have new texture : boss body
@@ -29,7 +38,9 @@ Boss::Boss(vec2 start_position, BossName name, BossType type)
 	current_position = start_position;
 	// cutscean
 
-	Engine::GetAudioManager().LoadMusic(mp3_file_name, "e boss", false, false);
+	
+
+
 	////////
 	current_state = &state_cutscene;
 	current_state->Enter(this);
@@ -46,13 +57,18 @@ bool IsFirstFrame() {
 }
 
 
-void Boss::Bullet(Boss* boss) {
+void Boss::Bullet(Boss* boss,BossBullet::BulletType type) {
 	
-		BossBullet* bullet_ptr = new BossBullet(boss->GetPosition(), (float)(boss->beat->GetFixedDuration()) * 2, BossBullet::BulletType::Homing);
+		BossBullet* bullet_ptr = new BossBullet(boss->GetPosition(), (float)(boss->beat->GetFixedDuration()) * 2, type);
 		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bullet_ptr);
-		/*JellyEnemy* jelly_ptr = new JellyEnemy({ boss->GetPosition().x, boss->GetPosition().y - 400 }, 50 ,(float)(boss->beat->GetFixedDuration()) * 4, JellyEnemy::JellyType::Up);
-		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(jelly_ptr);*/
+}
 
+void Boss::Jelly(Boss* boss, JellyEnemy::JellyType jellytype, int X_position, int y_posiiton, BossBullet::BulletType bullettype) {
+	JellyEnemy* jelly_ptr = new JellyEnemy({ boss->GetPosition().x+X_position, boss->GetPosition().y - y_posiiton }, 100 ,(float)(boss->beat->GetFixedDuration()) * 8, jellytype);
+	Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(jelly_ptr);
+	if (jelly_ptr->Destroyed()) {
+		boss->Bullet(boss, bullettype);
+	}
 }
 
 int cnt = 0;
@@ -61,15 +77,16 @@ void Boss::Movingtolocation_Boss(int targetEntryNum, Boss* boss) {
 	if (targetEntryNum - 1 < boss->parttern.size()) {
 		const auto& entryVec = boss->parttern[targetEntryNum - 1];
 		for (const auto& entryData : entryVec) {
-			if (entryData.delay == boss->beat->GetDelayCount()) {
-				if (boss->beat->GetBeat()) {
+			if (boss->beat->GetDelayCount() == entryData.delay) {
+				
+					if(boss->beat->GetBeat()){
+						boss->current_position = entryData.position;
 					
-					boss->current_position = entryData.position;
-					// here
-					for(int i =0; i <1; ++i){
-					boss->Bullet(boss);
+						// here
+						for(int i =0; i <1; ++i){
+						boss->Bullet(boss, BossBullet::BulletType::Homing);
 					}
-				}
+					}
 				
 			}
 			if (entryData.attacktype == 3) {
@@ -80,9 +97,44 @@ void Boss::Movingtolocation_Boss(int targetEntryNum, Boss* boss) {
 			}
 		}
 		
+		
 	}
 }
 
+void Boss::MovingtolocationPlus_Boss(int targetEntryNum, Boss* boss) {
+	if (targetEntryNum - 1 < boss->parttern.size()) {
+		const auto& entryVec = boss->parttern[targetEntryNum - 1];
+		for (const auto& entryData : entryVec) {
+
+			if (entryData.delay + 1 == boss->beat->GetDelayCount()&& boss->beat->GetDelaySwitch()) {
+				for(int i = 0; i < 1; ++i){
+					boss->current_position += entryData.position;
+				}
+				
+				if (entryData.attacktype == 1) {
+					boss->Jelly(boss, JellyEnemy::JellyType::Up, (rand() % 601) - 300, 370, BossBullet::BulletType::Accelerating);
+				}
+				else if (entryData.attacktype == 2) {
+
+					boss->Bullet(boss, BossBullet::BulletType::Accelerating);
+
+				}
+				else if (entryData.attacktype == 3) {
+
+					boss->Bullet(boss, BossBullet::BulletType::Homing);
+
+				}
+				else if (entryData.attacktype == 4) {
+
+					boss->Bullet(boss, BossBullet::BulletType::Wave);
+				}
+				
+			}
+			
+			
+		}
+	}
+}
 
 void Boss::Chasingplayer_Boss(int targetEntryNum, Boss* boss) {
 
@@ -121,12 +173,17 @@ void Boss::MultiInstance_Boss(int targetEntryNum, Boss* object) {
 }
 
 void Boss::Check_BossBehavior(int targetEntryNum, GameObject* object) {
+	
+
 	Boss* boss = static_cast<Boss*>(object);
 
 	switch (boss->bossType)
 	{
 	case Boss::BossType::MovingToLocation:
 		Movingtolocation_Boss(targetEntryNum, boss);
+		break;
+	case Boss::BossType::MovingToLocationPlus:
+		MovingtolocationPlus_Boss(targetEntryNum, boss);
 		break;
 	case Boss::BossType::ChasingPlayer:
 		Chasingplayer_Boss(targetEntryNum, boss);
@@ -153,20 +210,22 @@ void Boss::State_CutScene::Enter(GameObject* object) {
 }
 void Boss::State_CutScene::Update(GameObject* object, double dt) {
 	Boss* boss = static_cast<Boss*>(object);
+	Engine::GetAudioManager().LoadMusic(boss->mp3_file_name, "boss music", false, false);
+	
+	boss->current_state->CheckExit(object);
 }
 void Boss::State_CutScene::CheckExit(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
-	if (boss->beat->GetBeat()) {
-		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new BossBlackCircle2(boss->GetPosition()));
-		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new BlackTransition());
-		Engine::GetAudioManager().SetMute("Level1_bgm", true);
-		Engine::GetAudioManager().StopChannel("e morse");
-		//Engine::GetAudioManager().PlayMusics("e boss");
-		boss->beat->SetBPM(boss->bpm);
-		boss->beat->LoadMusicToSync("e boss");
-		std::cout << "State_CutScene Exit" << std::endl;
-		boss->change_state(&boss->entry1);
-	}
+
+	std::cout << boss->mp3_file_name;
+
+	Engine::GetAudioManager().SetMute("Level1_bgm", true);
+	Engine::GetAudioManager().StopChannel("e morse");
+	//Engine::GetAudioManager().PlayMusics("e boss");
+	boss->beat->SetBPM(boss->bpm);
+	boss->beat->LoadMusicToSync("boss music");
+	//std::cout << "boss bpm:" << boss->bpm << std::endl;
+	boss->change_state(&boss->entry1);
 }
 //////////////////////////////////////////////////////////////////////////////////////////////
 void Boss::Entry1::Enter(GameObject* object) {
@@ -174,6 +233,7 @@ void Boss::Entry1::Enter(GameObject* object) {
 }
 void Boss::Entry1::Update(GameObject* object, double dt) {
 	int targetEntryNum = 1;
+	Check_BossBehavior(targetEntryNum, object);
 }
 void Boss::Entry1::CheckExit(GameObject* object) {
 	Boss* boss = static_cast<Boss*>(object);
@@ -266,8 +326,8 @@ void Boss::Update(double dt) {
 
 void Boss::AfterDied()
 {
-	Engine::GetAudioManager().StopChannel("e boss");
-	Engine::GetBeat().CleartoOriginal();
+	Engine::GetAudioManager().StopChannel("boss music");
+	Engine::GetGameStateManager().GetGSComponent<Beat>()->CleartoOriginal();
 
 	auto pump = Engine::GetGameStateManager().GetGSComponent<Pump>();
 	if (pump) {
@@ -370,6 +430,7 @@ void Boss::LoadBossfile() {
 
 void Boss::ReadBossJSON(BossName name)
 {
+
 	JsonParser_boss* ReadJson = new JsonParser_boss(BossJSONfileMap[name]);
 	AddGOComponent(ReadJson);
 
@@ -381,6 +442,7 @@ void Boss::ReadBossJSON(BossName name)
 	position = ReadJson->GetMovePosition();
 	parttern = ReadJson->GetParttern();
 	total_entry = ReadJson->GetTotalEntry();
+
 
 }
 

@@ -8,16 +8,16 @@ Beat::Beat(AudioManager* audioMgr)
     : audio(audioMgr)
 {
     fixed_duration = 60.0 / BPM;
-    duration; 
-    delay_duration = fixed_duration / 4 ;
-    current_delay_duration = delay_duration ;
+    duration;
+    delay_duration = fixed_duration / 4;
+    current_delay_duration = delay_duration;
     total_music_length = audio->GetMusicLength("Level1_bgm");
     judge_offset = fixed_duration * 0.4;
 }
 
 void Beat::LoadMusicToSync(std::string _music_name)
 {
-    music_name =_music_name;
+    music_name = _music_name;
     playing = false;
 }
 //0.29
@@ -30,7 +30,7 @@ void Beat::Update(double dt)
 {
     if (!playing)
     {
-       audio->PlayMusics(music_name);
+        audio->PlayMusics(music_name);
         playing = true;
         time_taken = 0;
     }
@@ -81,6 +81,7 @@ void Beat::Update(double dt)
     //    << ", Current delay duration: " << current_delay_duration
     //    << ", Beat Count: " << beat_count
     //    << " beat: " << beat << std::endl;
+
         //if (beat)
     //    std::cout << asdfasdf++ << "fixed : " << fixed_duration << " duration : " << duration << " - on beat\n";
     //if (beat) std::cout << "beat @ " << time_taken << '\n';
@@ -115,7 +116,6 @@ void Beat::CalculateCali()
         return;
     }
 
-    // 벡터 복사 후 정렬
     std::vector<double> sorted = calibrations;
     std::sort(sorted.begin(), sorted.end());
 
@@ -123,11 +123,9 @@ void Beat::CalculateCali()
     size_t size = sorted.size();
 
     if (size % 2 == 0) {
-        // 짝수개일 경우: 중앙 두 값의 평균
         median = (sorted[size / 2 - 1] + sorted[size / 2]) / 2.0;
     }
     else {
-        // 홀수개일 경우: 가운데 값
         median = sorted[size / 2];
     }
 
@@ -135,10 +133,9 @@ void Beat::CalculateCali()
     user_calibration = median;
     real_calibration = median;
     auto& saveData = Engine::GetSaveDataManager().GetSaveData();
-    saveData.user_calibration = user_calibration; // newValue는 double 타입
+    saveData.user_calibration = user_calibration; 
 
     Engine::GetSaveDataManager().UpdateSaveData(saveData);
-    // 여기서 median 값을 게임 보정에 사용하면 됩니다.
 }
 
 
@@ -160,7 +157,7 @@ void Beat::SetBPM(int set_BPM)
     //music_name.clear();
 
     //maybe wrong
-    double ratio =  100 / set_BPM;
+    double ratio = 100 / set_BPM;
     user_calibration = real_calibration * ratio;
 }
 
