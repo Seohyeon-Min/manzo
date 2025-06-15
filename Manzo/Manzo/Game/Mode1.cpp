@@ -83,12 +83,11 @@ void Mode1::Load()
 	std::cout << cali << std::endl;
 
 	//// camera
-	vec2 start_position = { 600, -500 };
+	vec2 start_position = { 600, -300 };
 	//vec2 start_position = {404, -6411};
-	Math::rect cam_limit = Math::rect({-1200, -500}, {4300, -12000});
 	camera = new Cam();
 	camera->SetPosition(start_position);
-	camera->SetLimit(cam_limit);
+	camera->SetLimit(level1_camera_boundary);
 	AddGSComponent(camera);
 
 	//// ship
@@ -369,6 +368,7 @@ void Mode1::Unload()
 
 	GetGSComponent<GameObjectManager>()->Unload();
 	GetGSComponent<Background>()->Unload();
+	GetGSComponent<MapManager>()->Unload();
 	Engine::GetRender().ClearDrawCalls();
 	ClearGSComponents();
 	Engine::GetAudioManager().StopAllChannels();

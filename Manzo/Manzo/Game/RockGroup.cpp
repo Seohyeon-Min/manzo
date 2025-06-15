@@ -17,7 +17,7 @@ RockGroup::RockGroup(const std::string& index, const std::string& map_index, dou
         AddGOComponent(new Sprite(spritePath, this));
     }
     else {
-        std::cout << "Warning: Sprite file not found: " << spritePath << std::endl;
+        Engine::GetLogger().LogError("Warning: Sprite file not found:" + spritePath);
 
     }
     

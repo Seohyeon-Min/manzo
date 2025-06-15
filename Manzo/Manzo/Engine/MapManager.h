@@ -39,6 +39,8 @@ public:
 	Map* GetMap(int index) { return maps[index]; }
 	bool IsMapChanged() { return MapChanged; }
 
+	void Unload();
+
 private:
 	std::vector<Map*> maps;
 	int currentMapIndex = 0;

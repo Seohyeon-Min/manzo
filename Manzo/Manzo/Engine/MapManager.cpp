@@ -41,11 +41,12 @@ void MapManager::UpdateMaps(const Math::rect& camera_boundary) {
     if (currentMapIndex < maps.size()) {
         maps[currentMapIndex]->LoadMapInBoundary(camera_boundary);
         maps[currentMapIndex]->UnloadCrashedRock();     //delete crashed rock
-
+        
         if (!maps[currentMapIndex]->IsOverlapping(maps[currentMapIndex]->GetMapBoundary(), camera_boundary)) { // Is player  in the level boundary?
 
             if (!MapIncreased) {    // Is map index increased?
                 maps[currentMapIndex]->UnloadAll(); // Unload Previous Map
+               
 
                 if (currentMapIndex + 1 < maps.size()) {
                     currentMapIndex++;
@@ -58,5 +59,14 @@ void MapManager::UpdateMaps(const Math::rect& camera_boundary) {
             MapIncreased = false;
             MapChanged = false;
         }
+        
     }
+}
+
+void MapManager::Unload() {
+    for (Map* map : maps) {
+        map->UnloadAll();
+        delete map;
+    }
+    maps.clear();
 }
