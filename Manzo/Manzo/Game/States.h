@@ -12,10 +12,10 @@ Updated:    03/14/2024
 #pragma once
 
 enum class States {
+    Splash,
     Title,
     Mode1,
     Mode2,
     Mode3,
     Tutorial,
-    Splash,
 };

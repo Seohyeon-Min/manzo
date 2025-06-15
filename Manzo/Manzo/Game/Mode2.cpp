@@ -24,6 +24,7 @@ Created:    March 8, 2023
 #include "DialogBox.h"
 #include "WaterRippleEffect.h"
 #include "Mode3.h"
+#include "Effect.h"
 
 #include <iostream>     // for debug
 #include "Module.h"
@@ -38,9 +39,6 @@ void Mode2::Load() {
 	AddGSComponent(new ShowCollision());
 #else
 #endif
-	//shader
-	Engine::GetShaderManager().LoadShader("water_ripple", "assets/shaders/default.vert", "assets/shaders/water_ripple.frag");
-	Engine::GetShaderManager().LoadShader("icon", "assets/shaders/default.vert", "assets/shaders/edge_detection.frag");
 
 	// audio
 	Engine::GetAudioManager().LoadMusic("assets/audios/home1.mp3", "home_intro", false, false);
@@ -104,6 +102,8 @@ void Mode2::Load() {
 	// Scenario
 	Engine::GetScenarioSystem().LoadMode2Scenarios();
 
+	//effect
+	Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new Flash(1.3f));
 
 	sell_popup = new PopUp({ 0,0 }, "assets/images/sell_popup.spt");
 	GetGSComponent<GameObjectManager>()->Add(sell_popup);

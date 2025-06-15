@@ -16,17 +16,6 @@ Title::Title()
 
 void Title::Load()
 {
-	Engine::GetShaderManager().LoadShader("under_water_god_ray", "assets/shaders/post_default.vert", "assets/shaders/underwater_god_ray.frag");
-	Engine::GetShaderManager().LoadShader("post_default", "assets/shaders/post_default.vert", "assets/shaders/post_default.frag");
-	Engine::GetShaderManager().LoadShader("post_bloom", "assets/shaders/post_default.vert", "assets/shaders/post_bloom.frag");
-	Engine::GetShaderManager().LoadShader("post_underwater_distortion", "assets/shaders/post_default.vert", "assets/shaders/post_underwater_distortion.frag");
-	Engine::GetShaderManager().LoadShader("title_ripple", "assets/shaders/post_default.vert", "assets/shaders/title_water_ripple.frag");
-	Engine::GetShaderManager().LoadShader("title_gradation", "assets/shaders/post_default.vert", "assets/shaders/title_color_gradation.frag");
-	Engine::GetShaderManager().LoadShader("image_distortion", "assets/shaders/default.vert", "assets/shaders/image_distortion.frag");
-	Engine::GetShaderManager().LoadShader("post_water_wave", "assets/shaders/post_default.vert", "assets/shaders/post_water_wave.frag");
-	Engine::GetShaderManager().LoadShader("post_wave_transition", "assets/shaders/post_default.vert", "assets/shaders/post_wave_transition.frag");
-
-
 	AddGSComponent(new GameObjectManager());
 
 	// background
@@ -40,6 +29,7 @@ void Title::Load()
 
 	// audio
 	Engine::GetAudioManager().LoadMusic("assets/audios/title_bgm.mp3", "title_bgm", false);
+	Engine::GetAudioManager().LoadMusic("assets/audios/bell.mp3", "bell", false);
 
 	// mouse
 	GetGSComponent<GameObjectManager>()->Add(new Mouse);
@@ -52,7 +42,7 @@ void Title::Load()
 
 void Title::Update(double dt)
 {
-	static float timer = 3.2f;
+	static float timer = 2.1f;
 	//audio play
 	if (!playing)
 	{
@@ -65,8 +55,10 @@ void Title::Update(double dt)
 	GetGSComponent<Cam>()->Update(dt, {}, false);
 
 	// Move to next scean
-	if (Engine::GetInput().MouseButtonJustReleased((SDL_BUTTON_LEFT))) {
+	if (Engine::GetInput().MouseButtonJustReleased((SDL_BUTTON_LEFT)) && !go_next) {
 		go_next = true;
+		Engine::GetAudioManager().PlayMusics("bell");
+		Engine::GetAudioManager().SetChannelVolume("title_bgm", 0.f);
 	}
 
 	if (go_next) {

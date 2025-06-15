@@ -17,11 +17,11 @@ public:
     Splash();
     void Load() override;
     void Update(double dt) override;
+    void FixedUpdate(double dt) override;
     void Unload() override;
     void Draw() override;
 
     std::string GetName() override { return "Splash"; }
 private:
     double counter = 0;
-    GLTexture* texture;
 };

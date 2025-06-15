@@ -55,6 +55,7 @@ void Render::AddDrawCall
 void Render::RenderAll() {
 
     postProcessFramebuffer[0].Bind();
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     for (const auto& draw_call : draw_background_calls) {
@@ -279,14 +280,15 @@ void Render::ApplyPostProcessing(bool is_title)
             glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer[!horizontal].GetColorAttachment());
 
             float currentTime = 0.f;
-            if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
-                currentTime = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+            if (Engine::GetAudioManager().IsPlayingMusic("title_bgm")) {
+                currentTime = Engine::GetAudioManager().GetCurrentMusicTime("title_bgm");
             }
             static float spawn_time = 0.f;
-            if (Engine::GetInput().MouseButtonJustReleased((SDL_BUTTON_LEFT))) {
+            static bool notnow = 0;
+            if (Engine::GetInput().MouseButtonJustReleased((SDL_BUTTON_LEFT)) && !notnow) {
                 spawn_time = currentTime;
+                notnow = 1;
             }
-
             switch (i) {
             case 0: // Bloom
                 shader->SendUniform("uSceneTexture", 0);

@@ -436,7 +436,7 @@ void CirclePattern::SetUni(const GLShader* shader)
 
 
 
-Flash::Flash() : Effect({}, 1.0f)
+Flash::Flash(float time) : Effect({}, time)
 {
     AddGOComponent(new Sprite("assets/images/effect/full_quad_w.spt", this));
     life = max_life;
@@ -468,4 +468,28 @@ void Flash::SetUni(const GLShader* shader)
     float alpha = float(life / max_life);
     shader->SendUniform("uAlpha", alpha);
     shader->SendUniform("uFillColor", 1.f,1.f,1.f); // Èò»ö ¹øÂ½ÀÓ
+}
+
+Digipen::Digipen() : Effect({}, -1.0f)
+{
+    AddGOComponent(new Sprite("assets/images/Digipen.spt", this));
+    SetScale({ 0.6f,0.6f });
+}
+
+void Digipen::Update(double dt)
+{
+    Effect::Update(dt);
+}
+
+void Digipen::Draw(DrawLayer drawlayer)
+{
+    Sprite* sprite = GetGOComponent<Sprite>();
+    DrawCall draw_call = {
+        sprite,
+        &GetMatrix(),
+        Engine::GetShaderManager().GetDefaultShader()
+    };
+    draw_call.settings.do_blending = true;
+    draw_call.settings.is_camera_fixed = true;
+    GameObject::Draw(draw_call);
 }
