@@ -123,10 +123,10 @@ void Mode1::Load()
 	BossFirstPos_e.push_back(std::make_pair(boss_ptr_e->GetFirstPosition()[0], boss_ptr_e->GetFirstPosition()[1]));
 	bossPosition_e = {4100, -5300, 0.0f};
 
-	boss_ptr_y = new Boss({ -1200, -9873 }, Boss::BossName::y, Boss::BossType::MovingToLocationPlus);
+	boss_ptr_y = new Boss({ -1700, -10400 }, Boss::BossName::y, Boss::BossType::MovingToLocationPlus);
 	boss_ptr_y->ReadBossJSON(Boss::BossName::y);
 	BossFirstPos_e.push_back(std::make_pair(boss_ptr_y->GetFirstPosition()[0], boss_ptr_y->GetFirstPosition()[1]));
-	bossPosition_e = { -1200, -9873, 0.0f };
+	bossPosition_e = { -1700, -10400, 0.0f };
 
 
 	// UI
@@ -240,13 +240,14 @@ void Mode1::Update(double dt)
 	if (Isboss)
 	{
 		
-		camera->SetSmoothPosition(boss_ptr->GetPosition());
-		camera->Update(dt, boss_ptr->GetPosition(), ship_ptr->IsShipMoving());
+		camera->SetSmoothPosition(boss_ptr_y->GetPosition());
+		camera->Update(dt, boss_ptr_y->GetPosition(), ship_ptr->IsShipMoving());
 
 	}
-	else{
-	// camera postion update
-	camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
+	else {
+		// camera postion update
+		camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
+	}
 
 	//Map
 	if (!GetGSComponent<MapManager>()->GetCurrentMap()->IsLevelLoaded()) {
