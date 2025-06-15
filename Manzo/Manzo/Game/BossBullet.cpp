@@ -102,6 +102,29 @@ void BossBullet::Update(double dt) {
         //}
         vec2 pos = GetPosition();
         
+        if (lifetime <= 0.5)
+            if (particle_timer->Remaining() <= 0.003) {
+                vec2 bullet_pos = RandomPointAround(pos);
+                Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEbulletParticle>>()->Emit(1, bullet_pos, { 0,0 }, -GetVelocity() * 0.1f, 1.5);
+                ++kirakiracnt;
+                if (kirakiracnt >= kirakiramax) {
+                    Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEKiraKiraParticle>>()->Emit(1, bullet_pos, { 0,0 }, -GetVelocity() * 0.1f, 1.5);
+                    kirakiracnt = 0;
+                }
+                particle_timer->Reset();
+            }
+
+        //Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEParticle1>>()->Emit(1, pos, GetVelocity(), {}, 1.5);
+        vec2 bullet_pos = RandomPointAround(pos);
+        if (lifetime <= 0.2) {
+            Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEParticle1>>()->Emit(4, bullet_pos, GetVelocity() * 0.97f, -GetVelocity() * 0.1f, 0);
+        }
+        if (lifetime <= 0.3)
+            Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEParticle3>>()->Emit(2, bullet_pos, GetVelocity(), {}, 0);
+        if (lifetime <= 0.5)
+            Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEParticle2>>()->Emit(2, bullet_pos, GetVelocity() * 0.7f, -GetVelocity(), 0);
+        //Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEParticle3>>()->Emit(1, GetPosition(), { 0,0 }, {}, 1.5);
+
         if (lifetime <= -1.0f) {
             this->Destroy();
             procedual.Clear();
@@ -113,30 +136,6 @@ void BossBullet::Update(double dt) {
     {
         SetVelocity({ 0,0 });
     }
-
-
-    if (lifetime <= 0.5)
-    if (particle_timer->Remaining() <= 0.003) {
-        vec2 bullet_pos = RandomPointAround(pos);
-        Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEbulletParticle>>()->Emit(1, bullet_pos, {0,0}, -GetVelocity() * 0.1f, 1.5);
-        ++kirakiracnt;
-        if (kirakiracnt >= kirakiramax) {
-            Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEKiraKiraParticle>>()->Emit(1, bullet_pos, { 0,0 }, -GetVelocity() * 0.1f, 1.5);
-            kirakiracnt = 0;
-        }
-        particle_timer->Reset();
-    }
-
-        //Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEParticle1>>()->Emit(1, pos, GetVelocity(), {}, 1.5);
-    vec2 bullet_pos = RandomPointAround(pos);
-    if (lifetime <= 0.2) {
-        Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEParticle1>>()->Emit(4, bullet_pos, GetVelocity() * 0.97f, -GetVelocity() * 0.1f, 0);
-    }
-    if(lifetime<=0.3)
-        Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEParticle3>>()->Emit(2, bullet_pos, GetVelocity(), {}, 0);
-    if (lifetime <= 0.5)
-    Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEParticle2>>()->Emit(2, bullet_pos, GetVelocity() * 0.7f, -GetVelocity(), 0);
-    //Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEParticle3>>()->Emit(1, GetPosition(), { 0,0 }, {}, 1.5);
 }
 
 
