@@ -19,6 +19,7 @@ public:
 	std::string TypeName() override { return "Icon"; }
 
 	void Update(double dt) override;
+	void FixedUpdate(double dt) override;
 	void Draw(DrawLayer drawlayer = DrawLayer::Draw) override;
 
 	bool CanCollideWith(GameObjectTypes) override;
@@ -34,6 +35,7 @@ public:
 	bool CanDrag() {	return can_drag;	}
 	bool IsHide() { return hide; }
 	void SetSelected(bool select) { selected = select; }
+
 
 	void SetHide(bool set) 
 	{ 

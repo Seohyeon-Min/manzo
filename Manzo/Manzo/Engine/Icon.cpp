@@ -31,6 +31,10 @@ void Icon::Update(double dt)
 	GameObject::Update(dt); 
 }
 
+void Icon::FixedUpdate(double dt){
+	if (hide) return;
+	GameObject::FixedUpdate(dt);
+}
 
 void Icon::Draw(DrawLayer drawlayer)
 {

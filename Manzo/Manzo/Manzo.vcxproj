@@ -16,6 +16,7 @@
     <ClCompile Include="Engine\BeatSystem.cpp" />
     <ClCompile Include="Engine\Camera.cpp" />
     <ClCompile Include="Engine\Collision.cpp" />
+    <ClCompile Include="Engine\DialogSystem.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
     <ClCompile Include="Engine\EventManager.cpp" />
     <ClCompile Include="Engine\Font.cpp" />
@@ -34,6 +35,7 @@
     <ClCompile Include="Engine\Rapidjson.cpp" />
     <ClCompile Include="Engine\Render.cpp" />
     <ClCompile Include="Engine\SaveDataManager.cpp" />
+    <ClCompile Include="Engine\ScenarioSystem.cpp" />
     <ClCompile Include="Engine\ShaderManager.cpp" />
     <ClCompile Include="Engine\ShowCollision.cpp" />
     <ClCompile Include="Engine\Sprite.cpp" />
@@ -93,6 +95,7 @@
     <ClInclude Include="Engine\Collision.h" />
     <ClInclude Include="Engine\Component.h" />
     <ClInclude Include="Engine\ComponentManager.h" />
+    <ClInclude Include="Engine\DialogSystem.h" />
     <ClInclude Include="Engine\DrawSetting.h" />
     <ClInclude Include="Engine\Engine.h" />
     <ClInclude Include="Engine\EventManager.h" />
@@ -114,6 +117,7 @@
     <ClInclude Include="Engine\Rect.h" />
     <ClInclude Include="Engine\Render.h" />
     <ClInclude Include="Engine\SaveDataManager.h" />
+    <ClInclude Include="Engine\ScenarioSystem.h" />
     <ClInclude Include="Engine\ShaderManager.h" />
     <ClInclude Include="Engine\ShowCollision.h" />
     <ClInclude Include="Engine\Sprite.h" />

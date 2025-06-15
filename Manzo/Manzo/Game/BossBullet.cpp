@@ -18,8 +18,12 @@ int GetRandomValue(int min, int max) {
 BossBullet::BossBullet(vec2 Boss_position, float lifetime, BulletType bullet_type)
     : GameObject(Boss_position), lifetime(lifetime), timeElapsed(0.0f), bulletType(bullet_type)
 {
+    if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+        spawn_time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+    }
+
     AddGOComponent(new Sprite("assets/images/bullet.spt", this));
-    float Scalerandom = (float)GetRandomValue(1, 2);
+    float Scalerandom = (float)GetRandomValue(1, 2) * 0.11f;
     SetScale(vec2(Scalerandom));
 
     static bool seedInitialized = false;
@@ -68,6 +72,23 @@ BossBullet::BossBullet(vec2 Boss_position, float lifetime, BulletType bullet_typ
     }
     std::vector<int> circleSizes ={ 30, 20, 10 ,10,10};
     //procedual.Initialize(circleSizes, position);
+
+    particle_timer = new Timer(0.0);
+    AddGOComponent(particle_timer);
+    particle_timer->Set(particle_time);
+}
+
+vec2 RandomPointAround(const vec2& center, float maxRadius = 15.0f) {
+    float u = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+    float v = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+
+    float r = maxRadius * std::sqrt(u);
+    float theta = v * 2.0f * 3.141592f;
+
+    float dx = std::cos(theta) * r;
+    float dy = std::sin(theta) * r;
+
+    return { center.x + dx, center.y + dy };
 }
 
 void BossBullet::Update(double dt) {
@@ -77,7 +98,7 @@ void BossBullet::Update(double dt) {
     //if (!std::isnan(position.x) && !std::isnan(position.y)) {
     //    procedual.Update(this, 0.2f);
     //}
-
+    vec2 pos = GetPosition();
     
     if (lifetime <= -1.0f) {
         this->Destroy();
@@ -89,8 +110,29 @@ void BossBullet::Update(double dt) {
         lifetime -= dt;
     }
 
-    Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::BulletParticle>>()->Emit(1, GetPosition(), { 0,0 }, /*-GetVelocity() * 0.4f*/{}, 1.5);
 
+    if (lifetime <= 0.5)
+    if (particle_timer->Remaining() <= 0.003) {
+        vec2 bullet_pos = RandomPointAround(pos);
+        Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEbulletParticle>>()->Emit(1, bullet_pos, {0,0}, -GetVelocity() * 0.1f, 1.5);
+        ++kirakiracnt;
+        if (kirakiracnt >= kirakiramax) {
+            Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEKiraKiraParticle>>()->Emit(1, bullet_pos, { 0,0 }, -GetVelocity() * 0.1f, 1.5);
+            kirakiracnt = 0;
+        }
+        particle_timer->Reset();
+    }
+
+        //Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEParticle1>>()->Emit(1, pos, GetVelocity(), {}, 1.5);
+    vec2 bullet_pos = RandomPointAround(pos);
+    if (lifetime <= 0.2) {
+        Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEParticle1>>()->Emit(4, bullet_pos, GetVelocity() * 0.97f, -GetVelocity() * 0.1f, 0);
+    }
+    if(lifetime<=0.3)
+        Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEParticle3>>()->Emit(2, bullet_pos, GetVelocity(), {}, 0);
+    if (lifetime <= 0.5)
+    Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEParticle2>>()->Emit(2, bullet_pos, GetVelocity() * 0.7f, -GetVelocity(), 0);
+    //Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEParticle3>>()->Emit(1, GetPosition(), { 0,0 }, {}, 1.5);
 }
 
 
@@ -110,10 +152,10 @@ void BossBullet::Move(double dt) {
         if (bulletspeed > 10000) bulletspeed = 10000;
 
         if (distanceToPlayer > 10.f) {
-            this->velocity += normalize(toPlayer) * bulletspeed * (float)dt;
+            this->velocity += normalize(toPlayer) * 1.2f * bulletspeed * (float)dt;
         }
         else {
-            this->velocity += normalize(toPlayer) * bulletspeed * (float)dt;
+            this->velocity += normalize(toPlayer) * 1.2f * bulletspeed * (float)dt;
         }
 
         this->position += this->velocity * 0.8f * (float)dt;
@@ -152,17 +194,30 @@ void BossBullet::Move(double dt) {
 }
 
 
+void BossBullet::SetUni(const GLShader* shader)
+{
+    float time = 0.f;
+    if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+        time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+    }
+    shader->SendUniform("uTime", time);
+    shader->SendUniform("uStartTime", spawn_time);
+    shader->SendUniform("uFadeDuration", 0.83f);
+    shader->SendUniform("uStartColor", 0.f, 0.f, 0.f);
+}
+
+
 void BossBullet::Draw(DrawLayer drawlayer) {
     DrawCall draw_call = {
         GetGOComponent<Sprite>()->GetTexture(),
         &GetMatrix(),
-        Engine::GetShaderManager().GetDefaultShader()
+        Engine::GetShaderManager().GetShader("fade_in")
     };
-
     //procedual.Draw(GetMatrix(), drawlayer);
 
 
     draw_call.settings.do_blending = 1;
+    draw_call.SetUniforms = [this](const GLShader* shader) { SetUni(shader); };
     GameObject::Draw(draw_call);
 }
 

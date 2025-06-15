@@ -41,21 +41,6 @@ void Mode1::Load()
 	AddGSComponent(new ShowCollision());
 #else
 #endif
-	// shader
-	Engine::GetShaderManager().LoadShader("purple", "assets/shaders/default.vert", "assets/shaders/default_purple.frag");
-	Engine::GetShaderManager().LoadShader("pixelate", "assets/shaders/default.vert", "assets/shaders/pixelate.frag");
-	Engine::GetShaderManager().LoadShader("blur", "assets/shaders/default.vert", "assets/shaders/blur.frag");
-	Engine::GetShaderManager().LoadShader("change_alpha", "assets/shaders/default.vert", "assets/shaders/change_alpha.frag");
-	Engine::GetShaderManager().LoadShader("change_color", "assets/shaders/default.vert", "assets/shaders/change_color.frag");
-	Engine::GetShaderManager().LoadShader("change_alpha_no_texture", "assets/shaders/default.vert", "assets/shaders/change_alpha_no_texture.frag");
-	Engine::GetShaderManager().LoadShader("health_bar", "assets/shaders/default.vert", "assets/shaders/health_bar.frag");
-	Engine::GetShaderManager().LoadShader("sea_background", "assets/shaders/post_default.vert", "assets/shaders/sea_background.frag");
-	Engine::GetShaderManager().LoadShader("wave", "assets/shaders/default.vert", "assets/shaders/wave.frag");
-
-	Engine::GetShaderManager().LoadShader("under_water_god_ray", "assets/shaders/post_default.vert", "assets/shaders/underwater_god_ray.frag");
-	Engine::GetShaderManager().LoadShader("post_default", "assets/shaders/post_default.vert", "assets/shaders/post_default.frag");
-	Engine::GetShaderManager().LoadShader("post_bloom", "assets/shaders/post_default.vert", "assets/shaders/post_bloom.frag");
-	Engine::GetShaderManager().LoadShader("post_underwater_distortion", "assets/shaders/post_default.vert", "assets/shaders/post_underwater_distortion.frag");
 
 	// audio
 	Engine::GetAudioManager().LoadMusic("assets/audios/Level1_bgm.mp3", "Level1_bgm", false);
@@ -75,7 +60,12 @@ void Mode1::Load()
 	AddGSComponent(new ParticleManager<Particles::HitPraticle>());
 	AddGSComponent(new ParticleManager<Particles::HitPraticle2>());
 	AddGSComponent(new ParticleManager<Particles::CaptureEffect>());
-	AddGSComponent(new ParticleManager<Particles::BulletParticle>());
+	AddGSComponent(new ParticleManager<Particles::bossEbulletParticle>());
+	AddGSComponent(new ParticleManager<Particles::bossEKiraKiraParticle>());
+	AddGSComponent(new ParticleManager<Particles::bossEParticle1>());
+	AddGSComponent(new ParticleManager<Particles::bossEParticle2>());
+	AddGSComponent(new ParticleManager<Particles::bossEParticle3>());
+	AddGSComponent(new ParticleManager<Particles::BossBlackCircleParticle>());
 
 	// get cali
 	double cali = Engine::GetSaveDataManager().GetSaveData().user_calibration;
@@ -249,9 +239,12 @@ void Mode1::Update(double dt)
 
 	if (Isboss)
 	{
-		camera->SetPosition(boss_ptr_y->GetPosition());
-	}
+		
+		camera->SetSmoothPosition(boss_ptr->GetPosition());
+		camera->Update(dt, boss_ptr->GetPosition(), ship_ptr->IsShipMoving());
 
+	}
+	else{
 	// camera postion update
 	camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
 

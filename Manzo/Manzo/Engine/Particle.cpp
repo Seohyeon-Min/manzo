@@ -21,13 +21,14 @@ void Particle::Start(vec2 position, vec2 velocity, double _max_life, vec2 scale)
 	SetPosition(position);
 	SetVelocity(velocity);
 	SetScale(scale);
-	life = _max_life;
-	max_life = _max_life;
+	life = _max_life - life_offset;
+	max_life = _max_life - life_offset;
 	GetGOComponent<Sprite>()->Reset();
 }
 
 void Particle::Update(double dt)
 {
+	if (!Alive()) return;
 	life -= dt;
 	if (Alive())
 		GameObject::Update(dt);
@@ -52,7 +53,20 @@ void Particle::Update(double dt)
 void Particle::Draw(DrawLayer dl)
 {
 	if(Alive())
-		if(shader == nullptr) GameObject::Draw(drawlayer);
+		if (shader == nullptr) {
+			Sprite* sprite = GetGOComponent<Sprite>();
+
+			DrawCall draw_call = {
+				sprite,                       // Texture to draw
+				&GetMatrix(),                          // Transformation matrix
+				Engine::GetShaderManager().GetDefaultShader(), // Shader to use
+			};
+
+			draw_call.settings.do_blending = true;
+			draw_call.sorting_layer = drawlayer;
+
+			GameObject::Draw(draw_call);
+		}
 		else {
 
 			Sprite* sprite = GetGOComponent<Sprite>();
@@ -60,7 +74,7 @@ void Particle::Draw(DrawLayer dl)
 			DrawCall draw_call = {
 				sprite,                       // Texture to draw
 				&GetMatrix(),                          // Transformation matrix
-				Engine::GetShaderManager().GetShader("change_alpha"), // Shader to use
+				shader, // Shader to use
 			};
 
 			draw_call.settings.do_blending = true;

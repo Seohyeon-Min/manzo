@@ -16,6 +16,7 @@ Effect::~Effect() {
 
 void Effect::Update(double dt) {
     GameObject::Update(dt);
+    if (effect_time <= -1.f) return;
     if (effect_timer->Remaining() <= 0) {
         Destroy();
     }
@@ -259,4 +260,236 @@ void BlackOutEffect::SetAlpha(const GLShader* shader)
     //std::cout << timer->Remaining() << std::endl;
     //if (alpha >= 0.3f) alpha = 0.3f;
     shader->SendUniform("uAlpha", alpha);
+}
+
+BossBlackCircle::BossBlackCircle(vec2 pos) : Effect(pos, -1.f)
+{
+    AddGOComponent(new Sprite("assets/images/effect/boss_black_circle.spt", this));
+}
+
+void BossBlackCircle::Update(double dt)
+{
+    Effect::Update(dt);
+    Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::BossBlackCircleParticle>>()
+        ->EmitRound(1, GetPosition(), 20.f, 10.f, 115.f);
+}
+
+void BossBlackCircle::Draw(DrawLayer drawlayer)
+{
+    Sprite* sprite = GetGOComponent<Sprite>();
+    DrawCall draw_call = {
+        sprite,
+        &GetMatrix(),
+        Engine::GetShaderManager().GetDefaultShader()
+    };
+
+    draw_call.settings.do_blending = true;
+    draw_call.sorting_layer = drawlayer;
+    GameObject::Draw(draw_call);
+}
+
+BossBlackCircle2::BossBlackCircle2(vec2 pos) : Effect(pos, -1.f)
+{
+    AddGOComponent(new Sprite("assets/images/effect/boss_black_circle.spt", this));
+    float time = 0.f;
+    if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+        time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+    }
+    spawn_t = time;
+}
+
+void BossBlackCircle2::Update(double dt)
+{
+    float time = 0.f;
+    if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+        time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+    }
+    if (time >= 15.f + spawn_t) {
+        Destroy();
+    }
+}
+
+
+void BossBlackCircle2::SetFadeinUni(const GLShader* shader)
+{
+    float time = 0.f;
+    if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+        time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+    }
+    shader->SendUniform("uTime", time);
+    shader->SendUniform("uStartDelay", spawn_t + 9.f);
+    shader->SendUniform("uFadeDuration", 3.f);
+
+    //std::cout << time << " - time : " << spawn_t<< "\n";
+}
+
+void BossBlackCircle2::Draw(DrawLayer drawlayer)
+{
+    Sprite* sprite = GetGOComponent<Sprite>();
+    DrawCall draw_call = {
+        sprite,
+        &GetMatrix(),
+        Engine::GetShaderManager().GetShader("fade_out")
+    };
+
+    draw_call.settings.do_blending = true;
+    draw_call.sorting_layer = DrawLayer::DrawLast;
+    draw_call.SetUniforms = [this](const GLShader* shader) { SetFadeinUni(shader); };
+    GameObject::Draw(draw_call);
+}
+
+BlackTransition::BlackTransition() : Effect({}, -1.f)
+{
+    AddGOComponent(new Sprite("assets/images/effect/full_quad.spt", this));
+    float time = 0.f;
+    if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+        time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+    }
+    spawn_t = time;
+}
+
+void BlackTransition::Update(double dt)
+{
+    if (stop) Destroy();
+}
+
+void BlackTransition::Draw(DrawLayer drawlayer)
+{
+    Sprite* sprite = GetGOComponent<Sprite>();
+    DrawCall draw_call = {
+        sprite,
+        &GetMatrix(),
+        Engine::GetShaderManager().GetShader("ink_transition")
+    };
+
+    draw_call.settings.do_blending = true;
+    draw_call.settings.is_camera_fixed = true;
+    float time = 0.f;
+    if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+        time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+    }
+    if(time - spawn_t >= 30.f) draw_call.sorting_layer = DrawLayer::DrawBackground;
+    else
+    draw_call.sorting_layer = DrawLayer::DrawFirst;
+    draw_call.SetUniforms = [this](const GLShader* shader) { SetUni(shader); };
+    GameObject::Draw(draw_call);
+}
+
+void BlackTransition::SetUni(const GLShader* shader)
+{
+    float time = 0.f;
+    if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+        time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+    }
+
+    shader->SendUniform("uTime", time);
+    shader->SendUniform("uStartTime", spawn_t);
+    shader->SendUniform("uDelay", 19.0f);
+    shader->SendUniform("uResolution", Engine::window_width, Engine::window_height);
+}
+
+CirclePattern::CirclePattern(float _radius, float life) : Effect({}, life)
+{
+    AddGOComponent(new Sprite("assets/images/effect/full_quad.spt", this));
+    float time = 0.f;
+    if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+        time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+    }
+    spawn_t = time;
+    radius = _radius/ Engine::window_height;
+}
+
+void CirclePattern::Update(double dt)
+{
+    Effect::Update(dt);
+
+}
+
+void CirclePattern::Draw(DrawLayer drawlayer)
+{
+    Sprite* sprite = GetGOComponent<Sprite>();
+    DrawCall draw_call = {
+        sprite,
+        &GetMatrix(),
+        Engine::GetShaderManager().GetShader("circle_pattern")
+    };
+
+    draw_call.settings.do_blending = true;
+    draw_call.settings.is_camera_fixed = true;
+    draw_call.sorting_layer = DrawLayer::DrawBackground;
+    draw_call.SetUniforms = [this](const GLShader* shader) { SetUni(shader); };
+    GameObject::Draw(draw_call);
+}
+
+void CirclePattern::SetUni(const GLShader* shader)
+{
+    float time = 0.f;
+    if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
+        time = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+    }
+
+    shader->SendUniform("uTime", time);
+    shader->SendUniform("uStartTime", spawn_t);
+    shader->SendUniform("uRadius", radius);
+    shader->SendUniform("uResolution", Engine::window_width, Engine::window_height);
+}
+
+
+
+Flash::Flash(float time) : Effect({}, time)
+{
+    AddGOComponent(new Sprite("assets/images/effect/full_quad_w.spt", this));
+    life = max_life;
+}
+
+void Flash::Update(double dt)
+{
+    Effect::Update(dt);
+    life -= static_cast<float>(dt);
+}
+
+void Flash::Draw(DrawLayer drawlayer)
+{
+    Sprite* sprite = GetGOComponent<Sprite>();
+    DrawCall draw_call = {
+        sprite,
+        &GetMatrix(),
+        Engine::GetShaderManager().GetShader("change_alpha_no_texture")
+    };
+    draw_call.settings.do_blending = true;
+    draw_call.settings.is_camera_fixed = true;
+    draw_call.sorting_layer = DrawLayer::DrawLast;
+    draw_call.SetUniforms = [this](const GLShader* shader) { SetUni(shader); };
+    GameObject::Draw(draw_call);
+}
+
+void Flash::SetUni(const GLShader* shader)
+{
+    float alpha = float(life / max_life);
+    shader->SendUniform("uAlpha", alpha);
+    shader->SendUniform("uFillColor", 1.f,1.f,1.f); // Èò»ö ¹øÂ½ÀÓ
+}
+
+Digipen::Digipen() : Effect({}, -1.0f)
+{
+    AddGOComponent(new Sprite("assets/images/Digipen.spt", this));
+    SetScale({ 0.6f,0.6f });
+}
+
+void Digipen::Update(double dt)
+{
+    Effect::Update(dt);
+}
+
+void Digipen::Draw(DrawLayer drawlayer)
+{
+    Sprite* sprite = GetGOComponent<Sprite>();
+    DrawCall draw_call = {
+        sprite,
+        &GetMatrix(),
+        Engine::GetShaderManager().GetDefaultShader()
+    };
+    draw_call.settings.do_blending = true;
+    draw_call.settings.is_camera_fixed = true;
+    GameObject::Draw(draw_call);
 }

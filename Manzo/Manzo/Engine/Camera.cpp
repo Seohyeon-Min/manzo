@@ -1,6 +1,7 @@
 #include "Camera.h"
 #include "WindowState.h"
 #include "MapManager.h"
+#include "MathUtils.h"
 #include <iostream>
 
 
@@ -51,6 +52,10 @@ void Cam::SetPosition(vec2 new_position)
 {
 	caminfo.camera.Position = new_position;
     
+}
+
+void Cam::SetSmoothPosition(vec2 new_position) {
+    caminfo.camera.Position = Lerp(caminfo.camera.Position, new_position, smoothFactor);
 }
 
 const vec2& Cam::GetPosition() const

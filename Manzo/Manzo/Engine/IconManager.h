@@ -42,6 +42,7 @@ public:
 
 	std::list<Icon*> GetIconList() { return icons;}
 	Icon* GetIcon(const std::string& id);
+	bool IsIconClicked(const std::string& icon_id);
 
 private:
 	std::list<Icon*> icons;

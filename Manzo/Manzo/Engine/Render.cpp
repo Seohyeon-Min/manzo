@@ -7,6 +7,7 @@
 #include "to_span.h"
 
 #include <vector>
+#include <cmath>
 #include <unordered_map>
 #include <filesystem>
 #include <memory>
@@ -14,7 +15,7 @@
 #include <array>
 #include <iostream>
 
-
+#define PI  3.14159265358979
 const float WORLD_SIZE_MAX = (float)std::max(Engine::window_width, Engine::window_height);
 
 Render::Render(){
@@ -54,6 +55,7 @@ void Render::AddDrawCall
 void Render::RenderAll() {
 
     postProcessFramebuffer[0].Bind();
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     for (const auto& draw_call : draw_background_calls) {
@@ -254,7 +256,7 @@ void Render::ApplyPostProcessing(bool is_title)
         }
     }
     else if (Engine::GetGameStateManager().GetStateName() == "Title" && is_title) {
-        int num_passes = 1; // Number of post process
+        int num_passes = 2; // Number of post process
         for (int i = 0; i < num_passes; i++) {
             postProcessFramebuffer[horizontal].Bind();
             glClear(GL_COLOR_BUFFER_BIT);
@@ -265,8 +267,11 @@ void Render::ApplyPostProcessing(bool is_title)
             case 0: // Bloom
                 shader = Engine::GetShaderManager().GetShader("post_bloom");
                 break;
-            case 1: // Wave
-                shader = Engine::GetShaderManager().GetShader("post_water_wave");
+            case 1: // Wave 
+                shader = Engine::GetShaderManager().GetShader("post_wave_transition");
+                break;
+            case 2: // Wave
+
                 break;
             }
             shader->Use();
@@ -275,10 +280,15 @@ void Render::ApplyPostProcessing(bool is_title)
             glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer[!horizontal].GetColorAttachment());
 
             float currentTime = 0.f;
-            if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
-                currentTime = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+            if (Engine::GetAudioManager().IsPlayingMusic("title_bgm")) {
+                currentTime = Engine::GetAudioManager().GetCurrentMusicTime("title_bgm");
             }
-
+            static float spawn_time = 0.f;
+            static bool notnow = 0;
+            if (Engine::GetInput().MouseButtonJustReleased((SDL_BUTTON_LEFT)) && !notnow) {
+                spawn_time = currentTime;
+                notnow = 1;
+            }
             switch (i) {
             case 0: // Bloom
                 shader->SendUniform("uSceneTexture", 0);
@@ -288,10 +298,16 @@ void Render::ApplyPostProcessing(bool is_title)
                 shader->SendUniform("uBloomIntensity", 0.1f);
                 break;
             case 1: // wave
-                shader->SendUniform("iResolution", Engine::window_width, Engine::window_height);
-                shader->SendUniform("iTime", float(currentTime));
+                shader->SendUniform("uResolution", Engine::window_width, Engine::window_height);
+                if (spawn_time == 0.f)
+                    shader->SendUniform("uTime", 0.f);
+                else
+                    shader->SendUniform("uTime", float(currentTime - spawn_time));
                 shader->SendUniform("uSceneTexture", 0);
-                shader->SendUniform("iMouse", Engine::GetInput().GetMousePos().mouseWorldSpaceX, Engine::GetInput().GetMousePos().mouseWorldSpaceY);
+                //shader->SendUniform("iMouse", Engine::GetInput().GetMousePos().mouseWorldSpaceX, Engine::GetInput().GetMousePos().mouseWorldSpaceY);
+                break;
+            case 2: // wave
+
                 break;
             }
 
@@ -772,4 +788,36 @@ void Render::RenderQuad()
     glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
     glBindVertexArray(0);
+}
+
+void Render::DrawCircleProgress(vec2 center, float radius, float current_progress, float max_progress, int segments, color3 color) {
+    if (max_progress <= 0.0f || current_progress <= 0.0f) return;
+    if (current_progress > max_progress) current_progress = max_progress;
+
+    float progress_ratio = current_progress / max_progress;
+    float angle_step = float(10.0f * PI / static_cast<float>(segments));
+    float angle_max = float(10.0f * PI * progress_ratio);
+
+    for (int i = 0; i < segments; ++i) {
+        float theta1 = angle_step * i;
+        float theta2 = angle_step * (i + 1);
+
+        if (theta1 >= angle_max) break;
+
+        if (theta2 > angle_max) theta2 = angle_max;
+
+        vec2 p1 = center + vec2{ radius * std::cos(theta1), radius * std::sin(theta1) };
+        vec2 p2 = center + vec2{ radius * std::cos(theta2), radius * std::sin(theta2) };
+
+        LineDrawCallPro line;
+        line.start = p1;
+        line.end = p2;
+        line.color = color;
+        line.width = 3.0f;
+        line.alpha = 1.0f;
+        line.settings.is_camera_fixed = true;
+        line.sorting_layer = DrawLayer::DrawUI;
+
+        Engine::GetRender().AddDrawCall(std::make_unique<LineDrawCallPro>(line));
+    }
 }

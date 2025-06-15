@@ -12,6 +12,7 @@ Created:    March 8, 2023
 #include "../Engine/ShowCollision.h"
 #include "../Engine/AudioManager.h"
 #include "../Engine/Icon.h"
+#include "../Engine/Render.h"
 
 #include <cmath>
 
@@ -23,6 +24,7 @@ Created:    March 8, 2023
 #include "DialogBox.h"
 #include "WaterRippleEffect.h"
 #include "Mode3.h"
+#include "Effect.h"
 
 #include <iostream>     // for debug
 #include "Module.h"
@@ -37,9 +39,6 @@ void Mode2::Load() {
 	AddGSComponent(new ShowCollision());
 #else
 #endif
-	//shader
-	Engine::GetShaderManager().LoadShader("water_ripple", "assets/shaders/default.vert", "assets/shaders/water_ripple.frag");
-	Engine::GetShaderManager().LoadShader("icon", "assets/shaders/default.vert", "assets/shaders/edge_detection.frag");
 
 	// audio
 	Engine::GetAudioManager().LoadMusic("assets/audios/home1.mp3", "home_intro", false, false);
@@ -72,15 +71,15 @@ void Mode2::Load() {
 	Engine::GetIconManager().LoadIconList();
 
 	// Dialog
-	dialog_ptr = new Dialog({ 0,0 });
-	GetGSComponent<GameObjectManager>()->Add(dialog_ptr);
-
+	dialog_ptr = std::make_shared<Dialog>(vec2(0, 0));
+	GetGSComponent<GameObjectManager>()->Add(dialog_ptr.get());
+	Engine::GetDialogSystem().SetDialog(dialog_ptr);
 	//Engine::GetLogger().LoadSaveFile();
 
 	//ScenarioComponent
-	scenario = new ScenarioComponent(dialog_ptr);
-	AddGSComponent(scenario);
-	scenario->Load();
+	//scenario = new ScenarioComponent(dialog_ptr);
+	//AddGSComponent(scenario);
+	//scenario->Load();
 
 	// Module
 	module_ptr = new Module({ 0, 0 });
@@ -100,12 +99,17 @@ void Mode2::Load() {
 	// Mouse
 	GetGSComponent<GameObjectManager>()->Add(new Mouse);
 
+	// Scenario
+	Engine::GetScenarioSystem().LoadMode2Scenarios();
+
+	//effect
+	Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new Flash(1.3f));
 
 	sell_popup = new PopUp({ 0,0 }, "assets/images/sell_popup.spt");
 	GetGSComponent<GameObjectManager>()->Add(sell_popup);
 
 
-	Engine::GetIconManager().AddIcon("Mode2_None", "can_go_shop", "computer", { 276,4.5 }, 2.0f, false, false, true, true);
+	Engine::GetIconManager().AddIcon("Mode2_None", "can_go_shop", "computer", { 288,-40.5 }, 2.0f, false, false, true, true);
 	Engine::GetIconManager().AddIcon("Mode2_None", "can_go_sea", "ship", { 0,-250 }, 1.0f, false, false, true, true);
 	Engine::GetIconManager().AddIcon("FishPopUp", "close_fishPopUp", "close_icon", { 78,105 }, 1.f, false, false, true, false);
 
@@ -182,11 +186,24 @@ void Mode2::Update(double dt) {
 
 	Icon* icon = Engine::GetIconManager().GetCollidingIconWithMouse({ Engine::GetInput().GetMousePos().mouseCamSpaceX ,Engine::GetInput().GetMousePos().mouseCamSpaceY });
 	bool clicked = Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT);
+	bool mouse_down = Engine::GetInput().MouseButtonPressed(SDL_BUTTON_LEFT); // 누르고 있는지 확인
+	bool mouse_released = Engine::GetInput().MouseButtonJustReleased(SDL_BUTTON_LEFT);
+	
 
 	if (icon != nullptr) {
-		if ((icon->GetId() == "can_go_sea") && clicked && !inven_ptr->GetIsOpened()) {
-			Engine::GetGameStateManager().ClearNextGameState();
-			Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode1));
+		if (icon != nullptr && icon->GetId() == "can_go_sea" && !inven_ptr->GetIsOpened()) {
+			if (mouse_down) {
+				is_holding_sea_icon = true;
+				hold_timer += static_cast<float>(dt);
+				if (hold_timer >= 1.0f) {
+					Engine::GetGameStateManager().ClearNextGameState();
+					Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode1));
+				}
+			}
+			else if (mouse_released) {
+				is_holding_sea_icon = false;
+				hold_timer = 0.0f;
+			}
 		}
 		else if ([&]() {
 			std::string alias = icon->GetId();
@@ -223,6 +240,10 @@ void Mode2::Update(double dt) {
 			Engine::GetIconManager().HideIconByGroup("FishPopping");
 			sell_popup->SetPop(false);
 		}
+		else {
+			is_holding_sea_icon = false;
+			hold_timer = 0.0f;
+		}
 	}
 
 	// Open Inven
@@ -239,6 +260,8 @@ void Mode2::Update(double dt) {
 		Engine::GetIconManager().ShowIconByGroup("Mode2_None");
 		Engine::GetIconManager().HideIconByGroup("OpenInven");
 	}
+
+	Engine::GetScenarioSystem().Mode2Update();
 
 }
 
@@ -316,11 +339,18 @@ void Mode2::Draw() {
 	}
 	else
 	{
-		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "Click Ship to Start the Game", { -100.f,-150.f }, 0.05f, { 0.f,0.f,0.f }, 0.5f);
-		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "Click Computer to Equip Module", { 30.f,30.f }, 0.05f, { 1.f,1.f,1.f }, 0.5f);
+		//Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "Click Ship to Start the Game", { -100.f,-150.f }, 0.05f, { 0.f,0.f,0.f }, 0.5f);
+		//Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "Click Computer to Equip Module", { 30.f,30.f }, 0.05f, { 1.f,1.f,1.f }, 0.5f);
 		sell_popup->SetPop(false);
 		Engine::GetIconManager().HideIconByGroup("FishPopUp");
 		Engine::GetIconManager().HideIconByGroup("FishPopping");
+	}
+
+	if (is_holding_sea_icon) {
+		std::cout << hold_timer << std::endl;
+
+		progress = std::clamp(hold_timer / 5.0f, 0.0f, 1.0f);
+		Engine::GetRender().DrawCircleProgress({ Engine::GetInput().GetMousePos().mouseCamSpaceX, Engine::GetInput().GetMousePos().mouseCamSpaceY }, 30.0f, progress, 3);
 	}
 }
 
@@ -358,4 +388,5 @@ void Mode2::Unload() {
 
 	background = nullptr;
 	scenario = nullptr;
+	progress = 0;
 }

@@ -112,6 +112,7 @@ public:
     bool MouseButtonDown(Uint8 button);
     bool MouseButtonJustPressed(Uint8 button);
     bool MouseButtonJustReleased(Uint8 button);
+    bool MouseButtonPressed(Uint8 button);
     bool IsMouseMoving();
     vec2 GetMousePosition() const;
     MousePos GetMousePos() const { return environment; }

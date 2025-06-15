@@ -9,7 +9,7 @@ public:
     void LoadMusicToSync(std::string music_name);
     void ResetCalibration();
     void Update(double dt);
-    bool GetBeat() { return beat; }
+    bool GetBeat();
     bool GetIsOnBeat() { return is_on_beat; }
     void SetBPM(int set_BPM);
     int GetBarCount() { return bar_count; }
@@ -21,6 +21,7 @@ public:
     double GetUserCali() { return user_calibration; }
     const double GetLastCali() {return calibrations.back();}
     void SetUserCali(double cali) { user_calibration = cali; }
+    bool GetDelaySwitch() { return delay_count_switch; }
 
 private:
     int BPM = 100;
@@ -34,15 +35,20 @@ private:
     double time_taken = 0;
     double total_music_length = 0;
     double right_time_for_calibration;
-    static constexpr double judge_offset = 0.2;
+    double judge_offset = 0.2;
     bool beat = true;
     bool is_on_beat = false;
     bool playing = false;
+    bool delay_count_switch = false;
     AudioManager* audio;
     int channel_id = 0;
     std::string music_name;
 
+    double on_beat_timer = 0.0;
+    static constexpr double ON_BEAT_WINDOW = 0.15;
+
     std::vector<double> calibrations;
     int calibrations_cnt = 0;
     double user_calibration = 0;
+    double real_calibration = 0; // not affected by ratio. always same even the bpm changes
 };

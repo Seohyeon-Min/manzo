@@ -201,6 +201,9 @@
     <ClCompile Include="Engine\EventManager.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\ScenarioSystem.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
     <ClCompile Include="Engine\Procedual.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -212,6 +215,9 @@
     </ClCompile>
     <ClCompile Include="Game\Map.cpp">
       <Filter>Game</Filter>
+      </ClCompile>
+    <ClCompile Include="Engine\DialogSystem.cpp">
+      <Filter>Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <!-- 헤더 파일(ClInclude)에 필터 적용 -->
@@ -429,6 +435,9 @@
     <ClInclude Include="Game\Mode3.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\ScenarioSystem.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
     <ClInclude Include="Engine\Procedual.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -440,6 +449,9 @@
     </ClInclude>
     <ClInclude Include="Game\Map.h">
       <Filter>Game</Filter>
+      </ClInclude>
+    <ClInclude Include="Engine\DialogSystem.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

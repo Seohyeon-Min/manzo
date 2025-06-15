@@ -49,7 +49,7 @@ private:
     Ship* ship_ptr;
     Background* background;
     Shop* shop_ptr;
-    Dialog* dialog_ptr;
+    //Dialog* dialog_ptr;
     Player* player_ptr;
     Inven* inven_ptr;
     Module* module_ptr;
@@ -57,6 +57,7 @@ private:
     PopUp* sell_popup;
     PopUp* today_fish_popup;
     FishGenerator* fishGenerator;
+    std::shared_ptr<Dialog> dialog_ptr;
 
     float y_limit = 15.0f;
     float frequency = 0.9f;
@@ -66,4 +67,7 @@ private:
     bool flag = false;
     bool isLoaded = false;
     char n;
+    float hold_timer = 0.0f;
+    bool is_holding_sea_icon = false;
+    float progress =0 ;
 };
