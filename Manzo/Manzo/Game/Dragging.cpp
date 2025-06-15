@@ -1,4 +1,6 @@
 #include "Dragging.h"
+#include "GameOption.h"
+#include "../Engine/GameObjectManager.h"
 
 
 Dragging::Dragging(Icon& object) : object(object)
@@ -15,40 +17,43 @@ Dragging::~Dragging()
 
 void Dragging::Update(double dt)
 {
-	if (Engine::GetInput().MouseButtonDown(SDL_BUTTON_LEFT))
+	if (!Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<GameOption>()->isOpened())
 	{
-		if (object.IsSelected() && (currentDraggingIcon == nullptr || currentDraggingIcon == &object))
+		if (Engine::GetInput().MouseButtonDown(SDL_BUTTON_LEFT))
 		{
-			currentDraggingIcon = &object;
-			object.SetPosition({
-				Engine::GetInput().GetMousePosition().x - Engine::window_width / 2,
-				Engine::GetInput().GetMousePosition().y - Engine::window_height / 2
-				});
-		}
-	}
-	else
-	{
-
-		object.SetSelected(false);
-		
-		if (object.CanChangePosition() == false)
-		{
-			object.SetPosition(icon_first_pos);
+			if (object.IsSelected() && (currentDraggingIcon == nullptr || currentDraggingIcon == &object))
+			{
+				currentDraggingIcon = &object;
+				object.SetPosition({
+					Engine::GetInput().GetMousePosition().x - Engine::window_width / 2,
+					Engine::GetInput().GetMousePosition().y - Engine::window_height / 2
+					});
+			}
 		}
 		else
 		{
-			Icon* collidedIcon = Engine::GetIconManager().GetCollidingIcon(object);
 
-			if (collidedIcon)
-			{
-				object.SetPosition(collidedIcon->GetPosition());
-			}
-			else
+			object.SetSelected(false);
+
+			if (object.CanChangePosition() == false)
 			{
 				object.SetPosition(icon_first_pos);
 			}
-		}
+			else
+			{
+				Icon* collidedIcon = Engine::GetIconManager().GetCollidingIcon(object);
 
-		currentDraggingIcon = nullptr;
+				if (collidedIcon)
+				{
+					object.SetPosition(collidedIcon->GetPosition());
+				}
+				else
+				{
+					object.SetPosition(icon_first_pos);
+				}
+			}
+
+			currentDraggingIcon = nullptr;
+		}
 	}
 }

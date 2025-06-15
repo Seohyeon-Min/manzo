@@ -1,5 +1,7 @@
 #include "DialogBox.h"
 #include "../Engine/Engine.h"
+#include "../Engine/GameObjectManager.h"
+#include "GameOption.h"
 
 Dialog::Dialog(vec2 start_position)
     : GameObject(start_position), currentIndex(0), elapsedTime(0.0), typingSpeed(0.05), IsTyping(false) {
@@ -107,15 +109,18 @@ void Dialog::Update(double dt) {
 
     if (!IsTyping) return;
 
-    elapsedTime += dt;
-    while (elapsedTime >= typingSpeed && currentIndex < fullText.size()) {
-        elapsedTime -= typingSpeed;
-        displayedText += fullText[currentIndex];
-        currentIndex++;
+    if (!Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<GameOption>()->isOpened())
+    {
+        elapsedTime += dt;
+        while (elapsedTime >= typingSpeed && currentIndex < fullText.size()) {
+            elapsedTime -= typingSpeed;
+            displayedText += fullText[currentIndex];
+            currentIndex++;
 
-        if (currentIndex >= fullText.size()) {
-            IsTyping = false;
-            break;
+            if (currentIndex >= fullText.size()) {
+                IsTyping = false;
+                break;
+            }
         }
     }
 }

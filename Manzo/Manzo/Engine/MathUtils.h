@@ -1,6 +1,7 @@
 #pragma once
 #include "vec2.h"
 #include <algorithm>
+#include <mat3.h>
 
 
 /*
@@ -22,3 +23,4 @@ Nomalize
 vec2 ClosestPoint(vec2 point, vec2 a, vec2 b);
 vec2 Lerp(const vec2& start, const vec2& end, float t);
 float Lerp(float a, float b, float t);
+mat3 Inverse(mat3& m);

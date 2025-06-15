@@ -19,6 +19,8 @@ Created:    March 8, 2023
 #include "Fish.h"
 #include "Shop.h"
 #include "Module.h"
+#include "GameOption.h"
+#include "../Engine/RayCasting.h"
 
 class Reef;
 class Ship;
@@ -46,6 +48,8 @@ private:
     Cam* camera;
     Beat* beat_system;
     Module* module;
+    GameOption* option;
+    Raycasting* raycasting;
 
     bool Isboss = false;
     bool soundPlaying = false;

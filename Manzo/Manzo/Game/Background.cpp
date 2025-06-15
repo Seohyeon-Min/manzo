@@ -21,7 +21,12 @@ Background::Background()
 
 void Background::Add(const std::filesystem::path& texture_path, float speed, DrawLayer draw_layer)
 {
-    backgrounds.push_back(ParallaxLayer({ Engine::GetTextureManager().Load(texture_path), speed, mat3{},draw_layer }));
+    backgrounds.push_back(ParallaxLayer({ Engine::GetTextureManager().Load(texture_path), vec2{}, mat3{}, speed, draw_layer }));
+}
+
+void Background::Add(const std::filesystem::path& texture_path, vec2 pos, float speed, DrawLayer draw_layer)
+{
+    backgrounds.push_back(ParallaxLayer({ Engine::GetTextureManager().Load(texture_path), pos, mat3{},  speed,draw_layer }));
 }
 
 void Background::SetUniforms(const GLShader* shader, Ship* ship) {
@@ -29,7 +34,7 @@ void Background::SetUniforms(const GLShader* shader, Ship* ship) {
     float pos_Y = how_deepY + ship->GetPosition().y + 200.f;
     shader->SendUniform("u_y_deep", how_deepY);
     shader->SendUniform("u_y_position", pos_Y);
-    shader->SendUniform("u_resolution", Engine::window_width, Engine::window_height); // °¡·Î ¹æÇâ
+    shader->SendUniform("u_resolution", Engine::window_width, Engine::window_height); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     //shader->SendUniform("uChannelResolution", (float)GetSize().width, (float)GetSize().height);
 }
 
@@ -45,11 +50,15 @@ void Background::Draw(const Cam& camera)
 
     for (ParallaxLayer& background : backgrounds) {
 
-        background.matrix = mat3::build_translation({ (0 + cameraPos.x) * background.speed, (0 + cameraPos.y) * background.speed });
+        vec2 parallax_offset = cameraPos * background.speed;
+        vec2 final_pos = { background.pos.x - parallax_offset.x,background.pos.y };
+
+        if (background.pos != vec2{ 0.f,0.f })
+            background.matrix = mat3::build_translation(final_pos) * mat3::build_scale(2.f, 3.f);
 
         DrawCall draw_call = {
-            background.texture,                       // Texture to draw
-            &background.matrix,                          // Transformation matrix
+            background.texture,
+            &background.matrix,
             Engine::GetShaderManager().GetDefaultShader()
         };
 

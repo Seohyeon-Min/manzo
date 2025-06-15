@@ -94,11 +94,13 @@ void Mode1::Load()
 	fishGenerator->ReadFishCSV("assets/images/fish/Fish.csv");
 
 	// background
-	//background->Add("assets/images/background/temp_background4.png", 0.0f);
-	//background->Add("assets/images/background/bg1.png", 0.3f);
-	//background->Add("assets/images/background/bg2.png", 0.4f);
-	//background->Add("assets/images/background/bg3.png", 0.5f);
-	// background->Add("assets/images/background/bubble.png", 1.5f, DrawLayer::DrawUI);
+	background->Add("assets/images/background/rock_pillar/r1.png", {350.f,-1600.f}, 0.1f);
+	background->Add("assets/images/background/rock_pillar/r2.png", { 5050.f,-900.f }, 0.1f);
+	background->Add("assets/images/background/rock_pillar/r3.png", { 2400.f,-3500.f }, 0.05f);
+	background->Add("assets/images/background/rock_pillar/r4.png", { 3900.f,-2550.f }, 0.05f);
+	background->Add("assets/images/background/rock_pillar/r5.png", { 1500.f,-3600.f }, 0.1f);
+	background->Add("assets/images/background/rock_pillar/r6.png", { 5420.f,-370.f }, 0.2f);
+	background->Add("assets/images/background/rock_pillar/r8.png", { 4300.f,-3700.f }, 0.13f);
 
 	// Map
 	AddGSComponent(new MapManager());
@@ -110,12 +112,7 @@ void Mode1::Load()
 
 	// Boss
 	Boss::LoadBossfile();
-	// for (int i = 0; i < 25; i++)
-	// for (int i = 0; i < 25; i++)
-	//{
-	//     GetGSComponent<Boss>()->ReadBossJSON(static_cast<Boss::BossType>(i));
-	//     BossFirstPos.push_back(GetGSComponent<Boss>()->GetFirstPosition());
-	// }
+
 	boss_ptr = new Boss({ 4100, -5300 }, Boss::BossName::e, Boss::BossType::MovingToLocation);
 	boss_ptr->ReadBossJSON(Boss::BossName::e);
 	BossFirstPos.push_back(std::make_pair(boss_ptr->GetFirstPosition()[0], boss_ptr->GetFirstPosition()[1]));
@@ -173,16 +170,13 @@ void Mode1::Load()
 		}
 	));
 
+	option = new GameOption({ 0,0 });
+	GetGSComponent<GameObjectManager>()->Add(option);
+	raycasting = new Raycasting(ship_ptr);
 }
 
 void Mode1::Update(double dt)
 {
-	/*
-	std::cout << "Player's X position : "<< ship_ptr->GetPosition().x << "\n";
-	std::cout << "Player's Y position : "<< ship_ptr->GetPosition().y << "\n";
-	*/
-
-	// beat_system->LoadMusicToSync("Level1_bgm");
 	// audio play
 
 	UpdateGSComponents(dt);
@@ -214,74 +208,97 @@ void Mode1::Update(double dt)
 
 #else
 #endif
-	
 
-	if (Engine::GetInput().KeyJustPressed(Input::Keys::V))
+	if (!option->isOpened())
 	{
-		Engine::GetGameStateManager().ClearNextGameState();
-		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Tutorial));
-	}
+
+		Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::Plankton>>()->Spray();
 
 
+		beat_system->Update(dt);
 
-	if (Isboss)
-	{
-		
-		camera->SetSmoothPosition(boss_ptr->GetPosition());
-		camera->Update(dt, boss_ptr->GetPosition(), ship_ptr->IsShipMoving());
-
-	}
-	else{
-	// camera postion update
-		camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
-	}
-	// Update Fish Generator
-	fishGenerator->GenerateFish(dt);
-
-	// Update 3D Audio with smooth transition for ship position
-	smoothShipPosition.x = std::lerp(previousPosition.x, ship_ptr->GetPosition().x, 0.1f);
-	smoothShipPosition.y = std::lerp(previousPosition.y, ship_ptr->GetPosition().y, 0.1f);
-	previousPosition = smoothShipPosition;
-
-	// Calculate the distance between ship and boss positions
-	float dx = smoothShipPosition.x - bossPosition.x;
-	float dy = smoothShipPosition.y - bossPosition.y;
-	float distance = std::sqrt(dx * dx + dy * dy);
-
-	// Check if within the max distance and apply 3D audio accordingly
-	bool isWithinRange = distance < maxDistance;
-
-	Engine::GetAudioManager().Set3dListenerAndOrientation(smoothShipPosition, vec3{ 0.0f, -1.0f, 0.0f }, vec3{ 0.0f, 0.0f, 1.0f });
-
-	// Apply 3D position for the boss and calculate volume based on the distance
-	if (isWithinRange && !Isboss)
-	{
-		if (!soundPlaying)
+		// Handle Input
+		if (Engine::GetInput().KeyJustPressed(Input::Keys::TAB) && ship_ptr->GetPosition().y >= -800.f)
 		{
-			Engine::GetAudioManager().PlayMusics("e morse");
-			soundPlaying = true;
+			Engine::GetGameStateManager().ClearNextGameState();
+			Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
+		}
+
+		if (Engine::GetInput().KeyJustPressed(Input::Keys::V))
+		{
+			Engine::GetGameStateManager().ClearNextGameState();
+			Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Tutorial));
+		}
+
+		if (Isboss)
+		{		
+			camera->SetSmoothPosition(boss_ptr->GetPosition());
+			camera->Update(dt, boss_ptr->GetPosition(), ship_ptr->IsShipMoving());
+
+		}
+		else{
+		// camera postion update
+			camera->Update(dt, ship_ptr->GetPosition(), ship_ptr->IsShipMoving());
+		}
+
+		// Update Fish Generator
+		fishGenerator->GenerateFish(dt);
+
+		// Update 3D Audio with smooth transition for ship position
+		smoothShipPosition.x = std::lerp(previousPosition.x, ship_ptr->GetPosition().x, 0.1f);
+		smoothShipPosition.y = std::lerp(previousPosition.y, ship_ptr->GetPosition().y, 0.1f);
+		previousPosition = smoothShipPosition;
+
+		// Calculate the distance between ship and boss positions
+		float dx = smoothShipPosition.x - bossPosition.x;
+		float dy = smoothShipPosition.y - bossPosition.y;
+		float distance = std::sqrt(dx * dx + dy * dy);
+
+		// Check if within the max distance and apply 3D audio accordingly
+		bool isWithinRange = distance < maxDistance;
+
+		Engine::GetAudioManager().Set3dListenerAndOrientation(smoothShipPosition, vec3{ 0.0f, -1.0f, 0.0f }, vec3{ 0.0f, 0.0f, 1.0f });
+
+		// Apply 3D position for the boss and calculate volume based on the distance
+		if (isWithinRange && !Isboss)
+		{
+			if (!soundPlaying)
+			{
+				Engine::GetAudioManager().PlayMusics("e morse");
+				soundPlaying = true;
+			}
+			else
+			{
+				if (!replay)
+				{
+					Engine::GetAudioManager().RestartPlayMusic("e morse");
+					replay = true;
+				}
+			}
+
+			Engine::GetAudioManager().SetChannel3dPosition("e morse", bossPosition);
+
+			float volumeFactor = 1.0f - std::clamp(distance / 300.0f, 0.0f, 1.0f);
+			// float volume = std::lerp(0.0f, 1.0f, volumeFactor);
+			float volume = std::lerp(-20.0f, 1.0f, volumeFactor);
+
+			Engine::GetAudioManager().SetChannelVolume("e morse", volume);
 		}
 		else
 		{
-			if (!replay)
-			{
-				Engine::GetAudioManager().RestartPlayMusic("e morse");
-				replay = true;
-			}
+			Engine::GetAudioManager().StopPlayingMusic("e morse");
+			replay = false;
 		}
-
-		Engine::GetAudioManager().SetChannel3dPosition("e morse", bossPosition);
-
-		float volumeFactor = 1.0f - std::clamp(distance / 300.0f, 0.0f, 1.0f);
-		// float volume = std::lerp(0.0f, 1.0f, volumeFactor);
-		float volume = std::lerp(-20.0f, 1.0f, volumeFactor);
-
-		Engine::GetAudioManager().SetChannelVolume("e morse", volume);
 	}
 	else
 	{
 		Engine::GetAudioManager().StopPlayingMusic("e morse");
+		Engine::GetAudioManager().StopPlayingMusic("Level1_bgm");
+		Engine::GetAudioManager().StopPlayingMusic("dash");
+
+		soundPlaying = false;
 		replay = false;
+		beat_system->SetPause(false);
 	}
 }
 
@@ -296,10 +313,11 @@ void Mode1::FixedUpdate(double dt)
 
 void Mode1::Draw()
 {
-	GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
-	// GetGSComponent<Map>()->AddDrawCall();
 	background->ShaderBackgroundDraw(Engine::GetShaderManager().GetShader("sea_background"), *GetGSComponent<Cam>(), ship_ptr);
+	GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>());
 	GetGSComponent<GameObjectManager>()->DrawAll();
+
+	raycasting->Render();
 
 	if (ship_ptr->GetFuel() <= 0)
 	{
@@ -312,11 +330,13 @@ void Mode1::Draw()
 		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, std::to_string(static_cast<int>(ship_ptr->GetFuel())), { -0.001f, 0.75f }, 0.05f, { 1.f, 1.f, 1.f }, 1.f, false);
 	}
 }
+
 void Mode1::Unload()
 {
 
 	//Engine::GetLogger().WriteSaveFile(fishCollection, GetGSComponent<Fish>()->GetMoney(), firstBuy, module->IsFirstSetted(), Engine::GetLogger().GetModule1XPos(), secondBuy, module->IsSecondSetted(), Engine::GetLogger().GetModule2XPos());
 	SaveData save = Engine::GetSaveDataManager().GetSaveData();
+	GetGSComponent<MapManager>()->GetMap(0)->UnloadAll();
 
 	ModuleData m1{ firstBuy, module->IsFirstSetted(), save.module1.pos };
 	ModuleData m2{ secondBuy, module->IsSecondSetted(), save.module2.pos };

@@ -10,11 +10,13 @@
 #include "States.h"
 
 #include <iostream>
+#include "GameOption.h"
 
 Ship::Ship(vec2 start_position) :
 	GameObject(start_position), move(false)
 {
 	AddGOComponent(new Sprite("assets/images/ship/ship.spt", this));
+
 	beat = &Engine::GetBeat();
 	hit_text = Engine::GetTextureManager().Load("assets/images/ship/ship_hit.png");
 
@@ -150,7 +152,7 @@ void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_
 	ship->nearestRock = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->FindNearestRock(ship); // it should be FindNearestRockNextFrame
 
 
-	
+
 
 #ifdef _DEBUG
 	if (ship->nearestRock) {
@@ -265,65 +267,69 @@ std::vector<vec2> spline_points;
 
 void Ship::Update(double dt)
 {
-	if (!IsFuelZero()) {
-		can_dash = true;
-		GameObject::Update(dt);
-		if (Engine::GetGameStateManager().GetStateName() == "Mode1" || Engine::GetGameStateManager().GetStateName() == "Tutorial") {
+	vec2 pos = GetPosition();
+	ship_range = Math::rect(vec2{ pos.x - 150.f,pos.y - 150.f }, vec2{ pos.x + 150.f,pos.y + 150.f });
 
-			if (collide_timer->Remaining() < 0.48) {
-				// there's gonna be an error if the bgm changes
+	if (!Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<GameOption>()->isOpened())
+	{
+		if (!IsFuelZero()) {
+			can_dash = true;
+			GameObject::Update(dt);
+			if (Engine::GetGameStateManager().GetStateName() == "Mode1" || Engine::GetGameStateManager().GetStateName() == "Tutorial") {
 
-				Engine::GetGameStateManager().GetGSComponent<Cam>()->GetCameraView().SetZoom(1.0f);
-				SetVelocity(force);
-				float base_dt = 1.0f / 240.f;
-				float adjusted_deceleration = (float)pow(deceleration / 2, dt / base_dt);
-				force *= adjusted_deceleration;
+				if (collide_timer->Remaining() < 0.48) {
+					// there's gonna be an error if the bgm changes
+
+					Engine::GetGameStateManager().GetGSComponent<Cam>()->GetCameraView().SetZoom(1.0f);
+					SetVelocity(force);
+					float base_dt = 1.0f / 240.f;
+					float adjusted_deceleration = (float)pow(deceleration / 2, dt / base_dt);
+					force *= adjusted_deceleration;
+				}
+
+				if (collide_timer->IsFinished()) {
+					Engine::Instance()->ResetSlowDownFactor();
+
+					collide_timer->Reset();
+					slow_down = 0.0f;
+					hit_with = false;
+				}
+
+				if (invincibility_timer->Remaining() < 1.48 && invincibility_timer->TickTock() && !invincibility_timer->IsFinished()) {
+					SetShader(Engine::GetShaderManager().GetShader("change_color"));
+				}
+				else {
+					SetShader(Engine::GetShaderManager().GetDefaultShader());
+				}
+
+				Engine::GetGameStateManager().GetGSComponent<Cam>()->GetCamera().UpdateShake((float)dt);
+
+				if (isCollidingWithReef && !IsTouchingReef())
+				{
+					isCollidingWithReef = false;
+				}
 			}
 
-			if (collide_timer->IsFinished()) {
-				Engine::Instance()->ResetSlowDownFactor();
+			// World Boundary
+			RectCollision* collider = GetGOComponent<RectCollision>();
 
-				collide_timer->Reset();
-				slow_down = 0.0f;
-				hit_with = false;
+			if (collider->WorldBoundary_rect().Left() < Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition().x - 640) {
+				UpdatePosition({ Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition().x - 640 - collider->WorldBoundary_rect().Left(), 0 });
+				SetVelocity({ 0, GetVelocity().y });
 			}
-
-			if (invincibility_timer->Remaining() < 1.48 && invincibility_timer->TickTock() && !invincibility_timer->IsFinished()) {
-				SetShader(Engine::GetShaderManager().GetShader("change_color"));
+			if (collider->WorldBoundary_rect().Right() > Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition().x + 640) {
+				UpdatePosition({ Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition().x + 640 - collider->WorldBoundary_rect().Right(), 0 });
+				SetVelocity({ 0, GetVelocity().y });
 			}
-			else {
-				SetShader(Engine::GetShaderManager().GetDefaultShader());
+			if (collider->WorldBoundary_rect().Bottom() < Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition().y - 360) {
+				UpdatePosition({ 0, Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition().y - 360 - collider->WorldBoundary_rect().Bottom() });
+				SetVelocity({ GetVelocity().x, 0 });
 			}
-
-			Engine::GetGameStateManager().GetGSComponent<Cam>()->GetCamera().UpdateShake((float)dt);
-
-			if (isCollidingWithReef && !IsTouchingReef())
-			{
-				isCollidingWithReef = false;
+			if (collider->WorldBoundary_rect().Top() > Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition().y + 360) {
+				UpdatePosition({ 0, Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition().y + 360 - collider->WorldBoundary_rect().Top() });
+				SetVelocity({ GetVelocity().x, 0 });
 			}
 		}
-
-		// World Boundary
-		RectCollision* collider = GetGOComponent<RectCollision>();
-
-		if (collider->WorldBoundary_rect().Left() < Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition().x - 640) {
-			UpdatePosition({ Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition().x - 640 - collider->WorldBoundary_rect().Left(), 0 });
-			SetVelocity({ 0, GetVelocity().y });
-		}
-		if (collider->WorldBoundary_rect().Right() > Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition().x + 640) {
-			UpdatePosition({ Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition().x + 640 - collider->WorldBoundary_rect().Right(), 0 });
-			SetVelocity({ 0, GetVelocity().y });
-		}
-		if (collider->WorldBoundary_rect().Bottom() < Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition().y - 360) {
-			UpdatePosition({ 0, Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition().y - 360 - collider->WorldBoundary_rect().Bottom() });
-			SetVelocity({ GetVelocity().x, 0 });
-		}
-		if (collider->WorldBoundary_rect().Top() > Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition().y + 360) {
-			UpdatePosition({ 0, Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition().y + 360 - collider->WorldBoundary_rect().Top() });
-			SetVelocity({ GetVelocity().x, 0 });
-		}
-	}
-	//std::cout << Engine::GetInput().GetMousePos().mouseWorldSpaceX - Engine::window_width/ 2 << " " << Engine::GetInput().GetMousePosition().x << std::endl;
 
 		if (current_state == &state_move)
 		{
@@ -339,6 +345,11 @@ void Ship::Update(double dt)
 			soundPlaying = false;
 			Engine::GetAudioManager().StopPlayingMusic("dash");
 		}
+	}
+	else
+	{
+		SetVelocity({ 0,0 });
+	}
 }
 
 void Ship::FixedUpdate(double fixed_dt) {
@@ -350,7 +361,6 @@ void Ship::FixedUpdate(double fixed_dt) {
 
 
 void Ship::Draw(DrawLayer drawlayer) {
-
 	if (hit_with) {
 		DrawCall draw_call = {
 		hit_text,                       // Texture to draw
@@ -587,6 +597,11 @@ void Ship::ResolveCollision(GameObject* other_object) {
 
 }
 
+bool Ship::CatchFish(vec2 pos)
+{
+	return ((pos.x >= ship_range.Left() && pos.x <= ship_range.Right()) && (pos.y >= ship_range.Bottom() && pos.y <= ship_range.Top()));
+}
+
 void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
 
 	if (other_object->Type() == GameObjectTypes::Rock) {
@@ -744,7 +759,7 @@ void Pump::Update(double dt)
 	SetPosition(ship->GetPosition());
 	GetMatrix();
 
-	if (!ship->IsFuelZero()) {
+	if (!ship->IsFuelZero() && !Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<GameOption>()->isOpened()) {
 		float decrease_duration = (float)beat->GetFixedDuration() - 0.1f;
 		float delta_radius = (max_pump_radius - min_pump_radius) / decrease_duration;
 		float delta_alpha = 1 / decrease_duration;
@@ -780,26 +795,28 @@ void Pump::Update(double dt)
 
 void Pump::Draw(DrawLayer drawlayer)
 {
-	CircleDrawCall draw_call = {
+	
+		CircleDrawCall draw_call = {
 	min_pump_radius,                      // Texture to draw
 	GetPosition(),                          // Transformation matrix
-	};
+		};
 
-	draw_call.settings.do_blending = true;
-	draw_call.sorting_layer = DrawLayer::DrawUI;
+		draw_call.settings.do_blending = true;
+		draw_call.sorting_layer = DrawLayer::DrawUI;
 
-	CircleDrawCall draw_call2 = {
-	radius,                       // Texture to draw
-	GetPosition(),                          // Transformation matrix
-	};
+		CircleDrawCall draw_call2 = {
+		radius,                       // Texture to draw
+		GetPosition(),                          // Transformation matrix
+		};
 
-	draw_call2.shader = Engine::GetShaderManager().GetShader("change_alpha_no_texture"); // Shader to use
-	draw_call2.settings.do_blending = true;
-	draw_call2.SetUniforms = [this](const GLShader* shader) {this->SetUniforms(shader); };
-	draw_call2.sorting_layer = DrawLayer::DrawUI;
+		draw_call2.shader = Engine::GetShaderManager().GetShader("change_alpha_no_texture"); // Shader to use
+		draw_call2.settings.do_blending = true;
+		draw_call2.SetUniforms = [this](const GLShader* shader) {this->SetUniforms(shader); };
+		draw_call2.sorting_layer = DrawLayer::DrawUI;
 
-    Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call));
-	Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call2));
+		Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call));
+		Engine::GetRender().AddDrawCall(std::make_unique<CircleDrawCall>(draw_call2));
+	
 }
 
 void Pump::Reset() {

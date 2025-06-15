@@ -8,6 +8,7 @@
 #include "../Engine/MathUtils.h"
 #include "Effect.h"
 #include "BackGround.h"
+#include "GameOption.h"
 
 std::vector<GameObject::State*> stateMap;
 std::vector<std::string> BossJSONfileMap;
@@ -224,16 +225,22 @@ void Boss::InitializeStates() {
 
 
 void Boss::Update(double dt) {
-	Boss* boss = static_cast<Boss*>(this);
-	if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
+	auto option = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<GameOption>();
+
+	if (Engine::GetGameStateManager().GetStateName() == "Mode1" && !option->isOpened()) 
+	{
 		if (GameObject::current_state->GetName() != Boss::state_cutscene.GetName()) {
-			boss->barCount = beat->GetBarCount();
-			if (boss->barCount <= total_entry.size()) {
-				if (boss->barCount < total_entry.size() && total_entry[boss->barCount] - 1 < stateMap.size()) {
-					change_state(stateMap[total_entry[boss->barCount] - 1]);
+
+			barCount = beat->GetBarCount();
+			//std::cout << barCount << std::endl;
+			if (barCount <= total_entry.size()) {
+				if (barCount < total_entry.size() && total_entry[barCount] - 1 < stateMap.size()) {
+					change_state(stateMap[total_entry[barCount] - 1]);
+					
 				}
 			}
-			else if (boss->barCount > total_entry.size()) {
+			else if (barCount > total_entry.size()) {
+				//std::cerr << "Invalid barCount or index out of range: " << boss->barCount << std::endl;
 				Destroy();
 				AfterDied();
 			}
@@ -249,6 +256,11 @@ void Boss::Update(double dt) {
 
 		SetScale({ currentScaleX, 1.0f });
 		Move(dt);
+	}
+
+	if (option->isOpened())
+	{
+		Engine::GetAudioManager().StopPlayingMusic("e boss");
 	}
 }
 

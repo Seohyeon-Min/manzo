@@ -3,6 +3,7 @@
 #include "../Engine/GameObject.h"
 #include "GameObjectTypes.h"
 #include "../Engine/MapManager.h"
+#include "Ship.h"
 #include <map>
 
 extern std::map<int, int> fishCollection;
@@ -20,10 +21,13 @@ public:
 	vec2 start_position = { 0,0 };
 
 	int type;
+	bool flag = false;
 	bool collided = false;
 
 	void Update(double dt);
 	void Draw();
+	void Pattern();
+	void AvoidRock();
 
 private:
 	float RandomFloat(float min, float max) {
@@ -35,4 +39,9 @@ private:
 
 	Map* map;
 	Fish* parentFish = nullptr;
+	Ship* ship;
+
+	vec2 pausedVelocity;
+	bool wasPaused = false;
+
 };

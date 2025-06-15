@@ -10,6 +10,8 @@
 #include <math.h>
 #include <iostream>
 
+#include <map>
+
 struct Implementation {
 	Implementation();
 	~Implementation();
@@ -26,6 +28,7 @@ struct Implementation {
 
 	SoundMap mSounds;
 	ChannelMap mChannels;
+	std::map<std::string, unsigned int> mChannelPositions;
 };
 
 class AudioManager {
@@ -61,7 +64,7 @@ public:
 	void SetMode(const std::string& alias, bool spatial_on);
 
 	void Set3DMode(FMOD_MODE mode);
-	
+
 	void SetChannelVolume(const std::string& alias, float fVolumedB);
 	void SetMute(const std::string& alias, bool mute); //if true, mute
 	const bool GetMute() {
@@ -76,4 +79,5 @@ public:
 
 private:
 	bool isMute = false;
+
 };

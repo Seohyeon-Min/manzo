@@ -7,6 +7,9 @@
 #include "Mouse.h"
 #include "States.h"
 
+#include "../Engine/Icon.h"
+#include "../Engine/IconManager.h"
+
 Tutorial::Tutorial()
 {
 }
@@ -14,8 +17,6 @@ Tutorial::Tutorial()
 void Tutorial::Load()
 {
 	AddGSComponent(new GameObjectManager());
-
-
 
 	// background
 	background = new Background();
@@ -36,22 +37,21 @@ void Tutorial::Load()
 	ship_ptr = new Ship({ 0, 0 });
 	GetGSComponent<GameObjectManager>()->Add(ship_ptr);
 
-	AddGSComponent(new ParticleManager<Particles::FuelBubble>());
-	AddGSComponent(new ParticleManager<Particles::BubblePop>());
-	AddGSComponent(new ParticleManager<Particles::HitPraticle>());
-	AddGSComponent(new ParticleManager<Particles::HitPraticle2>());
-	AddGSComponent(new ParticleManager<Particles::CaptureEffect>());
-
-	// mouse
-	GetGSComponent<GameObjectManager>()->Add(new Mouse);
 
 	default_min_radius = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Pump>()->GetMinRadius() * 4.5f;
 	default_max_radius = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Pump>()->GetMaxRadius() * 4.5f;
 	variable_min_radius = default_min_radius;
 	//variable_min_radius = defalut_max_radius;
 	ship_ptr->SetScale({ 3.5f, 3.5f });
+
 	Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Pump>()->SetMinRadius(default_min_radius);
 	Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Pump>()->SetMaxRadius(default_max_radius);
+
+	option = new GameOption({ 0,100 });
+	GetGSComponent<GameObjectManager>()->Add(option);
+
+	// mouse
+	GetGSComponent<GameObjectManager>()->Add(new Mouse);
 }
 
 void Tutorial::Update(double dt)
@@ -59,19 +59,35 @@ void Tutorial::Update(double dt)
 	UpdateGSComponents(dt);
 	GetGSComponent<GameObjectManager>()->UpdateAll(dt);
 	GetGSComponent<Cam>()->Update(dt, {}, false);
-	beat_system->Update(dt);
 
-	if (Engine::GetInput().KeyJustPressed(Input::Keys::Enter)) {
-		//if (ship_ptr->IsShipUnder() && Engine::GetInput().KeyJustPressed(Input::Keys::Q)) {
-		Engine::GetGameStateManager().ClearNextGameState();
-		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode3));
-	}
-
-	if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT))
+	if (!option->isOpened())
 	{
-		variable_min_radius = default_min_radius;
-		variable_min_radius += static_cast<float>(4 * variable_min_radius * beat_system->GetLastCali());
-		//Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Pump>()->SetMinRadius(variable_min_radius);
+		beat_system->Update(dt);
+
+		if (Engine::GetInput().KeyJustPressed(Input::Keys::Enter)) {
+			if (!Engine::GetGameStateManager().FromOption())
+			{
+				Engine::GetGameStateManager().ClearNextGameState();
+				Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode3));
+			}
+			else
+			{
+				Engine::GetGameStateManager().ClearNextGameState();
+				Engine::GetGameStateManager().LoadPreviousGameState();
+			}
+		}
+
+		if (Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT))
+		{
+			variable_min_radius = default_min_radius;
+			variable_min_radius += static_cast<float>(4 * variable_min_radius * beat_system->GetLastCali());
+			//Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Pump>()->SetMinRadius(variable_min_radius);
+		}
+	}
+	else
+	{
+		Engine::GetAudioManager().StopPlayingMusic("tutorial_bgm");
+		beat_system->SetPause(false); 
 	}
 }
 
@@ -85,6 +101,7 @@ void Tutorial::Draw()
 		ship_ptr->GetPosition(),
 		{255,0,0}
 	};
+
 	draw_call.settings.do_blending = true;
 	draw_call.sorting_layer = DrawLayer::DrawUI;
 	draw_call.order_in_layer = 9;
@@ -100,7 +117,6 @@ void Tutorial::FixedUpdate(double dt)
 
 void Tutorial::Unload()
 {
-
 	delete ship_ptr;
 	ship_ptr = nullptr;
 	playing = false;
@@ -110,6 +126,8 @@ void Tutorial::Unload()
 
  	GetGSComponent<GameObjectManager>()->Unload();
 	GetGSComponent<Background>()->Unload();
+	Engine::GetIconManager().Unload();
+
 	Engine::GetRender().ClearDrawCalls();
 	ClearGSComponents();
 	Engine::GetAudioManager().StopAllChannels();

@@ -19,18 +19,23 @@ class Background : public Component {
 public:
     Background();
     void Add(const std::filesystem::path& texture_path, float speed, DrawLayer = DrawLayer::DrawBackground);
+    void Add(const std::filesystem::path& texture_path, vec2 pos, float speed, DrawLayer = DrawLayer::DrawBackground);
     void Unload();
     void Draw(const Cam& camera);
     void ShaderBackgroundDraw(GLShader* shader, const Cam& camera, Ship* ship, std::function<void(const GLShader*)> SetUniformsFunc = nullptr);
     void SetUniforms(const GLShader* shader, Ship* ship);
     ivec2 GetSize();
+
+
 private:
     struct ParallaxLayer {
         GLTexture* texture;
-        float speed = 1.f;
+        vec2 pos;
         mat3 matrix;
+        float speed = 1.f;
         DrawLayer drawlayer;
     };
+
     std::vector<ParallaxLayer> backgrounds;
     GLTexture* full_quad;
     mat3 basic_mat;

@@ -7,6 +7,7 @@
 #include "Ship.h"
 #include <vector>
 #include <cmath>
+#include "GameOption.h"
 
 #define PI  3.14159265358979
 #define DEG2RAD (PI/180.0f)
@@ -92,22 +93,25 @@ vec2 RandomPointAround(const vec2& center, float maxRadius = 15.0f) {
 }
 
 void BossBullet::Update(double dt) {
-    GameObject::Update(dt);
-    Move(dt);   
+    if(!Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<GameOption>()->isOpened()){
+        GameObject::Update(dt);
+        Move(dt);   
 
-    //if (!std::isnan(position.x) && !std::isnan(position.y)) {
-    //    procedual.Update(this, 0.2f);
-    //}
-    vec2 pos = GetPosition();
-    
-    if (lifetime <= -1.0f) {
-        this->Destroy();
-        procedual.Clear();
+        //if (!std::isnan(position.x) && !std::isnan(position.y)) {
+        //    procedual.Update(this, 0.2f);
+        //}
+        vec2 pos = GetPosition();
+        
+        if (lifetime <= -1.0f) {
+            this->Destroy();
+            procedual.Clear();
 
-        return;
+            return;
+        }
     }
-    else {
-        lifetime -= dt;
+    else
+    {
+        SetVelocity({ 0,0 });
     }
 
 
@@ -171,13 +175,13 @@ void BossBullet::Move(double dt) {
     }
 
     case BossBullet::BulletType::Wave: {
-        vec2 perp = { -wave_forward_dir.y, wave_forward_dir.x }; // 수직 방향
+        vec2 perp = { -wave_forward_dir.y, wave_forward_dir.x };
         float forwardSpeed = 300.f;
         float waveOffset = sinf((float)timeElapsed * waveFrequency) * waveAmplitude;
 
         vec2 movement = wave_forward_dir * forwardSpeed * (float)dt + perp * waveOffset * (float)dt;
         this->position += movement;
-        this->SetVelocity(movement / (float)dt); // 충돌 계산용
+        this->SetVelocity(movement / (float)dt);
         break;
     }
 

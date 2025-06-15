@@ -11,6 +11,7 @@ Created:    Sept 12, 2024
 #pragma once
 #include "../Engine/GameState.h"
 #include "..\Engine\GameObjectManager.h"
+#include "GameOption.h"
 
 class Beat;
 class Background;
@@ -33,6 +34,7 @@ private:
     Beat* beat_system;
     Background* background;
     Ship* ship_ptr;
+    GameOption* option;
 
     float default_min_radius = 0.0f;
     float default_max_radius = 0.0f;
