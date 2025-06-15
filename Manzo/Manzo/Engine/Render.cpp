@@ -115,7 +115,7 @@ void Render::ApplyPostProcessing(bool is_title)
 
 
     if (Engine::GetGameStateManager().GetStateName() == "Mode2") {
-        int num_passes = 1; // Number of post process
+        int num_passes = 0; // Number of post process
         for (int i = 0; i < num_passes; i++) {
             postProcessFramebuffer[horizontal].Bind();
             glClear(GL_COLOR_BUFFER_BIT);

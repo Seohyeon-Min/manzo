@@ -166,7 +166,18 @@ void Inven::Draw(DrawLayer drawlayer)
 {
 	if (is_opened)
 	{
-		GameObject::Draw();
+		Sprite* sprite = GetGOComponent<Sprite>();
+
+		DrawCall draw_call = {
+			sprite,                       // Texture to draw
+			&GetMatrix(),                          // Transformation matrix
+			Engine::GetShaderManager().GetDefaultShader(), // Shader to use
+		};
+
+		draw_call.settings.do_blending = true;
+		draw_call.sorting_layer = drawlayer;
+
+		GameObject::Draw(draw_call);
 	}
 }
 
