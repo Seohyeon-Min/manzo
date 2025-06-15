@@ -37,6 +37,7 @@ void Splash::Unload() {
 
 
 void Splash::Draw() {
+
     //Engine::GetWindow().Clear(UINT_MAX);
     //auto texture = TextureManager::GetInstance().GetTexture("texture_path");
 

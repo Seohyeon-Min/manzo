@@ -52,6 +52,7 @@ void Title::Load()
 
 void Title::Update(double dt)
 {
+	static float timer = 3.2f;
 	//audio play
 	if (!playing)
 	{
@@ -65,8 +66,16 @@ void Title::Update(double dt)
 
 	// Move to next scean
 	if (Engine::GetInput().MouseButtonJustReleased((SDL_BUTTON_LEFT))) {
-		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2));
+		go_next = true;
+	}
+
+	if (go_next) {
+		timer -= static_cast<float>(dt);
+	}
+
+	if (timer <= 0.f) { 
 		CheckSaveFile();
+		Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Mode2)); 		
 	}
 }
 

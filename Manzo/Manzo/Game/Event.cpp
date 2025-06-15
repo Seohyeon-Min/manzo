@@ -55,7 +55,7 @@ void StepEvent::AddStep(const std::function<bool()>& trigger, const std::functio
 
 void StepEvent::Update() {
     if (IsFinished()) return;
-    std::cout << "[DEBUG] StepEvent update called\n";
+    //std::cout << "[DEBUG] StepEvent update called\n";
     Event& step = steps[current_step];
     if (!step.HasRun()) {
         step.Update();
