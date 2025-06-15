@@ -25,6 +25,7 @@ RockGroup::RockGroup(const std::string& index, const std::string& map_index, dou
 
 RockGroup::~RockGroup() {
     rocks.clear();
+    obstacle_rocks.clear();
     moving_rocks.clear();
 }
 
@@ -32,7 +33,6 @@ void RockGroup::Update(double dt) {
     GameObject::Update(dt);
 
 }
-
 
 void RockGroup::Draw()
 {
@@ -86,6 +86,19 @@ vec2 RockGroup::FindCenterRect() {  // Calculate texture's position.
             maxPoint.y = std::max(maxPoint.y, poly.FindBoundary().Top());
         }
     }
+    else if (!obstacle_rocks.empty()) {
+
+        minPoint = rocks[0]->GetOriginalPoly().vertices[0];
+        maxPoint = rocks[0]->GetOriginalPoly().vertices[0];
+
+        for (ObstacleRock* rock : obstacle_rocks) {
+            Polygon poly = rock->GetOriginalPoly();
+            minPoint.x = std::min(minPoint.x, poly.FindBoundary().Left());
+            minPoint.y = std::min(minPoint.y, poly.FindBoundary().Bottom());
+            maxPoint.x = std::max(maxPoint.x, poly.FindBoundary().Right());
+            maxPoint.y = std::max(maxPoint.y, poly.FindBoundary().Top());
+        }
+    }
     else if (!moving_rocks.empty()) {
 
         minPoint = moving_rocks[0]->GetOriginalPoly().vertices[0];
@@ -123,6 +136,18 @@ vec2 RockGroup::FindCenterPoly() {  // Calculate Polygon's position
         center.x /= rocks.size();
         center.y /= rocks.size();
     }
+    else if (!obstacle_rocks.empty()) {
+        for (ObstacleRock* rock : obstacle_rocks) {
+            Polygon poly = rock->GetOriginalPoly();
+            poly_center = poly.FindCenter();
+
+            center.x += poly_center.x;
+            center.y += poly_center.y;
+        }
+
+        center.x /= moving_rocks.size();
+        center.y /= moving_rocks.size();
+    }
     else if (!moving_rocks.empty()) {
         for (MovingRock* rock : moving_rocks) {
             Polygon poly = rock->GetOriginalPoly();
@@ -143,6 +168,14 @@ vec2 RockGroup::FindCenterPoly() {  // Calculate Polygon's position
 void RockGroup::SetPoints() {
     if (!rocks.empty()) {
         for (auto& rock : rocks) {
+            Polygon poly = rock->GetOriginalPoly();
+            for (int i = 0; i < poly.vertexCount; i++) {
+                points.push_back(poly.vertices[i]);
+            }
+        }
+    }
+    else if (!obstacle_rocks.empty()) {
+        for (ObstacleRock* rock : obstacle_rocks) {
             Polygon poly = rock->GetOriginalPoly();
             for (int i = 0; i < poly.vertexCount; i++) {
                 points.push_back(poly.vertices[i]);

@@ -46,7 +46,6 @@ void Rock::SetCenter() {
 ObstacleRock::ObstacleRock(Polygon original_poly, Polygon modified_poly, vec2 position, double rotation, vec2 scale)
     :Rock( original_poly, modified_poly, position, rotation, scale)
 {}
-
 // Moving Rock
 
 

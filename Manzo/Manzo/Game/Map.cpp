@@ -237,21 +237,27 @@ void Map::ParseSVG() {
         }
         modified_poly.vertices = new_vertices;
 
-        GameObject* rock = nullptr;
-        if (fillColor == obstacleColor) {   //generate obstacle rock
-            rock = new ObstacleRock(original_poly, modified_poly, original_poly.FindCenter(), rotateAngle, scale);
-            std::cout << "Made OOOOOOOOOOOOOOOOOObstacle Rock" << std::endl;
+        
+        if (fillColor == obstacleColor) {
+            ObstacleRock* rock = new ObstacleRock(original_poly, modified_poly, original_poly.FindCenter(), rotateAngle, scale);  //generate obstacle rock
+            
+            if (currentGroup) {
+                currentGroup->AddRock(dynamic_cast<ObstacleRock*>(rock));
+                dynamic_cast<ObstacleRock*>(rock)->SetRockGroup(currentGroup);
+                
+            }
+            obstacle_rocks.push_back(dynamic_cast<ObstacleRock*>(rock));
+            std::cout << "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" << std::endl;
         }
-        else {                              //generate general rock
-            rock = new Rock(original_poly, modified_poly, original_poly.FindCenter(), rotateAngle, scale);
+        else {                                                  
+            Rock* rock = new Rock(original_poly, modified_poly, original_poly.FindCenter(), rotateAngle, scale);  //generate general rock
+            if (currentGroup) {
+                currentGroup->AddRock(dynamic_cast<Rock*>(rock));
+                dynamic_cast<Rock*>(rock)->SetRockGroup(currentGroup);
+            }
+            rocks.push_back(dynamic_cast<Rock*>(rock));
         }
         
-        if (currentGroup) {             //set RockGroup & add rock into RockGroup
-            currentGroup->AddRock(dynamic_cast<Rock*>(rock));
-            dynamic_cast<Rock*>(rock)->SetRockGroup(currentGroup);
-        }
-
-        rocks.push_back(dynamic_cast<Rock*>(rock));
         return;
     }
 
@@ -423,20 +429,20 @@ void Map::UnloadCrashedRock() {
     for (RockGroup* rockgroup : rock_groups) {
         if (rockgroup->IsCrashed()) {
             for (Rock* rock : rockgroup->GetRocks()) {
-                ObstacleRock* obstacleRock = static_cast<ObstacleRock*>(rock);
 
-                obstacleRock->Active(false);
-                Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Remove(obstacleRock);
-                obstacleRock->Destroy();
-                obstacleRock = nullptr;
-                delete obstacleRock;
+                rock->Active(false);
+                Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Remove(rock);
+                rock->Destroy();
+                rock = nullptr;
+                delete rock;
             }
-        }
             rockgroup->Active(false);
             Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Remove(rockgroup);
             rockgroup->Destroy();
             rockgroup = nullptr;
             delete rockgroup;
+        }
+            
     }
 }
 

@@ -87,6 +87,7 @@ private:
 	std::vector<Polygon> original_polygons;
 	std::vector<Polygon> modified_polygons;
 	std::vector<Rock*> rocks;
+	std::vector<ObstacleRock*> obstacle_rocks;
 	std::vector<RockGroup*> rock_groups;
 	vec2 circle_position{ 0,0 };
 

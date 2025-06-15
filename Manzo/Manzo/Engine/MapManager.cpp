@@ -38,11 +38,9 @@ void MapManager::LoadMap() {
 
 void MapManager::UpdateMaps(const Math::rect& camera_boundary) {
 
-    //delete crashed rock
-
     if (currentMapIndex < maps.size()) {
         maps[currentMapIndex]->LoadMapInBoundary(camera_boundary);
-        maps[currentMapIndex]->UnloadCrashedRock();
+        maps[currentMapIndex]->UnloadCrashedRock();     //delete crashed rock
 
         if (!maps[currentMapIndex]->IsOverlapping(maps[currentMapIndex]->GetMapBoundary(), camera_boundary)) { // Is player  in the level boundary?
 

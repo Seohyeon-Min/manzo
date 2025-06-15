@@ -65,7 +65,7 @@ private:
     bool mapChanged = false;
 
     //Map boundary
-    Math::rect level1_boundary = { {-700.f, 0},{5000.f, -5300.f} };
+    Math::rect level1_boundary = { {-700.f, 0},{5500.f, -5800.f} };
     Math::rect level4_boundary = { {-2000.f, -6200.f},{55000.f, -10000.f} };
 
 };

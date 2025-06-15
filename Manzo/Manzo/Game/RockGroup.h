@@ -21,6 +21,7 @@ Created:    November 25, 2024
 
 #include <vector>
 class Rock;
+class ObstacleRock;
 class MovingRock;
 class RockPoint;
 
@@ -40,6 +41,7 @@ public:
 	RockPoint* GetRockPoint() { return rockpoint; }
 
 	void AddRock(Rock* rock) { rocks.push_back(rock); }
+	void AddObstacleRock(ObstacleRock* obstacle_rock) { obstacle_rocks.push_back(obstacle_rock); }
 	void AddMovingRock(MovingRock* moving_rock) { moving_rocks.push_back(moving_rock); }
 	std::vector<Rock*> GetRocks() { return rocks; }
 	std::vector<MovingRock*> GetMovingRocks() { return moving_rocks; }
@@ -67,6 +69,7 @@ private:
 	mat3 matrix;
 	RockPoint* rockpoint = nullptr;
 	std::vector<Rock*> rocks;
+	std::vector<ObstacleRock*> obstacle_rocks;
 	std::vector<MovingRock*> moving_rocks;
 	std::string index = "";
 	std::string map_index = "";

@@ -122,7 +122,8 @@ bool GameObject::IsCollidingWith(GameObject* other_object) {
 
 bool GameObject::IsCollidingWithNextFrame(GameObject* other_object, vec2 velocity, float dt, float& toi)
 {
-	if (other_object->Type() != GameObjectTypes::Rock) return false;
+	if (other_object->Type() != GameObjectTypes::Rock &&
+		other_object->Type() != GameObjectTypes::ObstacleRock) return false;
 	RectCollision* collider = GetGOComponent<RectCollision>();
 	return collider != nullptr && collider->IsCollidingWithNextFrame(other_object, velocity, dt, toi);
 }
