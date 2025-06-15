@@ -68,27 +68,51 @@ void Raycasting::UpdateMesh()
         float dist = 0.0f;
         bool hit = false;
 
+        // 장애물 맵 접근을 위한 람다 함수
+        auto isObstacleAt = [&](vec2 worldPos) -> bool {
+            // 월드 좌표를 장애물 맵 좌표로 변환
+            vec2 cameraPos = Engine::GetGameStateManager().GetGSComponent<Cam>()->GetPosition();
+            float camViewWidth = 20.0f;   // 카메라 뷰 폭
+            float camViewHeight = 15.0f;  // 카메라 뷰 높이
+
+            float world_left = cameraPos.x - camViewWidth / 2.0f;
+            float world_top = cameraPos.y + camViewHeight / 2.0f;
+            float world_width = camViewWidth;
+            float world_height = camViewHeight;
+
+            int maskX = static_cast<int>(((worldPos.x - world_left) / world_width) * 1280);
+            int maskY = static_cast<int>(((world_top - worldPos.y) / world_height) * 720);
+
+            // 범위 체크
+            if (maskX < 0 || maskX >= 1280 || maskY < 0 || maskY >= 720)
+                return false;
+
+            // 장애물 맵 데이터 가져오기
+            auto obstacleMap = Engine::GetGameStateManager().GetGSComponent<MapManager>()->GetMap(0);
+
+            std::fill(obstacleMap->data.begin(), obstacleMap->data.end(), 0);
+            // IsObstacleAt 호출 (클래스 멤버 함수)
+            return IsObstacleAt(maskX, maskY, 1280, 720, obstacleMap->data);
+            };
+
         while (dist < maxDist)
         {
             pos = pos + dir * stepSize;
             dist += stepSize;
 
-            int mapX = (int)pos.x; // 또는 obstacleMap 좌표계 변환 필요
-            int mapY = (int)pos.y;
-
-            if (pos.x < 0 || pos.x >= 1280 || pos.y < 0 || pos.y >=720) break;
-
+            // 장애물 판정
+            if (isObstacleAt(pos)) {
                 hit = true;
+                break;
+            }
         }
-
-        if (!hit)
-            pos = lightPos + dir * maxDist;
 
         // world 좌표 pos → screen 좌표로 변환
         vec3 p_world = { pos.x, pos.y, 1.0f };
         vec3 p_screen = world_to_screen * p_world;
         points.push_back({ p_screen.x, p_screen.y });
     }
+
 
     // 빛 위치도 screen 좌표로 변환
     vec3 lightPos_screen = world_to_screen * vec3{ lightPos.x, lightPos.y, 1.0f };

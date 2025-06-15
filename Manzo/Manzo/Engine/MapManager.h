@@ -61,6 +61,8 @@ public:
 
 	void FillPolygonScanline(const std::vector<ivec2>& polygon, std::vector<unsigned char>& data, int width, int height);
 
+	void DrawRockLine(ivec2 p0, ivec2 p1, std::vector<unsigned char>& data, int width, int height);
+
 	void Translate(const vec2& offset);
 	void UnloadAll();
 
@@ -73,6 +75,7 @@ public:
 	int GetWorldHeight() { return height; }
 	std::vector<std::vector<bool>> GetMask() { return mask; }
 
+	std::vector<unsigned char> data;
 	GLuint obstacleTex = 0;
 
 private:
@@ -92,6 +95,5 @@ private:
 	float EndY = 100.0f;
 	std::vector<ivec2> valid_spawn_positions;
 	
-    std::vector<unsigned char> data;
 
 };

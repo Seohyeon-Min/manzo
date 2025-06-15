@@ -486,6 +486,34 @@ void Map::FillPolygonScanline(const std::vector<ivec2>& polygon, std::vector<uns
     }
 }
 
+void Map::DrawRockLine(ivec2 p0, ivec2 p1, std::vector<unsigned char>& data, int width, int height) {
+    int dx = abs(p1.x - p0.x);
+    int dy = abs(p1.y - p0.y);
+    int sx = p0.x < p1.x ? 1 : -1;
+    int sy = p0.y < p1.y ? 1 : -1;
+    int err = dx - dy;
+
+    int x = p0.x;
+    int y = p0.y;
+
+    while (true) {
+        if (x >= 0 && x < width && y >= 0 && y < height) {
+            data[y * width + x] = 255;
+        }
+        if (x == p1.x && y == p1.y) break;
+        int e2 = 2 * err;
+        if (e2 > -dy) {
+            err -= dy;
+            x += sx;
+        }
+        if (e2 < dx) {
+            err += dx;
+            y += sy;
+        }
+    }
+}
+
+
 void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
     // 1. 화면 해상도(또는 원하는 마스크 해상도) 지정
     int width = Engine::window_width;   // 또는 원하는 해상도
@@ -536,7 +564,10 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
                     for (auto& vert : poly.vertices) {
                         maskPoly.push_back(wv(vert));
                     }
-                    FillPolygonScanline(maskPoly, data, width, height);  // 폴리곤을 마스크에 채우기
+                    for (size_t i = 0; i < maskPoly.size(); ++i) {
+                        int j = int((i + 1) % maskPoly.size());
+                        DrawRockLine(maskPoly[i], maskPoly[j], data, width, height);
+                    }
                 }
             }
             else {

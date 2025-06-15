@@ -48,10 +48,9 @@ private:
 
     // 장애물 맵 데이터와 크기를 외부에서 참조하거나 캡처
     bool IsObstacleAt(int x, int y, int mapWidth, int mapHeight, const std::vector<unsigned char>& data) {
-        if (x < 0 || x >= mapWidth || y < 0 || y >= mapHeight) return false; // 범위 밖
+        if (x < 0 || x >= mapWidth || y < 0 || y >= mapHeight) return false;
         int flippedY = mapHeight - 1 - y; // y축 플립
         int index = flippedY * mapWidth + x;
-        return data[index] > 127; // threshold, 128 이상이면 통과, 미만이면 장애물
+        return data[index] > 127; // 127 초과면 장애물
     }
-
 };
