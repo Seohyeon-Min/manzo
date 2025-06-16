@@ -21,10 +21,10 @@ Raycasting::Raycasting(GameObject* object_) : object(object_)
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-    // ÃÊ±â ºó µ¥ÀÌÅÍ (µ¿Àû¾÷µ¥ÀÌÆ® ¿¹Á¤)
+    // ï¿½Ê±ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½)
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * (NUM_RAYS + 2), nullptr, GL_DYNAMIC_DRAW);
 
-    // À§Ä¡ attribute (vec2)
+    // ï¿½ï¿½Ä¡ attribute (vec2)
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
 
@@ -46,7 +46,7 @@ void Raycasting::UpdateMesh()
 {
     vec2 lightPos = object->GetPosition();
 
-    // cam, world_to_ndc, ndc_to_screen µîÀ» ¾ò´Â´Ù
+    // cam, world_to_ndc, ndc_to_screen ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Â´ï¿½
     Cam* cam = Engine::GetGameStateManager().GetGSComponent<Cam>();
     mat3 WORLD_TO_NDC = cam->world_to_ndc;
     mat3 ndc_to_screen = mat3::build_translation({ w / 2.f, h / 2.f }) * mat3::build_scale({ w / 2.f, h / 2.f });
@@ -55,7 +55,7 @@ void Raycasting::UpdateMesh()
     std::vector<vec2> points;
     points.reserve(NUM_RAYS);
 
-    // raycast ·Î obstacle °Ë»ç (world ÁÂÇ¥°è)
+    // raycast ï¿½ï¿½ obstacle ï¿½Ë»ï¿½ (world ï¿½ï¿½Ç¥ï¿½ï¿½)
     for (int i = 0; i < NUM_RAYS; ++i)
     {
         float angle = (float)i / NUM_RAYS * 2.0f * (float)M_PI;
@@ -68,12 +68,12 @@ void Raycasting::UpdateMesh()
         float dist = 0.0f;
         bool hit = false;
 
-        // Àå¾Ö¹° ¸Ê Á¢±ÙÀ» À§ÇÑ ¶÷´Ù ÇÔ¼ö
+        // ï¿½ï¿½Ö¹ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
         auto isObstacleAt = [&](vec2 worldPos) -> bool {
-            // ¿ùµå ÁÂÇ¥¸¦ Àå¾Ö¹° ¸Ê ÁÂÇ¥·Î º¯È¯
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½Ö¹ï¿½ ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½È¯
             vec2 cameraPos = Engine::GetGameStateManager().GetGSComponent<Cam>()->GetTargetPosition();
-            float camViewWidth = 20.0f;   // Ä«¸Þ¶ó ºä Æø
-            float camViewHeight = 15.0f;  // Ä«¸Þ¶ó ºä ³ôÀÌ
+            float camViewWidth = 20.0f;   // Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ ï¿½ï¿½
+            float camViewHeight = 15.0f;  // Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
             float world_left = cameraPos.x - camViewWidth / 2.0f;
             float world_top = cameraPos.y + camViewHeight / 2.0f;
@@ -83,15 +83,15 @@ void Raycasting::UpdateMesh()
             int maskX = static_cast<int>(((worldPos.x - world_left) / world_width) * 1280);
             int maskY = static_cast<int>(((world_top - worldPos.y) / world_height) * 720);
 
-            // ¹üÀ§ Ã¼Å©
+            // ï¿½ï¿½ï¿½ï¿½ Ã¼Å©
             if (maskX < 0 || maskX >= 1280 || maskY < 0 || maskY >= 720)
                 return false;
 
-            // Àå¾Ö¹° ¸Ê µ¥ÀÌÅÍ °¡Á®¿À±â
+            // ï¿½ï¿½Ö¹ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             auto obstacleMap = Engine::GetGameStateManager().GetGSComponent<MapManager>()->GetMap(0);
 
             std::fill(obstacleMap->data.begin(), obstacleMap->data.end(), 0);
-            // IsObstacleAt È£Ãâ (Å¬·¡½º ¸â¹ö ÇÔ¼ö)
+            // IsObstacleAt È£ï¿½ï¿½ (Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½)
             return IsObstacleAt(maskX, maskY, 1280, 720, obstacleMap->data);
             };
 
@@ -100,24 +100,24 @@ void Raycasting::UpdateMesh()
             pos = pos + dir * stepSize;
             dist += stepSize;
 
-            // Àå¾Ö¹° ÆÇÁ¤
+            // ï¿½ï¿½Ö¹ï¿½ ï¿½ï¿½ï¿½ï¿½
             if (isObstacleAt(pos)) {
                 hit = true;
                 break;
             }
         }
 
-        // world ÁÂÇ¥ pos ¡æ screen ÁÂÇ¥·Î º¯È¯
+        // world ï¿½ï¿½Ç¥ pos ï¿½ï¿½ screen ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½È¯
         vec3 p_world = { pos.x, pos.y, 1.0f };
         vec3 p_screen = world_to_screen * p_world;
         points.push_back({ p_screen.x, p_screen.y });
     }
 
 
-    // ºû À§Ä¡µµ screen ÁÂÇ¥·Î º¯È¯
+    // ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ screen ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½È¯
     vec3 lightPos_screen = world_to_screen * vec3{ lightPos.x, lightPos.y, 1.0f };
 
-    // »ï°¢Çü ÆÒ¿ë ¹öÅØ½º ¹è¿­ »ý¼º
+    // ï¿½ï°¢ï¿½ï¿½ ï¿½Ò¿ï¿½ ï¿½ï¿½ï¿½Ø½ï¿½ ï¿½è¿­ ï¿½ï¿½ï¿½ï¿½
     std::vector<float> vertices;
     vertices.reserve((NUM_RAYS + 2) * 2);
 
@@ -153,7 +153,7 @@ void Raycasting::Render()
     shader->Use();
 
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, Engine::GetGameStateManager().GetGSComponent<MapManager>()->GetMap(0)->obstacleTex);  // map¿¡¼­ °¡Á®¿È
+    glBindTexture(GL_TEXTURE_2D, Engine::GetGameStateManager().GetGSComponent<MapManager>()->GetMap(0)->obstacleTex);  // mapï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
     shader->SendUniform("uObstacleMap", 1);
 

@@ -24,8 +24,8 @@ void Cam::Update(double dt, const vec2& player_position, bool playerMove)
     caminfo.camera_view.SetFramebufferSize((int)Engine::window_width, (int)Engine::window_height );
     float lerpFactor = 0.03f; // (0.0 ~ 1.0)
 
-    caminfo.camera.Position.x += (target_position.x - caminfo.camera.Position.x) * lerpFactor;
-    caminfo.camera.Position.y += (target_position.y - caminfo.camera.Position.y) * lerpFactor;
+    caminfo.camera.Position.x += (target_position.x - caminfo.camera.Position.x) ;
+    caminfo.camera.Position.y += (target_position.y - caminfo.camera.Position.y) ;
 
 	world_to_cam = caminfo.camera.BuildWorldToCamera();
 
