@@ -143,6 +143,8 @@ void Raycasting::Render()
 {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
+   // glBlendFunc(GL_DST_COLOR, GL_ZERO);
+
     glBlendFunc(GL_DST_COLOR, GL_ZERO);
 
     UpdateMesh();
