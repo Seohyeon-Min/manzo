@@ -27,6 +27,7 @@ public:
 
 private:
 	ProceduralChain procedural_jelly;
+
 	JellyType jelly_type;
 	Ship* ship;
 
@@ -51,7 +52,7 @@ private:
 	float wavePhaseOffset;
 	float waveFrequencyOffset;
 	float waveAmplitudeOffset;
-	float scale = 0.5f;
+	float scale = 1.0f;
 	bool marked_for_bullet = false;
 	vec2 bullet_spawn_position;
 	vec2 wave_forward_dir = { 0, 0 };

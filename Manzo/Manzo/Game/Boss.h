@@ -139,6 +139,18 @@ private:
 	bool jelly_pop = false;
 
 	GLTexture* boss_body = nullptr;
+	vec2 position_pro;
+	ProceduralChain procedural_jelly;
+	ProceduralChain procedural_jelly2;
+	std::vector<GLTexture*> texture_vector;
+	mat3 matrix_body1;
+	mat3 matrix_body2;
+	mat3 matrix_tail1;
+	mat3 matrix_tail2;
+	mat3 matrix_tail3;
+	mat3 matrix_tail4;
+
+	bool has_spawned_offset = false;
 
 };
 

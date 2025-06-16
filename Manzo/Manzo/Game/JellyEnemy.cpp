@@ -18,6 +18,7 @@ JellyEnemy::JellyEnemy(vec2 start_position, float hight, float lifetime, JellyTy
     AddGOComponent(new Sprite("assets/images/boss/test_jelly_1.spt", this));
     texture_vector.push_back(Engine::GetTextureManager().Load("assets/images/boss/test_jelly_2.png"));
     texture_vector.push_back(Engine::GetTextureManager().Load("assets/images/boss/test_jelly_3.png"));
+    texture_vector.push_back(Engine::GetTextureManager().Load("assets/images/boss/test_jelly_1-1.png"));
     SetScale(vec2{ scale,scale });
 
 
@@ -126,9 +127,14 @@ void JellyEnemy::Draw(DrawLayer drawlayer) {
     &test_matrix_1,
     Engine::GetShaderManager().GetDefaultShader()
     };
+    DrawCall draw_call4 = {
+    texture_vector[2],
+    & test_matrix,
+    Engine::GetShaderManager().GetDefaultShader()
+    };
 
 
-
+    Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call4));
     Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call3));
     Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call2));
     GameObject::Draw(draw_call);

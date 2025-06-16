@@ -1,0 +1,4 @@
+assets/images/boss/boss_y_body.png
+HotSpot 84 69
+Anim assets/images/None.anm
+RectCollision -20 -20 20 20

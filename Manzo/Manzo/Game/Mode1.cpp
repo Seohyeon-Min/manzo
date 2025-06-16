@@ -271,7 +271,7 @@ void Mode1::Update(double dt)
 	{
 		
 		camera->SetSmoothPosition(boss_ptr_y->GetPosition());
-		camera->Update(dt, boss_ptr_y->GetPosition(), ship_ptr->IsShipMoving());
+		camera->Update(dt, { boss_ptr_y->GetPosition().x,boss_ptr_y->GetPosition().y - 300 }, ship_ptr->IsShipMoving());
 
 	}
 	else{

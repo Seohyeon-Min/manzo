@@ -30,8 +30,15 @@ Boss::Boss(vec2 start_position, BossName name, BossType type)
 	ReadBossJSON(name);
 	InitializeStates();
 	///// have new texture : boss body
-	AddGOComponent(new Sprite("assets/images/boss/boss_e.spt", this));
+	AddGOComponent(new Sprite("assets/images/boss/boss_y.spt", this));
 	boss_body = Engine::GetTextureManager().Load("assets/images/boss/boss_e_body.png");
+	texture_vector.push_back(Engine::GetTextureManager().Load("assets/images/boss/boss_y_body_1.png"));
+	texture_vector.push_back(Engine::GetTextureManager().Load("assets/images/boss/boss_y_body_2.png"));
+	texture_vector.push_back(Engine::GetTextureManager().Load("assets/images/boss/boss_y_tail_1.png"));
+	texture_vector.push_back(Engine::GetTextureManager().Load("assets/images/boss/boss_y_tail_2.png"));
+	procedural_jelly.Initialize(3, 50, start_position);
+	procedural_jelly2.Initialize(4, 70, start_position);
+
 	/////
 	SetVelocity({ start_position });
 	current_position = start_position;
@@ -39,7 +46,7 @@ Boss::Boss(vec2 start_position, BossName name, BossType type)
 
 	
 
-
+	position_pro = start_position;
 	////////
 	current_state = &state_cutscene;
 	current_state->Enter(this);
@@ -63,7 +70,7 @@ void Boss::Bullet(Boss* boss,BossBullet::BulletType type) {
 }
 
 void Boss::Jelly(Boss* boss, JellyEnemy::JellyType jellytype, int X_position, int y_posiiton, BossBullet::BulletType bullettype) {
-	JellyEnemy* jelly_ptr = new JellyEnemy({ boss->GetPosition().x+X_position, boss->GetPosition().y - y_posiiton }, 100 ,(float)(boss->beat->GetFixedDuration()) * 8, jellytype);
+	JellyEnemy* jelly_ptr = new JellyEnemy({ boss->GetPosition().x+X_position, boss->GetPosition().y - y_posiiton- 250 }, 100 ,(float)(boss->beat->GetFixedDuration()) * 8, jellytype);
 	Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(jelly_ptr);
 	if (jelly_ptr->Destroyed()) {
 		boss->Bullet(boss, bullettype);
@@ -286,6 +293,13 @@ void Boss::InitializeStates() {
 void Boss::Update(double dt) {
 
 	Boss* boss = static_cast<Boss*>(this);
+
+	if (!has_spawned_offset && bossType == BossType::MovingToLocationPlus) {
+		current_position.y += 300;
+		position_pro.y += 300; 
+		has_spawned_offset = true;
+	}
+
 	if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
 		if (GameObject::current_state->GetName() != Boss::state_cutscene.GetName()) {
 			boss->barCount = beat->GetBarCount();
@@ -301,15 +315,45 @@ void Boss::Update(double dt) {
 		}
 
 		Ship* ship = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>();
-		if (ship) {
+		/*if (ship) {
 			targetScaleX = ship->GetPosition().x > GetPosition().x ? -1.0f : 1.0f;
-		}
+		}*/
 
 		const float flipSpeed = 5.0f; 
 		currentScaleX = Lerp(currentScaleX, targetScaleX, static_cast<float>(dt) * flipSpeed);
 
 		SetScale({ currentScaleX, 1.0f });
 		Move(dt);
+	}
+
+	if (!std::isnan(boss->position_pro.x) && !std::isnan(boss->position_pro.y)) {
+		procedural_jelly.Update(this, 0.07f);
+		matrix_body1 =
+			mat3::build_translation(procedural_jelly.GetPositions(0, mat3::build_scale(1.f))) *
+			mat3::build_rotation(procedural_jelly.GetRotation(0, this)) *
+			mat3::build_scale(1.f);
+
+		matrix_body2 =
+			mat3::build_translation(procedural_jelly.GetPositions(1, mat3::build_scale(1.f))) *
+			mat3::build_rotation(procedural_jelly.GetRotation(1, this)) *
+			mat3::build_scale(1.f);
+		procedural_jelly2.Update(this, 0.06f);
+		matrix_tail1 =
+			mat3::build_translation(procedural_jelly2.GetPositions(0, mat3::build_scale(1.f))) *
+			mat3::build_rotation(procedural_jelly2.GetRotation(0, this)) *
+			mat3::build_scale(1.f);
+		matrix_tail2 =
+			mat3::build_translation(procedural_jelly2.GetPositions(1, mat3::build_scale(1.f))) *
+			mat3::build_rotation(procedural_jelly2.GetRotation(1, this)) *
+			mat3::build_scale(1.f);
+		matrix_tail3 =
+			mat3::build_translation(procedural_jelly2.GetPositions(2, mat3::build_scale(1.f))) *
+			mat3::build_rotation(procedural_jelly2.GetRotation(1, this)) *
+			mat3::build_scale(1.f);
+		matrix_tail4 =
+			mat3::build_translation(procedural_jelly2.GetPositions(3, mat3::build_scale(1.f))) *
+			mat3::build_rotation(procedural_jelly2.GetRotation(1, this)) *
+			mat3::build_scale(1.f);
 	}
 }
 
@@ -478,8 +522,48 @@ void Boss::Draw(DrawLayer drawlayer)
 	};
 	draw_call_body.settings.do_blending = true;
 
+	DrawCall draw_call1 = {
+	texture_vector[0],
+	& matrix_body1,
+	Engine::GetShaderManager().GetDefaultShader()
+	};
+
+	DrawCall draw_call2 = {
+	texture_vector[1],
+	& matrix_tail1,
+	Engine::GetShaderManager().GetDefaultShader()
+	};
+
+	DrawCall draw_call3 = {
+	texture_vector[2],
+	& matrix_tail1,
+	Engine::GetShaderManager().GetDefaultShader()
+	};
+
+	DrawCall draw_call4 = {
+	texture_vector[2],
+	& matrix_tail2,
+	Engine::GetShaderManager().GetDefaultShader()
+	};
+	DrawCall draw_call5 = {
+	texture_vector[2],
+	& matrix_tail3,
+	Engine::GetShaderManager().GetDefaultShader()
+	};
+	DrawCall draw_call6 = {
+	texture_vector[3],
+	& matrix_tail4,
+	Engine::GetShaderManager().GetDefaultShader()
+	};
+
+	Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call6));
+	Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call5));
+	Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call4));
+	Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call3));
+	Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call2));
+	Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call1));
 	GameObject::Draw(draw_call);
-	GameObject::Draw(draw_call_body);
+	//GameObject::Draw(draw_call_body);
 
 }
 
