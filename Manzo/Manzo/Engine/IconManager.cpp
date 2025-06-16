@@ -221,3 +221,17 @@ Icon* IconManager::GetIcon(const std::string& id)
 
 	return nullptr;
 }
+
+bool IconManager::IsIconClicked(const std::string& icon_id)
+{
+	vec2 mousePos = {
+		Engine::GetInput().GetMousePos().mouseCamSpaceX,
+		Engine::GetInput().GetMousePos().mouseCamSpaceY
+	};
+
+	Icon* icon = GetCollidingIconWithMouse(mousePos);
+	if (icon == nullptr) return false;
+
+	return icon->GetId() == icon_id &&
+		Engine::GetInput().MouseButtonJustPressed(SDL_BUTTON_LEFT);
+}

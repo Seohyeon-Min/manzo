@@ -35,6 +35,7 @@ private:
     float alpha;
     bool playing = false;
     float add_val = 0.0026f;
+    bool go_next = false;
 };
 
 class TitleText : public GameObject {

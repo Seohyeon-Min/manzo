@@ -121,11 +121,19 @@ private:
 
 class Flash : public Effect {
 public:
-    Flash();
+    Flash(float time = 1.f);
     void Update(double dt) override;
     void Draw(DrawLayer drawlayer = DrawLayer::DrawLast) override;
 private:
     void SetUni(const GLShader* shader);
     float life = 0;
     float max_life = 2.4f;
+};
+
+class Digipen : public Effect {
+public:
+    Digipen();
+    void Update(double dt) override;
+    void Draw(DrawLayer drawlayer = DrawLayer::DrawLast) override;
+private:
 };

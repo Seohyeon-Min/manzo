@@ -55,6 +55,7 @@ void Render::AddDrawCall
 void Render::RenderAll() {
 
     postProcessFramebuffer[0].Bind();
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     for (const auto& draw_call : draw_background_calls) {
@@ -255,7 +256,7 @@ void Render::ApplyPostProcessing(bool is_title)
         }
     }
     else if (Engine::GetGameStateManager().GetStateName() == "Title" && is_title) {
-        int num_passes = 1; // Number of post process
+        int num_passes = 2; // Number of post process
         for (int i = 0; i < num_passes; i++) {
             postProcessFramebuffer[horizontal].Bind();
             glClear(GL_COLOR_BUFFER_BIT);
@@ -266,8 +267,11 @@ void Render::ApplyPostProcessing(bool is_title)
             case 0: // Bloom
                 shader = Engine::GetShaderManager().GetShader("post_bloom");
                 break;
-            case 1: // Wave
-                shader = Engine::GetShaderManager().GetShader("post_water_wave");
+            case 1: // Wave 
+                shader = Engine::GetShaderManager().GetShader("post_wave_transition");
+                break;
+            case 2: // Wave
+
                 break;
             }
             shader->Use();
@@ -276,10 +280,15 @@ void Render::ApplyPostProcessing(bool is_title)
             glBindTexture(GL_TEXTURE_2D, postProcessFramebuffer[!horizontal].GetColorAttachment());
 
             float currentTime = 0.f;
-            if (Engine::GetAudioManager().IsAnyMusicPlaying()) {
-                currentTime = Engine::GetAudioManager().GetCurrentPlayingMusicTime();
+            if (Engine::GetAudioManager().IsPlayingMusic("title_bgm")) {
+                currentTime = Engine::GetAudioManager().GetCurrentMusicTime("title_bgm");
             }
-
+            static float spawn_time = 0.f;
+            static bool notnow = 0;
+            if (Engine::GetInput().MouseButtonJustReleased((SDL_BUTTON_LEFT)) && !notnow) {
+                spawn_time = currentTime;
+                notnow = 1;
+            }
             switch (i) {
             case 0: // Bloom
                 shader->SendUniform("uSceneTexture", 0);
@@ -289,10 +298,16 @@ void Render::ApplyPostProcessing(bool is_title)
                 shader->SendUniform("uBloomIntensity", 0.1f);
                 break;
             case 1: // wave
-                shader->SendUniform("iResolution", Engine::window_width, Engine::window_height);
-                shader->SendUniform("iTime", float(currentTime));
+                shader->SendUniform("uResolution", Engine::window_width, Engine::window_height);
+                if (spawn_time == 0.f)
+                    shader->SendUniform("uTime", 0.f);
+                else
+                    shader->SendUniform("uTime", float(currentTime - spawn_time));
                 shader->SendUniform("uSceneTexture", 0);
-                shader->SendUniform("iMouse", Engine::GetInput().GetMousePos().mouseWorldSpaceX, Engine::GetInput().GetMousePos().mouseWorldSpaceY);
+                //shader->SendUniform("iMouse", Engine::GetInput().GetMousePos().mouseWorldSpaceX, Engine::GetInput().GetMousePos().mouseWorldSpaceY);
+                break;
+            case 2: // wave
+
                 break;
             }
 

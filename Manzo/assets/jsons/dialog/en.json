@@ -17,11 +17,10 @@
       { "character": "Sellerkeeper", "text": "Ah—but nothing too big. Something fit for a dinner table, please." },
       { "character": "Me", "text": "Got it. Just give me a day." },
       { "character": "Me", "text": "..." },
-      { "character": "Me", "text": "Before that, Let's try a test drive." },
-      { "character": "Me", "text": "." }
+      { "character": "Me", "text": "Before that, Let's try a test drive." }
     ],
-    "after_tutorial_end": [
-      { "character": "Me", "text": ["Let's go to catch some fish."] }
+    "do_tutorial": [
+      { "character": "Me", "text": ["Let's check our gear before we head out."] }
     ],
     "day-1_3": [
       { "character": "Sellerkeeper", "text": "Oh, you really brought one back!" },
