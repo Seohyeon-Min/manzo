@@ -12,10 +12,10 @@ uniform mat3 uWorldToScreen;
 
 bool isObstacleAt(vec2 worldPos) {
     vec3 screenPos3 = uWorldToScreen * vec3(worldPos, 1.0);
-    vec2 screenPos = screenPos3.xy; // screen 픽셀 위치
+    vec2 screenPos = screenPos3.xy;
     vec2 uv = screenPos / uScreenSize;
     uv.x = 1.0 - uv.x;
-    if(uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) return false; // 화면 밖 제외
+    if(uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) return false;
     return texture(uObstacleMap, uv).r > 0.1;
 }
 
@@ -24,12 +24,7 @@ void main() {
     vec2 dir = normalize(-fragPos + uLightPos);
     float dist = length(fragPos - uLightPos);
     
-    if(dist > uLightRadius) {
-    FragColor = vec4(0.0, 0.0, 0.0, 1.0); // 빛 범위 밖은 투명
-		return;
-	}
 
-    
     float edgeWidth = 15.0; 
     float alpha = smoothstep(uLightRadius, uLightRadius - edgeWidth, dist);
 
@@ -38,14 +33,22 @@ void main() {
 
     vec3 light = uLightColor * attenuation;
 
-    for (float t = 0.0; t < dist; t += 1.0) {
+    float shadowStrength = 0.0;
+    bool foundObstacle = false;
+
+    for (float t = 0.0; t < dist; t += 0.5) {
         vec2 samplePos = uLightPos + dir * t;
-        if (isObstacleAt(samplePos))
-        {
-            light = vec3(0.0, 0.0, 0.0) * attenuation;
+
+        if (isObstacleAt(samplePos)) {
+            float proximity = 1.0 - (t / uLightRadius);
+
+            shadowStrength += proximity * 0.05;
+
         }
     }
 
+    float shadow = clamp(1.0 - shadowStrength, 0.0, 1.0);
+    light *= shadow;
 
-    FragColor = vec4(light, alpha);
+    FragColor = vec4(light, smoothstep(uLightRadius, uLightRadius - 15.0, dist));
 }
