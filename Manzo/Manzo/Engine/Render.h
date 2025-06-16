@@ -21,11 +21,11 @@ enum class DrawLayer {
     DrawBackground = 0,
     DrawFirst = 1,
     Draw = 2,
-    DrawLast = 3,
     DrawPlayer,
     DrawPlayerTop,
     DrawDialog,
     DrawUI,
+    DrawLast
 };
 
 enum class DrawType {
@@ -131,6 +131,8 @@ public:
     
     void DrawCircleProgress(vec2 center, float radius, float current_progress, float max_progress, int segments = 100, color3 color = { 255,255,255 });
 
+    void ApplyPost(bool apply_) { apply = apply_; }
+
 private:
     // Internal render method
     void Draw(const DrawCall& draw_call);
@@ -152,4 +154,5 @@ private:
     GLFrameBuffer postProcessFramebuffer[2];
 
     mat3 projection_matrix;
+    bool apply = true;
 };

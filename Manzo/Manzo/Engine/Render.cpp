@@ -154,7 +154,7 @@ void Render::ApplyPostProcessing(bool is_title)
             first_iteration = false;
         }
     }
-    else if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
+    else if (Engine::GetGameStateManager().GetStateName() == "Mode1" && apply) {
         int num_passes = 3; // Number of post process
 
         for (int i = 0; i < num_passes; i++) {

@@ -24,6 +24,7 @@ Created:    Sept 12, 2024
 #include "ScenarioComponent.h"
 #include "PopUp.h"
 #include "FishEcosystem.h"
+#include "GameOption.h"
 
 class Fish;
 
@@ -58,6 +59,7 @@ private:
     PopUp* today_fish_popup;
     FishGenerator* fishGenerator;
     std::shared_ptr<Dialog> dialog_ptr;
+    GameOption* option;
 
     float y_limit = 15.0f;
     float frequency = 0.9f;

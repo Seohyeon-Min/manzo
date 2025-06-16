@@ -12,11 +12,18 @@ Cam::Cam()
 	caminfo.camera_view.SetFramebufferSize((int)Engine::window_width, (int)Engine::window_height);
 }
 
+vec2 Cam::GetTargetPosition() const {
+    return target_position;
+
+}
 void Cam::Update(double dt, const vec2& player_position, bool playerMove)
 {
+    vec2 target_position = player_position;  // 유지
+    this->target_position = target_position; // 이 라인 추가
+
     caminfo.camera_view.SetFramebufferSize((int)Engine::window_width, (int)Engine::window_height );
     float lerpFactor = 0.03f; // (0.0 ~ 1.0)
-    vec2 target_position = player_position;
+
     caminfo.camera.Position.x += (target_position.x - caminfo.camera.Position.x) * lerpFactor;
     caminfo.camera.Position.y += (target_position.y - caminfo.camera.Position.y) * lerpFactor;
 

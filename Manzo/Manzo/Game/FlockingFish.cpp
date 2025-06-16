@@ -1,6 +1,8 @@
 #include "FlockingFish.h"
 #include "ScreenWrap.h"
 #include "FishEcosystem.h"
+#include "../Engine/GameObjectManager.h"
+#include "GameOption.h"
 
 float BackgroundFish::a = 0.2957f, BackgroundFish::b = 0.0f, BackgroundFish::c = 3.6f, BackgroundFish::d = 0.0174f;
 
@@ -26,15 +28,20 @@ BackgroundFish::BackgroundFish() : GameObject({ start_position })
 
 void BackgroundFish::Update(double dt)
 {
-	GameObject::Update(dt);
+	if(!Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<GameOption>()->isOpened())
+	{
+		GameObject::Update(dt);
 
-	SetFlipX(GetVelocity().x <= 0);
+		SetFlipX(GetVelocity().x <= 0);
+	}
+	else
+	{
+		SetVelocity({ 0,0 });
+	}
 }
 
 void BackgroundFish::Draw(DrawLayer drawlayer)
 {
-
-
     DrawCall draw_call = {
         GetGOComponent<Sprite>()->GetTexture(),                       // Texture to draw
         &GetMatrix(),                          // Transformation matrix

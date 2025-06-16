@@ -217,6 +217,10 @@
       <Filter>Game</Filter>
       </ClCompile>
     <ClCompile Include="Engine\DialogSystem.cpp">
+    <ClCompile Include="Game\GameOption.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\RayCasting.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
   </ItemGroup>
@@ -451,6 +455,10 @@
       <Filter>Game</Filter>
       </ClInclude>
     <ClInclude Include="Engine\DialogSystem.h">
+    <ClInclude Include="Game\GameOption.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\RayCasting.h">
       <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>

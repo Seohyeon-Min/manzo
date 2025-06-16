@@ -271,6 +271,11 @@ void Boss::Update(double dt) {
 		SetScale({ currentScaleX, 1.0f });
 		Move(dt);
 	}
+
+	if (option->isOpened())
+	{
+		Engine::GetAudioManager().StopPlayingMusic("e boss");
+	}
 }
 
 void Boss::AfterDied()
