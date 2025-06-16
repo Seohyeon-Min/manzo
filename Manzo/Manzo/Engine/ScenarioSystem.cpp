@@ -40,9 +40,8 @@ void ScenarioSystem::LoadMode2Scenarios()
     return dlg && dlg->IsFinished(); },
         []() {
             Engine::GetInput().SetMouseInputOn(true);
-            auto* quest = new PopUp({ -420,195 }, "assets/images/quest_popup.spt", true);
-            Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(quest);
-            quest->SetPop(true);
+            Engine::GetGameStateManager().ClearNextGameState();
+            Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Tutorial));
         }
     );
 

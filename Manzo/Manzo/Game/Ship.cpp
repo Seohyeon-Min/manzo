@@ -750,25 +750,22 @@ void Pump::Update(double dt)
 		float delta_alpha = 1 / decrease_duration;
 
 		// Triggered once per beat
-		if (beat->GetBeat() && !beat_started) {
+		if (beat->GetBeat()) {
 			radius = min_pump_radius;
 			wait = true;
-			beat_started = true;
 		}
 
 		// Reset trigger when beat is over
-		if (!beat->GetBeat()) {
-			beat_started = false;
-		}
+
 
 		// Exit wait only when not on beat anymore
-		if (wait && !beat->GetIsOnBeat()) {
+		if (wait&& !beat->GetBeat()) {
 			radius = max_pump_radius;
 			alpha = 0.f;
 			wait = false;
 		}
 
-		if (!wait && radius > min_pump_radius) {
+		if ( radius > min_pump_radius) {
 			radius -= delta_radius * (float)dt;
 			alpha += delta_alpha * (float)dt;
 		}
