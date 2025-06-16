@@ -269,16 +269,16 @@ void Map::ParseSVG() {
 // Map Parsing
 std::vector<vec2> Map::parsePathData(const std::string& pathData) {
     std::istringstream stream(pathData);
-    std::string data;
+    std::string _data;
 
     float last_x = 0, last_y = 0; // former position
     bool isRelative = false;
 
     std::vector<vec2> positions;
 
-    while (std::getline(stream, data, ',')) {
-        if (std::isalpha(data[0])) {  // check is command
-            currentCommand = data[0];
+    while (std::getline(stream, _data, ',')) {
+        if (std::isalpha(_data[0])) {  // check is command
+            currentCommand = _data[0];
             isRelative = std::islower(currentCommand);  // is Relative?
             continue;
         }
@@ -286,10 +286,10 @@ std::vector<vec2> Map::parsePathData(const std::string& pathData) {
         float x = 0.0f, y = 0.0f;
 
         if (currentCommand == 'm' || currentCommand == 'M') {
-            x = std::stof(data);
-            if (std::getline(stream, data, ',')) {
+            x = std::stof(_data);
+            if (std::getline(stream, _data, ',')) {
 
-                y = std::stof(data);
+                y = std::stof(_data);
                 last_x = isRelative ? last_x + x : x;
                 last_y = isRelative ? last_y + y : y;
                 positions.push_back({ last_x, last_y });
@@ -297,10 +297,10 @@ std::vector<vec2> Map::parsePathData(const std::string& pathData) {
             }
         }
         else if (currentCommand == 'l' || currentCommand == 'L') {
-            x = std::stof(data);
-            if (std::getline(stream, data, ',')) {
+            x = std::stof(_data);
+            if (std::getline(stream, _data, ',')) {
 
-                y = std::stof(data);
+                y = std::stof(_data);
                 last_x = isRelative ? last_x + x : x;
                 last_y = isRelative ? last_y + y : y;
                 positions.push_back({ last_x, last_y });
@@ -308,13 +308,13 @@ std::vector<vec2> Map::parsePathData(const std::string& pathData) {
         }
         else if (currentCommand == 'v' || currentCommand == 'V') {
 
-            y = std::stof(data);
+            y = std::stof(_data);
             last_y = isRelative ? last_y + y : y;
             positions.push_back({ last_x, last_y });
         }
         else if (currentCommand == 'h' || currentCommand == 'H') {
 
-            x = std::stof(data);
+            x = std::stof(_data);
             last_x = isRelative ? last_x + x : x;
             positions.push_back({ last_x, last_y });
         }
@@ -441,6 +441,84 @@ void Map::UnloadCrashedRock() {
             delete rockgroup;
         }
             
+    }
+}
+
+void Map::FillPolygonScanline(const std::vector<ivec2>& polygon, std::vector<unsigned char>& data, int width, int height) {
+    if (polygon.size() < 3) return;
+
+    // 폴리곤의 Y 범위 구하기
+    int minY = polygon[0].y;
+    int maxY = polygon[0].y;
+    for (const auto& vertex : polygon) {
+        minY = std::min(minY, vertex.y);
+        maxY = std::max(maxY, vertex.y);
+    }
+
+    // 각 스캔라인에 대해
+    for (int y = minY; y <= maxY; ++y) {
+        std::vector<int> intersections;
+
+        // 모든 에지와의 교점 찾기
+        for (size_t i = 0; i < polygon.size(); ++i) {
+            int j = int((i + 1) % polygon.size());
+            ivec2 p1 = polygon[i];
+            ivec2 p2 = polygon[j];
+
+            // 수평선 제외
+            if (p1.y == p2.y) continue;
+
+            // y가 에지 범위에 있는지 확인
+            if (y >= std::min(p1.y, p2.y) && y < std::max(p1.y, p2.y)) {
+                // 교점의 x 좌표 계산
+                int x = p1.x + (y - p1.y) * (p2.x - p1.x) / (p2.y - p1.y);
+                intersections.push_back(x);
+            }
+        }
+
+        // 교점들을 x 좌표로 정렬
+        std::sort(intersections.begin(), intersections.end());
+
+        // 교점 쌍 사이를 채우기 (even-odd rule)
+        for (size_t i = 0; i < intersections.size(); i += 2) {
+            if (i + 1 < intersections.size()) {
+                int startX = intersections[i];
+                int endX = intersections[i + 1];
+
+                for (int x = startX; x <= endX; ++x) {
+                    if (x >= 0 && x < width && y >= 0 && y < height) {
+                        data[y * width + x] = 255;
+                    }
+                }
+            }
+        }
+    }
+}
+
+void Map::DrawRockLine(ivec2 p0, ivec2 p1, std::vector<unsigned char>& data, int width, int height) {
+    int dx = abs(p1.x - p0.x);
+    int dy = abs(p1.y - p0.y);
+    int sx = p0.x < p1.x ? 1 : -1;
+    int sy = p0.y < p1.y ? 1 : -1;
+    int err = dx - dy;
+
+    int x = p0.x;
+    int y = p0.y;
+
+    while (true) {
+        if (x >= 0 && x < width && y >= 0 && y < height) {
+            data[y * width + x] = 255;
+        }
+        if (x == p1.x && y == p1.y) break;
+        int e2 = 2 * err;
+        if (e2 > -dy) {
+            err -= dy;
+            x += sx;
+        }
+        if (e2 < dx) {
+            err += dx;
+            y += sy;
+        }
     }
 }
 

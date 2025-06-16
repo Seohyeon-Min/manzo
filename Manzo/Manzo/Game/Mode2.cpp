@@ -39,6 +39,9 @@ void Mode2::Load() {
 	AddGSComponent(new ShowCollision());
 #else
 #endif
+	//shader
+	Engine::GetShaderManager().LoadShader("water_ripple", "assets/shaders/default.vert", "assets/shaders/water_ripple.frag");
+	Engine::GetShaderManager().LoadShader("icon", "assets/shaders/default.vert", "assets/shaders/edge_detection.frag");
 
 	// audio
 	Engine::GetAudioManager().LoadMusic("assets/audios/home1.mp3", "home_intro", false, false);
@@ -71,15 +74,15 @@ void Mode2::Load() {
 	Engine::GetIconManager().LoadIconList();
 
 	// Dialog
-	dialog_ptr = std::make_shared<Dialog>(vec2(0, 0));
-	GetGSComponent<GameObjectManager>()->Add(dialog_ptr.get());
-	Engine::GetDialogSystem().SetDialog(dialog_ptr);
+	dialog_ptr = new Dialog({ 0,0 });
+	GetGSComponent<GameObjectManager>()->Add(dialog_ptr);
+
 	//Engine::GetLogger().LoadSaveFile();
 
 	//ScenarioComponent
-	//scenario = new ScenarioComponent(dialog_ptr);
-	//AddGSComponent(scenario);
-	//scenario->Load();
+	scenario = new ScenarioComponent(dialog_ptr);
+	AddGSComponent(scenario);
+	scenario->Load();
 
 	// Module
 	module_ptr = new Module({ 0, 0 });
@@ -104,6 +107,9 @@ void Mode2::Load() {
 
 	//effect
 	Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new Flash(1.3f));
+	
+	option = new GameOption({ 0,100 });
+	GetGSComponent<GameObjectManager>()->Add(option);
 
 	sell_popup = new PopUp({ 0,0 }, "assets/images/sell_popup.spt");
 	GetGSComponent<GameObjectManager>()->Add(sell_popup);

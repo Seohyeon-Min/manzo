@@ -10,7 +10,7 @@ Raycasting::Raycasting(GameObject* object_) : object(object_)
     glDisable(GL_DEPTH_TEST);
     glDepthMask(GL_FALSE);
 
-	shader = Engine::GetShaderManager().GetShader("light");
+    shader = Engine::GetShaderManager().GetShader("light");
 
 
     shader->Use();
@@ -34,8 +34,8 @@ Raycasting::Raycasting(GameObject* object_) : object(object_)
 Raycasting::~Raycasting()
 {
     glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-	shader = nullptr;
+    glDeleteBuffers(1, &VBO);
+    shader = nullptr;
 }
 
 #include <vector>
@@ -143,6 +143,8 @@ void Raycasting::Render()
 {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
+    // glBlendFunc(GL_DST_COLOR, GL_ZERO);
+
     glBlendFunc(GL_DST_COLOR, GL_ZERO);
 
     UpdateMesh();
@@ -179,7 +181,7 @@ void Raycasting::Render()
 
     ///////////////////////////////////////////////////////////////////////////////////
 
-	shader->SendUniform("uLightRadius", radius);
+    shader->SendUniform("uLightRadius", radius);
 
     ///////////////////////////////////////////////////////////////////////////////////
 
@@ -188,7 +190,7 @@ void Raycasting::Render()
     glDrawArrays(GL_TRIANGLE_FAN, 0, numVertices);
     glBindVertexArray(0);
 
-     Engine::GetRender().RenderQuad();
+    Engine::GetRender().RenderQuad();
 }
 
 void Raycasting::UpdateRadius()

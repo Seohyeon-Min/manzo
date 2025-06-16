@@ -8,6 +8,7 @@
 #include "../Engine/MathUtils.h"
 #include "Effect.h"
 #include "BackGround.h"
+#include "GameOption.h"
 
 std::vector<GameObject::State*> stateMap;
 std::vector<std::string> BossJSONfileMap;
@@ -245,6 +246,7 @@ void Boss::InitializeStates() {
 
 
 void Boss::Update(double dt) {
+	auto option = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<GameOption>();
 	Boss* boss = static_cast<Boss*>(this);
 	if (Engine::GetGameStateManager().GetStateName() == "Mode1") {
 		if (GameObject::current_state->GetName() != Boss::state_cutscene.GetName()) {

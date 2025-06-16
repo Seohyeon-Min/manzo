@@ -50,7 +50,7 @@ private:
     Ship* ship_ptr;
     Background* background;
     Shop* shop_ptr;
-    //Dialog* dialog_ptr;
+    Dialog* dialog_ptr;
     Player* player_ptr;
     Inven* inven_ptr;
     Module* module_ptr;
@@ -58,7 +58,6 @@ private:
     PopUp* sell_popup;
     PopUp* today_fish_popup;
     FishGenerator* fishGenerator;
-    std::shared_ptr<Dialog> dialog_ptr;
     GameOption* option;
 
     float y_limit = 15.0f;

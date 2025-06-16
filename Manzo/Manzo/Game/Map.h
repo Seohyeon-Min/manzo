@@ -56,6 +56,11 @@ public:
 	void UnloadAll();
 	void UnloadCrashedRock();
 
+	//for mask
+	void FillPolygonScanline(const std::vector<ivec2>& polygon, std::vector<unsigned char>& data, int width, int height);
+
+	void DrawRockLine(ivec2 p0, ivec2 p1, std::vector<unsigned char>& data, int width, int height);
+
 	void LoadPNG();
 	vec2 MaskToWorld(int maskX, int maskY);
 	ivec2 WorldToMask(vec2 worldPos);
@@ -64,6 +69,9 @@ public:
 	int GetWorldWidth() { return width; }
 	int GetWorldHeight() { return height; }
 	std::vector<std::vector<bool>> GetMask() { return mask; }
+
+	std::vector<unsigned char> data;
+	GLuint obstacleTex = 0;
 
 private:
 	std::mt19937 gen;	
