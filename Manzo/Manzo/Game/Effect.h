@@ -4,7 +4,7 @@
 #include "Particles.h"
 #include "Ship.h"
 #include "../Engine/Sprite.h"
-
+#include "JellyEnemy.h"
 
 class Effect : public GameObject {
 public:
@@ -136,4 +136,22 @@ public:
     void Update(double dt) override;
     void Draw(DrawLayer drawlayer = DrawLayer::DrawLast) override;
 private:
+};
+
+class Jellyfish : public Effect {
+public:
+    Jellyfish(JellyEnemy* jelly);
+    void Update(double dt) override;
+    void Draw(DrawLayer drawlayer = DrawLayer::DrawLast) override;
+private:
+    JellyEnemy* jelly;
+};
+
+class JellyBullet : public Effect {
+public:
+    JellyBullet(vec2 pos);
+    void Update(double dt) override;
+    void Draw(DrawLayer drawlayer = DrawLayer::DrawLast) override;
+private:
+    JellyEnemy* jelly;
 };

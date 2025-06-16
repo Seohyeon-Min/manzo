@@ -211,7 +211,7 @@ void BossBullet::Draw(DrawLayer drawlayer) {
     DrawCall draw_call = {
         GetGOComponent<Sprite>()->GetTexture(),
         &GetMatrix(),
-        Engine::GetShaderManager().GetShader("fade_in")
+        Engine::GetShaderManager().GetDefaultShader()
     };
     //procedual.Draw(GetMatrix(), drawlayer);
 

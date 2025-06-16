@@ -31,7 +31,14 @@ void Rock::Update(double dt)
 
 void Rock::Draw()
 {
-    GameObject::Draw();
+    //DrawCall draw_call = {
+    //    GetGOComponent<Sprite>()->GetTexture(),
+    //    &GetMatrix(),
+    //    Engine::GetShaderManager().GetShader("purple")
+    //};
+    //draw_call.settings.do_blending = true;
+    ////draw_call.SetUniforms = [this](const GLShader* shader) { SetUni(shader); };
+    //Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call));
 }
 
 

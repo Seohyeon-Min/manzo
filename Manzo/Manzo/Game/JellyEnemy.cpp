@@ -8,6 +8,7 @@
 #include <vector>
 #include <cmath>
 #include "BossBullet.h"
+#include "Effect.h"
 
 #define PI  3.14159265358979
 #define DEG2RAD (PI/180.0f)
@@ -20,7 +21,7 @@ JellyEnemy::JellyEnemy(vec2 start_position, float hight, float lifetime, JellyTy
     texture_vector.push_back(Engine::GetTextureManager().Load("assets/images/boss/test_jelly_3.png"));
     texture_vector.push_back(Engine::GetTextureManager().Load("assets/images/boss/test_jelly_1-1.png"));
     SetScale(vec2{ scale,scale });
-
+    Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new Jellyfish(this));
 
     ship = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>();
     vec2 shipPos = ship->GetPosition();
@@ -82,6 +83,7 @@ void JellyEnemy::Update(double dt) {
             mat3::build_rotation(procedural_jelly.GetRotation(1, this)) *
             mat3::build_scale(1.f);
     }
+    Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEParticle3>>()->Emit(2, GetPosition(), GetVelocity(), {}, 0);
     lifetime -= dt;
     if (!marked_for_bullet && lifetime <= 0.0f) {
         bullet_spawn_position = this->GetPosition();
@@ -91,6 +93,7 @@ void JellyEnemy::Update(double dt) {
     if (marked_for_bullet && this) {
         auto* bullet = new BossBullet(bullet_spawn_position, 4.0f, BossBullet::BulletType::Accelerating);
         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bullet);
+        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new JellyBullet(GetPosition()));
         this->Destroy(); // 이제 안전
         return;
     }
@@ -146,6 +149,7 @@ bool JellyEnemy::CanCollideWith(GameObjectTypes other_object) {
 
 void JellyEnemy::ResolveCollision(GameObject* other_object) {
     if (other_object->Type() == GameObjectTypes::Ship) {
+        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new CaptureEffect(GetPosition()));
         this->Destroy();
     }
 }
