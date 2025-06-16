@@ -345,6 +345,8 @@ void Mode1::Draw()
 	GetGSComponent<Background>()->Draw(*GetGSComponent<Cam>()); 
 	GetGSComponent<GameObjectManager>()->DrawAll();
 
+	raycasting->Render();
+
 	if (ship_ptr->GetFuel() <= 0)
 	{
 		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, "CLICK TO RESTART", { 0, 0 }, 10.098f, { 1.f, 1.f, 1.f }, 1.0f);
@@ -355,7 +357,6 @@ void Mode1::Draw()
 	{
 		Engine::GetFontManager().PrintText(FontType::AlumniSans_Medium, FontAlignment::LEFT, std::to_string(static_cast<int>(ship_ptr->GetFuel())), { -0.001f, 0.75f }, 0.05f, { 1.f, 1.f, 1.f }, 1.f, false);
 	}
-	raycasting->Render();
 }
 void Mode1::Unload()
 {

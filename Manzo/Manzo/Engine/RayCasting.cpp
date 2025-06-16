@@ -21,10 +21,8 @@ Raycasting::Raycasting(GameObject* object_) : object(object_)
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-    // �ʱ� �� ������ (����������Ʈ ����)
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * (NUM_RAYS + 2), nullptr, GL_DYNAMIC_DRAW);
 
-    // ��ġ attribute (vec2)
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
 
@@ -46,7 +44,6 @@ void Raycasting::UpdateMesh()
 {
     vec2 lightPos = object->GetPosition();
 
-    // cam, world_to_ndc, ndc_to_screen ���� ��´�
     Cam* cam = Engine::GetGameStateManager().GetGSComponent<Cam>();
     mat3 WORLD_TO_NDC = cam->world_to_ndc;
     mat3 ndc_to_screen = mat3::build_translation({ w / 2.f, h / 2.f }) * mat3::build_scale({ w / 2.f, h / 2.f });
@@ -55,7 +52,6 @@ void Raycasting::UpdateMesh()
     std::vector<vec2> points;
     points.reserve(NUM_RAYS);
 
-    // raycast �� obstacle �˻� (world ��ǥ��)
     for (int i = 0; i < NUM_RAYS; ++i)
     {
         float angle = (float)i / NUM_RAYS * 2.0f * (float)M_PI;
@@ -68,12 +64,10 @@ void Raycasting::UpdateMesh()
         float dist = 0.0f;
         bool hit = false;
 
-        // ��ֹ� �� ������ ���� ���� �Լ�
         auto isObstacleAt = [&](vec2 worldPos) -> bool {
-            // ���� ��ǥ�� ��ֹ� �� ��ǥ�� ��ȯ
             vec2 cameraPos = Engine::GetGameStateManager().GetGSComponent<Cam>()->GetTargetPosition();
-            float camViewWidth = 20.0f;   // ī�޶� �� ��
-            float camViewHeight = 15.0f;  // ī�޶� �� ����
+            float camViewWidth = 20.0f;  
+            float camViewHeight = 15.0f;  
 
             float world_left = cameraPos.x - camViewWidth / 2.0f;
             float world_top = cameraPos.y + camViewHeight / 2.0f;
@@ -83,15 +77,12 @@ void Raycasting::UpdateMesh()
             int maskX = static_cast<int>(((worldPos.x - world_left) / world_width) * 1280);
             int maskY = static_cast<int>(((world_top - worldPos.y) / world_height) * 720);
 
-            // ���� üũ
             if (maskX < 0 || maskX >= 1280 || maskY < 0 || maskY >= 720)
                 return false;
 
-            // ��ֹ� �� ������ ��������
             auto obstacleMap = Engine::GetGameStateManager().GetGSComponent<MapManager>()->GetMap(0);
 
             std::fill(obstacleMap->data.begin(), obstacleMap->data.end(), 0);
-            // IsObstacleAt ȣ�� (Ŭ���� ��� �Լ�)
             return IsObstacleAt(maskX, maskY, 1280, 720, obstacleMap->data);
             };
 
@@ -100,24 +91,20 @@ void Raycasting::UpdateMesh()
             pos = pos + dir * stepSize;
             dist += stepSize;
 
-            // ��ֹ� ����
             if (isObstacleAt(pos)) {
                 hit = true;
                 break;
             }
         }
 
-        // world ��ǥ pos �� screen ��ǥ�� ��ȯ
         vec3 p_world = { pos.x, pos.y, 1.0f };
         vec3 p_screen = world_to_screen * p_world;
         points.push_back({ p_screen.x, p_screen.y });
     }
 
 
-    // �� ��ġ�� screen ��ǥ�� ��ȯ
     vec3 lightPos_screen = world_to_screen * vec3{ lightPos.x, lightPos.y, 1.0f };
 
-    // �ﰢ�� �ҿ� ���ؽ� �迭 ����
     std::vector<float> vertices;
     vertices.reserve((NUM_RAYS + 2) * 2);
 
@@ -153,7 +140,7 @@ void Raycasting::Render()
     shader->Use();
 
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, Engine::GetGameStateManager().GetGSComponent<MapManager>()->GetMap(0)->obstacleTex);  // map���� ������
+    glBindTexture(GL_TEXTURE_2D, Engine::GetGameStateManager().GetGSComponent<MapManager>()->GetMap(0)->obstacleTex); 
 
     shader->SendUniform("uObstacleMap", 1);
 

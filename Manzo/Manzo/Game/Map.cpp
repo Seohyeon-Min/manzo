@@ -1,3 +1,8 @@
+
+#define _CRT_SECURE_NO_WARNINGS
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+
 /*
 Copyright (C) 2023 DigiPen Institute of Technology
 Reproduction or distribution of this file or its contents without
@@ -343,6 +348,30 @@ bool Map::IsOverlappingMargin(const Math::rect& camera_boundary, const Math::rec
 }
 
 void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
+
+    int width = Engine::window_width;
+    int height = Engine::window_height;
+    data.resize(width * height, 0);
+
+    auto wv = [&](vec2 worldPos) -> ivec2 {
+        float world_left = camera_boundary.Left();
+        float world_right = camera_boundary.Right();
+        float world_bottom = camera_boundary.Bottom();
+        float world_top = camera_boundary.Top();
+
+        float world_width = world_right - world_left;
+        float world_height = world_top - world_bottom;
+
+        int maskX = static_cast<int>(((worldPos.x - world_left) / world_width) * width);
+        int maskY = static_cast<int>(((world_top - worldPos.y) / world_height) * height);
+
+        return {
+            std::clamp(maskX, 0, width - 1),
+            std::clamp(maskY, 0, height - 1)
+        };
+        };
+
+
     for (RockGroup* rockgroup : rock_groups) {
         std::vector<Rock*> rocks = rockgroup->GetRocks();
 
@@ -355,6 +384,12 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
                 for (auto& rock : rockgroup->GetRocks()) {
 
                     Polygon original_poly = rock->GetOriginalPoly();
+                    std::vector<ivec2> maskPoly;
+                    for (auto& vert : original_poly.vertices) {
+                        maskPoly.push_back(wv(vert));
+                    }
+                    FillPolygonScanline(maskPoly, data, width, height);
+
                     Polygon modified_poly = rock->GetModifiedPoly();
                     if (!rock->IsActivated() && !rock->GetRockGroup()->IsCrashed()) {
                         rock->Active(true);
@@ -390,6 +425,23 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
 
         }
     }
+
+
+    if (obstacleTex == 0) {
+        glGenTextures(1, &obstacleTex);
+        glBindTexture(GL_TEXTURE_2D, obstacleTex);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, data.data());
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    }
+    else {
+        glBindTexture(GL_TEXTURE_2D, obstacleTex);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RED, GL_UNSIGNED_BYTE, data.data());
+    }
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    // 5. 디버그용 PNG로 저장
+    stbi_write_png("obstacle.png", width, height, 1, data.data(), width);
 }
 
 void Map::UnloadAll() {
