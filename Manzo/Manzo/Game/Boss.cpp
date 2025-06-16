@@ -34,10 +34,9 @@ Boss::Boss(vec2 start_position, BossName name, BossType type)
 	boss_body = Engine::GetTextureManager().Load("assets/images/boss/boss_e_body.png");
 	texture_vector.push_back(Engine::GetTextureManager().Load("assets/images/boss/boss_y_body_1.png"));
 	texture_vector.push_back(Engine::GetTextureManager().Load("assets/images/boss/boss_y_body_2.png"));
-	texture_vector.push_back(Engine::GetTextureManager().Load("assets/images/boss/boss_y_tail_1.png"));
-	texture_vector.push_back(Engine::GetTextureManager().Load("assets/images/boss/boss_y_tail_2.png"));
-	procedural_jelly.Initialize(3, 50, start_position);
-	procedural_jelly2.Initialize(4, 70, start_position);
+
+	procedural_jelly.Initialize(4, 250, start_position);
+
 
 	/////
 	SetVelocity({ start_position });
@@ -159,9 +158,9 @@ void Boss::Chasingplayer_Boss(int targetEntryNum, Boss* boss) {
 				vec2 directionToPlayer = playerPosition - bossPosition;
 
 				float distanceToPlayer = directionToPlayer.Length();
-				if (distanceToPlayer > (boss->speed / 4)) {
+				if (distanceToPlayer > (boss->speed / 10)) {
 					directionToPlayer = directionToPlayer.Normalize();
-					boss->current_position = bossPosition + (directionToPlayer * (boss->speed / 4));
+					boss->current_position = bossPosition + (directionToPlayer * (boss->speed / 10));
 				}
 				else {
 					boss->current_position = playerPosition;
@@ -337,23 +336,17 @@ void Boss::Update(double dt) {
 			mat3::build_translation(procedural_jelly.GetPositions(1, mat3::build_scale(1.f))) *
 			mat3::build_rotation(procedural_jelly.GetRotation(1, this)) *
 			mat3::build_scale(1.f);
-		procedural_jelly2.Update(this, 0.06f);
-		matrix_tail1 =
-			mat3::build_translation(procedural_jelly2.GetPositions(0, mat3::build_scale(1.f))) *
-			mat3::build_rotation(procedural_jelly2.GetRotation(0, this)) *
+		matrix_body3 =
+			mat3::build_translation(procedural_jelly.GetPositions(2, mat3::build_scale(1.f))) *
+			mat3::build_rotation(procedural_jelly.GetRotation(0, this)) *
 			mat3::build_scale(1.f);
-		matrix_tail2 =
-			mat3::build_translation(procedural_jelly2.GetPositions(1, mat3::build_scale(1.f))) *
-			mat3::build_rotation(procedural_jelly2.GetRotation(1, this)) *
+
+		matrix_body4 =
+			mat3::build_translation(procedural_jelly.GetPositions(3, mat3::build_scale(1.f))) *
+			mat3::build_rotation(procedural_jelly.GetRotation(1, this)) *
 			mat3::build_scale(1.f);
-		matrix_tail3 =
-			mat3::build_translation(procedural_jelly2.GetPositions(2, mat3::build_scale(1.f))) *
-			mat3::build_rotation(procedural_jelly2.GetRotation(1, this)) *
-			mat3::build_scale(1.f);
-		matrix_tail4 =
-			mat3::build_translation(procedural_jelly2.GetPositions(3, mat3::build_scale(1.f))) *
-			mat3::build_rotation(procedural_jelly2.GetRotation(1, this)) *
-			mat3::build_scale(1.f);
+
+
 	}
 }
 
@@ -510,7 +503,7 @@ void Boss::Draw(DrawLayer drawlayer)
 	DrawCall draw_call = {
 		GetGOComponent<Sprite>()->GetTexture(),
 		&GetMatrix(),
-		Engine::GetShaderManager().GetShader("wave")
+		Engine::GetShaderManager().GetDefaultShader()
 	};
 	draw_call.settings.do_blending = true;
 	draw_call.SetUniforms = [this](const GLShader* shader) { SetUni(shader); };
@@ -530,34 +523,23 @@ void Boss::Draw(DrawLayer drawlayer)
 
 	DrawCall draw_call2 = {
 	texture_vector[1],
-	& matrix_tail1,
+	& matrix_body2,
 	Engine::GetShaderManager().GetDefaultShader()
 	};
 
 	DrawCall draw_call3 = {
-	texture_vector[2],
-	& matrix_tail1,
+	texture_vector[1],
+	& matrix_body3,
 	Engine::GetShaderManager().GetDefaultShader()
 	};
 
 	DrawCall draw_call4 = {
-	texture_vector[2],
-	& matrix_tail2,
-	Engine::GetShaderManager().GetDefaultShader()
-	};
-	DrawCall draw_call5 = {
-	texture_vector[2],
-	& matrix_tail3,
-	Engine::GetShaderManager().GetDefaultShader()
-	};
-	DrawCall draw_call6 = {
-	texture_vector[3],
-	& matrix_tail4,
+	texture_vector[1],
+	& matrix_body4,
 	Engine::GetShaderManager().GetDefaultShader()
 	};
 
-	Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call6));
-	Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call5));
+
 	Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call4));
 	Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call3));
 	Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call2));

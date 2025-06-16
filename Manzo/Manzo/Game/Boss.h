@@ -145,10 +145,9 @@ private:
 	std::vector<GLTexture*> texture_vector;
 	mat3 matrix_body1;
 	mat3 matrix_body2;
-	mat3 matrix_tail1;
-	mat3 matrix_tail2;
-	mat3 matrix_tail3;
-	mat3 matrix_tail4;
+	mat3 matrix_body3;
+	mat3 matrix_body4;
+
 
 	bool has_spawned_offset = false;
 

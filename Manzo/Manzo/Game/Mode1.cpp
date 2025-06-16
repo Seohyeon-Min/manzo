@@ -96,7 +96,7 @@ void Mode1::Load()
 	//// camera
 	vec2 start_position = { 600, -500 };
 	//vec2 start_position = {404, -6411};
-	Math::rect cam_limit = Math::rect({-1200, -500}, {4300, -12000});
+	Math::rect cam_limit = Math::rect({-30000, -500}, {4300, -30000});
 	camera = new Cam();
 	camera->SetPosition(start_position);
 	camera->SetLimit(cam_limit);
@@ -143,10 +143,10 @@ void Mode1::Load()
 	BossFirstPos_e.push_back(std::make_pair(boss_ptr_e->GetFirstPosition()[0], boss_ptr_e->GetFirstPosition()[1]));
 	bossPosition_e = {4100, -5300, 0.0f};
 
-	boss_ptr_y = new Boss({ -1200, -9873 }, Boss::BossName::y, Boss::BossType::MovingToLocationPlus);
+	boss_ptr_y = new Boss({ 1200, -20000 }, Boss::BossName::y, Boss::BossType::ChasingPlayer);
 	boss_ptr_y->ReadBossJSON(Boss::BossName::y);
 	BossFirstPos_y.push_back(std::make_pair(boss_ptr_y->GetFirstPosition()[0], boss_ptr_y->GetFirstPosition()[1]));
-	bossPosition_y = { -1200, -9873, 0.0f };
+	bossPosition_y = { 1200, -20000, 0.0f };
 
 
 	// UI
@@ -270,8 +270,8 @@ void Mode1::Update(double dt)
 	if (Isboss)
 	{
 		
-		camera->SetSmoothPosition(boss_ptr_y->GetPosition());
-		camera->Update(dt, { boss_ptr_y->GetPosition().x,boss_ptr_y->GetPosition().y - 300 }, ship_ptr->IsShipMoving());
+		camera->SetSmoothPosition(ship_ptr->GetPosition());
+		camera->Update(dt, { boss_ptr_y->GetPosition().x,boss_ptr_y->GetPosition().y}, ship_ptr->IsShipMoving());
 
 	}
 	else{

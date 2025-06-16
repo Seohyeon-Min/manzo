@@ -39,5 +39,5 @@ void main() {
     // curvedY 값을 기반으로 최종 색상 보간 (세로 방향 그라데이션)
     vec3 color = mix(finalColorA, finalColorB, t);
     
-    fFragClr = vec4(color, 1.0);
+    fFragClr = vec4(0.0,0.0,0.0, 0.0);
 }
