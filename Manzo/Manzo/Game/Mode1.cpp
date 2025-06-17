@@ -324,7 +324,7 @@ void Mode1::Update(double dt)
 
 		soundPlaying = false;
 		replay = false;
-		beat_system->SetPause(false);
+		beat_system->SetPause(true);
 	}
 }
 

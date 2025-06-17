@@ -32,7 +32,6 @@ void Beat::Update(double dt)
     {
         audio->PlayMusics(music_name);
         playing = true;
-        time_taken = 0;
     }
 
     if (beat) {
