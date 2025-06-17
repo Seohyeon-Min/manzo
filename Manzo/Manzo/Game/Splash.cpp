@@ -32,38 +32,31 @@ void Splash::Load() {
     Engine::GetAudioManager().LoadMusic("assets/audios/title_beginning_short.mp3", "splash", false);
 
     Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new Digipen());
-
+    Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new Flash(3.7f));
 }
 
 
 void Splash::Update([[maybe_unused]] double dt) {
-    static bool start = 0;
-    if (Engine::GetInput().MouseButtonJustReleased((SDL_BUTTON_LEFT))) {
-        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new Flash(3.7f));
-        start = 1;
-    }
-    if (start) {
-        static bool playing = false;
-        UpdateGSComponents(dt);
-        GetGSComponent<GameObjectManager>()->UpdateAll(dt);
-        GetGSComponent<Cam>()->Update(dt, {}, false);
-        if (!playing)
-        {
-            Engine::GetAudioManager().PlayMusics("splash");
-            playing = true;
-        }
-        // Move to next scean
-        if (Engine::GetInput().MouseButtonJustReleased((SDL_BUTTON_RIGHT))) {
-            Engine::GetAudioManager().StopPlayingMusic("splash");
-            Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Title));
-        }
-        Engine::GetLogger().LogDebug(std::to_string(counter));
-        if (counter >= 5) {
-            Engine::GetGameStateManager().ClearNextGameState();
-        }
-        counter += dt;
-    }
 
+    static bool playing = false;
+    UpdateGSComponents(dt);
+    GetGSComponent<GameObjectManager>()->UpdateAll(dt);
+    GetGSComponent<Cam>()->Update(dt, {}, false);
+    if (!playing)
+    {
+        Engine::GetAudioManager().PlayMusics("splash");
+        playing = true;
+    }
+    // Move to next scean
+    if (Engine::GetInput().MouseButtonJustReleased((SDL_BUTTON_LEFT))) {
+        Engine::GetAudioManager().StopPlayingMusic("splash");
+        Engine::GetGameStateManager().SetNextGameState(static_cast<int>(States::Title));
+    }
+    Engine::GetLogger().LogDebug(std::to_string(counter));
+    if (counter >= 5) {
+        Engine::GetGameStateManager().ClearNextGameState();
+    }
+    counter += dt;
 }
 
 void Splash::FixedUpdate(double dt)
