@@ -86,7 +86,7 @@ void Beat::Update(double dt)
     //    std::cout << asdfasdf++ << "fixed : " << fixed_duration << " duration : " << duration << " - on beat\n";
     //if (beat) std::cout << "beat @ " << time_taken << '\n';
     //std::cout << (is_on_beat ? "ON\n" : "OFF\n");
-    std::cout << delay_count_switch << " <- delay_count_switch ," << delay_count << " <- delay_count \n";
+    //std::cout << delay_count_switch << " <- delay_count_switch ," << delay_count << " <- delay_count \n";
     time_taken += dt;
 }
 

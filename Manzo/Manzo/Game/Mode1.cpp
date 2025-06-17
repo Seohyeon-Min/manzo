@@ -204,7 +204,6 @@ void Mode1::Update(double dt)
 	UpdateGSComponents(dt);
 	GetGSComponent<GameObjectManager>()->UpdateAll(dt);
 	Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::Plankton>>()->Spray();
-	beat_system->Update(dt);
 
 
 	// Handle Input
