@@ -356,10 +356,12 @@ void Ship::Update(double dt)
 				soundPlaying = true;
 			}
 		}
-
-		if (Engine::GetAudioManager().IsMusicFinished("dash"))
-		{
+		else {
 			soundPlaying = false;
+		}
+
+		if (soundPlaying && Engine::GetAudioManager().IsMusicFinished("dash"))
+		{
 			Engine::GetAudioManager().StopPlayingMusic("dash");
 		}
 	}

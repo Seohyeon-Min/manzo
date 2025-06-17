@@ -22,7 +22,7 @@ public:
     const double GetLastCali() { return calibrations.back(); }
     void SetUserCali(double cali) { user_calibration = cali; }
     bool GetDelaySwitch() { return delay_count_switch; }
-    void SetPause(bool pause_) { playing = pause_; }
+    void SetPause(bool pause_) { playing = !pause_; }
 
 private:
     int BPM = 100;
