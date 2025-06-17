@@ -24,26 +24,23 @@ void GameObjectManager::Unload()
 	objects.clear();
 }
 
-void GameObjectManager::UpdateAll(double dt) {
-	// 1. update only
+void GameObjectManager::UpdateAll(double dt)
+{
+	std::vector<GameObject*> destroy_objects;
 	for (auto object : objects) {
-		object->Update(dt); // 이 시점에서는 delete 안 일어남
-	}
-
-	// 2. collect to delete
-	std::vector<GameObject*> to_delete;
-	for (auto object : objects) {
+		object->Update(dt);
 		if (object->Destroyed()) {
-			to_delete.push_back(object);
+			destroy_objects.push_back(object);
 		}
 	}
-
-	// 3. delete safely
-	for (auto obj : to_delete) {
-		objects.remove(obj);
-		delete obj;
+	for (auto d_object : destroy_objects) {
+		if (d_object != nullptr) {
+			objects.remove(d_object);
+			delete d_object;
+		}
 	}
 }
+
 void GameObjectManager::FixedUpdateAll(double dt)
 {
 	if (objects.empty()) return;
@@ -59,20 +56,20 @@ void GameObjectManager::DrawAll()
 
 	for (auto object : objects) {
 
-			if (object->isCameraFixed()) {
+		if (object->isCameraFixed()) {
+			object->Draw();
+		}
+		else if (true) {
+			if (object->IsVisible(camera_bounds))
 				object->Draw();
-			}
-			else if (true) {
-				if (object->IsVisible(camera_bounds))
-				object->Draw();
-			}
+		}
 	}
 
 	Engine::GetRender().RenderAll();
 }
 
 
-void GameObjectManager::CollisionTest() 
+void GameObjectManager::CollisionTest()
 {
 	if (!collision_on) {
 		return;
@@ -101,20 +98,10 @@ vec2 GameObjectManager::FindNearestRockPoint(GameObject* object) {
 	vec2 object_Position = object->GetPosition();
 
 	for (GameObject* gameObj : objects) {
-		Rock* rock = nullptr;
-		std::vector<vec2> rockPoints;
-
 		if (gameObj->Type() == GameObjectTypes::Rock) {
-			rock = static_cast<Rock*>(gameObj);
-			rockPoints = rock->GetRockGroup()->GetPoints();
-		}
-		else if (gameObj->Type() == GameObjectTypes::ObstacleRock) {
-			rock = static_cast<ObstacleRock*>(gameObj);
-			rockPoints = rock->GetRockGroup()->GetPoints();
-		}
-		else {
-			continue;
-		}
+			Rock* rock = static_cast<Rock*>(gameObj);
+			std::vector<vec2> rockPoints = rock->GetRockGroup()->GetPoints();
+
 			for (const vec2& rockPoint : rockPoints) {
 				float distance = (rockPoint - object_Position).LengthSquared();
 
@@ -123,6 +110,7 @@ vec2 GameObjectManager::FindNearestRockPoint(GameObject* object) {
 					nearestRockpoints = rockPoint;
 				}
 			}
+		}
 	}
 
 	return nearestRockpoints;
@@ -137,21 +125,9 @@ Rock* GameObjectManager::FindNearestRock(GameObject* object) {
 	auto camera_bounds = Engine::GetGameStateManager().GetGSComponent<Cam>()->GetBounds();
 
 	for (GameObject* gameObj : objects) {
-		Rock* rock = nullptr;
-		std::vector<vec2> rockPoints;
-
 		if (gameObj->Type() == GameObjectTypes::Rock/* && gameObj->IsVisible(camera_bounds)*/) {
-			rock = static_cast<Rock*>(gameObj);
-			rockPoints = rock->GetPoints();
-		}
-		else if (gameObj->Type() == GameObjectTypes::ObstacleRock/* && gameObj->IsVisible(camera_bounds)*/) {
-			rock = static_cast<ObstacleRock*>(gameObj);
-			rockPoints = rock->GetPoints();
-		}
-		if (!rock || rock->IsCrashed()) continue;
-		else {
-			continue;
-		}
+			Rock* rock = static_cast<Rock*>(gameObj);
+			std::vector<vec2> rockPoints = rock->GetPoints();
 
 			for (size_t i = 0; i < rockPoints.size(); ++i) {
 				vec2 p1 = rockPoints[i];
@@ -165,6 +141,7 @@ Rock* GameObjectManager::FindNearestRock(GameObject* object) {
 					nearestRock = rock;
 				}
 			}
+		}
 	}
 
 	return nearestRock;
@@ -176,9 +153,9 @@ void GameObjectManager::Remove(GameObject* object) {
 
 	if (it != objects.end()) {
 		objects.erase(it);
-		//std::cout << "GameObject Removed from Vector.\n";
+		std::cout << "GameObject Removed from Vector.\n";
 	}
 	else {
-		//std::cout << "GameObject Not Found.\n";
+		std::cout << "GameObject Not Found.\n";
 	}
 }
