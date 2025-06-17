@@ -19,7 +19,7 @@ public:
     void CalculateCali();
     void CleartoOriginal();
     double GetUserCali() { return user_calibration; }
-    const double GetLastCali() {return calibrations.back();}
+    const double GetLastCali() { return calibrations.back(); }
     void SetUserCali(double cali) { user_calibration = cali; }
     bool GetDelaySwitch() { return delay_count_switch; }
     void SetPause(bool pause_) { playing = pause_; }

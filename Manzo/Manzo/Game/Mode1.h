@@ -44,7 +44,8 @@ private:
     FishGenerator* fishGenerator;
     Fish* fish;
     Background* background;
-    Boss* boss_ptr;
+    Boss* boss_ptr_e;   
+    Boss* boss_ptr_y;
     Cam* camera;
     Beat* beat_system;
     Module* module;
@@ -56,8 +57,10 @@ private:
     bool replay = false;
     bool playing = false;
     const float maxDistance = 4000.0f;
-    std::vector<std::pair<int, int>> BossFirstPos;
-    vec3 bossPosition;
+    std::vector<std::pair<int, int>> BossFirstPos_e;
+    std::vector<std::pair<int, int>> BossFirstPos_y;
+    vec3 bossPosition_e;
+    vec3 bossPosition_y;
     vec3 previousPosition = { 0,0,0 };
     vec3 smoothShipPosition = { 0,0,0 };
 

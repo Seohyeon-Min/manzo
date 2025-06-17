@@ -80,14 +80,17 @@ JsonParser_boss::JsonParser_boss(std::string path)
         for (const auto& entry : partternArray) {
             if (entry.IsObject() && entry.HasMember("entry") && entry["entry"].IsArray()) {
                 std::vector<EntryData> entryVec;
+                EntryData entryData;
                 const auto& entryList = entry["entry"].GetArray();
                 for (const auto& pointsArray : entryList) {
                     if (pointsArray.IsArray() && pointsArray.Size() == 4) {
-                        EntryData entryData;
                         entryData.attacktype = pointsArray[0].GetFloat();
                         entryData.position = vec2(pointsArray[1].GetFloat(), pointsArray[2].GetFloat());
                         entryData.delay = pointsArray[3].GetFloat();
                         entryVec.push_back(entryData);
+                    }
+                    if (pointsArray.Size() >= 5) {
+                        entryData.zoom = pointsArray[4].GetFloat();
                     }
                 }
                 parttern.push_back(entryVec);

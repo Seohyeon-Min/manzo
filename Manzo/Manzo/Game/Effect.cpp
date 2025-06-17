@@ -2,6 +2,7 @@
 #include "../Engine/Sprite.h"
 #include "States.h"
 
+
 Effect::Effect(vec2 position, double effect_time)
     : GameObject(position), effect_time(effect_time) {
     effect_timer = new Timer(effect_time);
@@ -493,3 +494,60 @@ void Digipen::Draw(DrawLayer drawlayer)
     draw_call.settings.is_camera_fixed = true;
     GameObject::Draw(draw_call);
 }
+
+Jellyfish::Jellyfish(JellyEnemy* _jelly)
+    : Effect({}, -1.0f)
+    {
+        AddGOComponent(new Sprite("assets/images/particle/Smoke.spt", this));
+        SetScale({ 1.6f,1.6f });
+        jelly = _jelly;
+}
+
+void Jellyfish::Update(double dt)
+{
+    Effect::Update(dt);
+    SetPosition(jelly->GetPosition());
+}
+
+void Jellyfish::Draw(DrawLayer drawlayer)
+{
+    Sprite* sprite = GetGOComponent<Sprite>();
+    DrawCall draw_call = {
+        sprite,
+        &GetMatrix(),
+        Engine::GetShaderManager().GetShader("emissive")
+    };
+    draw_call.settings.do_blending = true;
+    draw_call.settings.is_camera_fixed = true;
+    GameObject::Draw(draw_call);
+}
+
+JellyBullet::JellyBullet(vec2 pos)
+    : Effect({}, 0.5f)
+{
+    AddGOComponent(new Sprite("assets/images/effect/Capture_effect.spt", this));
+    GetGOComponent<Sprite>()->PlayAnimation(0);
+    SetPosition(pos);
+}
+
+void JellyBullet::Update(double dt)
+{
+    Effect::Update(dt);
+    if (GetGOComponent<Sprite>()->GetCurrentFrame() >= 4) {
+        Destroy();
+    }
+}
+
+void JellyBullet::Draw(DrawLayer drawlayer)
+{
+    Sprite* sprite = GetGOComponent<Sprite>();
+    DrawCall draw_call = {
+        sprite,
+        &GetMatrix(),
+        Engine::GetShaderManager().GetDefaultShader()
+    };
+    draw_call.settings.do_blending = true;
+    draw_call.sorting_layer = DrawLayer::Draw;
+    GameObject::Draw(draw_call);
+}
+

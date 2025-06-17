@@ -22,11 +22,12 @@ Created:    November 25, 2024
 #include <vector>
 
 class RockGroup;
+
 class Rock : public GameObject
 {
 public:
 	Rock(Polygon original_poly, Polygon modified_poly, vec2 position, double rotation, vec2 scale);
-	~Rock() {};
+	~Rock();
 	GameObjectTypes Type() override { return GameObjectTypes::Rock; }
 	std::string TypeName() override { return "Rock"; }
 	void Update(double dt);
@@ -38,6 +39,39 @@ public:
 	//polygon
 	const Polygon& GetOriginalPoly() { return original_poly; }
 	const Polygon& GetModifiedPoly() { return modified_poly; }
+
+	//group
+	void SetRockGroup(RockGroup* rockgroup) { this->rockgroup = rockgroup; }
+	RockGroup* GetRockGroup() { return rockgroup; }
+
+	// Map Loading
+	void Active(bool active) { loaded = active; }
+	bool IsActivated() { return loaded; }
+
+	// Crash
+	void Crash(bool crashed) { this->crashed = crashed; }
+	bool IsCrashed() { return crashed; }
+
+	std::vector<vec2> GetPoints() { return original_poly.vertices; }
+
+private:
+	std::string index;
+	RockGroup* rockgroup = nullptr;
+	Polygon original_poly;
+	Polygon modified_poly;
+	bool loaded = false;
+	bool crashed = false;
+};
+
+
+class ObstacleRock : public Rock
+{
+public:
+	ObstacleRock(Polygon original_poly, Polygon modified_poly, vec2 position, double rotation, vec2 scale);
+	
+	GameObjectTypes Type() override { return GameObjectTypes::ObstacleRock; }
+	std::string TypeName() override { return "ObstacleRock"; }
+	
 
 	//group
 	void SetRockGroup(RockGroup* rockgroup) { this->rockgroup = rockgroup; }
@@ -60,7 +94,7 @@ private:
 
 class MovingRock : public Rock {
 public:
-	MovingRock(Polygon poly);
+	MovingRock(Polygon original_poly, Polygon modified_poly, vec2 position, double rotation, vec2 scale);
 	~MovingRock() {};
 	GameObjectTypes Type() override { return GameObjectTypes::MovingRock; }
 	std::string TypeName() override { return "Rock"; }

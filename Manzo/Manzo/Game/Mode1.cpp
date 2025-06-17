@@ -74,7 +74,8 @@ void Mode1::Load()
 
 	//// camera
 	vec2 start_position = { 600, -500 };
-	Math::rect cam_limit = Math::rect({ 600, -346 }, { 4345, -6000 });
+	//vec2 start_position = {404, -6411};
+	Math::rect cam_limit = Math::rect({-1200, -500}, {4300, -12000});
 	camera = new Cam();
 	camera->SetPosition(start_position);
 	camera->SetLimit(cam_limit);
@@ -104,19 +105,30 @@ void Mode1::Load()
 
 	// Map
 	AddGSComponent(new MapManager());
-	// GetGSComponent<MapManager>()->AddMapFile("assets/maps/TemporaryMap.svg");
-
-	// Ear Clipping Test
-	GetGSComponent<MapManager>()->AddMapFile("assets/maps/new_map3.svg");
+	GetGSComponent<MapManager>()->AddMapFile("assets/maps/level1.svg"); 
+	GetGSComponent<MapManager>()->AddMapFile("assets/maps/level4.svg");
 	GetGSComponent<MapManager>()->LoadFirstMap();
+	
+
 
 	// Boss
 	Boss::LoadBossfile();
+	// for (int i = 0; i < 25; i++)
+	// for (int i = 0; i < 25; i++)
+	//{
+	//     GetGSComponent<Boss>()->ReadBossJSON(static_cast<Boss::BossType>(i));
+	//     BossFirstPos.push_back(GetGSComponent<Boss>()->GetFirstPosition());
+	// }
+	boss_ptr_e = new Boss({4100, -5300}, Boss::BossName::e, Boss::BossType::MovingToLocation);
+	boss_ptr_e->ReadBossJSON(Boss::BossName::e);
+	BossFirstPos_e.push_back(std::make_pair(boss_ptr_e->GetFirstPosition()[0], boss_ptr_e->GetFirstPosition()[1]));
+	bossPosition_e = {4100, -5300, 0.0f};
 
-	boss_ptr = new Boss({ 4100, -5300 }, Boss::BossName::e, Boss::BossType::MovingToLocation);
-	boss_ptr->ReadBossJSON(Boss::BossName::e);
-	BossFirstPos.push_back(std::make_pair(boss_ptr->GetFirstPosition()[0], boss_ptr->GetFirstPosition()[1]));
-	bossPosition = { 4100, -5300, 0.0f };
+	boss_ptr_y = new Boss({ -1200, -9873 }, Boss::BossName::y, Boss::BossType::MovingToLocationPlus);
+	boss_ptr_y->ReadBossJSON(Boss::BossName::y);
+	BossFirstPos_y.push_back(std::make_pair(boss_ptr_y->GetFirstPosition()[0], boss_ptr_y->GetFirstPosition()[1]));
+	bossPosition_y = { -1200, -9873, 0.0f };
+
 
 	// UI
 	GetGSComponent<GameObjectManager>()->Add(new Mouse);
@@ -156,11 +168,11 @@ void Mode1::Load()
 	camera->SetPosition(ship_ptr->GetPosition());
 
 	// Boss Trigger
-	auto bossPosCopy = bossPosition;
-	auto bossCopy = boss_ptr;
+	auto bossPosCopy = bossPosition_e;
+	auto bossCopy = boss_ptr_e;
 	auto shipCopy = ship_ptr;
 
-	Engine::GetEventManager().AddEvent(Event("Boss E Trigger",
+	/*Engine::GetEventManager().AddEvent(Event("Boss E Trigger",
 		[&]() { if (ship_ptr) return ship_ptr->GetPosition().y <= bossPosition.y + 300;
 	return false;
 		},
@@ -168,7 +180,7 @@ void Mode1::Load()
 			GetGSComponent<GameObjectManager>()->Add(boss_ptr);
 			Isboss = true;
 		}
-	));
+	));*/
 
 	option = new GameOption({ 0,0 });
 	GetGSComponent<GameObjectManager>()->Add(option);
@@ -179,10 +191,21 @@ void Mode1::Update(double dt)
 {
 	// audio play
 
+
+	//Map
+	if (!GetGSComponent<MapManager>()->GetCurrentMap()->IsLevelLoaded()) {
+		GetGSComponent<MapManager>()->GetCurrentMap()->ParseSVG();
+	}
+	else {
+		//GetGSComponent<MapManager>()->LoadNextMap();
+	}
+
+
 	UpdateGSComponents(dt);
 	GetGSComponent<GameObjectManager>()->UpdateAll(dt);
 	Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::Plankton>>()->Spray();
 	beat_system->Update(dt);
+
 
 	// Handle Input
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::TAB) && ship_ptr->GetPosition().y >= -800.f)
@@ -193,7 +216,7 @@ void Mode1::Update(double dt)
 
 	if (Engine::GetInput().KeyJustPressed(Input::Keys::E) && !Isboss)
 	{
-		GetGSComponent<GameObjectManager>()->Add(boss_ptr);
+		GetGSComponent<GameObjectManager>()->Add(boss_ptr_y);
 		Isboss = true;
 	}
 

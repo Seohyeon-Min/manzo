@@ -10,25 +10,40 @@ Created:    November 25, 2024
 
 #include "RockGroup.h"
 
-RockGroup::RockGroup(const std::string& index, double rotation, vec2 scale) :GameObject({ 0,0 }, rotation, scale), index(index)
+RockGroup::RockGroup(const std::string& index, const std::string& map_index, double rotation, vec2 scale) :GameObject({ 0,0 }, rotation, scale), index(index), map_index(map_index)
 {
-    AddGOComponent(new Sprite("assets/images/rock/g" + index +".spt", this));
+    std::string spritePath = "assets/images/rock/" + map_index + "/" + index + ".spt";
+
+    if (std::filesystem::exists(spritePath)) {
+        AddGOComponent(new Sprite(spritePath, this));
+    }
+    else {
+        std::cout << "Warning: Sprite file not found: " << spritePath << std::endl;
+
+    }
 }
 
 RockGroup::~RockGroup() {
     rocks.clear();
     moving_rocks.clear();
-    delete this->rockpoint;
 }
 
-void RockGroup::Update(double dt)
-{
+void RockGroup::Update(double dt) {
     GameObject::Update(dt);
+
 }
+
 
 void RockGroup::Draw()
 {
-    GameObject::Draw(DrawLayer::DrawLast);
+    //DrawCall draw_call = {
+    //    GetGOComponent<Sprite>()->GetTexture(),
+    //    &GetMatrix(),
+    //    Engine::GetShaderManager().GetShader("purple")
+    //};
+    //draw_call.settings.do_blending = true;
+    ////draw_call.SetUniforms = [this](const GLShader* shader) { SetUni(shader); };
+    //Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call));
 }
 
 Math::rect RockGroup::FindBoundary() {

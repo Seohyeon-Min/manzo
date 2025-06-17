@@ -32,7 +32,8 @@ enum class GameObjectTypes {
     Module,
     BossBullet,
     Box,
-    JellyEnemy
+    JellyEnemy,
+    ObstacleRock
 };
 
 bool IsPixelShaderApplicable(GameObjectTypes type);

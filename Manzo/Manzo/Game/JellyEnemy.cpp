@@ -7,6 +7,8 @@
 #include "Ship.h"
 #include <vector>
 #include <cmath>
+#include "BossBullet.h"
+#include "Effect.h"
 
 #define PI  3.14159265358979
 #define DEG2RAD (PI/180.0f)
@@ -17,12 +19,9 @@ JellyEnemy::JellyEnemy(vec2 start_position, float hight, float lifetime, JellyTy
     AddGOComponent(new Sprite("assets/images/boss/test_jelly_1.spt", this));
     texture_vector.push_back(Engine::GetTextureManager().Load("assets/images/boss/test_jelly_2.png"));
     texture_vector.push_back(Engine::GetTextureManager().Load("assets/images/boss/test_jelly_3.png"));
-    SetScale(vec2{ 1.f,1.f });
-    static bool seedInitialized = false;
-    if (!seedInitialized) {
-        srand(static_cast<unsigned int>(time(nullptr)));
-        seedInitialized = true;
-    }
+    texture_vector.push_back(Engine::GetTextureManager().Load("assets/images/boss/test_jelly_1-1.png"));
+    SetScale(vec2{ scale,scale });
+    Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new Jellyfish(this));
 
     ship = Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->GetGOComponent<Ship>();
     vec2 shipPos = ship->GetPosition();
@@ -84,17 +83,20 @@ void JellyEnemy::Update(double dt) {
             mat3::build_rotation(procedural_jelly.GetRotation(1, this)) *
             mat3::build_scale(1.f);
     }
+    Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEParticle3>>()->Emit(2, GetPosition(), GetVelocity(), {}, 0);
+    lifetime -= dt;
+    if (!marked_for_bullet && lifetime <= 0.0f) {
+        bullet_spawn_position = this->GetPosition();
+        marked_for_bullet = true;
+    }
 
-    if (lifetime <= -1.0f) {
-        this->Destroy();
+    if (marked_for_bullet && this) {
+        auto* bullet = new BossBullet(bullet_spawn_position, 4.0f, BossBullet::BulletType::Accelerating);
+        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(bullet);
+        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new JellyBullet(GetPosition()));
+        this->Destroy(); // 이제 안전
         return;
     }
-    else {
-        lifetime -= dt;
-    }
-
-    /*Engine::GetGameStateManager().GetGSComponent<ParticleManager<Particles::bossEbulletParticle>>()->Emit(
-        1, GetPosition(), { 0,0 }, {}, 1.5);*/
 }
 
 void JellyEnemy::Move(double dt) {
@@ -128,9 +130,14 @@ void JellyEnemy::Draw(DrawLayer drawlayer) {
     &test_matrix_1,
     Engine::GetShaderManager().GetDefaultShader()
     };
+    DrawCall draw_call4 = {
+    texture_vector[2],
+    & test_matrix,
+    Engine::GetShaderManager().GetDefaultShader()
+    };
 
 
-
+    Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call4));
     Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call3));
     Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call2));
     GameObject::Draw(draw_call);
@@ -142,6 +149,7 @@ bool JellyEnemy::CanCollideWith(GameObjectTypes other_object) {
 
 void JellyEnemy::ResolveCollision(GameObject* other_object) {
     if (other_object->Type() == GameObjectTypes::Ship) {
+        Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new CaptureEffect(GetPosition()));
         this->Destroy();
     }
 }
