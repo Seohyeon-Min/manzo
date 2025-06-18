@@ -48,10 +48,6 @@ public:
 	void Active(bool active) { loaded = active; }
 	bool IsActivated() { return loaded; }
 
-	// Crash
-	void Crash(bool crashed) { this->crashed = crashed; }
-	bool IsCrashed() { return crashed; }
-
 	std::vector<vec2> GetPoints() { return original_poly.vertices; }
 
 private:
@@ -60,7 +56,6 @@ private:
 	Polygon original_poly;
 	Polygon modified_poly;
 	bool loaded = false;
-	bool crashed = false;
 };
 
 
@@ -68,24 +63,12 @@ class ObstacleRock : public Rock
 {
 public:
 	ObstacleRock(Polygon original_poly, Polygon modified_poly, vec2 position, double rotation, vec2 scale);
-	
 	GameObjectTypes Type() override { return GameObjectTypes::ObstacleRock; }
 	std::string TypeName() override { return "ObstacleRock"; }
-	
-
-	//group
-	void SetRockGroup(RockGroup* rockgroup) { this->rockgroup = rockgroup; }
-	RockGroup* GetRockGroup() { return rockgroup; }
-
-	// Map Loading
-	void Active(bool active) { loaded = active; }
-	bool IsActivated() { return loaded; }
-
-	std::vector<vec2> GetPoints() { return original_poly.vertices; }
 
 private:
 	std::string index;
-	RockGroup* rockgroup;
+	RockGroup* rockgroup = nullptr;
 	Polygon original_poly;
 	Polygon modified_poly;
 	bool loaded = false;

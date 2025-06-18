@@ -66,4 +66,10 @@ private:
 
     bool firstBuy = false;
     bool secondBuy = false;
+
+    //Map boundary
+    Math::rect level1_boundary = { {700.f, 0},{4500.f, -4500.f} };
+    Math::rect level1_camera_boundary = { {700.f, 0},{4400.f, -6800.f} };
+    Math::rect level4_boundary = { {-5000.f, -6200.f},{5500.f, -11000.f} };
+
 };

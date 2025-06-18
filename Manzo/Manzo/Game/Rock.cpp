@@ -23,22 +23,11 @@ Rock::~Rock() {
 void Rock::Update(double dt)
 {
     GameObject::Update(dt);
-    if (this->crashed) {
-        this->RemoveGOComponent<MAP_SATCollision>();
-        this->Destroy();
-    }
 }
 
 void Rock::Draw()
 {
-    //DrawCall draw_call = {
-    //    GetGOComponent<Sprite>()->GetTexture(),
-    //    &GetMatrix(),
-    //    Engine::GetShaderManager().GetShader("purple")
-    //};
-    //draw_call.settings.do_blending = true;
-    ////draw_call.SetUniforms = [this](const GLShader* shader) { SetUni(shader); };
-    //Engine::GetRender().AddDrawCall(std::make_unique<DrawCall>(draw_call));
+    GameObject::Draw();
 }
 
 
@@ -56,7 +45,7 @@ void Rock::SetCenter() {
 
 // Obstacle Rock
 ObstacleRock::ObstacleRock(Polygon original_poly, Polygon modified_poly, vec2 position, double rotation, vec2 scale)
-    :Rock( original_poly, modified_poly, position, rotation, scale)
+    :Rock(original_poly, modified_poly, position, rotation, scale)
 {}
 
 // Moving Rock

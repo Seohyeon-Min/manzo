@@ -21,6 +21,7 @@ Created:    November 25, 2024
 
 #include <vector>
 class Rock;
+class ObstacleRock;
 class MovingRock;
 class RockPoint;
 
@@ -37,13 +38,13 @@ public:
 	void ResolveCollision(GameObject* other_object);
 
 	void AddRockPoint(RockPoint* rockpoint) { this->rockpoint = rockpoint; }
+	void AddObstacleRock(ObstacleRock* obstacle_rock) { obstacle_rocks.push_back(obstacle_rock); }
 	RockPoint* GetRockPoint() { return rockpoint; }
 
 	void AddRock(Rock* rock) { rocks.push_back(rock); }
 	void AddMovingRock(MovingRock* moving_rock) { moving_rocks.push_back(moving_rock); }
 	std::vector<Rock*> GetRocks() { return rocks; }
 	std::vector<MovingRock*> GetMovingRocks() { return moving_rocks; }
-	bool MatchIndex();
 	vec2 FindCenterRect();
 	vec2 FindCenterPoly();
 	Math::rect FindBoundary();
@@ -56,13 +57,19 @@ public:
 	std::vector<vec2> GetPoints() { return points; }
 	void SetPoints();	// Fill vector of polygon's points
 
+	//Crash
+	void Crash(bool crashed) { this->crashed = crashed; }
+	bool IsCrashed() { return crashed; }
+
 private:
+	bool crashed = false;
 	bool loaded = false; // Is Rockgroup loaded in map?
 	bool can_collide = true;
 	vec2 start_position;
 	mat3 matrix;
 	RockPoint* rockpoint = nullptr;
 	std::vector<Rock*> rocks;
+	std::vector<ObstacleRock*> obstacle_rocks;
 	std::vector<MovingRock*> moving_rocks;
 	std::string index = "";
 	std::string map_index = "";

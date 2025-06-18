@@ -73,12 +73,12 @@ void Mode1::Load()
 	std::cout << cali << std::endl;
 
 	//// camera
-	vec2 start_position = { 600, -500 };
+	vec2 start_position = { 600, -300 };
 	//vec2 start_position = {404, -6411};
 	Math::rect cam_limit = Math::rect({-1200, -500}, {4300, -12000});
 	camera = new Cam();
 	camera->SetPosition(start_position);
-	camera->SetLimit(cam_limit);
+	camera->SetLimit(level1_camera_boundary);
 	AddGSComponent(camera);
 
 	//// ship
@@ -105,9 +105,9 @@ void Mode1::Load()
 
 	// Map
 	AddGSComponent(new MapManager());
-	GetGSComponent<MapManager>()->AddMapFile("assets/maps/level1.svg"); 
-	GetGSComponent<MapManager>()->AddMapFile("assets/maps/level4.svg");
-	GetGSComponent<MapManager>()->LoadFirstMap();
+	GetGSComponent<MapManager>()->AddMap(new Map("assets/maps/level1.svg", level1_boundary));
+	GetGSComponent<MapManager>()->AddMap(new Map("assets/maps/level4.svg", level4_boundary));
+	GetGSComponent<MapManager>()->LoadMap();	//load first map
 	
 
 
@@ -127,7 +127,7 @@ void Mode1::Load()
 	boss_ptr_y = new Boss({ -1200, -9873 }, Boss::BossName::y, Boss::BossType::MovingToLocationPlus);
 	boss_ptr_y->ReadBossJSON(Boss::BossName::y);
 	BossFirstPos_y.push_back(std::make_pair(boss_ptr_y->GetFirstPosition()[0], boss_ptr_y->GetFirstPosition()[1]));
-	bossPosition_y = { -1200, -9873, 0.0f };
+	bossPosition_y = { -1700, -10400, 0.0f };
 
 
 	// UI
@@ -196,8 +196,9 @@ void Mode1::Update(double dt)
 	if (!GetGSComponent<MapManager>()->GetCurrentMap()->IsLevelLoaded()) {
 		GetGSComponent<MapManager>()->GetCurrentMap()->ParseSVG();
 	}
-	else {
-		//GetGSComponent<MapManager>()->LoadNextMap();
+	//camera limit update
+	if (GetGSComponent<MapManager>()->IsMapChanged()) {
+		camera->SetLimit(GetGSComponent<MapManager>()->GetCurrentMap()->GetMapBoundary());
 	}
 
 

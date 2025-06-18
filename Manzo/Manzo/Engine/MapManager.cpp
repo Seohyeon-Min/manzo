@@ -27,50 +27,43 @@ Map* MapManager::GetCurrentMap() {
     return maps[currentMapIndex];
 }
 
-void MapManager::AddMapFile(const std::string& filename) {
-    mapFiles.push_back(filename);
+void MapManager::AddMap(Map* new_map) {
+    maps.push_back(new_map);
 }
 
-void MapManager::LoadFirstMap() {
-    if (mapFiles.empty()) return;
-    
-
-    Map* initialMap = new Map(GetMapIndex(mapFiles[currentMapIndex]));
-    initialMap->OpenSVG(mapFiles[currentMapIndex]);
-    initialMap->LoadPNG();
-    maps.push_back(initialMap);
+void MapManager::LoadMap() {
+    if (maps.empty()) return;
+    maps[currentMapIndex]->OpenSVG();
+    maps[currentMapIndex]->LoadPNG();
 }
-
-void MapManager::LoadNextMap() {
-    if (currentMapIndex + 1 >= mapFiles.size()) return;
-
-    currentMapIndex++;
-
-    Map* nextMap = new Map(GetMapIndex(mapFiles[currentMapIndex]));
-    //nextMap->SetMargin(800.0f);
-    nextMap->OpenSVG(mapFiles[currentMapIndex]);    //open next svg file
-
-    maps.push_back(nextMap);
-}
-
 void MapManager::UpdateMaps(const Math::rect& camera_boundary) {
+
     if (currentMapIndex < maps.size()) {
-        Map* map = maps[currentMapIndex];
-        map->LoadMapInBoundary(camera_boundary);
+        maps[currentMapIndex]->LoadMapInBoundary(camera_boundary);
+        maps[currentMapIndex]->UnloadCrashedRock();     //delete crashed rock
 
-        if (camera_boundary.Bottom() <= -6000) {
-            //Unload Previous Map
-            LoadNextMap();
-            if (currentMapIndex + 1 < maps.size()) {
-                
+        if (!maps[currentMapIndex]->IsOverlapping(maps[currentMapIndex]->GetMapBoundary(), camera_boundary)) { // Is player  in the level boundary?
 
-                if (!maps[currentMapIndex]->IsLevelLoaded()) {    // if next map is not loaded
-                    maps[currentMapIndex]->ParseSVG();            //parse SVG file
+            if (!MapIncreased) {    // Is map index increased?
+                maps[currentMapIndex]->UnloadAll(); // Unload Previous Map
+
+
+                if (currentMapIndex + 1 < maps.size()) {
+                    currentMapIndex++;
+                    MapChanged = true;
+                    std::cout << "Hsssssssssssssssssssssssey:";
+                    LoadMap();
                 }
             }
         }
+        else {
+            MapIncreased = false;
+            MapChanged = false;
+        }
+
     }
 }
+
 
 std::string MapManager::GetMapIndex(const std::string& path) {
     size_t start = path.find_last_of('/') + 1;
@@ -78,32 +71,46 @@ std::string MapManager::GetMapIndex(const std::string& path) {
     return path.substr(start, end - start);
 }
 
+void MapManager::Unload() {
+    for (Map* map : maps) {
+        map->UnloadAll();
+        delete map;
+    }
+    maps.clear();
+}
+
 //Map
 //===============================================================
 
-Map::Map(std::string map_index) :    pathRegex(R"(<path[^>]*\sd\s*=\s*"([^"]+))"),
-                gIdRegex(R"(<g[^>]*\bid\s*=\s*"([^"]+))"),
-                circleRegex(R"(circle[^>]*\bcx\s*=\s*"([^"]+))"),
-                cyRegex(R"(\bcy\s*=\s*"([^"]+))"),
-                cIdxRegex(R"()"),
-                labelRegex(R"(inkscape:label\s*=\s*"([^"]+))"),
-                transformRegex(R"xxx(transform\s*=\s*"([^"]+)")xxx"),
-                translateRegex(R"(translate\(([^,]+),\s*([^\)]+)\))"),
-                rotateRegex(R"(rotate\(\s*([^\s,]+)\s*,\s*([^\s,]+)\s*,\s*([^\)]+)\s*\))"),
-                matrixRegex(R"(matrix\(([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+)\))"),
-                pathIdRegex(R"xxx(id="([^"]+)")xxx"),
-                map_index(map_index)
+Map::Map(const std::string& filename, Math::rect map_boundary) :
+    pathRegex(R"(<path[^>]*\sd\s*=\s*"([^"]+))"),
+    gIdRegex(R"(<g[^>]*\bid\s*=\s*"([^"]+))"),
+    circleRegex(R"(circle[^>]*\bcx\s*=\s*"([^"]+))"),
+    cyRegex(R"(\bcy\s*=\s*"([^"]+))"),
+    cIdxRegex(R"()"),
+    labelRegex(R"(inkscape:label\s*=\s*"([^"]+))"),
+    transformRegex(R"xxx(transform\s*=\s*"([^"]+)")xxx"),
+    translateRegex(R"(translate\(([^,]+),\s*([^\)]+)\))"),
+    rotateRegex(R"(rotate\(\s*([^\s,]+)\s*,\s*([^\s,]+)\s*,\s*([^\)]+)\s*\))"),
+    matrixRegex(R"(matrix\(([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+)\))"),
+    pathIdRegex(R"xxx(id="([^"]+)")xxx"),
+    fillColorRegex(R"(fill:\s*(#[0-9a-fA-F]+);)"),
+    file_path(filename),
+    map_boundary(map_boundary)
 {
+    size_t start = file_path.find_last_of('/') + 1;
+    size_t end = file_path.find_last_of('.');
+    this->map_index = file_path.substr(start, end - start);
+
     std::random_device rd;
     gen = std::mt19937(rd());
 }
 
 
-void Map::OpenSVG(const std::string& filename) {
-    file.open(filename);
-    this->file_name = filename;
-    if (!file.is_open()) {
-        std::cerr << "Error opening SVG file." << std::endl;
+void Map::OpenSVG() {
+    map_file.open(this->file_path);
+    if (!map_file.is_open()) {
+        Engine::GetLogger().LogError(file_path + "Error opening SVG file.");
         return;
     }
 }
@@ -111,7 +118,7 @@ void Map::OpenSVG(const std::string& filename) {
 void Map::ParseSVG() {
 
     if (level_loaded) {
-        std::cerr << "Level is already loaded." << std::endl;
+        Engine::GetLogger().LogError("Level is already loaded.");
         return;
     }
 
@@ -119,14 +126,14 @@ void Map::ParseSVG() {
     std::string currentTag;
 
     do {
-        if (!std::getline(file, line)) {
+        if (!std::getline(map_file, line)) {
             level_loaded = true;
-            file.close();
-            std::cout << "End of File." << std::endl;
+            map_file.close();
             return;
         }
         currentTag += line;
-    } while (currentTag.find('>') == std::string::npos);
+    } while (currentTag.find("/>") == std::string::npos && currentTag.find('>') == std::string::npos);
+
 
     // </svg>
     if (currentTag.find("</svg>") != std::string::npos) {
@@ -135,8 +142,8 @@ void Map::ParseSVG() {
         }
 
         level_loaded = true;
-        file.close();
-        std::cout << file_name << " file's parsing completed." << std::endl;
+        map_file.close();
+        Engine::GetLogger().LogDebug(file_path + "file's parsing completed.");
         return;
     }
 
@@ -164,8 +171,8 @@ void Map::ParseSVG() {
         std::string group_index = match[1].str();
         currentGroup = new RockGroup(group_index, map_index, rotateAngle, scale);
         rock_groups.push_back(currentGroup);
-        std::cout << "Group created: " << group_index << std::endl;
-        
+        //std::cout << "Group created: " << group_index << std::endl;
+
     }
 
     // transform
@@ -224,7 +231,7 @@ void Map::ParseSVG() {
     //path ID
     if (std::regex_search(currentTag, match, pathIdRegex)) {
         polyIndex = match[1].str();
-        
+
     }
 
     // path
@@ -273,34 +280,51 @@ void Map::ParseSVG() {
         std::cout << "poly index : " << poly.polyindex << std::endl;
         std::cout << "-----------------------------" << std::endl;*/
 
-        
-        
+
         Polygon original_poly = poly;   //for collision
         Polygon modified_poly = poly;   //for object position
 
+        if (std::regex_search(currentTag, match, fillColorRegex)) {
+            fillColor = match[1].str();
+        }
+
         vec2 poly_center = original_poly.FindCenter();
+
         std::vector<vec2> new_vertices;
         for (vec2 vertice : original_poly.vertices) {
             new_vertices.push_back({ vertice.x - poly_center.x, vertice.y - poly_center.y });
         }
         modified_poly.vertices = new_vertices;
 
-        Rock* rock = new Rock(original_poly, modified_poly, original_poly.FindCenter(), rotateAngle, scale);
-        if (currentGroup) {
-            currentGroup->AddRock(rock);
-            rock->SetRockGroup(currentGroup);
+
+        if (fillColor == obstacleColor) {
+            ObstacleRock* rock = new ObstacleRock(original_poly, modified_poly, original_poly.FindCenter(), rotateAngle, scale);  //generate obstacle rock
+
+            if (currentGroup) {
+                currentGroup->AddRock(dynamic_cast<ObstacleRock*>(rock));
+                dynamic_cast<ObstacleRock*>(rock)->SetRockGroup(currentGroup);
+
+            }
+            obstacle_rocks.push_back(dynamic_cast<ObstacleRock*>(rock));
         }
-        rocks.push_back(rock);
+        else {
+            Rock* rock = new Rock(original_poly, modified_poly, original_poly.FindCenter(), rotateAngle, scale);  //generate general rock
+            if (currentGroup) {
+                currentGroup->AddRock(dynamic_cast<Rock*>(rock));
+                dynamic_cast<Rock*>(rock)->SetRockGroup(currentGroup);
+            }
+            rocks.push_back(dynamic_cast<Rock*>(rock));
+        }
+
         return;
     }
 
     if (circle_position.x != 0.f && circle_position.y != 0.f) {
         Box* box = new Box(circle_position);
         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(box);
-        //std::cout << "New Circle! " << "\n";
+
     }
 }
-
 // Map Parsing
 std::vector<vec2> Map::parsePathData(const std::string& pathData) {
     std::istringstream stream(pathData);
@@ -369,6 +393,13 @@ bool Map::IsOverlapping(const Math::rect& camera_boundary, const Math::rect& roc
         camera_boundary.Top() + margin < rock.Bottom() ||
         camera_boundary.Bottom() - margin > rock.Top());
 }
+bool Map::IsOverlappingMargin(const Math::rect& camera_boundary, const Math::rect& rock) {
+    return !(camera_boundary.Right() + margin < rock.Left() ||
+        camera_boundary.Left() - margin > rock.Right() ||
+        camera_boundary.Top() + margin < rock.Bottom() ||
+        camera_boundary.Bottom() - margin > rock.Top());
+}
+
 
 void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
     for (RockGroup* rockgroup : rock_groups) {
@@ -376,7 +407,7 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
 
         if(!rocks.empty()){
 
-            bool overlapping = IsOverlapping(camera_boundary, rockgroup->FindBoundary());
+            bool overlapping = IsOverlappingMargin(camera_boundary, rockgroup->FindBoundary());
 
             if (overlapping) {
                 //Add Rock in GameState
@@ -384,7 +415,7 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
 
                     Polygon original_poly = rock->GetOriginalPoly();
                     Polygon modified_poly = rock->GetModifiedPoly();
-                    if (!rock->IsActivated() && !rock->IsCrashed()) {
+                    if (!rock->IsActivated() && !rock->GetRockGroup()->IsCrashed()) {
                         rock->Active(true);
                         rock->AddGOComponent(new MAP_SATCollision(modified_poly, rock));
                         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(rock);
@@ -419,17 +450,55 @@ void Map::LoadMapInBoundary(const Math::rect& camera_boundary) {
         }
     }
 }
-
 void Map::UnloadAll() {
     for (Rock* rock : rocks) {
-        if (!rock->IsActivated()) {
+        if (rock->IsActivated()) {
+            rock->Active(false);
+            Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Remove(rock);
+            rock->Destroy();
+            rock = nullptr;
             delete rock;
+
         }
+        else
+            rock->Destroy();
+        rock = nullptr;
+        delete rock;
     }
     for (RockGroup* rockgroup : rock_groups) {
-        if (!rockgroup->IsActivated()) {
+        if (rockgroup->IsActivated()) {
+            rockgroup->Active(false);
+            Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Remove(rockgroup);
+            rockgroup->Destroy();
+            rockgroup = nullptr;
+            delete rockgroup;
+
+        }
+        else
+            rockgroup->Destroy();
+        rockgroup = nullptr;
+        delete rockgroup;
+    }
+}
+
+void Map::UnloadCrashedRock() {
+    for (RockGroup* rockgroup : rock_groups) {
+        if (rockgroup->IsCrashed()) {
+            for (Rock* rock : rockgroup->GetRocks()) {
+
+                rock->Active(false);
+                Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Remove(rock);
+                rock->Destroy();
+                rock = nullptr;
+                delete rock;
+            }
+            rockgroup->Active(false);
+            Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Remove(rockgroup);
+            rockgroup->Destroy();
+            rockgroup = nullptr;
             delete rockgroup;
         }
+
     }
 }
 

@@ -18,13 +18,14 @@ RockGroup::RockGroup(const std::string& index, const std::string& map_index, dou
         AddGOComponent(new Sprite(spritePath, this));
     }
     else {
-        std::cout << "Warning: Sprite file not found: " << spritePath << std::endl;
+        Engine::GetLogger().LogError("Warning: Sprite file not found:" + spritePath);
 
     }
 }
 
 RockGroup::~RockGroup() {
     rocks.clear();
+    obstacle_rocks.clear();
     moving_rocks.clear();
 }
 
@@ -36,6 +37,7 @@ void RockGroup::Update(double dt) {
 
 void RockGroup::Draw()
 {
+    GameObject::Draw(DrawLayer::DrawLast);
     //DrawCall draw_call = {
     //    GetGOComponent<Sprite>()->GetTexture(),
     //    &GetMatrix(),
@@ -75,37 +77,6 @@ Math::rect RockGroup::FindBoundary() {
     }
 }
 
-bool RockGroup::MatchIndex()
-{
-    std::ifstream file("assets/images/rock/rock.csv");
-    std::string line, cell;
-    if (!file.is_open()) {
-        std::cerr << "Failed to Open CSV." << std::endl;
-        return false;
-    }
-
-    if (file.is_open()) {
-        while (std::getline(file, line)) {
-            std::stringstream linestream(line);
-            std::string index, x_str, y_str, file_path;
-
-            std::getline(linestream, index, ',');
-            std::string polyind = (this->index).substr(0, 5);
-
-            if (index == polyind) {
-                std::getline(linestream, file_path, ',');
-                SetPosition(FindCenterRect());
-                AddGOComponent(new Sprite(file_path, this));
-
-                return true;
-
-            }
-        }
-
-    }
-    std::cerr << "Index not found in the file." << std::endl;
-    return false;
-}
 
 vec2 RockGroup::FindCenterRect() {  // Calculate texture's position.
     vec2 center = { 0, 0 };
@@ -117,6 +88,19 @@ vec2 RockGroup::FindCenterRect() {  // Calculate texture's position.
         maxPoint = rocks[0]->GetOriginalPoly().vertices[0];
 
         for (auto& rock : rocks) {
+            Polygon poly = rock->GetOriginalPoly();
+            minPoint.x = std::min(minPoint.x, poly.FindBoundary().Left());
+            minPoint.y = std::min(minPoint.y, poly.FindBoundary().Bottom());
+            maxPoint.x = std::max(maxPoint.x, poly.FindBoundary().Right());
+            maxPoint.y = std::max(maxPoint.y, poly.FindBoundary().Top());
+        }
+    }
+    else if (!obstacle_rocks.empty()) {
+
+        minPoint = rocks[0]->GetOriginalPoly().vertices[0];
+        maxPoint = rocks[0]->GetOriginalPoly().vertices[0];
+
+        for (ObstacleRock* rock : obstacle_rocks) {
             Polygon poly = rock->GetOriginalPoly();
             minPoint.x = std::min(minPoint.x, poly.FindBoundary().Left());
             minPoint.y = std::min(minPoint.y, poly.FindBoundary().Bottom());
@@ -161,6 +145,18 @@ vec2 RockGroup::FindCenterPoly() {  // Calculate Polygon's position
         center.x /= rocks.size();
         center.y /= rocks.size();
     }
+    else if (!obstacle_rocks.empty()) {
+        for (ObstacleRock* rock : obstacle_rocks) {
+            Polygon poly = rock->GetOriginalPoly();
+            poly_center = poly.FindCenter();
+
+            center.x += poly_center.x;
+            center.y += poly_center.y;
+        }
+
+        center.x /= moving_rocks.size();
+        center.y /= moving_rocks.size();
+    }
     else if (!moving_rocks.empty()) {
         for (MovingRock* rock : moving_rocks) {
             Polygon poly = rock->GetOriginalPoly();
@@ -180,6 +176,14 @@ vec2 RockGroup::FindCenterPoly() {  // Calculate Polygon's position
 void RockGroup::SetPoints() {
     if (!rocks.empty()) {
         for (auto& rock : rocks) {
+            Polygon poly = rock->GetOriginalPoly();
+            for (int i = 0; i < poly.vertexCount; i++) {
+                points.push_back(poly.vertices[i]);
+            }
+        }
+    }
+    else if (!obstacle_rocks.empty()) {
+        for (ObstacleRock* rock : obstacle_rocks) {
             Polygon poly = rock->GetOriginalPoly();
             for (int i = 0; i < poly.vertexCount; i++) {
                 points.push_back(poly.vertices[i]);
