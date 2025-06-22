@@ -208,20 +208,11 @@ void Ship::State_Move::FixedUpdate([[maybe_unused]] GameObject* object, [[maybe_
 			if (!ship->collide_timer->IsRunning()) {
 				ship->collide_timer->Start();
 			}
-			/*
-			std::string rock_index = (ship->nearestRock)->GetOriginalPoly().polyindex;
-			std::string type_index = rock_index.substr(0, 1);
-			if (type_index == "o") {
+			if (ship->nearestRock->Type() == GameObjectTypes::ObstacleRock){
 				ship->HitWithBounce(ship->nearestRock, velocity); // calculate normal
-				(ship->nearestRock)->Destroy();
+				(ship->nearestRock)->GetRockGroup()->Crash(true);
 			}
-			else {
-
-				//(ship->nearestRock)->GetRockGroup()->Destroy();
-				//(ship->nearestRock)->Destroy();
-			}*/
-			ship->HitWithBounce(ship->nearestRock, velocity); // calculate normal
-			//(ship->nearestRock)->Crash(true);
+			ship->HitWithBounce(ship->nearestRock, velocity);
 		}
 		else {
 			Engine::GetLogger().LogEvent("@@@@ Error: No nearest rock!! @@@@");
@@ -555,12 +546,13 @@ bool Ship::CanCollideWith(GameObjectTypes other_object)
 {
     switch (other_object) {
     case GameObjectTypes::Fish:
+	case GameObjectTypes::ObstacleRock:
+		return true;
+		break;
     case GameObjectTypes::Rock:
         return true;
         break;
-    case GameObjectTypes::ObstacleRock:
-        return true;
-        break;
+    
     case GameObjectTypes::Monster:
         if(invincibility_timer->IsFinished())
         return true;
@@ -585,6 +577,14 @@ void Ship::ResolveCollision(GameObject* other_object) {
         Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new GetFishEffect(GetPosition()));
         change_state(&state_idle);
         break;
+	case GameObjectTypes::ObstacleRock:
+		if (GetVelocity().Length() <= skidding_speed + 10.f) { // if it was skidding, don't reflect
+			vec2 smallCorrection = -GetVelocity().Normalize(); // with this, ship should not able to move!
+			UpdatePosition(smallCorrection);
+			can_dash = false;
+			return;
+		}
+		break;
     case GameObjectTypes::Rock:
         if (GetVelocity().Length() <= skidding_speed + 10.f) { // if it was skidding, don't reflect
             vec2 smallCorrection = -GetVelocity().Normalize(); // with this, ship should not able to move!
@@ -593,14 +593,7 @@ void Ship::ResolveCollision(GameObject* other_object) {
             return;
         }
         break;
-    case GameObjectTypes::ObstacleRock:
-        if (GetVelocity().Length() <= skidding_speed + 10.f) { // if it was skidding, don't reflect
-            vec2 smallCorrection = -GetVelocity().Normalize(); // with this, ship should not able to move!
-            UpdatePosition(smallCorrection);
-            can_dash = false;
-            return;
-        }
-        break;
+    
     case GameObjectTypes::Monster:
         hit_with = true;
 
@@ -632,7 +625,21 @@ bool Ship::CatchFish(vec2 pos)
 }
 
 void Ship::HitWithBounce(GameObject* other_object, vec2 velocity) {
+	if (other_object->Type() == GameObjectTypes::ObstacleRock) {
 
+		auto cam = Engine::GetGameStateManager().GetGSComponent<Cam>();
+		cam->GetCamera().StartShake(camera_shake, 5);
+
+		Rock* rock = static_cast<Rock*>(other_object);
+		std::vector<vec2> points = rock->GetPoints();
+		vec2 center = rock->GetPosition();
+		normal = ComputeCollisionNormal(points, GetPosition(), center);
+		Engine::GetLogger().LogEvent("normal: " + std::to_string(normal.x) + ", " + std::to_string(normal.y));
+		Engine::GetGameStateManager().GetGSComponent<GameObjectManager>()->Add(new HitEffect(GetPosition()));
+
+		ReduceFuel(RockHitDecFuel);
+
+	}
 	if (other_object->Type() == GameObjectTypes::Rock) {
 
 		auto cam = Engine::GetGameStateManager().GetGSComponent<Cam>();

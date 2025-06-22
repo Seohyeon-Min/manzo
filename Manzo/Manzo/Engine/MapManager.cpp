@@ -51,7 +51,6 @@ void MapManager::UpdateMaps(const Math::rect& camera_boundary) {
                 if (currentMapIndex + 1 < maps.size()) {
                     currentMapIndex++;
                     MapChanged = true;
-                    std::cout << "Hsssssssssssssssssssssssey:";
                     LoadMap();
                 }
             }

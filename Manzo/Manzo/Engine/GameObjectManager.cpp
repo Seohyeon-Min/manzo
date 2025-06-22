@@ -98,17 +98,26 @@ vec2 GameObjectManager::FindNearestRockPoint(GameObject* object) {
 	vec2 object_Position = object->GetPosition();
 
 	for (GameObject* gameObj : objects) {
+		Rock* rock = nullptr;
+		std::vector<vec2> rockPoints;
+
 		if (gameObj->Type() == GameObjectTypes::Rock) {
-			Rock* rock = static_cast<Rock*>(gameObj);
-			std::vector<vec2> rockPoints = rock->GetRockGroup()->GetPoints();
+			rock = static_cast<Rock*>(gameObj);
+			rockPoints = rock->GetRockGroup()->GetPoints();
+		}
+		else if (gameObj->Type() == GameObjectTypes::ObstacleRock) {
+			rock = static_cast<ObstacleRock*>(gameObj);
+			rockPoints = rock->GetRockGroup()->GetPoints();
+		}
+		else {
+			continue;
+		}
+		for (const vec2& rockPoint : rockPoints) {
+			float distance = (rockPoint - object_Position).LengthSquared();
 
-			for (const vec2& rockPoint : rockPoints) {
-				float distance = (rockPoint - object_Position).LengthSquared();
-
-				if (distance < nearestDistance) {
-					nearestDistance = distance;
-					nearestRockpoints = rockPoint;
-				}
+			if (distance < nearestDistance) {
+				nearestDistance = distance;
+				nearestRockpoints = rockPoint;
 			}
 		}
 	}
@@ -125,21 +134,30 @@ Rock* GameObjectManager::FindNearestRock(GameObject* object) {
 	auto camera_bounds = Engine::GetGameStateManager().GetGSComponent<Cam>()->GetBounds();
 
 	for (GameObject* gameObj : objects) {
-		if (gameObj->Type() == GameObjectTypes::Rock/* && gameObj->IsVisible(camera_bounds)*/) {
-			Rock* rock = static_cast<Rock*>(gameObj);
-			std::vector<vec2> rockPoints = rock->GetPoints();
+		Rock* rock = nullptr;
+		std::vector<vec2> rockPoints;
 
-			for (size_t i = 0; i < rockPoints.size(); ++i) {
-				vec2 p1 = rockPoints[i];
-				vec2 p2 = rockPoints[(i + 1) % rockPoints.size()];
+		if (gameObj->Type() == GameObjectTypes::ObstacleRock/* && gameObj->IsVisible(camera_bounds)*/) {
+			rock = static_cast<ObstacleRock*>(gameObj);
+			rockPoints = rock->GetPoints();
+		}
+		else if (gameObj->Type() == GameObjectTypes::Rock/* && gameObj->IsVisible(camera_bounds)*/) {
+			rock = static_cast<Rock*>(gameObj);
+			rockPoints = rock->GetPoints();
+		}
+		if (!rock) continue;
 
-				vec2 closestPoint = ClosestPoint(object_Position, p1, p2);
-				float distance = (closestPoint - object_Position).LengthSquared();
 
-				if (distance < nearestDistance) {
-					nearestDistance = distance;
-					nearestRock = rock;
-				}
+		for (size_t i = 0; i < rockPoints.size(); ++i) {
+			vec2 p1 = rockPoints[i];
+			vec2 p2 = rockPoints[(i + 1) % rockPoints.size()];
+
+			vec2 closestPoint = ClosestPoint(object_Position, p1, p2);
+			float distance = (closestPoint - object_Position).LengthSquared();
+
+			if (distance < nearestDistance) {
+				nearestDistance = distance;
+				nearestRock = rock;
 			}
 		}
 	}
